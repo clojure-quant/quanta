@@ -186,7 +186,7 @@
   (vals (TimeSeriesDaily- b))
 
   (->> b
-       (convert-bars-)
+       ;(convert-bars-)
        (clojure.pprint/print-table [:date :open :high :low :close :volume]))
 
   (def symbols ["BTC" "ETH" "LTC" "DASH" "NANO" "EOS" "XLM"])

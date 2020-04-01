@@ -3,7 +3,8 @@
    [clojure.walk :refer [prewalk]]
    ;[cheshire.core :as json]
    ;[cheshire.generate :as json-gen]
-   [trateg.core :refer :all]))
+   [trateg.core :refer :all]
+   [ta.model.stats :refer [win? cash-flow]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;visualization;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

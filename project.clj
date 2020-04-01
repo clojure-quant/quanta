@@ -42,4 +42,9 @@
                                               try-if-let          [[:block 1]]}}}}
 
   :aliases {"speed" ^{:doc "Runs performance tests"}
-            ["with-profile" "+speed" "run" "-m" "speed.main"]})
+            ["with-profile" "+speed" "run" "-m" "speed.main"]
+            "lint" ^{:doc "Runs code linter"}
+            ["clj-kondo" "--lint" "src"]
+
+            
+            })

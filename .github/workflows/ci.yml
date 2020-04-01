@@ -25,7 +25,7 @@ jobs:
     - name: Check formatting
       run: lein cljfmt check
     - name: Lint
-      run: lein clj-kondo --lint .
+      run: lein clj-kondo --lint src
     - name: Run tests
       run: |
         lein test
