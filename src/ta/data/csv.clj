@@ -27,7 +27,9 @@
    returns a sequence of vectors
    the first item in the sequence may be the header-row"
   [file]
-  (csv/read-csv (io/reader (io/resource file))))
+  (let [f (io/resource file)
+        f (if (nil? f) (io/file file) f )]
+  (csv/read-csv (io/reader f))))
 
 ; header
 
@@ -98,7 +100,7 @@
    :high   (double-or-nil high)
    :low    (double-or-nil low)
    :close  (double-or-nil close)
-   :volume (int-or-nil volume)})
+   :volume (double-or-nil volume) #_(int-or-nil volume)})
 
 ; READ bar-series from csv
 
@@ -157,16 +159,26 @@
          extract-column-format))
 
   (header-csv "test/csv-test.csv")
-
+  (header-csv "resources/test/csv-test.csv")
+  
   (load-csv-bars-trateg "ta/spx.csv")
+  (load-csv-bars
+   "resources/sector/FMCAX.csv")
+   (load-csv-bars
+    "resources/sector/FIDSX.csv")
 
+
+  (io/resource "ta/spx.cs") ; nil if not available
+  
+  (io/file "resources/test/csv-test.csv") ; always not nil
+  
   (:date fmt/formatters)
   (fmt/show-formatters)
   (:date-time fmt/formatters)
 
   ;(t/time "2017-01-01T00:00:00Z")
   ;(t/date-time "2017-01-01T00:00:00.000Z")
-
+  
 
   ; comment end
   )
