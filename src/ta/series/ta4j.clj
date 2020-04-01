@@ -1,6 +1,6 @@
 (ns ta.series.ta4j
   "convenience wrapper on the java library ta4j"
-  (:import [org.ta4j.core BaseStrategy BaseTimeSeries$SeriesBuilder
+  (:import [org.ta4j.core BaseStrategy #_BaseTimeSeries$SeriesBuilder
             TimeSeriesManager]))
 
 (defn ind-values

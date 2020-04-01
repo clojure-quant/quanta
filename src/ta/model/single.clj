@@ -55,7 +55,7 @@
     (update :pending-exit merge (default-exit current-bar))))
 
 (defn execute-pending [ctx]
-  (let [{:keys [position pending-entry pending-exit current-bar] :as ctx} ctx]
+  (let [{:keys [position pending-entry pending-exit _ #_current-bar] :as ctx} ctx]
     (cond-> ctx
       pending-entry (-> (assoc :position pending-entry)
                         (dissoc :pending-entry))
@@ -67,7 +67,7 @@
    (cross-trigger ctx direction  bar-key threshold action nil))
   ([ctx direction bar-key threshold action side]
    (let [{:keys [current-bar]} ctx
-         {:keys [close index]} current-bar
+         {:keys [ index]} current-bar ; close was in keys
          x                     (get current-bar bar-key)
          last-x                (-> ctx :bars (get (dec index)) bar-key)
          threshold             (if (keyword? threshold)

@@ -96,7 +96,7 @@
 
 ; parse date/time
 
-(defn- parse-date [options date time]
+(defn- parse-date [options date _ #_time]
   (try
     ;(t/time date)
     (fmt/parse (:date options) date)
@@ -106,7 +106,7 @@
 (def date-fmt (DateTimeFormatter/ofPattern "MM/dd/yyyy"))
 (def EST (ZoneId/of "America/New_York"))
 
-(defn parse-zoned-date [options date time]
+(defn parse-zoned-date [_ #_options date time]
   (try
     (ZonedDateTime/of (LocalDate/parse date date-fmt)
                       (LocalTime/parse time)

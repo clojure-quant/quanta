@@ -4,19 +4,29 @@
                                      :username :env/release_username
                                      :password :env/release_password
                                      :sign-releases false}]]
+  :release-tasks [["vcs" "assert-committed"]
+                  ["bump-version" "release"]
+                  ["vcs" "commit" "Release %s"]
+                  ["vcs" "tag" "v" "--no-sign"]
+                  ["deploy"]
+                  ["bump-version"]
+                  ["vcs" "commit" "Begin %s"]
+                  ["vcs" "push"]]
   :dependencies
   [[org.clojure/clojure "1.10.1"]
    [org.clojure/core.async "1.1.582"]
    [com.taoensso/tufte "2.1.0"] ;performance tracking
    [medley "1.3.0"] ; lightweight, useful, mostly pure functions that are "missing" from clojure.core.
    [clj-time "0.15.2"] ; joda-time wrapper for clj (needed by bybit)
-   ;[tick "0.4.17-alpha"] ; replacement for clj-time
+   [tick "0.4.17-alpha"] ; replacement for clj-time
    [cheshire "5.10.0"] ; JSON encoding
    [clj-http "3.10.0"]  ; http requests (bybit)                        
    [org.clojure/data.csv "1.0.0"] ; read/write csv
    [net.cgrand/xforms "0.19.2"] ; transducers for timeseries (ema sma)
    [org.ta4j/ta4j-core "0.12"] ; ta4j java technical indicator library
-   [throttler "1.0.0"] ; throtteling (custom version, core.async upgrade)
+   [throttler "1.0.0" ; api rate-limits 
+    :exclusions  [[org.clojure/clojure]
+                  [org.clojure/core.async]]]; has very old core.async
    ;[org.pinkgorilla/throttler "1.0.2"] ; throtteling (custom version, core.async upgrade)
    ; [com.stuartsierra/frequencies "0.1.0"]     ; percentile stats
    ]
@@ -41,10 +51,9 @@
                                               merge-meta          [[:inner 0]]
                                               try-if-let          [[:block 1]]}}}}
 
-  :aliases {"speed" ^{:doc "Runs performance tests"}
+  :aliases {"bump-version"
+            ["change" "version" "leiningen.release/bump-version"]
+            "speed" ^{:doc "Runs performance tests"}
             ["with-profile" "+speed" "run" "-m" "speed.main"]
             "lint" ^{:doc "Runs code linter"}
-            ["clj-kondo" "--lint" "src"]
-
-            
-            })
+            ["clj-kondo" "--lint" "src"]})

@@ -5,7 +5,7 @@
 (defn rank-input [model field-in index]
   ;(println "rank input" index)
   (map-symbols
-   (fn [[symbol data-symbol]]
+   (fn [[symbol _ #_data-symbol]]
      ;(println "rank-input " symbol index)
      (let [field-val (get-ts model symbol field-in index)
            ;_ (println [symbol field-val])
@@ -35,11 +35,11 @@
 ;; => #'tradeg.crosssection/rank-calc
 
 (defn rank-series-for-key [rank-list symbol]
-  (let [extract-array (fn [ranking] (symbol ranking))
+  (let [;extract-array (fn [ranking] (symbol ranking))
         extract-rank (fn [ranking] (get (symbol ranking) 1))]
     (into []
           (map-indexed
-           (fn [idx itm] (extract-rank itm))
+           (fn [_ #_idx itm] (extract-rank itm))
            rank-list))))
 
 (defn rank [model length field-in ascending? field-out]
@@ -50,7 +50,7 @@
       ;(to-map 
     (doall
      (map-symbols
-      (fn [[symbol d]]
+      (fn [[symbol _ #_d]]
                ;(println symbol "data:" d)
         (let [rank-ts (rank-series-for-key rank-list symbol)]
           (set-ts model symbol field-out rank-ts)

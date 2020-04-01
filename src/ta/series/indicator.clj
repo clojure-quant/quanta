@@ -9,7 +9,7 @@
 
 (defn ema-xf
   ([n] (ema-xf n (/ 2 (inc n))))
-  ([n alpha]
+  ([_ #_n alpha] ;todo: this seems stupid as n does not get used
    (comp (x/reductions
           (fn [prev-ema x]
             (if prev-ema
@@ -54,7 +54,7 @@
                            (update :hi update high (fnil inc 0))))))
 
                   (fn [acc out]
-                    (let [[high low close] out
+                    (let [[high low _ #_close] out
                           f                (fn [acc old]
                                              (if (= (get acc old) 1)
                                                (dissoc acc old)
@@ -109,10 +109,8 @@
 (defn prct-change-
   "calculates percentage change of prior/current"
   [prior current]
-  (do
-      ;(println "current" current "prior" prior)
     (if (or (nil? prior) (= 0 prior)) nil
-        (* (/ (- current prior) prior) 100.0))))                    ; absolute change
+        (* (/ (- current prior) prior) 100.0))) ; absolute change
 
 
 (defn ago
@@ -124,8 +122,8 @@
    (drop-last n ts)))
 
 (defn change-n
+    "calculates changes in timeseries (relative to n ago)"
   [n ts]
-  "calculates changes in timeseries (relative to n ago)"
   (into []
         (map #(prct-change- %1 %2)
              (ago n ts); prior

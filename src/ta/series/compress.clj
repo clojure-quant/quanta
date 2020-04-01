@@ -1,7 +1,7 @@
 (ns ta.series.compress
   (:require
    [clj-time.core :as t]
-   [taoensso.tufte :as tufte :refer (defnp p profiled profile)]))
+   [taoensso.tufte :as tufte :refer (p)]))
 
 (defn- apply-safe [fun list]
   (let [list-not-nil (remove nil? list)]

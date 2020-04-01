@@ -17,7 +17,7 @@
 
 (defn column-map->rows [cm]
   (reduce-kv
-   (fn [rs column values]
+   (fn [rs _ #_column values]
      (map (fn [row value] (conj row value)) rs values))
    (repeat (count (val (first cm))) [])
    cm))

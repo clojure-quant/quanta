@@ -1,8 +1,4 @@
 (ns ta.data.random
-  (:require
-   [clojure.string :as str]
-   ;[clj-time.core :as t]
-   )
   (:import
    [java.util Random]))
 

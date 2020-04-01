@@ -3,7 +3,7 @@
    [clojure.walk :refer [prewalk]]
    ;[cheshire.core :as json]
    ;[cheshire.generate :as json-gen]
-   [trateg.core :refer :all]
+  ; [trateg.core :refer :all]
    [ta.model.stats :refer [win? cash-flow]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -35,7 +35,7 @@
         ]
     ^:R [:highchart spec-safe]))
 
-(defn trade-chart [{:keys [trades bars stops tps] :as results} indicator-key]
+(defn trade-chart [{:keys [trades bars stops tps]} indicator-key]
   (view-highchart
    {:rangeSelector {:selected 1}
     :chart         {:height 600}
@@ -98,7 +98,7 @@
                :yAxis        1
                :dataGrouping {:enabled false}}]}))
 
-(defn performance-chart [{:keys [trades bars] :as result}]
+(defn performance-chart [{:keys [trades bars]}]
   (let [bars       bars
         price-data     (mapv (juxt :date :open :high :low :close :vol) bars)
         ixs            (mapv :date bars)

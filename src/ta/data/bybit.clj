@@ -3,8 +3,7 @@
    [clj-http.client :as client]
    [cheshire.core] ; JSON Encoding
    [clj-time.core :as t]
-   [clj-time.coerce :as c]
-   [clj-time.format :as fmt]))
+   [clj-time.coerce :as c]))
 
 ; https://bybit-exchange.github.io/bybit-official-api-docs/en/index.html#operation/query_symbol
 
@@ -57,10 +56,9 @@
     (while (pos? @remaining)
       (let [current (min 200 @remaining)
             _ (println "cur: " current)]
-        (do
           (swap! position + current)
           (swap! requests conj {:bars current :position @position})
-          (swap! remaining - current))))
+          (swap! remaining - current)))
     @requests))
 
 (defn history-recent-extended

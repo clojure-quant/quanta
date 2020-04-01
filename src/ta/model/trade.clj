@@ -112,7 +112,7 @@
   (let [symbols (:symbols @model)]
     (doall (remove nil?
                    (map
-                    (fn [[symbol data]]
+                    (fn [[symbol _ #_data]]
                       ;(println "checking entry-index " symbol)
                       (when (no-position portfolio symbol)
                         (let [entry-signal (p-entry model index symbol)]
@@ -157,12 +157,12 @@
                      :symbols {:a {:price [1 2 3]}
                                :b {:price [4 5 6]}}}))
 
-  (defn exit-always [model index position]
+  (defn exit-always [_ #_model index position]
     (let [symbol (:symbol position)]
       (println index "exit-always" symbol)
       true))
 
-  (defn entry-always [model index symbol]
+  (defn entry-always [_ #_model index symbol]
     (println index "entry-always" symbol)
     [symbol 10])
 

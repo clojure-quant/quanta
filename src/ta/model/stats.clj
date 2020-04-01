@@ -50,15 +50,15 @@
     :long  (/ exit entry)
     :short (/ entry exit)))
 
-(defn nominal-profit [{:keys [px-entry px-exit side] :as roundtrip}]
+(defn nominal-profit [{:keys [px-entry px-exit side]}]
   (nominal-return side px-entry px-exit))
 
-(defn ratio-profit [{:keys [side px-entry px-exit] :as roundtrip}]
+(defn ratio-profit [{:keys [side px-entry px-exit]}]
   (ratio-return side px-entry px-exit))
 
 (defn roundtrip-complete? [roundtrip] (-> roundtrip :px-exit some?))
 
-(defn win? [{:keys [side px-entry px-exit] :as roundtrip}]
+(defn win? [{:keys [side px-entry px-exit]}]
   (when (and px-entry px-exit)
     (case side
       :long  (> px-exit px-entry)
@@ -82,7 +82,7 @@
 
 (defn profit-factor [roundtrips]
   (let [{:keys [profit loss]}
-        (reduce (fn [acc {:keys [px-entry px-exit] :as roundtrip}]
+        (reduce (fn [acc roundtrip] ; {:keys [px-entry px-exit] :as roundtrip}
                   (if (roundtrip-complete? roundtrip)
                     (let [win?  (win? roundtrip)
                           loss? (not win?)]
@@ -145,7 +145,7 @@
 ;;Tools and charts to analyze result sets;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn gauntlet [{:keys [roundtrips bars] :as strat-result}]
+(defn gauntlet [{:keys [roundtrips bars]}]
   {:rt-ct     (count roundtrips)
    :total-return (total-return roundtrips)
    :mean-return  (mean (map ratio-profit roundtrips))
@@ -154,7 +154,7 @@
    :sharpe       (sharpe-ratio roundtrips 1.01)
    :max-drawdown (max-drawdown-over-bars bars roundtrips)})
 
-(defn gauntlet2 [{:keys [roundtrips] :as strat-result}]
+(defn gauntlet2 [{:keys [roundtrips]}]
   {:rt-ct     (count roundtrips)
    :total-return (total-return roundtrips)
    :mean-return  (mean (map ratio-profit roundtrips))

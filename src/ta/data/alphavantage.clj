@@ -2,7 +2,6 @@
   (:require
    [clj-http.client :as client]
    [cheshire.core] ; JSON Encoding
-   [clj-time.core :as t]
    [clj-time.format :as fmt]
    [throttler.core]))
 
