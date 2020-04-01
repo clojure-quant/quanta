@@ -176,13 +176,14 @@
   ([options file]
    (load-bars resource->csv options file)))
 
+(def trateg-options
+  {:date-parser parse-zoned-date
+   :date (fmt/formatter "MM/dd/yyyy")})
 
 (defn load-csv-bars-trateg
   "this function is here mainly for unit tests and compatibility"
   [file]
-  (let [options {:date-parser parse-zoned-date
-                 :date (fmt/formatter "MM/dd/yyyy")}]
-    (seq (load-bars-resource options file))))
+  (seq (load-bars-resource trateg-options file)))
 
 ; WRITE bar-series to csv
 

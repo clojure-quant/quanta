@@ -59,7 +59,8 @@
 
        (p :compress-sum-group
           (->> (map process-group groups)
-               (sort-by :date))))))
+               (sort-by :date)
+               (vec))))))
 
 (def year
   (memoize t/year))
@@ -89,5 +90,8 @@
   ((:date-fn group-month) {:month 2 :year 2018})
   (apply max (remove nil? [1 2 3 nil]))
 
+  
+  
+  
  ; comment end
   )
