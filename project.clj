@@ -11,7 +11,7 @@
    [org.clojure/data.csv "1.0.0"] ; read/write csv
    [net.cgrand/xforms "0.19.2"] ; transducers for timeseries (ema sma)
    [org.ta4j/ta4j-core "0.12"] ; ta4j java technical indicator library
-   [org.pinkgorilla/throttler "1.0.1"] ; throtteling (custom version, core.async upgrade)
+   [org.pinkgorilla/throttler "1.0.2"] ; throtteling (custom version, core.async upgrade)
    ; [com.stuartsierra/frequencies "0.1.0"]     ; percentile stats
    ]
   :plugins [[lein-ancient "0.6.15"]]
