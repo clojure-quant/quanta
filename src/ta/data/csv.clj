@@ -22,14 +22,29 @@
 ;; TODO: make this read first a resource, and if none exist, then
 ;; read the file
 
-(defn load-csv
-  "reads a resource file
-   returns a sequence of vectors
-   the first item in the sequence may be the header-row"
-  [file]
-  (let [f (io/resource file)
-        f (if (nil? f) (io/file file) f )]
-  (csv/read-csv (io/reader f))))
+(defn resource->csv
+  "reads csv from a resource 
+   returns:
+     - a sequence of vectors
+     - (first) may be the header-row
+     - nil if resource not available"
+  [resource-name]
+  (let [f (io/resource resource-name)]
+    (if (nil? f)
+      nil
+      (csv/read-csv (io/reader f)))))
+
+(defn file->csv
+  "reads a csv from a  file
+   returns:
+     - a sequence of vectors
+     - (first) may be the header-row
+     - nil if file does not exist"
+  [file-name]
+  (let [f (io/file file-name)]
+    (if (.exists f)
+      (csv/read-csv (io/reader f))
+      nil)))
 
 ; header
 
@@ -71,7 +86,13 @@
   (if (non-empty-string?- str) (Double/parseDouble str) nil))
 
 (defn- int-or-nil [str]
-  (if (non-empty-string?- str) (Integer/parseInt str) nil))
+  (if (non-empty-string?- str)
+    (try
+      (Integer/parseInt str)
+      (catch Exception _
+        (int (double-or-nil str))  ; be easy about volume being a double instead of an int.
+        ))
+    nil))
 
 ; parse date/time
 
@@ -87,12 +108,12 @@
 (def EST (ZoneId/of "America/New_York"))
 
 (defn parse-zoned-date [options date time]
-    (try
-      (ZonedDateTime/of (LocalDate/parse date date-fmt)
-                        (LocalTime/parse time)
-                        EST)
-      (catch Exception _
-        nil)))
+  (try
+    (ZonedDateTime/of (LocalDate/parse date date-fmt)
+                      (LocalTime/parse time)
+                      EST)
+    (catch Exception _
+      nil)))
 
 (defn- parse-row-data [options date time open high low close volume]
   {:date   ((:date-parser options) options date time) ; parse-date
@@ -100,7 +121,7 @@
    :high   (double-or-nil high)
    :low    (double-or-nil low)
    :close  (double-or-nil close)
-   :volume (double-or-nil volume) #_(int-or-nil volume)})
+   :volume (int-or-nil volume)})
 
 ; READ bar-series from csv
 
@@ -111,22 +132,49 @@
    })
 
 
-(defn load-csv-bars
+(defn csv->bars
+  "parses csv-data (a sequence of vectors)
+   the first row (may) contain the column headers
+   returns a bar-series"
+  [options csv]
+  (let [column-format (extract-column-format (first csv))]
+    (vec (for [row (rest csv)]
+           (let [field (partial get-field column-format row)]
+             (parse-row-data options
+                             (field :date)
+                             (field :time)
+                             (field :open)
+                             (field :high)
+                             (field :low)
+                             (field :close)
+                             (field :volume)))))))
+
+(defn- load-bars
+  "helper function
+   reads csv content via load-csv function
+   parses non-nil content"
+  [load-csv options file]
+  (let [csv (load-csv file)]
+    (if (nil? csv)
+      nil
+      (csv->bars options csv))))
+
+
+(defn load-bars-file
+  "loads a bar-series from a file
+   returns nil if file not existing"
   ([file]
-   (load-csv-bars default-options file))
+   (load-bars file->csv default-options file))
   ([options file]
-   (let [csv (load-csv file)
-         column-format (extract-column-format (first csv))]
-     (vec (for [row (rest csv)]
-            (let [field (partial get-field column-format row)]
-              (parse-row-data options
-                              (field :date)
-                              (field :time)
-                              (field :open)
-                              (field :high)
-                              (field :low)
-                              (field :close)
-                              (field :volume))))))))
+   (load-bars file->csv options file)))
+
+(defn load-bars-resource
+  "loads a bar-series from a resource
+   returns nil if resource not available"
+  ([file]
+   (load-bars resource->csv default-options file))
+  ([options file]
+   (load-bars resource->csv options file)))
 
 
 (defn load-csv-bars-trateg
@@ -134,12 +182,11 @@
   [file]
   (let [options {:date-parser parse-zoned-date
                  :date (fmt/formatter "MM/dd/yyyy")}]
-    (seq (load-csv-bars options file))))
+    (seq (load-bars-resource options file))))
 
 ; WRITE bar-series to csv
 
-
-(defn write-csv-bars
+(defn save-bars-file
   "writes a bar-series to a csv file.
    the format is fixed, because we want to have our output standardized
    date format is iso-date with time and milliseconds."
@@ -153,32 +200,31 @@
 
 (comment
 
+  (io/resource "ta/spx.cs") ; nil if not available
+  (io/file "resources/test/csv-test.csv") ; always not nil
+
   (defn header-csv [file]
-    (->> (load-csv file)
+    (->> (file->csv file)
          first
          extract-column-format))
-
-  (header-csv "test/csv-test.csv")
   (header-csv "resources/test/csv-test.csv")
-  
-  (load-csv-bars-trateg "ta/spx.csv")
-  (load-csv-bars
-   "resources/sector/FMCAX.csv")
-   (load-csv-bars
-    "resources/sector/FIDSX.csv")
 
 
-  (io/resource "ta/spx.cs") ; nil if not available
-  
-  (io/file "resources/test/csv-test.csv") ; always not nil
-  
   (:date fmt/formatters)
   (fmt/show-formatters)
   (:date-time fmt/formatters)
 
   ;(t/time "2017-01-01T00:00:00Z")
   ;(t/date-time "2017-01-01T00:00:00.000Z")
-  
+
+  (load-csv-bars-trateg "ta/spx.csv")
+  (load-bars-file "resources/sector/FMCAX.csv")
+  (load-bars-file "resources/sector/FIDSX.csv")
+
+
+
+
+
 
   ; comment end
   )

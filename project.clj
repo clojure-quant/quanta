@@ -18,4 +18,8 @@
   :plugins [[lein-ancient "0.6.15"]]
   :repl-options {:init-ns ta.model.single}
   :source-paths ["src" "dev"]
-  :resource-paths ["resources"])
+  :resource-paths ["resources"]
+  :profiles {:speed {:source-paths ["src-speed"]
+                     :main ^:skip-aot speed.main}}
+  :aliases {"speed" ^{:doc "Runs performance tests"}
+            ["with-profile" "+speed" "run" "-m" "speed.main"]})

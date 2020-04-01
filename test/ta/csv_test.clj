@@ -1,10 +1,10 @@
 (ns ta.csv-test
   (:require
    [clojure.test :refer :all]
-   [ta.data.csv :refer [load-csv-bars write-csv-bars load-csv-bars-trateg]]
+   [ta.data.csv :refer [load-bars-file save-bars-file]]
    [clj-time.core :as t]))
 
-(def csv-test-filename "test/csv-test.csv")
+(def csv-test-filename "resources/test/csv-test.csv")
 
 (def test-series
   [#_{:date (t/date-time 2011 04 14) 
@@ -15,8 +15,8 @@
     :open 21.28 :high 21.9 :low 20.755 :close 21.0 :volume 469876}])
 
 (defn- write-read-back [series]
-   (write-csv-bars (str "resources/" csv-test-filename) series)
-   (load-csv-bars csv-test-filename))
+   (save-bars-file csv-test-filename series)
+   (load-bars-file csv-test-filename))
 
 (deftest csv-read-write-equal
   (is (= test-series (write-read-back test-series))))

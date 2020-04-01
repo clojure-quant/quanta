@@ -10,6 +10,13 @@ Provides a light convenience wrapper over [ta4j](https://github.com/ta4j/ta4j) a
 
 See the [examples](dev/examples) directory for some usage examples.
 
+## run unit tests / speed tests
+
+```
+lein test
+lein speed
+```
+
 ## License
 
 Copyright © 2019 Justin Tirrell
