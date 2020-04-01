@@ -29,7 +29,7 @@ jobs:
     - name: Run tests
       run: |
         lein test
-        lein cloverage
+        # lein cloverage
     - name: Release
       if: success()
       # if: github.event_name == 'push'
