@@ -15,3 +15,4 @@ creds.edn
 .settings/
 .classpath
 .project
+resources/test

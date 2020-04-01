@@ -25,13 +25,13 @@
 
 (defn default-entry [bar]
   {:px-entry (:close bar)
-   :entry-time  (:end-zdt bar)
+   :entry-time  (:date bar)
    :idx-entry (:index bar)
    :side        :long})
 
 (defn default-exit [bar]
   {:px-exit (:close bar)
-   :exit-time  (:end-zdt bar)
+   :exit-time  (:date bar)
    :idx-exit (:index bar)})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -97,13 +97,13 @@
   (-> ctx
       (update :stops
               (fnil conj [])
-              [(-> ctx :current-bar :end-zdt)
+              [(-> ctx :current-bar :date)
                (or (some-> ctx :position :stop)
                    (some-> ctx :pending-entry :stop)
                    (some-> ctx :pending-exit :stop))])
       (update :tps
               (fnil conj [])
-              [(-> ctx :current-bar :end-zdt)
+              [(-> ctx :current-bar :date)
                (or (some-> ctx :position :tp)
                    (some-> ctx :pending-entry :tp)
                    (some-> ctx :pending-exit :tp))])))

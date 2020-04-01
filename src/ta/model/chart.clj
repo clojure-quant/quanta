@@ -78,7 +78,7 @@
     :tooltip {:split true :shared true}
     :series  [{:type         "candlestick"
                :name         "price"
-               :data         (map (juxt :end-zdt :open :high :low :close :volume) bars)
+               :data         (map (juxt :date :open :high :low :close :volume) bars)
                :id           "priceseries"
                :dataGrouping {:enabled false}}
               (when stops
@@ -97,7 +97,7 @@
               {:type         "line"
                :name         (name indicator-key)
                :linkedTo     "priceseries"
-               :data         (->> bars (map (juxt :end-zdt indicator-key)))
+               :data         (->> bars (map (juxt :date indicator-key)))
                :yAxis        1
                :dataGrouping {:enabled false}}]}))
 
@@ -105,8 +105,8 @@
 
 (defn performance-chart [{:keys [trades bars] :as result}]
   (let [bars       bars
-        price-data     (mapv (juxt :end-zdt :open :high :low :close :vol) bars)
-        ixs            (mapv :end-zdt bars)
+        price-data     (mapv (juxt :date :open :high :low :close :vol) bars)
+        ixs            (mapv :date bars)
         cash-flow      (cash-flow bars trades)
         cash-flow-data (map vector ixs cash-flow)
         peaks          (reductions max cash-flow)

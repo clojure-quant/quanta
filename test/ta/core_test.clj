@@ -1,7 +1,7 @@
 (ns ta.core-test
-  (:require 
+  (:require
    [clojure.test :refer :all]
-   [ta.data.csv :refer [load-csv-bars]]
+   [ta.data.csv :refer [load-csv-bars-trateg]]
    [ta.data.shape :refer :all]
    [ta.series.indicator :as ind]
    [ta.series.ta4j :as ta4j :refer [ind ind-values analysis rule crit-values]]
@@ -10,7 +10,7 @@
   (:import [org.ta4j.core Order Order$OrderType]))
 
 
-(def spx-bars  (load-csv-bars "trateg/spx.csv"))
+(def spx-bars  (load-csv-bars-trateg "ta/spx.csv"))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -21,8 +21,8 @@
 
 (def strat4j
   (let [rsi (ind :RSI (ind :helpers/ClosePrice series4j) 14)]
-    (ta4j/base-strategy (rule :CrossedDownIndicator rsi 30) 
-                   (rule :WaitFor Order$OrderType/BUY 5))))
+    (ta4j/base-strategy (rule :CrossedDownIndicator rsi 30)
+                        (rule :WaitFor Order$OrderType/BUY 5))))
 (def trades4j (ta4j/run-strat series4j strat4j))
 
 (defn mkbars [bar-maps {:keys [rsi-period atr-period]}]
@@ -64,17 +64,17 @@
        (ind/stochastic 14 (map (juxt :high :low :close) spx-bars)))))
 
 (deftest test-sma
-  (is (all-fuzzy= 
+  (is (all-fuzzy=
        (ind-values (ind :SMA (ind :helpers/ClosePrice series4j) 14))
        (ind/sma 14 (map :close spx-bars)))))
 
 (deftest test-ema
-  (is (all-fuzzy= 
+  (is (all-fuzzy=
        (ind-values (ind :EMA (ind :helpers/ClosePrice series4j) 14))
        (ind/ema 14 (map :close spx-bars)))))
 
 (deftest test-rsi
-  (is (all-fuzzy= 
+  (is (all-fuzzy=
        (ind-values (ind :RSI (ind :helpers/ClosePrice series4j) 14))
        (ind/rsi 14 (map :close spx-bars)))))
 
@@ -111,8 +111,8 @@
 (deftest test-trades
   (is (every? true?
               (map (fn [mine theirs]
-                     (and (fuzzy= (:px-entry mine) (:px-entry theirs) )
-                          (fuzzy= (:px-exit mine) (:px-exit theirs) )
+                     (and (fuzzy= (:px-entry mine) (:px-entry theirs))
+                          (fuzzy= (:px-exit mine) (:px-exit theirs))
                           (= (:entry-time mine) (:entry-time theirs))
                           (= (:exit-time mine) (:exit-time theirs))
                           (= (:idx-entry mine) (:idx-entry theirs))
@@ -124,7 +124,7 @@
 
 (deftest test-ago
   (is (= (ind/ago 1 [1 2 3 4 5])
-              [nil 1 2 3 4])))
+         [nil 1 2 3 4])))
 
 (deftest test-prct-change
   (is (= (ind/change-n 2 [100 100 110 110 110])

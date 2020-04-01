@@ -38,11 +38,11 @@
     (ctor class-key args)))
 
 (defn ->series
-  "Bars should be a sequnce of maps containing :end-zdt/:open/:high/:low/:close/:volume"
+  "Bars should be a sequnce of maps containing :date/:open/:high/:low/:close/:volume"
   [bars]
   (let [s (.build (org.ta4j.core.BaseTimeSeries$SeriesBuilder.))]
-    (doseq [{:keys [end-zdt open high low close volume]} bars]
-      (.addBar s end-zdt open high low close volume))
+    (doseq [{:keys [date open high low close volume]} bars]
+      (.addBar s date open high low close volume))
     s))
 
 ;;todo: other constructor signatures
