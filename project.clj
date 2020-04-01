@@ -1,4 +1,4 @@
-(defproject trateg "0.1.3-SNAPSHOT"
+(defproject org.pinkgorilla/ta "0.1.3-SNAPSHOT"
   :dependencies
   [[org.clojure/clojure "1.10.1"]
    [org.clojure/core.async "1.1.582"]

@@ -1,4 +1,4 @@
-# trateg
+# ta [![GitHub Actions status |pink-gorilla/trateg](https://github.com/pink-gorilla/trateg/workflows/CI/badge.svg)](https://github.com/pink-gorilla/trateg/actions?workflow=CI)[![Clojars Project](https://img.shields.io/clojars/v/org.pinkgorilla/ta.svg)](https://clojars.org/org.pinkgorilla/ta)
 
 Trateg is an experimental platform for backtesting and analyzing financial instrument trading strategies in clojure.
 
