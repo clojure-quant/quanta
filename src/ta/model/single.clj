@@ -67,7 +67,7 @@
    (cross-trigger ctx direction  bar-key threshold action nil))
   ([ctx direction bar-key threshold action side]
    (let [{:keys [current-bar]} ctx
-         {:keys [ index]} current-bar ; close was in keys
+         {:keys [index]} current-bar ; close was in keys
          x                     (get current-bar bar-key)
          last-x                (-> ctx :bars (get (dec index)) bar-key)
          threshold             (if (keyword? threshold)

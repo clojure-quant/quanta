@@ -56,9 +56,9 @@
     (while (pos? @remaining)
       (let [current (min 200 @remaining)
             _ (println "cur: " current)]
-          (swap! position + current)
-          (swap! requests conj {:bars current :position @position})
-          (swap! remaining - current)))
+        (swap! position + current)
+        (swap! requests conj {:bars current :position @position})
+        (swap! remaining - current)))
     @requests))
 
 (defn history-recent-extended

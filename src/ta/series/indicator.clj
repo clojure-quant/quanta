@@ -109,8 +109,8 @@
 (defn prct-change-
   "calculates percentage change of prior/current"
   [prior current]
-    (if (or (nil? prior) (= 0 prior)) nil
-        (* (/ (- current prior) prior) 100.0))) ; absolute change
+  (if (or (nil? prior) (= 0 prior)) nil
+      (* (/ (- current prior) prior) 100.0))) ; absolute change
 
 
 (defn ago
@@ -122,7 +122,7 @@
    (drop-last n ts)))
 
 (defn change-n
-    "calculates changes in timeseries (relative to n ago)"
+  "calculates changes in timeseries (relative to n ago)"
   [n ts]
   (into []
         (map #(prct-change- %1 %2)
