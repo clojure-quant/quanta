@@ -136,8 +136,6 @@
 
 ; WRITE bar-series to csv
 
-(defn resource->file [file]
-  (str "resources/" file))
 
 (defn write-csv-bars
   "writes a bar-series to a csv file.
@@ -147,7 +145,7 @@
   (let [columns [:date :open :high :low :close :volume]
         headers (map name columns)
         rows (mapv #(mapv % columns) bar-series)]
-    (with-open [writer (io/writer (io/file (resource->file file)))]
+    (with-open [writer (io/writer (io/file file))]
       (csv/write-csv writer (cons headers rows)))))
 
 

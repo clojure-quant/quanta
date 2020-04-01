@@ -15,7 +15,7 @@
     :open 21.28 :high 21.9 :low 20.755 :close 21.0 :volume 469876}])
 
 (defn- write-read-back [series]
-   (write-csv-bars csv-test-filename series)
+   (write-csv-bars (str "resources/" csv-test-filename) series)
    (load-csv-bars csv-test-filename))
 
 (deftest csv-read-write-equal
