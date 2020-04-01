@@ -10,7 +10,7 @@
 ;; Therefore we cannot use trateg parser that produces zoned date time.
 
 
-(def bars  (load-bars-file "resources/test/compress.csv"))
+(def bars  (load-bars-file "test/csv/compress.csv"))
 
 
 ;; Look into the csv file test/compress.csv; 

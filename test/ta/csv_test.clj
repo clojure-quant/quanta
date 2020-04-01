@@ -4,7 +4,7 @@
    [ta.data.csv :refer [load-bars-file save-bars-file]]
    [clj-time.core :as t]))
 
-(def csv-test-filename "./resources/test/csv-test.csv")
+(def csv-test-filename "test/csv/csv-test.csv")
 
 (def test-series
   [#_{:date (t/date-time 2011 04 14)
