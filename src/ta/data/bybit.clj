@@ -30,7 +30,6 @@
    :close (as-float (:close bar))
    :volume (as-float (:volume bar))})
 
-
 (defn parse-history [result]
   (->> result
        (:result)
@@ -51,7 +50,6 @@
   (let [start (-> (* bars 15) t/minutes t/ago)]
     (history "15" start bars symbol)))
 
-
 (defn requests-needed [bars]
   (let [remaining (atom bars)
         position (atom 0)
@@ -64,8 +62,6 @@
           (swap! requests conj {:bars current :position @position})
           (swap! remaining - current))))
     @requests))
-
-
 
 (defn history-recent-extended
   "gets recent history from bybit
@@ -81,7 +77,6 @@
          (map #(history "15" (:start-time %) (:bars %) symbol))
          (reduce concat []))))
 
-
 (comment
   (c/to-long (-> 2 t/hours t/ago))
 
@@ -91,7 +86,6 @@
 
   (-> (history-recent "BTCUSD" 10)
       (clojure.pprint/print-table))
-
 
   (requests-needed 950)
   (clojure.pprint/print-table (history-recent-extended "BTCUSD" 500)))

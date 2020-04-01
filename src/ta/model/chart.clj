@@ -1,10 +1,9 @@
 (ns ta.model.chart
-  (:require 
+  (:require
    [clojure.walk :refer [prewalk]]
    ;[cheshire.core :as json]
    ;[cheshire.generate :as json-gen]
-   [trateg.core :refer :all]
-   ))
+   [trateg.core :refer :all]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;visualization;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -18,17 +17,15 @@
 (defn zoned-time-to-epoch-milli [zdt]
   (-> zdt .toInstant .toEpochMilli))
 
-
-(defn replace-ZonedDateTime 
+(defn replace-ZonedDateTime
   "replaces type ZonedDateTime to epoch-with-milliseconds"
   [spec]
   (prewalk
    (fn [x]
-      (if (= java.time.ZonedDateTime (type x))
+     (if (= java.time.ZonedDateTime (type x))
        (zoned-time-to-epoch-milli x)
        x))
    spec))
-
 
 (defn view-highchart [specs]
   (let [;spec (->> specs json/encode)
@@ -36,7 +33,6 @@
         ;_ (println "safe spec: " spec-safe)
         ]
     ^:R [:highchart spec-safe]))
-
 
 (defn trade-chart [{:keys [trades bars stops tps] :as results} indicator-key]
   (view-highchart
@@ -100,8 +96,6 @@
                :data         (->> bars (map (juxt :date indicator-key)))
                :yAxis        1
                :dataGrouping {:enabled false}}]}))
-
-
 
 (defn performance-chart [{:keys [trades bars] :as result}]
   (let [bars       bars

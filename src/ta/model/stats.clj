@@ -34,6 +34,7 @@
 ;;Calculations on single trade;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
 (defn side-add [side initial gain]
   (case side
     :long  (+ initial gain)
@@ -153,7 +154,6 @@
    :sharpe       (sharpe-ratio roundtrips 1.01)
    :max-drawdown (max-drawdown-over-bars bars roundtrips)})
 
-
 (defn gauntlet2 [{:keys [roundtrips] :as strat-result}]
   {:rt-ct     (count roundtrips)
    :total-return (total-return roundtrips)
@@ -163,7 +163,6 @@
    :sharpe       (sharpe-ratio roundtrips 1.01)
    ;:max-drawdown (max-drawdown-over-bars bars roundtrips)
    })
-
 
 (defn print-result-table [label-key rows]
   (let [cols (->> rows first keys (remove #{label-key}) (cons label-key))]

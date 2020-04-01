@@ -32,6 +32,7 @@
 
 ;; Position Management in backtest
 
+
 (defn initial-portfolio []
   (atom {:balance 100000
          :position-size 20000
@@ -44,7 +45,6 @@
   [portfolio symbol]
   (let [position-symbol (get-in @portfolio [:positions symbol])]
     (nil? position-symbol)))
-
 
 (defn open-position [model portfolio symbol side index]
   (let [;_ (println "opening " symbol index)
@@ -69,11 +69,10 @@
            :trades new-trades
            :positions new-positions)))
 
-
 (defn roundtrip-pl [{:keys [side qty px-entry px-exit]}]
   (if (= side :long)
-      (* qty (- px-exit px-entry))
-      (* qty (- px-entry px-exit))))
+    (* qty (- px-exit px-entry))
+    (* qty (- px-entry px-exit))))
 
 (defn close-position [model portfolio position index]
   (let [{:keys [symbol side qty]} position
@@ -101,7 +100,6 @@
            :roundtrips new-roundtrips
            :equity new-equity)))
 
-
 (defn exit-index [model portfolio p-exit index]
   (let [positions (:positions @portfolio)]
     (doall (map (fn [[_ position]]
@@ -109,9 +107,6 @@
                   (when (p-exit model index position)
                     (close-position model portfolio position index)))
                 positions))))
-
-
-
 
 (defn entry-index [model portfolio p-entry index]
   (let [symbols (:symbols @model)]
@@ -124,7 +119,6 @@
                           (when (not (nil? entry-signal)) entry-signal))))
                     symbols)))))
 
-
 (defn portfolio-entry-filter [model portfolio entry-signals index]
   (doall
    (map
@@ -135,13 +129,13 @@
 
 ;; backtest loop
 
+
 (defn trade-index [model portfolio p-exit p-entry index]
   ;(println "trading " index)
   (exit-index model portfolio p-exit index)
   (let [entry-list (entry-index model portfolio p-entry index)]
     ;(println "entry list: " entry-list)
     (portfolio-entry-filter model portfolio entry-list index)))
-
 
 (defn trade [model p-exit p-entry]
   (let [{:keys [length]} @model
@@ -155,12 +149,10 @@
     ;@model
     @portfolio))
 
-
-
 (comment
 
   ;; example
-  
+
   (def model- (atom {:length 3
                      :symbols {:a {:price [1 2 3]}
                                :b {:price [4 5 6]}}}))
@@ -174,8 +166,6 @@
     (println index "entry-always" symbol)
     [symbol 10])
 
-
   (trade model- exit-always entry-always)
 ;; => {:balance 100000, :positions {:a {:symbol :a, :side :long, :entry 0.5, :qty 20000, :idx-enty -1}}, :trades []}
-  
   )

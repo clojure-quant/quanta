@@ -103,7 +103,6 @@
     (catch Exception _
       nil)))
 
-
 (def date-fmt (DateTimeFormatter/ofPattern "MM/dd/yyyy"))
 (def EST (ZoneId/of "America/New_York"))
 
@@ -131,7 +130,6 @@
    ;:date (fmt/formatter "M/d/yyyy H:m:s a") ; 1/31/1990 12:00:00 AM
    })
 
-
 (defn csv->bars
   "parses csv-data (a sequence of vectors)
    the first row (may) contain the column headers
@@ -158,7 +156,6 @@
     (if (nil? csv)
       nil
       (csv->bars options csv))))
-
 
 (defn load-bars-file
   "loads a bar-series from a file
@@ -198,7 +195,6 @@
     (with-open [writer (io/writer (io/file file))]
       (csv/write-csv writer (cons headers rows)))))
 
-
 (comment
 
   (io/resource "ta/spx.cs") ; nil if not available
@@ -209,7 +205,6 @@
          first
          extract-column-format))
   (header-csv "resources/test/csv-test.csv")
-
 
   (:date fmt/formatters)
   (fmt/show-formatters)

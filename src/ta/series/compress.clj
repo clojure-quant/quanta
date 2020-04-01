@@ -32,14 +32,12 @@
     ;  (assoc compressed-bar :close-adj close-adj))
     ))
 
-
 (defn- compress-group-
   "compresses a group (date:end of group, open/high/low/close/volume"
   [grouper group]
   (let [summary (group-summary- group)
         summary-with-date (assoc summary :date ((:date-fn grouper) (get group 0)))]
     summary-with-date))
-
 
 (defn compress
   "compresses daily->monthly series.
@@ -82,16 +80,15 @@
                          (.plusMonths 1)
                          (.plusDays -1)))})
 
-
 (comment ; ***********************************************************************
-  
+
   (def dt (t/date-time 1986 10 14))
   (.plusDays dt -1)
   ((:date-fn group-month) {:month 2 :year 2018})
   (apply max (remove nil? [1 2 3 nil]))
 
-  
-  
-  
+
+
+
  ; comment end
   )

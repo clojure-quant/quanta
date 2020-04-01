@@ -1,4 +1,9 @@
 (defproject org.pinkgorilla/ta "0.1.3-SNAPSHOT"
+  :license {:name "MIT"}
+  :deploy-repositories [["releases" {:url "https://clojars.org/repo"
+                                     :username :env/release_username
+                                     :password :env/release_password
+                                     :sign-releases false}]]
   :dependencies
   [[org.clojure/clojure "1.10.1"]
    [org.clojure/core.async "1.1.582"]
@@ -20,6 +25,21 @@
   :source-paths ["src" "dev"]
   :resource-paths ["resources"]
   :profiles {:speed {:source-paths ["src-speed"]
-                     :main ^:skip-aot speed.main}}
+                     :main ^:skip-aot speed.main}
+             :dev   {:dependencies [[clj-kondo "2019.11.23"]]
+                     :plugins      [[lein-cljfmt "0.6.6"]
+                                    [lein-cloverage "1.1.2"]]
+                     :aliases      {"clj-kondo" ["run" "-m" "clj-kondo.main"]}
+                     :cloverage    {:codecov? true
+                                  ;; In case we want to exclude stuff
+                                  ;; :ns-exclude-regex [#".*util.instrument"]
+                                  ;; :test-ns-regex [#"^((?!debug-integration-test).)*$$"]
+                                    }
+                   ;; TODO : Make cljfmt really nice : https://devhub.io/repos/bbatsov-cljfmt
+                     :cljfmt       {:indents {as->                [[:inner 0]]
+                                              with-debug-bindings [[:inner 0]]
+                                              merge-meta          [[:inner 0]]
+                                              try-if-let          [[:block 1]]}}}}
+
   :aliases {"speed" ^{:doc "Runs performance tests"}
             ["with-profile" "+speed" "run" "-m" "speed.main"]})

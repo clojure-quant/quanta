@@ -9,13 +9,13 @@
    [ta.model.single :refer :all])
   (:import [org.ta4j.core Order Order$OrderType]))
 
-
 (def spx-bars  (load-csv-bars-trateg "ta/spx.csv"))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;data;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 (def series4j (ta4j/->series spx-bars))
 
@@ -33,7 +33,6 @@
                                   (:close bar-cols))
                     :rsi (ind/rsi rsi-period (:close bar-cols))}]
     (doall (column-map->row-maps (merge bar-cols indicators)))))
-
 
 (def BARS (mkbars spx-bars {:rsi-period 14 :atr-period 20}))
 
@@ -119,8 +118,6 @@
                           (= (:idx-exit mine) (:idx-exit theirs))))
                    trades1
                    (ta4j/record->clj series4j trades4j)))))
-
-
 
 (deftest test-ago
   (is (= (ind/ago 1 [1 2 3 4 5])

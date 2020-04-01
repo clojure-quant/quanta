@@ -22,7 +22,6 @@
 
 (def api-key (atom "demo"))
 
-
 (defn set-key!
   "to use alphavantage api, call at least once set-key! api-key"
   [key]
@@ -55,7 +54,6 @@
     nil ;awb99: perhaps better return :throttled ???
     (process-success response)))
 
-
 (defn- get-av-raw [params process-success]
   (-> (client/get "https://www.alphavantage.co/query"
                   {:accept :json
@@ -87,8 +85,6 @@
 (def TimeSeriesFXDaily- (keyword "Time Series FX (Daily)"))
 (def TimeSeriesDigitalCurrencyDaily- (keyword "Time Series (Digital Currency Daily)"))
 
-
-
 (def bar-format-standard- {:open (keyword "1. open")
                            :high (keyword "2. high")
                            :low (keyword "3. low")
@@ -101,7 +97,6 @@
                          :close (keyword "4a. close (USD)")
                          :volume (keyword "5. volume")
                          :marketcap (keyword "6. market cap (USD)")})
-
 
 (def row-date-format-
   (fmt/formatter "yyyy-MM-dd")) ; 2019-08-09
@@ -135,7 +130,6 @@
          (map (partial convert-bar- bar-format volume?))
          (sort-by :date))))
 
-
 (defn get-daily
   "size: compact=last 100 days. full=entire history"
   [size symbol]
@@ -156,7 +150,6 @@
            :datatype "json"}
           (fn [response]
             (convert-bars- TimeSeriesFXDaily- response))))
-
 
 (defn get-daily-crypto
   "size: compact=last 100 days. full=entire history"
@@ -181,7 +174,6 @@
             (-> response
                 kwCryptoRating-
                 fix-keywords-))))
-
 
 (comment
 

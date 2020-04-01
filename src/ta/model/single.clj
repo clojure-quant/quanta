@@ -13,6 +13,7 @@
 ;;Run strategy;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
 (defn run-strat [bars handler]
   (assert (vector? bars))
   (let [bars (vec (doall (map-indexed (fn [i x] (assoc x :index i)) bars)))]
@@ -119,7 +120,7 @@
         (update :pending-exit merge
                 (default-exit bar)
                 {:px-exit stop})
-        
+
         (and tp
              (or (and (= side :long) (>= high tp))
                  (and (= side :short) (<= low tp))))

@@ -18,12 +18,12 @@
 ;; November high 99.99   volumes 1 2 3 = 6
 ;; December low 11.11
 
+
 (def expected
   [{:date (t/date-time 2019 11 30)
     :open 20.25 :high 99.99 :low 20.01 :close 22.47 :volume 6 :count 18}
    {:open 22.29 :high 23.22 :low 11.11 :close 22.09 :volume 0 :count 21
     :date (t/date-time 2019 12 31)}])
-
 
 (deftest compress-test
   (is (= expected
