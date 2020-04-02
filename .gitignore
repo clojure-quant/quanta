@@ -16,3 +16,5 @@ creds.edn
 .classpath
 .project
 resources/test
+./test/creds.edn
+.gorilla-port

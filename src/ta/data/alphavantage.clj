@@ -50,7 +50,7 @@
 
 (defn- success-if [response process-success]
   (if (throtteled? response)
-    nil ;awb99: perhaps better return :throttled ???
+    :throttled ;awb99: perhaps better return :throttled ???
     (process-success response)))
 
 (defn- get-av-raw [params process-success]
@@ -61,8 +61,21 @@
       (cheshire.core/parse-string true)
       (success-if process-success)))
 
-(def get-av ; throtteled version
+(def get-av-throttled
   (throttler.core/throttle-fn get-av-raw 5 :minute))
+
+(defn get-av [params process-success] ; throtteled version
+  (get-av-throttled
+   params
+   (fn [result]
+     (if (= result :throttled)
+       (do (println "alphavantage request was throttled, retrying..")
+           (get-av-throttled params (fn [result2]
+                                      (if (= result2 :throttled)
+                                        (do (println "alphavantage request was throttled the second time.")
+                                            nil)
+                                        (process-success result2)))))
+       (process-success result)))))
 
 ;; Search Symbol
 

@@ -10,6 +10,25 @@ Provides a light convenience wrapper over [ta4j](https://github.com/ta4j/ta4j) a
 
 See the [examples](dev/examples) directory for some usage examples.
 
+## PinkGorilla Notebook
+
+To run pink gorilla notebook, where you can edit the notebooks,
+either run pink-gorilla standalone via 
+
+```
+lein notebook
+```
+
+OR in you IDE run a repl with +notebook profile and 
+then execute:
+```
+ (require '[notebook.main] :verbose)
+ (ns notebook.main)
+ (start-notebook) 
+```
+The advantage of running the notebook in the IDE is that changed code in the TA library will be reflected in the notebook.
+
+
 ## run unit tests / speed tests
 
 ```

@@ -34,8 +34,18 @@
   :repl-options {:init-ns ta.model.single}
   :source-paths ["src" "dev"]
   :resource-paths ["resources"]
-  :profiles {:speed {:source-paths ["src-speed"]
+  :profiles {; used to run performance tests
+             :speed {:source-paths ["src-speed"]
                      :main ^:skip-aot speed.main}
+             
+             ; used to run the pink-gorilla notebook
+             ; important to keep this dependency in here only, as we do not want to
+             ; bundle the notebook (big bundle) into our neat library
+             :notebook {:source-paths ["src-notebook"]
+                        :main ^:skip-aot speed.main
+                        :dependencies [[org.pinkgorilla/gorilla-notebook "0.4.12-SNAPSHOT"]]
+                        }
+             
              :dev   {:dependencies [[clj-kondo "2019.11.23"]]
                      :plugins      [[lein-cljfmt "0.6.6"]
                                     [lein-cloverage "1.1.2"]]
@@ -53,7 +63,12 @@
 
   :aliases {"bump-version"
             ["change" "version" "leiningen.release/bump-version"]
+            
             "speed" ^{:doc "Runs performance tests"}
             ["with-profile" "+speed" "run" "-m" "speed.main"]
+            
+            "notebook" ^{:doc "Runs pink-gorilla notebook"}
+            ["with-profile" "+notebook" "run" "-m" "notebook.main"]
+            
             "lint" ^{:doc "Runs code linter"}
             ["clj-kondo" "--lint" "src"]})
