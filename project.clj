@@ -30,45 +30,54 @@
    ;[org.pinkgorilla/throttler "1.0.2"] ; throtteling (custom version, core.async upgrade)
    ; [com.stuartsierra/frequencies "0.1.0"]     ; percentile stats
    ]
+  
   :plugins [[lein-ancient "0.6.15"]]
-  :repl-options {:init-ns ta.model.single}
-  :source-paths ["src" "dev"]
+  
+  :source-paths ["src"]
   :resource-paths ["resources"]
-  :profiles {; used to run performance tests
-             :speed {:source-paths ["src-speed"]
-                     :main ^:skip-aot speed.main}
-             
-             ; used to run the pink-gorilla notebook
+  :repl-options {:init-ns ta.model.single}
+  
+  :profiles {:speed
+             ; run performance tests
+             {:source-paths ["profiles/speed/src"]
+              :main ^:skip-aot speed.main}
+
+             :notebook 
+             ; run the pink-gorilla notebook (standalone, or in repl)
              ; important to keep this dependency in here only, as we do not want to
-             ; bundle the notebook (big bundle) into our neat library
-             :notebook {:source-paths ["src-notebook"]
-                        :main ^:skip-aot speed.main
-                        :dependencies [[org.pinkgorilla/gorilla-notebook "0.4.12-SNAPSHOT"]]
-                        }
-             
-             :dev   {:dependencies [[clj-kondo "2019.11.23"]]
-                     :plugins      [[lein-cljfmt "0.6.6"]
-                                    [lein-cloverage "1.1.2"]]
-                     :aliases      {"clj-kondo" ["run" "-m" "clj-kondo.main"]}
-                     :cloverage    {:codecov? true
+             ; bundle the notebook (big bundle) into our neat library       
+             {:source-paths ["profiles/notebook/src"]
+              :main ^:skip-aot notebook.main
+              :dependencies [[org.pinkgorilla/gorilla-notebook "0.4.12-SNAPSHOT"]]
+              :repl-options {:welcome (println "Profile: notebook.")
+                             :init-ns notebook.main  ;; Specify the ns to start the REPL in (overrides :main in this case only)
+                             :init (start) ;; This expression will run when first opening a REPL, in the namespace from :init-ns or :main if specified.
+                             }}
+
+             :dev   
+             {:dependencies [[clj-kondo "2019.11.23"]]
+              :plugins      [[lein-cljfmt "0.6.6"]
+                             [lein-cloverage "1.1.2"]]
+              :aliases      {"clj-kondo" ["run" "-m" "clj-kondo.main"]}
+              :cloverage    {:codecov? true
                                   ;; In case we want to exclude stuff
                                   ;; :ns-exclude-regex [#".*util.instrument"]
                                   ;; :test-ns-regex [#"^((?!debug-integration-test).)*$$"]
-                                    }
+                             }
                    ;; TODO : Make cljfmt really nice : https://devhub.io/repos/bbatsov-cljfmt
-                     :cljfmt       {:indents {as->                [[:inner 0]]
-                                              with-debug-bindings [[:inner 0]]
-                                              merge-meta          [[:inner 0]]
-                                              try-if-let          [[:block 1]]}}}}
+              :cljfmt       {:indents {as->                [[:inner 0]]
+                                       with-debug-bindings [[:inner 0]]
+                                       merge-meta          [[:inner 0]]
+                                       try-if-let          [[:block 1]]}}}}
 
   :aliases {"bump-version"
             ["change" "version" "leiningen.release/bump-version"]
-            
+
             "speed" ^{:doc "Runs performance tests"}
             ["with-profile" "+speed" "run" "-m" "speed.main"]
-            
+
             "notebook" ^{:doc "Runs pink-gorilla notebook"}
             ["with-profile" "+notebook" "run" "-m" "notebook.main"]
-            
+
             "lint" ^{:doc "Runs code linter"}
             ["clj-kondo" "--lint" "src"]})

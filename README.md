@@ -12,21 +12,15 @@ See the [examples](dev/examples) directory for some usage examples.
 
 ## PinkGorilla Notebook
 
-To run pink gorilla notebook, where you can edit the notebooks,
-either run pink-gorilla standalone via 
+TA ships some sample-notebooks that you can edit in PinkGorilla notebook.
+In your IDE, jack-in to a new repl with +notebook profile.
 
+The advantage of running the notebook in the IDE is that changed code in the TA library will be reflected in the notebook; this helps TA development.
+
+For testing you can also run pink-gorilla standalone:
 ```
 lein notebook
 ```
-
-OR in you IDE run a repl with +notebook profile and 
-then execute:
-```
- (require '[notebook.main] :verbose)
- (ns notebook.main)
- (start-notebook) 
-```
-The advantage of running the notebook in the IDE is that changed code in the TA library will be reflected in the notebook.
 
 
 ## run unit tests / speed tests

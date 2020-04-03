@@ -1,15 +1,20 @@
 (ns notebook.main
   (:require
+   [clojure.core.async :refer [thread]]
    [pinkgorilla.notebook-app.cli :refer [parse-opts]]
    [pinkgorilla.notebook-app.core :refer [run-gorilla-server]])
   (:gen-class))
 
-(defn start-notebook []
-  (let [args2 ["-c" "./src-notebook/config.edn"]
+(defn run-notebook []
+  (let [args2 ["-c" "./profiles/notebook/config.edn"]
         {:keys [options]} (parse-opts args2)]
     (println "Options Are: " options)
     (run-gorilla-server options)
     nil))
+
+(defn start []
+  (thread
+   (run-notebook)))
 
 ;; the notebook secret management 
 ;; currently expects ./test/creds.edn file
@@ -17,10 +22,10 @@
 
 (defn -main [& args]
   (println "Running PinkGorilla Notebook")
-  (start-notebook))
+  (run-notebook))
 
 (comment
-  (start-notebook)
-  
+  (run-notebook)
+
   ;comment end
   )
