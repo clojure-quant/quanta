@@ -1,0 +1,9 @@
+[;; https://seekingalpha.com/etfs-and-funds/etf-tables/commodities
+
+; Commodity Basket
+ {:sector :all         :industry :all :name "IShares GSCI Commodity Index" :symbol "GSG"}
+; {:name "Deutschebank Commodity" :symbol "DBC"}
+ {:sector :energy      :industry :all :name "PowerShares DB Energy" :symbol "DBE"}
+ {:sector :precious    :industry :all :name "PowerShares DB Precious Metals" :symbol "DBP"}
+ {:sector :industrial  :industry :all :name "PowerShares Base Metals"  :symbol "DBB"}
+ {:sector :agriculture :industry :all :name "PowerShares Agriculture" :symbol "DBA"}]

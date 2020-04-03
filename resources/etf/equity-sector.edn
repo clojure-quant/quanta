@@ -1,0 +1,15 @@
+[; iShares Sectors US
+ {:region :us :sector :technology :name "iShares US Technology" :symbol "IYW" :also ["IGM" "IXN" "VGT" "XLK" "MTK" "QTEC"]}
+ {:region :us :sector :consumer-goods    :name "iShares US Consumer Goods" :symbol "IYK" :also ["VDC" "XLP"]}
+ {:region :us :sector :consumer-services :name "iShares US Consumer Svcs" :symbol "IYC" :also ["PMR" "RTH" "XRT"]}
+ {:region :us :sector :healthcare        :name "iShares US Healthcare" :symbol "IYH" :also ["VHT" "XLV"]}
+ {:region :us :sector :financial :name "iShares US Financials" :symbol "IYF" :also ["VFH" "XLF" "KBE"]}
+ {:region :us :sector :financial-services :name "iShares US Financial Svcs" :symbol "IYG"}
+ {:region :us :sector :real-estate :name "iShares US Real Estate" :symbol "IYR" :also ["ICF" "VNQ" "RWR"]}
+ {:region :us :sector :telecom :name "iShares US Telecommunications" :symbol "IYZ " :also ["PXN" "IXP" "TTH" "VOX"]}
+ {:region :us :sector :industrial :name "iShares US Industrials" :symbol "IYJ" :also ["VIS" "XLI"]}
+ {:region :us :sector :materials :name "iShares US Basic Materials" :symbol "IYM"   :also ["VAW" "XLB"]}
+ {:region :us :sector :energy  :name :name "iShares US Energy" :symbol "IYE" :also ["VDE" "XLE"]}
+ {:region :us :sector :utilities :name "iShares US Utilities" :symbol "IDU" :also ["PUI" "UTH" "VPU" "XLU"]}
+ {:region :us :sector :transport :name "iShares Transportation Avg" :symbol "IYT"}]
+;, IXC (global)

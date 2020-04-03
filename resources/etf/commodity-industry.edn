@@ -1,0 +1,39 @@
+[;; https://seekingalpha.com/etfs-and-funds/etf-tables/commodities
+ 
+
+ ; Energy (Oil / Gas)
+ {:sector :energy :industry :oil :name "Crude Oil" :symbol "USO"}
+ {:sector :energy :industry :gas :name "United States Natural Gas" :symbol "UNG"}
+ ;{:name "Claymore Crude Oil (Up)" :symbol "UCR"}
+ ;{:name "Claymore Crude Oil (Down)" :symbol "DCR"}
+ ;{:name "PowerShares DB Oil Fund" :symbol "DBO"}
+ ; Brent Oil BNO
+ ; Gasoline UGA
+ 
+ ; Precious Metals Gold / Silver
+ {:sector :precious :industry :gold :name "World Gold Council Gold" :symbol "GLD"}
+; {:name "iShares COMEX Gold (U.S.)" :symbol "IAU"}
+; {:name "Market Vectors Gold Miners" :symbol "GDX"};
+; {:name "PowerShares DB Gold" :symbol "DGL"}
+ {:sector :precious :industry :silver :name "iShares Silver" :symbol "SLV"}
+; {:name "PowerShares DB Silver" :symbol "DBS"}
+ {:sector :precious :industry :palladium :name "Palladium" :symbol "PALL"}
+ {:sector :precious:industry :platinum  :name "Platinum" :symbol "PPLT"}
+
+; Industrial Commodities
+ {:sector :industrial :industry :nickel :name "Nickel" :symbol "BJJN"}
+ {:sector :industrial :industry :aluminium :name "Aluminium" :symbol "JJUB"}
+ {:sector :industrial :industry :copper :name "Copper" :symbol "JJCB"}
+ {:sector :industrial :industry :rareearth :name "Rare Earth" :symbol "REMX"}
+ {:sector :industrial :industry :steel :name "Steel" :symbol "SLX"}
+ {:sector :industrial :industry :coal :name "Coal" :symbol "KOL"}
+ 
+; Agricultural Commodities
+ {:sector :agriculture :industry :coffee :name "Coffee" :symbol "BJO"}
+ {:sector :agriculture :industry :wheat :name "Wheat" :symbol "WEAT"}
+ {:sector :agriculture :industry :cocoa :name "Cocoa" :symbol "NIB"}
+ {:sector :agriculture :industry :grains :name "Grains" :symbol "GRU"}
+ {:sector :agriculture :industry :biofuels :name "Biofuels" :symbol "FUE"}
+ {:sector :agriculture :industry :soybeans :name "Soybeans" :symbol "SOYB"}
+ {:sector :agriculture :industry :corn :name "Corn" :symbol "CORN"}
+ {:sector :agriculture :industry :sugar :name "CSugar" :symbol "CANE"}]

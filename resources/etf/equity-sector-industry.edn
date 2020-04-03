@@ -6,7 +6,7 @@
 
  {:sector :consumer-goods :name "Home Construction" :symbol "ITB" :also ["XHB"]}
  {:sector :consumer-goods :name "Building and Construction" :symbol "PKB"}
- {:sector :consumer-goods :name "Consumer Goods (staples)" :symbol "IYK" :also ["VDC" "XLP"]}
+
  {:sector :consumer-goods :name "Food and Beverage" :symbol "PBJ"}
 
 ; Consumer Discretionary
@@ -24,30 +24,30 @@
 ;Rydex Equal Weight Consumer Discretionary                RCD    0.50     no              13
 
  
- {:sector :consumer-services :name "Consumer Services (retail)" :symbol "IYC" :also ["PMR" "RTH" "XRT"]}
+
 
  {:sector :consumer-services :name "Leisure and Entertainment" :symbol "PEJ"}
  {:sector :consumer-services :name "Media" :symbol "PBS"}
 
- {:sector :energy :name "Energy IYE, IXC (global)" :symbol "VDE" :also ["XLE"]}
+
  {:sector :energy :name "Oil Services" :symbol "IEZ" :also ["PXJ" "OIH" "XES"]}
  {:sector :energy :name "Oil & Gas Exploration and Production" :symbol "IEO" :also ["PXE" "XOP"]}
  {:sector :energy :name "WilderHill Clean Energy" :symbol "PBW"}
 
  {:sector :financial :name "Regional Banks" :symbol "IAT" :also ["RKH" "KRE"]}
  {:sector :financial :name "Insurance" :symbol "IAK" :also ["PIC" "KIE"]}
- {:sector :financial :name "Financial Services" :symbol "IYG"}
- {:sector :financial :name "Financials" :symbol "IYF" :also ["VFH" "XLF" "KBE"]}
- {:sector :financial :name "Broker-Dealers" :symbol "IAI" :also ["KCE"]}
- {:sector :financial :name "Real Estate (REITs)" :symbol "IYR" :also ["ICF" "VNQ" "RWR"]}
 
- {:sector :healthcare :name "Healthcare" :symbol "IYH" :also ["VHT" "XLV"]}
+
+ {:sector :financial :name "Broker-Dealers" :symbol "IAI" :also ["KCE"]}
+
+
+
  {:sector :healthcare :name "Biotech" :symbol "IBB" :also ["PBE" "BBH" "XBI" "FBT"]}
  {:sector :healthcare :name "Pharmaceuticals" :symbol "IHE" :also ["PJP" "PPH" "XPH"]}
  {:sector :healthcare :name "Medical Devices" :symbol " IHI"}
  {:sector :healthcare :name "Health Care Providers" :symbol "IHF"}
 
- {:sector :industrial :name "Industrial Industrials" :symbol "IYJ" :also ["VIS" "XLI"]}
+ 
  {:sector :industrial :name "Aerospace & Defense" :symbol "ITA" :also ["PPA"]}
 
  Industrials
@@ -74,13 +74,12 @@ First Trust Industrials/Producer Durables AlphaDEXFXR          0.70     no      
  {:sector :technology :name "Software" :symbol "IGV" :also ["PSJ" "SWH"]}
  {:sector :technology :name "Semiconductor" :symbol "IGW" :also ["PSI" "SMH" "XSD"]}
  {:sector :technology :name "Networking" :symbol "IGN" :also ["PXQ" "BDH"]}
- {:sector :technology :name "Technology - diversified" :symbol "IGM" :also ["IYW" "IXN" "VGT" "XLK" "MTK" "QTEC"]}
  {:sector :technology :name "Nanotech Lux Nanotech" :symbol "PXN"}
 
- {:sector :telecom :name "Telecom Telecommunications" :symbol "PXN" :also ["IYZ" "IXP" "TTH" "VOX"]}
+
  {:sector :telecom :name "Wireless (including telcos)" :symbol "PXN" :also ["PTE" "WMH"]}
 
- {:sector :transport :name "Transportation" :symbol "IYT"}
+ 
 
- {:sector :utilities :name "Utilities" :symbol "IDU" :also ["PUI" "UTH" "VPU" "XLU"]}]
+ 
 
