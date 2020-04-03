@@ -1,0 +1,15 @@
+
+"Sectors – Global
+IShares S&P Global Energy Sector                               IXC     O.65    yes             76
+IShares S&P Global Financial Sector                            IXG     0.65     yes            41
+IShares S&P Global Healthcare Sector                         IXJ       0.65     yes          101
+IShares S&P Global Technology Sector                        IXN     0.65     yes             33
+IShares S&P Global Telecommunications                      IXP      0.65     yes             39
+Streettracks International Real Estate                            RWX   0.60     yes           141
+Market Vector Global Alternative Energy                      GEX    0.55     no            N/A
+PowerShares Global Clean Energy                                PBD     0.75     no            N/A
+PowerShares Global Water                                          PIO      0.75     no            N/A
+Claymore Global Water                                                CGW   0.74     no           N/A
+Claymore Global Exchanges, Brokers and Asset           EXB     0.65     no           N/A
+Claymore Vaccine Global Index                                    JNR     0.65     no           N/A
+Claymore/SVM Canadian Energy Income                     ENY    0.65     no           N/A"

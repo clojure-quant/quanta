@@ -14,6 +14,27 @@
 ;; Novo Nordisk (CPH: NOVO-B) == NOVO-B.CPH
 ;; BMW (DE: BMW) == BMW.DE
 
+;; valid symbols:
+;; NYSE:WIT
+;; BSE:507685
+;; FLN.AX
+;; NSE:HDFC
+;; NSE:SBIN
+;; NSE:LT&
+;; NSE:ARVSMART
+;; GBG.L
+;; LON:RR
+
+;; http://www.nasdaq.com/screening/company-list.aspx
+;; NASDAQTrader
+;; ftp://ftp.nasdaqtrader.com/SymbolDirectory
+;; ftp://ftp.nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt
+;; ftp://ftp.nasdaqtrader.com/SymbolDirectory/otherlisted.txt
+;; ftp://ftp.nasdaqtrader.com/symboldirectory
+;; ftp://nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt
+;; ftp://nasdaqtrader.com/SymbolDirectory/otherlisted.txt
+
+
 
 ;; https://github.com/RomelTorres/alpha_vantage/issues/13
 

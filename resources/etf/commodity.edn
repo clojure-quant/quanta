@@ -1,0 +1,28 @@
+[
+ ;Commodity
+ {:name "Deutschebank Commodity" :symbol "DBC"}
+ {:name "IShares GSCI Commodity Index" :symbol "GSG"}
+ 
+ ;Oil / Gas
+ {:name "Claymore Crude Oil (Up)" :symbol "UCR"}
+ {:name "Claymore Crude Oil (Down)" :symbol "DCR"}
+ {:name "PowerShares DB Energy" :symbol "DBE"}
+ {:name "PowerShares DB Oil Fund" :symbol "DBO"}
+ {:name "Crude Oil" :symbol "USO"}
+ {:name "United States Natural Gas" :symbol "UNG"}
+ 
+ ; Gold / Silver
+ {:name "PowerShares DB Precious Metals" :symbol "DBP"}
+ {:name "World Gold Council Gold" :symbol "GLD"}
+ {:name "iShares COMEX Gold (U.S.)" :symbol "IAU"}
+ {:name "Market Vectors Gold Miners" :symbol "GDX"}
+ {:name "PowerShares DB Gold" :symbol "DGL"}
+ {:name "iShares Silver" :symbol "SLV"}
+ {:name "PowerShares DB Silver" :symbol "DBS"}
+ 
+
+ {:name "PowerShares Base Metals" :symbol "DBB"}
+  {:name "Steel" :symbol "SLX"}
+
+ {:name "PowerShares Agriculture" :symbol "DBA"}
+ ]

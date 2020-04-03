@@ -1,0 +1,53 @@
+Specialty ETFs
+ 
+FT ValueLine                                                               FVI      0.60     yes               4
+ValueLine Timeliness Select                                          PIV      0.60     yes           178
+ValueLine Industry Rotation                                          PYH    0.60     yes             17
+FT ValueLine 100                                                        FVL     0.60     no            N/A
+Water Resources                                                          PHO    0.60     yes           516
+Claymore Sector Rotation                                             XRO    0.60     yes             36
+Claymore Sabrient Insider                                             NFO    0.60     yes             10
+Claymore Sabrient Stealth                                             STH     0.60     yes             11
+Claymore Spin-off                                                        CSD    0.60     yes             17
+Claymore/Sabient Defender                                          DEF     0.60     yes             17
+Claymore/LGA Green                                                  GRN    0.60     yes               4
+Claymore/Ocean Tomo Patent                                      OTP     0.60     yes               7
+Claymore/BIR Leaders 50                                            BST     0.60     no           N/A
+Claymore/Ocean Tomo Growth                                    OTR    0.60     no           N/A
+Claymore/Zacks Growth and Income                            CZG    0.60     no           N/A
+Claymore/BIR Leaders Mid-Cap Core                         BMV   0.60     no           N/A
+Claymore/BIR Leaders Small-Cap Core                       BES     0.60     no           N/A
+Claymore/Great Companies Large Cap Growth            XGC    0.60     no           N/A
+Claymore/Zacks Mid-Cap Core                                   CZA    0.60     no           N/A
+Claymore/IndexIQ Small Cap Value                             SCV    0.60     no           N/A
+Claymore/Robeco Boston Partners Large Cap Value    CLV    0.60     no           N/A
+Claymore/Clear Mid-Cap Growth                                MCG   0.60     no           N/A
+Claymore/KLD Sudan Free Large Cap Core                KSF     0.50     no           N/A
+Claymore Morningstar Manufacturing                            MZG    0.40     no           N/A
+Claymore Morningstar Information                                MZN   0.40     no           N/A
+Claymore Morningstar Services                                    MZO   0.40     no           N/A
+Claymore/Zacks Country Rotation                                CRO    0.65     no           N/A
+Claymore/Zacks Sector Rotation                                  XRO    0.60     no           N/A
+PowerShares Dynamic Market Portfolio                       PWC   0.60     yes             64
+PowerShares Dynamic OTC Portfolio                           PWO   0.60     yes             22
+Powershares Private Equity                                           PSP     0.69     yes             81
+Powershares CleanTech                                               PZD     0.60     yes             13
+Powershare Aggressive Growth                                    PGZ     0.60     yes               4
+Powershares Deep Value                                              PVM    0.60     yes               5
+Powershares Buy Back Achievers                                 PKW   0.60     yes             47
+Powershares Financial Preferred                                   PGF     0.60     yes             47
+Powershares DWA Technical Leaders                          PDP     0.60     no              84
+Wilderhill Clean Energy                                                 PBW    0.60     yes           455
+Wilderhill Progressive Energy                                        PUW   0.60     yes             12
+iShares KLD Select Social Index                                  KLD    0.50     yes               8
+First Trust NASDAQ 100 Ex-Technology                    QQXT 0.60     no                1
+First Trust NASDAQ Clean Edge                                 QCLN 0.60     no              28
+WisdomTree Earnings 500 Index                                  EPS     0.28     no                5
+WisdomTree Earnings Index                                         EXT     0.28     no                1
+WisdomTree Midcap Earnings Index                            EZM    0.38     no                2
+WisdomTree Small Cap Earnings Index                        EES     0.38     no                7
+WisdomTree Top 100 Index                                         EEZ     0.38     no                2
+WisdomTree Low P/E Index                                        EZY     0.38     no                2
+First Trust ISE Water Index                                          FIW     0.60     no             N/A
+Van Eck Agribusiness                                                   MOO   0.65     no             N/A
+ 

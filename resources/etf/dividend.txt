@@ -1,0 +1,34 @@
+International Dividend
+International Dividend Achievers Portfolio                     PID      0.60     yes           280
+Pacific ex Japan Dividend                                             DND    0.48     no              36
+Pacific ex Japan High Yielding                                       DNL    0.58     no              37
+Japan Total Dividend                                                    DXJ     0.48     no              17
+Japan High Yielding Equity                                            DNL    0.58     no              37
+DIEFA                                                                         DWM  0.48     no              23
+International Dividend Top 100                                     DOO   0.58     no              72
+International Mid Cap   Dividend                                   DIM     0.58     no              55
+DIEFA High Yielding Dividend                                     DTH    0.58     no              42
+International Small Cap Dividend                                  DLS     0.58     no            104
+Europe Total Dividend                                                  DEB     0.48     no              19
+Europe High Yielding Equity                                         DEW   0.58     no              18
+Europe Small Cap Dividend                                          DFE     0.58     no              70
+Japan Small Cap Dividend                                            DFJ      0.58     no              37
+Total International Dividend                                          DTD    0.28     no              24
+
+
+Dividend ETFs
+ 
+IShares Dow Jones Select Dividend                              DVY    0.40     yes           427
+Power Shares Dividend Achievers Portfolio                  PEY     0.50     yes           120
+SPDR Dividend                                                            SDY    0.30     yes             26
+High Yield Equity Dividend Achievers Portfolio             PEY     0.60     yes           120
+High Growth Rate Dividend Achievers Portfolio            PHJ      0.60     yes             13
+Dividend Top 100                                                        DTN    0.38     yes             33
+Large Cap Dividend                                                     DLN    0.28     yes             61
+Mid Cap Dividend                                                        DON   0.38     yes             17
+High Yielding Equity                                                     DHS    0.38     yes             34
+Small Cap Dividend                                                      DES     0.38     yes             24
+Claymore Yield Hog                                                     CVY    0.60     yes             31
+Claymore/BBD High Income                                        LVL     0.60     no             N/A
+FT Morningstar Dividend Leaders                                 FDL     0.45     yes             34
+ 

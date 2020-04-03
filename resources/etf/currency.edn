@@ -1,0 +1,8 @@
+[{:name "Rydex Euro" :symbol "FXE"}
+ {:name "Rydex Mexican Peso" :symbol "FXM"}
+ {:name "Rydex Swedish Krona" :symbol "FXS "}
+ {:name "Rydex Australian Dollar" :symbol "FXA"}
+ {:name "Rydex British Pound" :symbol "FXB"}
+ {:name "Rydex Canadian Dollar" :symbol "FXC"}
+ {:name "Rydex Swiss Franc" :symbol "FXF"}
+ {:name "Rydex Japanese Yen" :symbol "FXJ"}]

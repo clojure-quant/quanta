@@ -8,3 +8,8 @@ perhaps the following libraries have better performance?
    [semantic-csv "0.2.1-alpha1"]
    [incanter/incanter-core "1.9.3"]
    [incanter/incanter-charts "1.9.3"]
+
+   perhaps look at:
+   https://github.com/appliedsciencestudio/meta-csv
+
+   
