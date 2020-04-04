@@ -9,7 +9,7 @@
  {:region :us :sector :telecom :name "iShares US Telecommunications" :symbol "IYZ " :also ["PXN" "IXP" "TTH" "VOX"]}
  {:region :us :sector :industrial :name "iShares US Industrials" :symbol "IYJ" :also ["VIS" "XLI"]}
  {:region :us :sector :materials :name "iShares US Basic Materials" :symbol "IYM"   :also ["VAW" "XLB"]}
- {:region :us :sector :energy  :name :name "iShares US Energy" :symbol "IYE" :also ["VDE" "XLE"]}
+ {:region :us :sector :energy  :name "iShares US Energy" :symbol "IYE" :also ["VDE" "XLE"]}
  {:region :us :sector :utilities :name "iShares US Utilities" :symbol "IDU" :also ["PUI" "UTH" "VPU" "XLU"]}
  {:region :us :sector :transport :name "iShares Transportation Avg" :symbol "IYT"}]
 ;, IXC (global)

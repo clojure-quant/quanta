@@ -18,7 +18,7 @@
  {:sector :precious :industry :silver :name "iShares Silver" :symbol "SLV"}
 ; {:name "PowerShares DB Silver" :symbol "DBS"}
  {:sector :precious :industry :palladium :name "Palladium" :symbol "PALL"}
- {:sector :precious:industry :platinum  :name "Platinum" :symbol "PPLT"}
+ {:sector :precious :industry :platinum  :name "Platinum" :symbol "PPLT"}
 
 ; Industrial Commodities
  {:sector :industrial :industry :nickel :name "Nickel" :symbol "BJJN"}
