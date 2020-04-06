@@ -27,7 +27,8 @@
    [throttler "1.0.0" ; api rate-limits 
     :exclusions  [[org.clojure/clojure]
                   [org.clojure/core.async]]]; has very old core.async
-   ;[org.pinkgorilla/throttler "1.0.2"] ; throtteling (custom version, core.async upgrade)
+   ;[dataset-tools "0.1.12"] ; not working - opened ticket
+
    ; [com.stuartsierra/frequencies "0.1.0"]     ; percentile stats
    ]
   
