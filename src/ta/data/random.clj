@@ -27,7 +27,6 @@
                       ;; mimicing a normal distribution
                     (apply + (repeatedly 10 #(rand 0.005)))))))))
 
-
 (comment
   (random-float -100 100)
   (repeatedly 3 #(random-float -3.0 3.0))
