@@ -20,6 +20,10 @@ sudo dnf install libcurl-devel
 # collect2: error: ld returned 1 exit status
 sudo yum install openssl-devel
 
+# dependency for svg-plot package.
+sudo dnf install cairo-devel
+
+
 # download source code
 mkdir /tmp/r
 cd /tmp/r

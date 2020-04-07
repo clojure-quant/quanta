@@ -28,22 +28,26 @@
     :exclusions  [[org.clojure/clojure]
                   [org.clojure/core.async]]]; has very old core.async
    ;[dataset-tools "0.1.12"] ; not working - opened ticket
-
    ; [com.stuartsierra/frequencies "0.1.0"]     ; percentile stats
-   ]
-  
+   [clj-python/libpython-clj "1.38"]]
+   
+
   :plugins [[lein-ancient "0.6.15"]]
-  
+
   :source-paths ["src"]
   :resource-paths ["resources"]
   :repl-options {:init-ns ta.model.single}
+
+  :jvm-opts ["-Djdk.attach.allowAttachSelf"
+             "-XX:+UnlockDiagnosticVMOptions"
+             "-XX:+DebugNonSafepoints"]
   
   :profiles {:speed
              ; run performance tests
              {:source-paths ["profiles/speed/src"]
               :main ^:skip-aot speed.main}
 
-             :notebook 
+             :notebook
              ; run the pink-gorilla notebook (standalone, or in repl)
              ; important to keep this dependency in here only, as we do not want to
              ; bundle the notebook (big bundle) into our neat library       
@@ -55,7 +59,7 @@
                              :init (start) ;; This expression will run when first opening a REPL, in the namespace from :init-ns or :main if specified.
                              }}
 
-             :dev   
+             :dev
              {:dependencies [[clj-kondo "2019.11.23"]]
               :plugins      [[lein-cljfmt "0.6.6"]
                              [lein-cloverage "1.1.2"]]

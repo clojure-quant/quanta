@@ -3,7 +3,9 @@
    [clojure.core.async :refer [thread]]
    ;[dataset-tools.core :as dt] crashes all. opened ticket
    [pinkgorilla.notebook-app.cli :refer [parse-opts]]
-   [pinkgorilla.notebook-app.core :refer [run-gorilla-server]])
+   [pinkgorilla.notebook-app.core :refer [run-gorilla-server]]
+   [gigasquid.utils] ; bring to jar
+   )
   (:gen-class))
 
 (defn run-notebook []
