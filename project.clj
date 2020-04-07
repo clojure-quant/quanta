@@ -29,8 +29,11 @@
                   [org.clojure/core.async]]]; has very old core.async
    ;[dataset-tools "0.1.12"] ; not working - opened ticket
    ; [com.stuartsierra/frequencies "0.1.0"]     ; percentile stats
-   [clj-python/libpython-clj "1.38"]]
+   [clj-python/libpython-clj "1.38"]
    
+  ; [org.clojure/data.xml "0.2.0-alpha6"]
+      ]
+
 
   :plugins [[lein-ancient "0.6.15"]]
 
@@ -41,7 +44,7 @@
   :jvm-opts ["-Djdk.attach.allowAttachSelf"
              "-XX:+UnlockDiagnosticVMOptions"
              "-XX:+DebugNonSafepoints"]
-  
+
   :profiles {:speed
              ; run performance tests
              {:source-paths ["profiles/speed/src"]
