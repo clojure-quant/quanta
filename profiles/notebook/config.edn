@@ -6,7 +6,7 @@
   {;:gorilla-notebook "./notebooks"
    ;:gorilla-examples "../sample-notebooks/samples" ; they are empty now.
    ;:gorilla-ui "../gorilla-ui/notebooks"
-   ;:gorilla-plot "../gorilla-plot/notebooks"
+   :gorilla-plot "../../gorilla/gorilla-plot/notebooks"
    ;:gorilla-cljs "../kernel-cljs-shadow/notebooks"
    ; libraries in progress
    ;:geschichte "../ui-geschichte/notebooks"
