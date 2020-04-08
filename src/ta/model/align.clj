@@ -23,7 +23,6 @@
 
   (def calendar ["2020-01-01" "2020-01-02" "2020-01-03"])
 
-
   (align calendar instruments)
 
   ; comment end
