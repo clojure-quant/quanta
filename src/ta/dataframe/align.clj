@@ -1,6 +1,16 @@
-(ns ta.dataframe.align)
+(in-ns 'ta.dataframe)
 
-(defn align [calendar instruments]
+(defn align
+  "aligns timeseries to a calendar
+
+   ts-index: any type that is used for time indexing 
+             (datetime / localdate / keyword / long)
+   calendar: seq of ts-index
+   indexed-series: map, keys=ts-index, vals=map containing 
+                   all data of one 
+   instruments: map, keys=symbols, vals=indexed series
+  "
+  [calendar instruments]
   ;(let [trigger? (fn [_] (> (rand) 0.5))]
   (reduce
    (fn [acc date]

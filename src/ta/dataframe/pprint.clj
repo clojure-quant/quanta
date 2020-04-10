@@ -1,8 +1,6 @@
-(ns ta.dataframe.pprint
-  "improved print-table 
-   and new print-dataframe"
-  (:require
-   [clojure.pprint]))
+(in-ns 'ta.dataframe)
+
+(require '[clojure.pprint])
 
 ;; ADD PATH to map
 
@@ -154,7 +152,7 @@
 
 (defn chart-filter [show p m]
   (if (vector? m)
-    (filter-vector m show p)
+    (path-cols m show p)
     (t m (partial chart-filter show p))))
 
 
