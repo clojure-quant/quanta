@@ -14,7 +14,7 @@
 
 (defn get-ts
   "gets a timeseries or timeseries value
-   fot a symbol"
+   for a symbol"
   ([model symbol field]
    (get-in @model [:symbols symbol field]))
   ([model symbol field index]

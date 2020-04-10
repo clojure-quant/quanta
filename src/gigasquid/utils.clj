@@ -1,4 +1,5 @@
 (ns gigasquid.utils
+  "needed for gigasquid notebooks"
   (:require
    [clojure.string :as string]
    [clojure.java.shell :as sh])
