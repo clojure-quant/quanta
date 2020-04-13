@@ -1,5 +1,14 @@
 (ns ta.series.algebra)
 
+(defn- add [a b]
+  (if (or (nil? a) (nil? b))
+    nil
+    (+ a b)))
+
+(defn series-add
+  [a b]
+  (vec (map add a b)))
+
 (defn subtract [a b]
   (if (or (nil? a) (nil? b))
     nil

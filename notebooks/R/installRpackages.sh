@@ -4,3 +4,4 @@
 
 R -e 'install.packages("ggplot2" , repos="http://cran.us.r-project.org")'
 R -e 'install.packages("svglite" , repos="http://cran.us.r-project.org")'
+R -e 'install.packages("plotly" , repos="http://cran.us.r-project.org")'
