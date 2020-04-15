@@ -30,9 +30,11 @@
    ;[dataset-tools "0.1.12"] ; not working - opened ticket
    ; [com.stuartsierra/frequencies "0.1.0"]     ; percentile stats
    [clj-python/libpython-clj "1.38"]
-   
-  ; [org.clojure/data.xml "0.2.0-alpha6"]
-      ]
+
+   ; tech.ml.dataset cannot be loaded via pomegranate
+   [techascent/tech.datatype "5.0-beta-2"]
+   [techascent/tech.resource "4.6"]
+   [techascent/tech.ml.dataset "2.0-beta-11"]]
 
 
   :plugins [[lein-ancient "0.6.15"]]
