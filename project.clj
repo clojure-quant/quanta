@@ -58,7 +58,7 @@
              ; bundle the notebook (big bundle) into our neat library       
              {:source-paths ["profiles/notebook/src"]
               :main ^:skip-aot notebook.main
-              :dependencies [[org.pinkgorilla/gorilla-notebook "0.4.12-SNAPSHOT"]]
+              :dependencies [[org.pinkgorilla/gorilla-notebook "0.4.12"]]
               :repl-options {:welcome (println "Profile: notebook.")
                              :init-ns notebook.main  ;; Specify the ns to start the REPL in (overrides :main in this case only)
                              :init (start) ;; This expression will run when first opening a REPL, in the namespace from :init-ns or :main if specified.
