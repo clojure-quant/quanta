@@ -1,31 +1,23 @@
 (ns notebook.main
   (:require
-   [clojure.core.async :refer [thread]]
+   ;[clojure.core.async :refer [thread]]
    ;[dataset-tools.core :as dt] crashes all. opened ticket
-   [pinkgorilla.notebook-app.cli :refer [parse-opts]]
-   [pinkgorilla.notebook-app.core :refer [run-gorilla-server]]
-   [gigasquid.utils] ; bring to jar
-   )
+   ;[pinkgorilla.notebook-app.cli :refer [parse-opts]]
+   ;[pinkgorilla.notebook-app.core :refer [run-gorilla-server]]
+   [pinkgorilla.embedded :refer [run-notebook #_start-notebook]]
+   [gigasquid.utils]) ; bring to jar
   (:gen-class))
-
-(defn run-notebook []
-  (let [args2 ["-c" "./profiles/notebook/config.edn"]
-        {:keys [options]} (parse-opts args2)]
-    (println "Options Are: " options)
-    (run-gorilla-server options)
-    nil))
-
-(defn start []
-  (thread
-   (run-notebook)))
 
 ;; the notebook secret management 
 ;; currently expects ./test/creds.edn file
 ;; for security, this file is excluded from git
 
-(defn -main [& args]
+(defn start []
+  (run-notebook "./profiles/notebook/config.edn"))
+
+(defn -main []
   (println "Running PinkGorilla Notebook")
-  (run-notebook))
+  (start))
 
 (comment
   (run-notebook)

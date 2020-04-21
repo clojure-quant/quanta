@@ -55,6 +55,19 @@ nil ; suppress output - this
 ;; @@
 
 ;; @@ [clj]
+(require-r 
+   '[ggplot2 :refer :all]
+   '[utils :refer [read-csv]]
+   '[grDevices :refer [X11 dev.off]]) 
+  ;; '[base :refer
+  ;;   [round names ! set.seed sum which rnorm lapply sapply %in% table
+  ;;    list.files c paste colnames row.names cbind gsub <- $ $<-
+  ;;    as.data.frame data.frame nlevels factor expression is.na strsplit
+  ;;    as.character summary]]
+  ;; '[graphics :refer [par plot hist legend]]
+;; @@
+
+;; @@ [clj]
 (
 
 (comment
@@ -65,16 +78,7 @@ nil ; suppress output - this
 
 
   
-  (require-r 
-   '[ggplot2 :refer :all]
-   '[utils :refer [read-csv]]
-   '[grDevices :refer [X11 dev.off]]) 
-  ;; '[base :refer
-  ;;   [round names ! set.seed sum which rnorm lapply sapply %in% table
-  ;;    list.files c paste colnames row.names cbind gsub <- $ $<-
-  ;;    as.data.frame data.frame nlevels factor expression is.na strsplit
-  ;;    as.character summary]]
-  ;; '[graphics :refer [par plot hist legend]]
+  
 
   
   (require
@@ -185,6 +189,10 @@ nil ; suppress output - this
   ;; https://huggingface.co/transformers/_modules/transformers/modeling_gpt2.html#GPT2Model
 
   )
+;; @@
+
+;; @@ [clj]
+
 ;; @@
 ;; ->
 ;;; 

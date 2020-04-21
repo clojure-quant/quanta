@@ -34,7 +34,8 @@
    ; tech.ml.dataset cannot be loaded via pomegranate
    [techascent/tech.datatype "5.0-beta-2"]
    [techascent/tech.resource "4.6"]
-   [techascent/tech.ml.dataset "2.0-beta-11"]]
+   ;[techascent/tech.ml.dataset "2.0-beta-22"]
+   ]
 
 
   :plugins [[lein-ancient "0.6.15"]]
@@ -47,38 +48,30 @@
              "-XX:+UnlockDiagnosticVMOptions"
              "-XX:+DebugNonSafepoints"]
 
-  :profiles {:speed
-             ; run performance tests
-             {:source-paths ["profiles/speed/src"]
-              :main ^:skip-aot speed.main}
+  :profiles {:speed {; run performance tests
+                     :source-paths ["profiles/speed/src"]
+                     :main ^:skip-aot speed.main}
 
-             :notebook
-             ; run the pink-gorilla notebook (standalone, or in repl)
-             ; important to keep this dependency in here only, as we do not want to
-             ; bundle the notebook (big bundle) into our neat library       
-             {:source-paths ["profiles/notebook/src"]
-              :main ^:skip-aot notebook.main
-              :dependencies [[org.pinkgorilla/gorilla-notebook "0.4.12"]]
-              :repl-options {:welcome (println "Profile: notebook.")
-                             :init-ns notebook.main  ;; Specify the ns to start the REPL in (overrides :main in this case only)
-                             :init (start) ;; This expression will run when first opening a REPL, in the namespace from :init-ns or :main if specified.
-                             }}
+             :notebook {; run the pink-gorilla notebook (standalone, or in repl)
+                        ; important to keep this dependency in here only, as we do not want to
+                        ; bundle the notebook (big bundle) into our neat library   
+                        :source-paths ["profiles/notebook/src"]
+                        :main ^:skip-aot notebook.main
+                        :dependencies [[org.pinkgorilla/gorilla-notebook "0.4.16"]]
+                        :repl-options {:welcome (println "Profile: notebook.")
+                                       :init-ns notebook.main  ;; Specify the ns to start the REPL in (overrides :main in this case only)
+                                       :init (start) ;; This expression will run when first opening a REPL, in the namespace from :init-ns or :main if specified.
+                                       }}
 
-             :dev
-             {:dependencies [[clj-kondo "2019.11.23"]]
-              :plugins      [[lein-cljfmt "0.6.6"]
-                             [lein-cloverage "1.1.2"]]
-              :aliases      {"clj-kondo" ["run" "-m" "clj-kondo.main"]}
-              :cloverage    {:codecov? true
-                                  ;; In case we want to exclude stuff
-                                  ;; :ns-exclude-regex [#".*util.instrument"]
-                                  ;; :test-ns-regex [#"^((?!debug-integration-test).)*$$"]
-                             }
-                   ;; TODO : Make cljfmt really nice : https://devhub.io/repos/bbatsov-cljfmt
-              :cljfmt       {:indents {as->                [[:inner 0]]
-                                       with-debug-bindings [[:inner 0]]
-                                       merge-meta          [[:inner 0]]
-                                       try-if-let          [[:block 1]]}}}}
+             :dev {:dependencies [[clj-kondo "2019.11.23"]]
+                   :plugins      [[lein-cljfmt "0.6.6"]
+                                  [lein-cloverage "1.1.2"]]
+                   :aliases      {"clj-kondo" ["run" "-m" "clj-kondo.main"]}
+                   :cloverage    {:codecov? true }
+                   :cljfmt       {:indents {as->                [[:inner 0]]
+                                            with-debug-bindings [[:inner 0]]
+                                            merge-meta          [[:inner 0]]
+                                            try-if-let          [[:block 1]]}}}}
 
   :aliases {"bump-version"
             ["change" "version" "leiningen.release/bump-version"]
