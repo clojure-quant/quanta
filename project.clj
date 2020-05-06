@@ -37,8 +37,8 @@
    ;[techascent/tech.ml.dataset "2.0-beta-22"]
    ]
 
-
-  :plugins [[lein-ancient "0.6.15"]]
+  :plugins [[lein-ancient "0.6.15"]
+            [org.pinkgorilla/lein-pinkgorilla "0.0.9"]]
 
   :source-paths ["src"]
   :resource-paths ["resources"]
@@ -47,6 +47,8 @@
   :jvm-opts ["-Djdk.attach.allowAttachSelf"
              "-XX:+UnlockDiagnosticVMOptions"
              "-XX:+DebugNonSafepoints"]
+
+  :pinkgorilla {:runtime-config "./profiles/notebook/config.edn"}
 
   :profiles {:speed {; run performance tests
                      :source-paths ["profiles/speed/src"]
@@ -67,7 +69,7 @@
                    :plugins      [[lein-cljfmt "0.6.6"]
                                   [lein-cloverage "1.1.2"]]
                    :aliases      {"clj-kondo" ["run" "-m" "clj-kondo.main"]}
-                   :cloverage    {:codecov? true }
+                   :cloverage    {:codecov? true}
                    :cljfmt       {:indents {as->                [[:inner 0]]
                                             with-debug-bindings [[:inner 0]]
                                             merge-meta          [[:inner 0]]
