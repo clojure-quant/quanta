@@ -19,3 +19,4 @@ resources/test
 ./test/creds.edn
 .gorilla-port
 Rplots.pdf
+.lsp

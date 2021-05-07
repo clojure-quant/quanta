@@ -38,7 +38,7 @@
    ]
 
   :plugins [[lein-ancient "0.6.15"]
-            [org.pinkgorilla/lein-pinkgorilla "0.0.9"]]
+            [org.pinkgorilla/lein-pinkgorilla "0.0.17"]]
 
   :source-paths ["src"]
   :resource-paths ["resources"]
