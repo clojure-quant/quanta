@@ -20,3 +20,5 @@ resources/test
 .gorilla-port
 Rplots.pdf
 .lsp
+creds.edn
+.calva
