@@ -9,15 +9,9 @@
 
 (av/search "S&P 500")
 
-(defn g [s]
-  (->> s
-            (av/get-daily "compact")
-            (map :close)
-  ))
 
-(def p (g "GOOG"))
 
-(def s (g "SPY"))
+
 
 (defn new-swing [dir p]
   {:dir dir
@@ -118,18 +112,37 @@
     )
   )
 
-(swings  p 20)
+(defn pt [d]
+  (let [da (conj (:swings d)
+                (:current d))
+        da (map #(assoc % :close (swing-close %)) da)
+        ]
+  (clojure.pprint/print-table
+   [:dir :prct :len :close] 
+   da
+   )))
 
+(defn g [s]
+  (->> s
+       (av/get-daily "compact")
+       (map :close)))
+
+(defn gf [s]
+  (->> s
+       (av/get-daily "full")
+       (map :close)))
+
+(def m (g "MSFT"))
+(def p (g "GOOG"))
+(def s (g "SPY"))
+(def x (gf "XOM"))
+
+(swings  p 20)
 (swings s 60)
 
-(defn pt [d] 
-  (clojure.pprint/print-table 
-   [:dir :prct :len] (:swings d)))
-
-
-(pt (swings s 60))
-
-
+(pt (swings m 50))
+(pt (swings s 50))
+(pt (swings x 50))
 (pt (re-swing (swings s 60) 60))
 
 
