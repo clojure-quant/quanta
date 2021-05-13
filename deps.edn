@@ -19,6 +19,7 @@
              :extra-deps  {eftest/eftest {:mvn/version "0.5.7"}}
              :main-opts   ["-e"  "(require,'[eftest.runner,:refer,[find-tests,run-tests]]),(run-tests,(find-tests,\"test\"))"]}
 
+  ;https://github.com/applied-science/deps-library
   :release {:extra-deps {applied-science/deps-library {:mvn/version "0.4.0"}}
             :main-opts ["-m" "applied-science.deps-library"]}
 
