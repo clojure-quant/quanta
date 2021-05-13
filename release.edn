@@ -1,3 +1,5 @@
 {:group-id "org.pinkgorilla"
  :artifact-id "ta"
- :scm-url "https://github.com/clojure-quant/trateg/"}
+ :scm-url "https://github.com/clojure-quant/trateg/"
+ :version "0.2.2"
+ }
