@@ -15,10 +15,8 @@ jobs:
         node-version: 12.x
     - name: Use tools deps builder 
       uses: vouch-opensource/tools.deps-build@1.0.1
-    #  uses: actions/tools.deps-builder@v1.0.1      
-    # - name: Install dependencies
-    #  run: |
-    #    lein deps
+      with:
+        alias: :cljfmt
     - name: clj-fmt
       run: clojure -M:cljfmt
     - name: clj-kondo
