@@ -13,12 +13,25 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
-    - name: Use tools deps builder 
-      uses: vouch-opensource/tools.deps-build@1.0.1
+    - name: Prepare java
+      uses: actions/setup-java@v1
       with:
-        alias: :cljfmt
+        java-version: 1.14
+    - name: Install clojure tools
+      uses: DeLaGuardo/setup-clojure@3.2
+      with:
+        # Install just one or all simultaneously
+        cli: 1.10.1.693 # Clojure CLI based on tools.deps
+        lein: 2.9.1     # or use 'latest' to always provision latest version of leiningen
+        boot: 2.8.3     # or use 'latest' to always provision latest version of boot
+    - name: Execute clojure code on Linux and MacOS
+      if: ${{ matrix.os != 'windows-latest' }}
+      run: clojure -e "(+ 1 1)"
+      shell: bash
     - name: clj-fmt
+      if: ${{ matrix.os != 'windows-latest' }}
       run: clojure -M:cljfmt
+      shell: bash
     - name: clj-kondo
       run: clojure -M:lint
     - name: test-clj
