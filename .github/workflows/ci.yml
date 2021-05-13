@@ -19,26 +19,28 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/project.clj') }}
         restore-keys: |
           ${{ runner.os }}-maven-
-    - name: Install dependencies
+    # - name: Install dependencies
+    #  run: |
+    #    lein deps
+    - name: clj-fmt
+      run: clojure -M:cljfmt
+    - name: clj-kondo
+      run: clojure -M:lint
+    - name: test-clj
       run: |
-        lein deps
-    - name: Check formatting
-      run: lein cljfmt check
-    - name: Lint
-      run: lein clj-kondo --lint src
-    - name: Run tests
-      run: |
-        lein test
-        # lein cloverage
+        clojure -M:test-clj
+    - name: cloverage
+      run: clojure -M:cloverage
     - name: Release
       if: success()
       # if: github.event_name == 'push'
       env:
-        RELEASE_USERNAME: ${{ secrets.ReleaseUsername }}
-        RELEASE_PASSWORD: ${{ secrets.ReleasePassword }}
+        CLOJARS_USERNAME: ${{ secrets.ReleaseUsername }}
+        CLOJARS_PASSWORD: ${{ secrets.ReleasePassword }}
         CODECOV_TOKEN: ${{ secrets.CodecovToken }}
       run: |
         git config --global user.email "ci@pinkgorilla.org"
         git config --global user.name "CI/CD"
-        lein release
-        bash <(curl -s https://codecov.io/bash)
+        clojure -M:release
+      # lein release
+      # bash <(curl -s https://codecov.io/bash)
