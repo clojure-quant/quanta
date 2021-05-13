@@ -10,14 +10,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: vouch-opensource/tools.deps-build@1.0.1
-    #  uses: actions/tools.deps-builder@v1.0.1      
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: Use tools deps builder 
+      uses: actions/tools.deps-builder@v1.0.1      
     # - name: Install dependencies
     #  run: |
     #    lein deps
-      - name: clj-fmt
-        run: clojure -M:cljfmt
-      - name: clj-kondo
-        run: clojure -M:lint
+    - name: clj-fmt
+      run: clojure -M:cljfmt
+    - name: clj-kondo
+      run: clojure -M:lint
     - name: test-clj
       run: |
         clojure -M:test-clj
