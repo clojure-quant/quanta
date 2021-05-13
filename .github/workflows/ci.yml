@@ -7,20 +7,10 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Cache Maven dependencies
-      uses: actions/cache@v1
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/project.clj') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-
-    - name: tools-deps
-      uses: actions/tools.deps-builder@v1.0.1      
+    - uses: vouch-opensource/tools.deps-build@1.0.1
+    #  uses: actions/tools.deps-builder@v1.0.1      
     # - name: Install dependencies
     #  run: |
     #    lein deps
