@@ -64,7 +64,9 @@
                      :entry-time  (->> t .getEntry .getIndex (.getBar series) .getEndTime)
                      :exit-time   (->> t .getExit .getIndex (.getBar series) .getEndTime)
                      :idx-entry (-> t .getEntry .getIndex)
-                     :idx-exit  (-> t .getExit .getIndex)}))))
+                     :idx-exit  (-> t .getExit
+
+                                    .getIndex)}))))
 
 
 

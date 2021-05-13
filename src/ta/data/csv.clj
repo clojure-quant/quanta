@@ -197,7 +197,7 @@
 
 (comment
 
-  (io/resource "ta/spx.cs") ; nil if not available
+  (io/resource "ta/spx.csv") ; nil if not available
   (io/file "resources/test/csv-test.csv") ; always not nil
 
   (defn header-csv [file]
@@ -215,7 +215,9 @@
 
   (load-csv-bars-trateg "ta/spx.csv")
   (load-bars-file "resources/sector/FMCAX.csv")
-  (load-bars-file "resources/sector/FIDSX.csv")
+  (load-bars-file
+
+   "resources/sector/FIDSX.csv")
 
 
 

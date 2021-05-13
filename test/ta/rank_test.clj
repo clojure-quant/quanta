@@ -15,7 +15,9 @@
              :c {:price [110 104 103], :rank [1 3 3]}}})
 
 (deftest test-rank
-  (is (= expected- (rank data- 3 :price false :rank))))
+  (is (= expected- (rank data- 3 :price false
+
+                         :rank))))
 
 
 

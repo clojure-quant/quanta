@@ -1,4 +1,4 @@
-(ns series.r)
+(ns ta.series.r)
 
 ; R INTEGRATION - jvm native!!
 ; 

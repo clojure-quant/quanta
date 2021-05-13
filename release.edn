@@ -1,0 +1,3 @@
+{:group-id "org.pinkgorilla"
+ :artifact-id "ta"
+ :scm-url "https://github.com/clojure-quant/trateg/"}

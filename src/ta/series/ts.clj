@@ -1,4 +1,4 @@
-(ns trateg.ts
+(ns ta.series.ts
   (:require
    ;[clojure.string     :as str]
    [clojure.data.avl :as avl]

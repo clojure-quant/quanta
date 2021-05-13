@@ -14,7 +14,7 @@ pom.xml.asc
 .project
 .lsp
 .calva
-
+.cpcache
 resources/test
 profiles.clj
 /tmp-charts/*

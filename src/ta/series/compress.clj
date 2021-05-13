@@ -85,7 +85,9 @@
   (def dt (t/date-time 1986 10 14))
   (.plusDays dt -1)
   ((:date-fn group-month) {:month 2 :year 2018})
-  (apply max (remove nil? [1 2 3 nil]))
+  (apply max (remove nil? [1 2 3
+
+                           nil]))
 
 
 
