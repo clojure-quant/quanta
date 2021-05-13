@@ -4,4 +4,4 @@
 
 (load "dataframe/manipulate")
 
-(load "dataframe/pprint")
+;(load "dataframe/pprint")
