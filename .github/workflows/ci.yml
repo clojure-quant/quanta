@@ -50,6 +50,7 @@ jobs:
       run: |
         git config --global user.email "ci@pinkgorilla.org"
         git config --global user.name "CI/CD"
+        clojure -M:release --patch
         clojure -M:release
       # lein release
       # bash <(curl -s https://codecov.io/bash)
