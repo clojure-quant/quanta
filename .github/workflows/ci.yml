@@ -36,8 +36,8 @@ jobs:
       shell: bash
     - name: clj-kondo
       run: clojure -M:lint
-    - name: test-clj
-      run: clojure -M:test-clj
+    #- name: test-clj
+    #  run: clojure -M:test-clj
     - name: cloverage
       run: clojure -M:cloverage
     - name: Release
