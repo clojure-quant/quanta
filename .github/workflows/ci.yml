@@ -30,6 +30,8 @@ jobs:
       if: ${{ matrix.os != 'windows-latest' }}
       run: clojure -e "(+ 1 1)"
       shell: bash
+    - name: v
+      run: clojure -M:garamond
     - name: clj-fmt
       if: ${{ matrix.os != 'windows-latest' }}
       run: clojure -M:cljfmt

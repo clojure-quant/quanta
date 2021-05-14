@@ -15,9 +15,15 @@
   com.taoensso/tufte     {:mvn/version "2.2.0"} ;performance tracking  
   }
  :aliases
- {:test-clj {:extra-paths ["test"]
+ {; test-clj does not run in github actions
+  :test-clj {:extra-paths ["test"]
              :extra-deps  {eftest/eftest {:mvn/version "0.5.7"}}
              :main-opts   ["-e"  "(require,'[eftest.runner,:refer,[find-tests,run-tests]]),(run-tests,(find-tests,\"test\"))"]}
+
+  :test {:extra-paths ["test/main/clojure"]
+                  :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}
+                  :main-opts   ["-m" "kaocha.runner"]}
+
 
   ;https://github.com/applied-science/deps-library
   :release {:extra-deps {applied-science/deps-library {:mvn/version "0.4.0"}}
@@ -48,6 +54,16 @@
   :check {:extra-deps {athos/clj-check {:git/url "https://github.com/athos/clj-check.git"
                                         :sha "0ca84df1357d71429243b99908303f45a934654c"}}
           :main-opts ["-m" "clj-check.check"]}
+
+  :notebook {:extra-deps {org.pinkgorilla/notebook-bundel {:mvn/version "0.5.5"}}
+             :exec-fn pinkgorilla.notebook-ui.app-bundel.app/notebook-bundel-run!
+             :exec-args {:config "notebook-config.edn"}
+             ;:main-opts ["-m" "pinkgorilla.notebook-ui.app-bundel.app"]
+             }
+
+   :garamond
+{:main-opts ["-m" "garamond.main"]
+ :extra-deps {com.workframe/garamond {:mvn/version "0.4.0"}}}
 
 ;
   }}
