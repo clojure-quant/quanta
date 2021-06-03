@@ -19,32 +19,6 @@
              :extra-deps  {eftest/eftest {:mvn/version "0.5.7"}}
              :main-opts   ["-e"  "(require,'[eftest.runner,:refer,[find-tests,run-tests]]),(run-tests,(find-tests,\"test\"))"]}
 
-  ;https://github.com/seancorfield/depstar
-  ;:jar {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.0.216"}}
-  ;       :exec-fn hf.depstar/jar
-  ;       :exec-args {:jar "ta.jar" 
-  ;                   :sync-pom true
-  ;                   :aot false}}
-  
-  ; https://github.com/slipset/deps-deploy
- ; :deploy {:extra-deps {slipset/deps-deploy {:mvn/version "RELEASE"}}
- ;          :exec-fn deps-deploy.deps-deploy/deploy
- ;          :exec-args {:installer :remote
- ;                      :sign-releases? true
- ;                      :artifact "ta.jar"}}}
-
-;:release
-;{:extra-deps {applied-science/deps-library {:mvn/version "VERSION"}}
-; :main-opts ["-m" "applied-science.deps-library" ] }
-  
-
- ;{:dev
- ; {:extra-deps {;clj-kondo                       {:mvn/version "2021.03.03"}
- ;               ;lein-ancient                     {:mvn/version "0.6.15"}
- ;               org.pinkgorilla/notebook-bundel {:mvn/version "0.5.4"}
- ;              }}}
- }
-
 ; conflict resolution: 
 ;   [org.slf4j/slf4j-api "2.0.0-alpha1"]
 ;   [org.clojure/tools.cli "1.0.206"]

@@ -1,8 +1,8 @@
 (in-ns 'ta.dataframe)
 
-(require '[clojure.pprint])
+;(require '[clojure.pprint])
 
-(require '[clj-time.coerce :as tc])
+(require '[clj-time.coerce])
 
 (defn get-ts
   "gets a timeseries or timeseries value
@@ -17,5 +17,5 @@
          (assoc-in row path point)) rows series))
 
 (defn get-time [model]
-  (map tc/to-long (get-ts model [:date])))
+  (map clj-time.coerce/to-long (get-ts model [:date])))
 

@@ -28,7 +28,6 @@
   {:main-opts ["-m" "garamond.main"]
    :extra-deps {com.workframe/garamond {:mvn/version "0.4.0"}}}
 
-
   ;https://github.com/applied-science/deps-library
   :release {:extra-deps {applied-science/deps-library {:mvn/version "0.4.0"}}
             :main-opts ["-m" "applied-science.deps-library"]}
