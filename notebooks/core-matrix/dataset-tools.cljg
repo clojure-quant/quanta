@@ -1,7 +1,7 @@
 ;; gorilla-repl.fileformat = 2
 
 ;; @@ [meta]
-{}
+{:id :4dc925ac-82b9-4da4-9e74-ccd64eb1a442}
 
 ;; @@
 
@@ -108,14 +108,4 @@
 ;; @@
 ;; =>
 ;;; ["^ ","~:type","~:html","~:content",["~:span",["^ ","~:class","clj-string"],"\"#dataset/dataset {:column-names [:a :d :c], :columns [[:i :o :j] [13 14 15] [10 11 12]], :shape [3 3]}\""],"~:value","\"#dataset/dataset {:column-names [:a :d :c], :columns [[:i :o :j] [13 14 15] [10 11 12]], :shape [3 3]}\""]
-;; <=
-
-;; @@ [clj]
-
-;; @@
-;; ->
-;;; 
-;; <-
-;; =>
-;;; ["^ ","~:type","html","~:value",["~:span"]]
 ;; <=

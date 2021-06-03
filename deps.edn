@@ -21,8 +21,12 @@
              :main-opts   ["-e"  "(require,'[eftest.runner,:refer,[find-tests,run-tests]]),(run-tests,(find-tests,\"test\"))"]}
 
   :test {:extra-paths ["test/main/clojure"]
-                  :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}
-                  :main-opts   ["-m" "kaocha.runner"]}
+         :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}
+         :main-opts   ["-m" "kaocha.runner"]}
+
+  :garamond
+  {:main-opts ["-m" "garamond.main"]
+   :extra-deps {com.workframe/garamond {:mvn/version "0.4.0"}}}
 
 
   ;https://github.com/applied-science/deps-library
@@ -55,15 +59,17 @@
                                         :sha "0ca84df1357d71429243b99908303f45a934654c"}}
           :main-opts ["-m" "clj-check.check"]}
 
-  :notebook {:extra-deps {org.pinkgorilla/notebook-bundel {:mvn/version "0.5.5"}}
-             :exec-fn pinkgorilla.notebook-ui.app-bundel.app/notebook-bundel-run!
-             :exec-args {:config "notebook-config.edn"}
-             ;:main-opts ["-m" "pinkgorilla.notebook-ui.app-bundel.app"]
-             }
+  ; notebook
 
-   :garamond
-{:main-opts ["-m" "garamond.main"]
- :extra-deps {com.workframe/garamond {:mvn/version "0.4.0"}}}
+  ; -X allows to add config directly in deps.edn; but it supports also a edn file
+  :notebook {:extra-deps {org.pinkgorilla/notebook-bundel {:mvn/version "RELEASE"}}
+             :exec-fn pinkgorilla.notebook-bundel/run!
+             :exec-args {:config "notebook-config.edn"}
+             }
+  
+  ; -M needs a edn file to supply the config 
+  :nb {:extra-deps {org.pinkgorilla/notebook-bundel {:mvn/version "RELEASE"}}
+        :main-opts ["-m" "pinkgorilla.notebook-bundel"]}
 
 ;
   }}

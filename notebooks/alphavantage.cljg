@@ -1,7 +1,7 @@
 ;; gorilla-repl.fileformat = 2
 
 ;; @@ [meta]
-{:tagline "alphavantage", :tags "trateg,clj,quant"}
+{:tagline "alphavantage", :tags "trateg,clj,quant", :id :0143733f-9bef-4dcb-bd50-e2d17eb006e4}
 
 ;; @@
 

@@ -2,7 +2,7 @@
                                     #_{:name "public" :url "https://raw.githubusercontent.com/pink-gorilla/gorilla-explore/master/resources/list.json"}]}
             :server {:resource-root-path "notebooks-bad"
                      :roots
-                     {:ta "./notebooks"
+                     {;:ta "./notebooks" ; already in mptebook
                       :gorilla-plot "../../gorilla/gorilla-plot/notebooks"
                         ;:backtest "../../quant/backtest/notebooks"
                         ;:fquant "../../quant/clojureQuant/notebooks"

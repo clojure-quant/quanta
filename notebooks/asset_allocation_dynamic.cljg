@@ -1,7 +1,7 @@
 ;; gorilla-repl.fileformat = 2
 
 ;; @@ [meta]
-{:tagline "dynamic asset allocation", :tags ""}
+{:tagline "dynamic asset allocation", :tags "", :id :2d24efab-bdea-4627-ab0c-346d54334a36}
 
 ;; @@
 
@@ -404,9 +404,6 @@ crisis
 ;; @@ [clj]
 
 ;; @@
-;; ->
-;;; 
-;; <-
 ;; =>
 ;;; ["^ ","~:type","html","~:value",["~:span"]]
 ;; <=
