@@ -40,7 +40,7 @@
 
  ; https://github.com/clj-kondo/clj-kondo/blob/master/doc/jvm.md
   :lint {:extra-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}
-         :main-opts ["-m" "clj-kondo.main" 
+         :main-opts ["-m" "clj-kondo.main"
                      "--lint" "src"]}
 
   :cloverage {:extra-paths ["test"]
@@ -64,12 +64,24 @@
   ; -X allows to add config directly in deps.edn; but it supports also a edn file
   :notebook {:extra-deps {org.pinkgorilla/notebook-bundel {:mvn/version "RELEASE"}}
              :exec-fn pinkgorilla.notebook-bundel/run!
-             :exec-args {:config "notebook-config.edn"}
-             }
-  
-  ; -M needs a edn file to supply the config 
-  :nb {:extra-deps {org.pinkgorilla/notebook-bundel {:mvn/version "RELEASE"}}
-        :main-opts ["-m" "pinkgorilla.notebook-bundel"]}
+             :exec-args {:config {:explorer {:client {:repositories [{:name "local"  :url "/api/explorer" :save true}
+                                                                     #_{:name "public" :url "https://raw.githubusercontent.com/pink-gorilla/gorilla-explore/master/resources/list.json"}]}
+                                             :server {:resource-root-path "notebooks-bad"
+                                                      :roots
+                                                      {;:ta "./notebooks" ; already in mptebook
+                                                       :gorilla-plot "../../gorilla/gorilla-plot/notebooks"
+                        ;:backtest "../../quant/backtest/notebooks"
+                        ;:fquant "../../quant/clojureQuant/notebooks"
+                        ;:gorilla-ui "../gorilla-ui/resources/notebooks"
+                                                       }}}}}}
+
+  :goldly
+  {:extra-deps {org.pinkgorilla/goldly-bundel {:mvn/version "RELEASE"}}
+   :exec-fn goldly-bundel/run
+   :exec-args {:config {:goldly {:systems [systems.snippet-registry  ; if you want snippet browser started
+                                           systems.snippet-scratchpad
+                                           demo.hello-user]}}}}
+
 
 ;
   }}
