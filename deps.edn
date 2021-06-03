@@ -40,7 +40,8 @@
 
  ; https://github.com/clj-kondo/clj-kondo/blob/master/doc/jvm.md
   :lint {:extra-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}
-         :main-opts ["-m" "clj-kondo.main" "--lint" "src"]}
+         :main-opts ["-m" "clj-kondo.main" 
+                     "--lint" "src"]}
 
   :cloverage {:extra-paths ["test"]
               :extra-deps  {cloverage/cloverage {:mvn/version "RELEASE"}}

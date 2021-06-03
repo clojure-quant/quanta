@@ -13,20 +13,12 @@ See the [examples](dev/examples) directory for some usage examples.
 ## PinkGorilla Notebook
 
 TA ships some sample-notebooks that you can edit in PinkGorilla notebook.
-In your IDE, jack-in to a new repl with +notebook profile.
-
-The advantage of running the notebook in the IDE is that changed code in the TA library will be reflected in the notebook; this helps TA development.
-
-For testing you can also run pink-gorilla standalone:
-```
-lein notebook
-```
-
+Clone TA and run: `clojure -X:notebook`
 
 ## run unit tests / speed tests
 
 ```
-lein test
+clojure -M:test
 lein speed
 ```
 
