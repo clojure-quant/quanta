@@ -20,4 +20,5 @@ profiles.clj
 /tmp-charts/*
 Rplots.pdf
 creds.edn
-webly-routes.edn
+.webly
+.sniffer.edn

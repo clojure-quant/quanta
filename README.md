@@ -10,10 +10,24 @@ Provides a light convenience wrapper over [ta4j](https://github.com/ta4j/ta4j) a
 
 See the [examples](dev/examples) directory for some usage examples.
 
+## Remote REPL Notebook
+
+ to show in notebook:
+ - in terminal run: clojure -X:notebook
+ - in webbrowser go to :9000 and create a new notebook
+ - in your ide connect nrepl to port 9100 
+   (in vscode called nrepl jack in)  
+   port can be seen in .webly/config.edn
+ - all evals after evaling :gorilla/on will show up in notebook
+ - :gorilla/off stops evals in sniffer
+
+
 ## PinkGorilla Notebook
 
-TA ships some sample-notebooks that you can edit in PinkGorilla notebook.
+TA ships some notebooks that you can edit in PinkGorilla notebook.
 Clone TA and run: `clojure -X:notebook`
+
+If it cannot find the latest release, run `clojure -P -X:notebook`
 
 ## run unit tests / speed tests
 

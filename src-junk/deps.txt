@@ -1,0 +1,26 @@
+
+
+                 ; Database
+                 [nio "1.0.3"]                              ; SQ-Lite
+                 [org.clojure/java.jdbc "0.7.5"]            ; SQ-Lite
+                 [org.xerial/sqlite-jdbc "3.7.2"]           ; SQ-Lite
+                 [com.novemberain/monger "3.1.0" :exclusions [com.google.guava/guava]] ; mongodb
+                 [capacitor "0.6.0"]                        ; InfluxDB
+                 [clj-statsd "0.4.0"]                       ; statsd reporting
+
+                 ; CSV parsing
+                 [org.clojure/data.csv "0.1.4"]
+                 [org.clojars.bmabey/csvlib "0.3.6"]
+                 [ultra-csv "0.2.2"]
+                 [semantic-csv "0.2.1-alpha1"]
+
+
+                 ;Data Science
+                 ;[tulos/bberg-sdk "3.6.1.0"]; Bloomberg
+                 [com.stuartsierra/frequencies "0.1.0"]     ; percentile stats
+                 [incanter/incanter-core "1.9.3"]
+                 [incanter/incanter-charts "1.9.3"]
+                 [proto-repl "0.3.1"]                       ; ProtoRepl
+                 [proto-repl-charts "0.3.2"]                ; ProtoRepl
+
+                 [clj-jgit "0.8.8"]
