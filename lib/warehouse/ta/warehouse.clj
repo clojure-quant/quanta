@@ -10,11 +10,17 @@
    [taoensso.nippy :as nippy]))
 
 
+
+(def dir (atom "./"))
+
+(defn init-tswh [path]
+  (reset! dir path))
+
 (defn save-ts [ds name]
-  (let [s (io/gzip-output-stream! (str name ".nippy.gz"))]
+  (let [s (io/gzip-output-stream! (str @dir name ".nippy.gz"))]
     (io/put-nippy! s ds)))
 
 (defn load-ts [ name]
-  (let [s (io/gzip-input-stream (str name ".nippy.gz"))]
+  (let [s (io/gzip-input-stream (str @dir name ".nippy.gz"))]
     (io/get-nippy s )))
 

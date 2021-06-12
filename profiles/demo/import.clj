@@ -7,6 +7,8 @@
    [tech.v3.dataset :as ds]
    ))
 
+(wh/init-tswh "../../db/")
+
 (-> "creds.edn" slurp edn/read-string
     :alphavantage av/set-key!)
 
@@ -21,12 +23,17 @@
        ))
 
 
+(defn import-symbol [s]
+  (let [d (gf s)
+        ds (ds/->dataset d)]
+    (println "imported " s " - " (count d) "bars.")
+    ;(println (pr-str d))
+    (wh/save-ts ds s))
+  )
+
 (defn run [_]
-  (let [d (gf "MSFT")
-        ds (ds/->dataset d)
-        ]
-    (println (pr-str d))
-    (wh/save-ts ds "MSFT")
+  (let [symbols ["MSFT" "SPY" "XOM"]]
+    (doall (map import-symbol symbols))
     ))
   
  

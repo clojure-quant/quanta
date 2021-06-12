@@ -23,3 +23,4 @@ creds.edn
 .webly
 .sniffer.edn
 .nrepl-port
+/db

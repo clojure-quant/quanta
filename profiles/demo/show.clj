@@ -7,10 +7,17 @@
    ))
 
 
+(wh/init-tswh "../../db/")
+
+(defn show [s]
+  (let [ds (wh/load-ts s)]
+    (println s)
+    (println ds)))
+
 
 (defn run [_]
-  (let [ds (wh/load-ts "MSFT")]
-    (println ds)
-    ))
+    (let [symbols ["MSFT" "SPY" "XOM"]]
+      (doall (map show symbols))))
+
   
  
