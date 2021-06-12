@@ -1,0 +1,13 @@
+{:paths ["."]
+ :deps {ta/warehouse {:local/root "../../lib/warehouse"}
+        ta/data {:local/root "../../lib/data"}
+        }
+ :aliases
+ {:import {:exec-fn import/run
+         :exec-args {}}
+  :show {:exec-fn show/run
+           :exec-args {}}
+
+;
+  }}
+

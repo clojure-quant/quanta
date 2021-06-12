@@ -1,4 +1,4 @@
-{:paths ["src" "resources"]
+{:paths ["." "resources"]
  :deps
  {org.clojure/clojure    {:mvn/version "1.10.3"}
   ;org.clojure/core.async {:mvn/version "1.3.618"}
@@ -11,6 +11,8 @@
  :aliases
  {
   
+ :demo {:exec-fn demo/run
+         :exec-args {}}
 
   :notebook {:extra-deps {org.pinkgorilla/notebook-bundel {:mvn/version "RELEASE"}}
              :exec-fn pinkgorilla.notebook-bundel/run

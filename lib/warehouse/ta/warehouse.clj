@@ -1,4 +1,4 @@
-(ns warehouse
+(ns ta.warehouse
   (:require
    [tech.v3.dataset :as ds]
    [tech.v3.dataset.io :as ds-io]
@@ -10,11 +10,11 @@
    [taoensso.nippy :as nippy]))
 
 
-(defn save [ds name]
+(defn save-ts [ds name]
   (let [s (io/gzip-output-stream! (str name ".nippy.gz"))]
     (io/put-nippy! s ds)))
 
-(defn load [ name]
+(defn load-ts [ name]
   (let [s (io/gzip-input-stream (str name ".nippy.gz"))]
     (io/get-nippy s )))
 
