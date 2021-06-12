@@ -13,18 +13,16 @@
 (defn gc [s]
   (->> s
        (av/get-daily "compact")
-       ;(map :close)
        ))
 
 (defn gf [s]
   (->> s
        (av/get-daily "full")
-       ;(map :close)
        ))
 
 
 (defn run [_]
-  (let [d (gc "MSFT")
+  (let [d (gf "MSFT")
         ds (ds/->dataset d)
         ]
     (println (pr-str d))

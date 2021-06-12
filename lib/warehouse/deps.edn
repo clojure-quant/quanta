@@ -9,16 +9,11 @@
   com.taoensso/nippy {:mvn/version "2.14.0"}
   }
  :aliases
- {
-  
- :demo {:exec-fn demo/run
+ {:demo {:exec-fn demo/run
          :exec-args {}}
-
   :notebook {:extra-deps {org.pinkgorilla/notebook-bundel {:mvn/version "RELEASE"}}
              :exec-fn pinkgorilla.notebook-bundel/run
              :exec-args {}}
-
-
 
 ;
   }}

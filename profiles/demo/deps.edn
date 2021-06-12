@@ -1,4 +1,4 @@
-{:paths ["."]
+{:paths ["." "classes"]
  :deps {ta/warehouse {:local/root "../../lib/warehouse"}
         ta/data {:local/root "../../lib/data"}
         }

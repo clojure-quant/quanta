@@ -2,7 +2,7 @@
   (:require
    [clj-http.client :as client]
    [cheshire.core] ; JSON Encoding
-   [clj-time.format :as fmt]
+   [cljc.java-time.local-date :as ld]
    [throttler.core]))
 
 ;; https://www.alphavantage.co/documentation/#
@@ -132,8 +132,8 @@
                          :volume (keyword "5. volume")
                          :marketcap (keyword "6. market cap (USD)")})
 
-(def row-date-format-
-  (fmt/formatter "yyyy-MM-dd")) ; 2019-08-09
+;(def row-date-format-
+;  (fmt/formatter "yyyy-MM-dd")) ; 2019-08-09
 
 (defn- as-float [str]
   (if (nil? str)
@@ -142,7 +142,7 @@
 
 (defn- convert-bar- [bar-format volume? item]
   (let [bars (second item)
-        bar {:date (fmt/parse row-date-format- (subs (str (first item)) 1))
+        bar {:date (ld/parse (subs (str (first item)) 1))
              :open (as-float ((:open bar-format) bars))
              :high (as-float ((:high bar-format) bars))
              :low (as-float ((:low bar-format) bars))
