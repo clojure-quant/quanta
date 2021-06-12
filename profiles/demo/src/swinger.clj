@@ -1,5 +1,3 @@
-
-
 (ns demo.data
   (:require
    [clojure.edn :as edn]
