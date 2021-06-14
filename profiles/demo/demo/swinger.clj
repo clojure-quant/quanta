@@ -2,6 +2,8 @@
   (:require
    [clojure.edn :as edn]
    [clojure.pprint]
+   [cljc.java-time.local-date :as ld]
+   [cljc.java-time.format.date-time-formatter :refer [iso-date]]
    [tech.v3.dataset :as ds]
    [ta.warehouse :as wh]
    [ta.swings.core :refer [swings print-swings2]]
@@ -23,7 +25,7 @@
   (let [d (wh/load-ts symbol)
         r (ds/mapseq-reader d)
         f (take 1 r)
-        swings (into [] (xf-swings 20) r)]
+        swings (into [] (xf-swings 30) r)]
     (println "first: " f)
       ;(println "swings: " swings)
     (spit (str "reports/" symbol ".txt")
@@ -38,9 +40,24 @@
   (calc-swings "MSFT"))
 
 
+(defn no-date [l]
+  (map #(dissoc % :dt-first :dt-last) l)
+  )
+
+(defn dt-str [d]
+  (when d  (ld/format d iso-date))
+  )
+(defn str-date [l]
+  (map #(assoc % :dt-first (dt-str  (:dt-first %))
+               :dt-last (dt-str (:dt-last %))
+               ) l))
+
+
 (comment
-  (->> (calc-swings "MSFT")
-       (take 2)
+  (->> (calc-swings "XOM")
+       ;(take 1600)
+       ;(no-date)
+       (str-date)
       ;print-swings2
       chart2
       ;pr-str

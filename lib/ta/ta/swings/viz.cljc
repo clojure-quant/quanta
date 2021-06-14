@@ -43,7 +43,7 @@
                      :grid true
                      :format "%"}]
             }
-           {:mark {:type "point"
+           #_{:mark {:type "point"
                    :height 10
                    :width 20}
             :encoding {"x"   {:field "idx", :type "quantitative"}
@@ -54,7 +54,9 @@
                        "color" {:value  "red"}}}]})
 
 (defn swing-chart2 [{:keys [data] :as opts}]
-  (let [opts (assoc opts :spec swingchart-spec)]
+  (let [opts (assoc opts :width 2400
+                    :height 1000
+                    :spec swingchart-spec)]
     ^:R [:p/vegalite opts]))
 
 
