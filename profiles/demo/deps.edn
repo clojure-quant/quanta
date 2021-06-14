@@ -1,12 +1,15 @@
 {:paths ["." "classes"]
- :deps {ta/warehouse {:local/root "../../lib/warehouse"}
-        ta/data {:local/root "../../lib/data"}
+ :deps {ta/warehouse {:local/root "../../lib/warehouse" :deps/manifest :deps}
+        ta/data {:local/root "../../lib/data" :deps/manifest :deps}
+        ta/ta {:local/root "../../lib/ta" :deps/manifest :deps}
         }
  :aliases
- {:import {:exec-fn import/run
+ {:import {:exec-fn demo.warehouse/import
          :exec-args {}}
-  :show {:exec-fn show/run
+  :show {:exec-fn demo.warehouse/show
            :exec-args {}}
+  :calc {:exec-fn demo.swinger/calc
+          :exec-args {}}
 
 ;
   }}

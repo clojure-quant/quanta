@@ -56,3 +56,39 @@
 (defn swing-chart2 [{:keys [data] :as opts}]
   (let [opts (assoc opts :spec swingchart-spec)]
     ^:R [:p/vegalite opts]))
+
+
+(defn conv [sd]
+  (assoc sd :swings
+         (map-indexed (fn [i v]
+                        (->
+                         (assoc v
+                                :idx i
+                                :High (:high v)
+                                :Low (:low v))
+                         (dissoc :high :low)))
+                      (:swings sd))))
+
+
+(defn chart [swings]
+  (let [swings (conv swings)]
+    (swing-chart2 {:data swings})))
+
+
+
+(comment
+  
+  (swing-chart2
+   {:data {:swings [{:Low 18 :High 22 :dir "up" :idx 1 :idx2 2}
+                    {:Low 12 :High 22 :dir "down" :idx 2  :idx2 3}
+                    {:Low 12 :High 14 :dir "up" :idx 3  :idx2  4 :note "wow"}
+                    {:Low 12 :High 22 :dir "down" :idx 4,  :idx2  5}
+                    {:Low 12 :High 14 :dir "up" :idx 5  :idx2  6}]}})
+
+  (conv  [{:low 18 :high 22 :dir "up" :idx 1 :idx2 2}
+          {:low 12 :high 22 :dir "down" :idx 2  :idx2 3}])
+  
+  
+  
+ ; 
+  )

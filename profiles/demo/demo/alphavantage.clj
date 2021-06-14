@@ -1,6 +1,21 @@
 (ns demo.alphavantage)
 
 
+(-> "creds.edn" slurp edn/read-string
+    :alphavantage av/set-key!)
+
+(av/search "S&P 500")
+
+(defn g [s]
+  (->> s
+       (av/get-daily "compact")
+       (map :close)))
+
+(defn gf [s]
+  (->> s
+       (av/get-daily "full")
+       (map :close)))
+
   (search "BA")
 
 (def b (get-daily :compact "MSFT"))

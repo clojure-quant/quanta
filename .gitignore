@@ -24,3 +24,4 @@ creds.edn
 .sniffer.edn
 .nrepl-port
 /db
+reports/*.txt

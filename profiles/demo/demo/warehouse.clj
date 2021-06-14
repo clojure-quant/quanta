@@ -1,11 +1,10 @@
-(ns import
+(ns demo.warehouse
   (:require
    [clojure.edn :as edn]
    [clojure.pprint :refer [print-table]]
    [ta.data.alphavantage :as av]
    [ta.warehouse :as wh]
-   [tech.v3.dataset :as ds]
-   ))
+   [tech.v3.dataset :as ds]))
 
 (wh/init-tswh "../../db/")
 
@@ -14,13 +13,11 @@
 
 (defn gc [s]
   (->> s
-       (av/get-daily "compact")
-       ))
+       (av/get-daily "compact")))
 
 (defn gf [s]
   (->> s
-       (av/get-daily "full")
-       ))
+       (av/get-daily "full")))
 
 
 (defn import-symbol [s]
@@ -28,12 +25,18 @@
         ds (ds/->dataset d)]
     (println "imported " s " - " (count d) "bars.")
     ;(println (pr-str d))
-    (wh/save-ts ds s))
-  )
+    (wh/save-ts ds s)))
+
+(def symbols ["MSFT" "SPY" "XOM"])
+(defn import [_]
+  (doall (map import-symbol symbols)))
+
+
+(defn show [s]
+  (let [ds (wh/load-ts s)]
+    (println s)
+    (println ds)))
+
 
 (defn run [_]
-  (let [symbols ["MSFT" "SPY" "XOM"]]
-    (doall (map import-symbol symbols))
-    ))
-  
- 
+    (doall (map show symbols)))

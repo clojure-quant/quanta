@@ -1,6 +1,8 @@
-(ns ta.series.swings)
-
-
+(ns ta.swings.core
+  (:require 
+   [clojure.pprint]
+   )
+  )
 
 (defn new-swing [dir p]
   {:dir dir
@@ -79,3 +81,36 @@
              :current c
              :next n}
             series)))
+
+
+
+
+(defn swing-close [{:keys [dir high low]}]
+  (if (= :up dir)
+    high
+    low))
+
+(defn print-swings2 [d]
+  (let [da d
+        da (map #(assoc % :close (swing-close %)) da)]
+    (clojure.pprint/print-table
+     [:dir :prct :len :low :high :close  :dt-first :dt-last]
+     da)))
+(defn print-swings [d]
+  (let [da (conj (:swings d)
+                 (:current d))
+        da (map #(assoc % :close (swing-close %)) da)]
+    (clojure.pprint/print-table
+     [:dir :prct :len :close]
+     da)))
+
+(defn re-swing [sd prct]
+  (let [s (:swings sd)
+        ps (map swing-close s)]
+    (swings ps prct)))
+
+
+(defn swing-table [swings]
+  ^:R [:p/aggrid {:size :big
+             ;:columns columnDefs
+                  :data (:swings swings)}])
