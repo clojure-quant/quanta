@@ -32,3 +32,4 @@ karma.conf.js
 package-lock.json
 package.json
 shadow-cljs.edn
+goldly_bindings_generated.cljs
