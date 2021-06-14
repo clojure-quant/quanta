@@ -6,9 +6,10 @@
    [ta.warehouse :as wh]
    [ta.swings.core :refer [swings print-swings2]]
    [ta.swings.transduce :refer [xf-swings]]
-   ;[ta.swings.viz :refer [swing-chart2]]
+   [ta.swings.viz :refer [swing-chart2 chart2]]
    ;[pinkgorilla.vega.plot.swings :refer [swing-chart]]
    ))
+
 
 :gorilla/on
 (println "hello from trateg")
@@ -27,7 +28,9 @@
       ;(println "swings: " swings)
     (spit (str "reports/" symbol ".txt")
           (with-out-str
-            (print-swings2 swings)))))
+            (print-swings2 swings)))
+    swings
+    ))
 
 
 (defn calc [_]
@@ -36,7 +39,13 @@
 
 
 (comment
-  (calc-swings "MSFT")
+  (->> (calc-swings "MSFT")
+       (take 2)
+      ;print-swings2
+      chart2
+      ;pr-str
+      )
+
 
  ; 
   )

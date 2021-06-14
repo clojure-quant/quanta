@@ -38,12 +38,12 @@ jobs:
       if: ${{ matrix.os != 'windows-latest' }}
       run: clojure -M:cljfmt
       shell: bash
-    - name: clj-kondo
-      run: clojure -M:lint
+    #- name: clj-kondo
+    #  run: clojure -M:lint
     #- name: test-clj
     #  run: clojure -M:test-clj
-    - name: cloverage
-      run: clojure -M:cloverage
+    #- name: cloverage
+    #  run: clojure -M:cloverage
     - name: Release
       if: success()
       # if: github.event_name == 'push'

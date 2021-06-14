@@ -25,3 +25,10 @@ creds.edn
 .nrepl-port
 /db
 reports/*.txt
+node_modules
+.shadow-cljs
+target
+karma.conf.js
+package-lock.json
+package.json
+shadow-cljs.edn

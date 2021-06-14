@@ -1,4 +1,4 @@
-(ns ta.viz.swings)
+(ns ta.swings.viz)
 
 (def swingchart-spec
   {;:$schema "http://localhost:8000/r/vega-lite/build/vega-lite-schema.json"  ;https://vega.github.io/schema/vega-lite/v5.json",
@@ -74,6 +74,21 @@
   (let [swings (conv swings)]
     (swing-chart2 {:data swings})))
 
+
+
+(defn conv2 [sd]
+         (map-indexed (fn [i v]
+                        (->
+                         (assoc v
+                                :idx i
+                                :High (:high v)
+                                :Low (:low v))
+                         (dissoc :high :low)))
+                      sd))
+
+(defn chart2 [swings]
+  (let [swings (conv2 swings)]
+    (swing-chart2 {:data {:swings swings}})))
 
 
 (comment
