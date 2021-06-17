@@ -35,6 +35,7 @@
   (let [holding (holdings pf)
         sells (filter #(not (contains? long-symbols %)) holding)
         buys (filter #(not (contains? holding %)) long-symbols)
+        buys (take (max 0 (- 3 (count holding))) buys)
         sell-s (fn [pf s] (sell pf {:symbol s 
                                     :qty 100
                                     :date dt 
@@ -56,6 +57,8 @@
 
 (comment
   
+(take 1 [9 8])
+
   (def p (atom 100))
   (defn getp [s]
     (swap! p inc)

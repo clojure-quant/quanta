@@ -28,11 +28,10 @@
 
 (xx (parse-date "2000-06-18"))
 
-(defn calc-pf []
-  (let [dt-start (parse-date "2000-06-18")
-        dt-end (parse-date "2021-05-01")
+(defn calc-pf [start end symbols]
+  (let [dt-start (parse-date start)
+        dt-end (parse-date end)
         p1d (t/new-period 1 :days)
-        symbols ["MSFT" "XOM"]
         data (into {} (map (fn [s]
                              [s (calc-swings s)]) symbols))
         p (atom (pf 100000))]
@@ -46,8 +45,11 @@
             buy (filter (fn [{:keys [symbol data]}]
                           (when (and symbol data)
                           (let [{:keys [dir len prct]} data]
-                            (and dir len prct (= dir :up) (> len 10) (> prct 6.0))))) cur)
+                            (and dir len prct (= dir :up) (> len 10) (> prct 3.0))))) cur)
             ;_ (println dt "buy: " buy)
+            buy (sort-by (fn [x] (get-in x [:data :prct])) buy)
+            buy (reverse buy)
+            ;_ (println "b:" buy)
             buy-s (into #{} (map :symbol buy))
             getp (fn [s] 
                    ;(println "cur:" cur)
@@ -69,7 +71,11 @@
   
 (into #{} (map :symbol []))
 
-  (def p (calc-pf))
+  (def symbols ["MSFT" "XOM"])
+  (def symbols (wh/load-list  "fidelity-select"))
+  symbols
+  
+  (def p (calc-pf "2000-06-18" "2021-05-01" symbols))
 
   (spit "pf.txt" 
         (with-out-str 
