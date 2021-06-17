@@ -10,6 +10,8 @@
   net.cgrand/xforms      {:mvn/version "0.19.2"} ; transducers for timeseries (ema sma)
   org.ta4j/ta4j-core     {:mvn/version "0.12"}   ; ta4j java technical indicator library
   com.taoensso/tufte     {:mvn/version "2.2.0"} ;performance tracking  
+  org.clojure/algo.generic {:mvn/version "0.1.2"}
+ 
   }
  :aliases
  {; test-clj does not run in github actions

@@ -1,6 +1,5 @@
 (ns demo.swinger
   (:require
-   [clojure.edn :as edn]
    [clojure.pprint]
    [cljc.java-time.local-date :as ld]
    [cljc.java-time.format.date-time-formatter :refer [iso-date]]
@@ -8,25 +7,30 @@
    [ta.warehouse :as wh]
    [ta.swings.core :refer [swings print-swings2]]
    [ta.swings.transduce :refer [xf-swings]]
-   [ta.swings.viz :refer [swing-chart2 chart2]]
-   ;[pinkgorilla.vega.plot.swings :refer [swing-chart]]
+   [ta.swings.viz :refer [swing-chart]]
+   [ta.data.random :refer [process-until random-ts]]
+   [ta.swing.date :refer [parse-date]]
    ))
+
 
 
 :gorilla/on
 (println "hello from trateg")
 {:a 1 :b 2}
 
-(wh/init-tswh "../../db/")
+(wh/init-tswh {:series "../../db/"
+               :list "../../resources/etf/"}
+               )
 
-(wh/init-tswh "./db/")
+(wh/init-tswh {:series "./db/"
+               :list "./resources/etf/"})
 
 (defn calc-swings [symbol]
   (let [d (wh/load-ts symbol)
         r (ds/mapseq-reader d)
-        f (take 1 r)
+        ;f (take 1 r)
         swings (into [] (xf-swings 30) r)]
-    (println "first: " f)
+    ;(println "first: " f)
       ;(println "swings: " swings)
     (spit (str "reports/" symbol ".txt")
           (with-out-str
@@ -59,11 +63,22 @@
        ;(no-date)
        (str-date)
       ;print-swings2
-      chart2
+      swing-chart
       ;pr-str
+
       )
 
 
+  ((xf-swings 30))
+
+  (take 1 (random-ts 10))
+
+ (parse-date "2021-05-16")
+
+  (def rd (process-until (xf-swings 30) (random-ts 10)))
+  (rd (parse-date "2021-06-18"))
+  (rd nil)
+ ; 
 
 
  ; 

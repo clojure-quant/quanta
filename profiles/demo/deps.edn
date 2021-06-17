@@ -10,6 +10,10 @@
            :exec-args {}}
   :calc {:exec-fn demo.swinger/calc
           :exec-args {}}
+  
+   :demo {;:exec-fn demo.swinger/calc
+          ;:exec-args {}
+          }
 
 ;
   }}

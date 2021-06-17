@@ -19,7 +19,7 @@
        :next next})))
 
 (defn xf-swings
-  [ret-prct]
+  [live? ret-prct]
   (fn [xf]
     (let [s (atom {:current nil
                    :next nil})]
@@ -44,8 +44,14 @@
                  N (toggle-swing C close)]
              (reset! s {:current C
                         :next N}))
-           (let [S (process-price ret-prct (fn [d] (xf acc d)) @s close date)]
-             (reset! s S)))
+           (let [S (if live?
+                     (process-price ret-prct (fn [d] nil) @s close date) 
+                     (process-price ret-prct (fn [d] (xf acc d)) @s close date))
+                 ]
+             (reset! s S)
+             (when live? 
+               (xf acc (:current S)))
+             ))
          acc)))))
 
 

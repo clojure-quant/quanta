@@ -1,12 +1,15 @@
 (ns demo.warehouse
   (:require
    [clojure.edn :as edn]
-   [clojure.pprint :refer [print-table]]
    [ta.data.alphavantage :as av]
    [ta.warehouse :as wh]
    [tech.v3.dataset :as ds]))
 
-(wh/init-tswh "../../db/")
+#_(wh/init-tswh {:series "../../db/"
+               :list "../../resources/etf/"})
+
+(wh/init-tswh {:series "./db/"
+               :list "./resources/etf/"})
 
 (-> "creds.edn" slurp edn/read-string
     :alphavantage av/set-key!)
@@ -27,9 +30,7 @@
     ;(println (pr-str d))
     (wh/save-ts ds s)))
 
-(def symbols ["MSFT" "SPY" "XOM"])
-(defn import [_]
-  (doall (map import-symbol symbols)))
+
 
 
 (defn show [s]
@@ -37,6 +38,13 @@
     (println s)
     (println ds)))
 
+
+
+;(def symbols ["MSFT" "SPY" "XOM"])
+(def symbols (wh/load-list  "fidelity-select"))
+
+(defn import [_]
+  (doall (map import-symbol symbols)))
 
 (defn run [_]
     (doall (map show symbols)))
