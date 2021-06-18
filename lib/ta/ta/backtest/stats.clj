@@ -1,4 +1,4 @@
-(ns ta.model.stats
+(ns ta.backtest.stats
   (:require
    [ta.data.print :as pr]))
 

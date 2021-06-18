@@ -1,5 +1,4 @@
-(ns ta.swings.trade)
-
+(ns ta.backtest.trade)
 
 (defn pf [initial-equity]
   {:cash initial-equity
@@ -25,25 +24,28 @@
                                   :qty (:qty o) :px-open (:price o) :dt-open (:date o)
                                   :px-close price :dt-close date
                                    :pl (* (:qty o) (- price (:price o)))
+                                   :data (:data o)
                                   })}))
 
 (defn holdings [pf]
   (into #{} (map :symbol (:long pf))))
 
 
-(defn trade [pf long-symbols f-price dt]
-  (let [holding (holdings pf)
+(defn trade [pf long-symbol-data  f-price dt]
+  (let [long-symbols (into #{} (map :symbol long-symbol-data))
+        holding (holdings pf)
         sells (filter #(not (contains? long-symbols %)) holding)
-        buys (filter #(not (contains? holding %)) long-symbols)
+        buys (filter #(not (contains? holding (:symbol %))) long-symbol-data)
         buys (take (max 0 (- 3 (count holding))) buys)
         sell-s (fn [pf s] (sell pf {:symbol s 
                                     :qty 100
                                     :date dt 
                                     :price (or (f-price s) 111.33)}))
-        buy-s (fn [pf s] (buy pf   {:symbol s
+        buy-s (fn [pf {:keys [symbol data]}] (buy pf   {:symbol symbol
                                     :qty 100
                                     :date dt
-                                    :price (or (f-price s) 111.33)}))
+                                    :price (or (f-price symbol) 111.33)
+                                    :data data}))
         
         ]
     ;(println dt "hold: " holding "buys:" buys " sells:" sells)
@@ -65,10 +67,10 @@
     )
 
   (-> (pf 100000)
-      (trade #{"A" "B" "C"} getp "0")
-       (trade #{"A" "B"} getp "1")
-       (trade #{"A" "B" "D"} getp "2")
-       (trade #{} getp "3")
+      (trade [{:symbol "A" :data {:bang 7}} {:symbol "B"} {:symbol "C"}] getp "0")
+       (trade [{:symbol "A"} {:symbol "B"}] getp "1")
+       (trade [{:symbol "A"} {:symbol "B"} {:symbol "D"}] getp "2")
+       (trade [] getp "3")
       )
   
   

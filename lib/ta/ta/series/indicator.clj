@@ -2,6 +2,61 @@
   (:require [net.cgrand.xforms :as x]
             [net.cgrand.xforms.rfs :as rfs]))
 
+; stolen from: https://github.com/rereverse/tapassage
+(defmacro indicator
+  ([trans-fn] `(indicator [] ~trans-fn))
+  ([bindings trans-fn]
+   `(fn [xf#]
+      (let ~bindings
+        (fn
+          ([] (xf#))
+          ([result#] (xf# result#))
+          ([result# input#]
+           (if-let [r# (~trans-fn input#)]
+             (if (reduced? r#)
+               r# (xf# result# r#))
+             result#)))))))
+
+(defn field-xf [f]
+  (indicator
+   []
+   (fn [x]
+     (f x))))
+
+(defn multiple-xf [m]
+  (indicator
+   (fn [x]
+     (into {} (map (fn [[k v]]
+                     (println k "x: " x "v: " (v x))
+            [k (v x)]
+            ) m))
+     )))
+
+
+; stolen from: https://github.com/pangloss/transducers/blob/master/src/xn/transducers.cljc
+(defn multiplex
+  "Allow a single chain of transducers to branch data out to be processed by multiple transducers, then merged back into a single one.
+   Data pipeline looks something like this:
+   (comp xform1
+         (multiplex xform2 xform3 xform4)
+         xform5)
+              ,--<xform2>--.
+   <xform1>--<---<xform3>--->--<xform5>
+              `--<xform4>--'
+   "
+  [& xforms]
+  (if (seq xforms)
+    (fn [rf]
+      (let [rfs (into [] (map #(% rf)) xforms)]
+        (fn
+          ([] (doseq [f rfs] (f)))
+          ([result]
+           (reduce (fn [result f] (f result)) result rfs))
+          ([result input]
+           (reduce (fn [result f] (f result input)) result rfs)))))
+    (map identity)))
+
+
 (defn sma-xf [n]
   (comp (x/window n rfs/avg #(rfs/avg %1 %2 -1))))
 
@@ -131,6 +186,17 @@
              )))
 
 (comment
+
+  (sma 3 [1 2 3 3] )
+
+  
+(defn many [x]
+  (into {} (map (fn [[k v]]
+                 [k (v x)]) {:a inc :b dec}))
+  )
+
+(many 7)
+ 
 
   (def concat-and-reverse (comp (partial apply str) reverse str))
   (concat-and-reverse "hello" "clojuredocs" "!")

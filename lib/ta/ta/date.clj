@@ -1,4 +1,4 @@
-(ns ta.swings.date
+(ns ta.date
   "reading and writing of CSV files that contain bar-series"
   (:require
    [clojure.data.csv :as csv]

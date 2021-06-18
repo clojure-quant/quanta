@@ -40,39 +40,11 @@
                                :close v}))
                           (reverse pseries)))))
 
-
-
-(defn process-until [xf source]
-  (let [r (atom nil)
-        d (atom (first (take 1 source)))
-        s (atom (rest source))
-        before? (fn [dt]
-                  ;(println "before: " (:date @d))
-                  (and @d (t/<= (:date @d) dt)))
-        set-r (fn [& [R d]]
-                ;(println "set R: " R " d:" d)
-                (when d
-                  ;(println "d: " d)
-                  (reset! r d)))
-        x (xf set-r)]
-    (x)
-    (fn [dt]
-      (if dt
-        (do (while (before? dt)
-              ;(println "process: " @d)
-              (x @r @d)
-              (reset! d (first (take 1 @s)))
-              (reset! s (rest @s))) 
-            @r)
-        @r))))
-
-
 (comment
   (random-float -100 100)
   (repeatedly 3 #(random-float -3.0 3.0))
 
   (random-series 10)
   (count (random-series 100))
-
 
   (random-ts 3))
