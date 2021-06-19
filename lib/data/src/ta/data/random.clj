@@ -1,6 +1,6 @@
 (ns ta.data.random
-  (:require [ta.swings.date :refer [dt-now]]
-            [tick.alpha.api :as t])
+  (:require  
+   [tick.alpha.api :as t])
   (:import
    [java.util Random]))
 
@@ -29,6 +29,8 @@
                       ;; mimicing a normal distribution
                     (apply + (repeatedly 10 #(rand 0.005)))))))))
 
+(defn dt-now []
+  (t/date (t/now)))
 
 (defn random-ts [size]
   (let [pseries (random-series size)

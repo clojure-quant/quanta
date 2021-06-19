@@ -2,9 +2,21 @@
  :deps
  {ta/warehouse {:local/root "./lib/warehouse" :deps/manifest :deps}
   ta/data {:local/root "./lib/data" :deps/manifest :deps}
-  ta/ta {:local/root "./lib/ta" :deps/manifest :deps}}
+  org.clojure/clojure    {:mvn/version "1.10.3"}
+  org.clojure/core.async {:mvn/version "1.3.618"}
+  org.clojure/data.avl   {:mvn/version "0.1.0"}
+  medley/medley          {:mvn/version "1.3.0"}  ; lightweight pure functions that are "missing" from clojure.core.
+  clj-time/clj-time      {:mvn/version "0.15.2"} ; joda-time wrapper for clj (needed by bybit)
+  tick/tick              {:mvn/version "0.4.27-alpha"} ; replacement for clj-time
+  org.clojure/data.csv   {:mvn/version "1.0.0"}  ; read/write csv
+  net.cgrand/xforms      {:mvn/version "0.19.2"} ; transducers for timeseries (ema sma)
+  org.ta4j/ta4j-core     {:mvn/version "0.12"}   ; ta4j java technical indicator library 
+  org.clojure/algo.generic {:mvn/version "0.1.2"}}
  :aliases
- {; test-clj does not run in github actions
+ {:nrepl {:extra-deps {nrepl/nrepl                {:mvn/version "0.8.3"}}
+          :main-opts  ["-m" "nrepl.cmdline"]}
+
+  ; test-clj does not run in github actions
   :test-clj {:extra-paths ["test"]
              :extra-deps  {eftest/eftest {:mvn/version "0.5.7"}}
              :main-opts   ["-e"  "(require,'[eftest.runner,:refer,[find-tests,run-tests]]),(run-tests,(find-tests,\"test\"))"]}
@@ -48,60 +60,8 @@
                                         :sha "0ca84df1357d71429243b99908303f45a934654c"}}
           :main-opts ["-m" "clj-check.check"]}
 
-  ; notebook
 
-  ; -X allows to add config directly in deps.edn; but it supports also a edn file
-  :notebook {:extra-deps {org.pinkgorilla/notebook-bundel {:mvn/version "RELEASE"}
-                          org.clojure/clojure    {:mvn/version "1.10.3"}
-                          org.clojure/core.async {:mvn/version "1.3.618"}
-                          ta/demo {:local/root "./profiles/demo" :deps/manifest :deps}}
-             :exec-fn pinkgorilla.notebook-bundel/run
-             :exec-args {:config {:explorer {:client {:repositories [{:name "local"  :url "/api/explorer" :save true}
-                                                                     #_{:name "public" :url "https://raw.githubusercontent.com/pink-gorilla/gorilla-explore/master/resources/list.json"}]}
-                                             :server {:resource-root-path "notebooks-none"
-                                                      :roots
-                                                      {:gorilla-ui "./resources/notebooks"
-                        ;:backtest "../../quant/backtest/notebooks"
-                        ;:fquant "../../quant/clojureQuant/notebooks"
-                                                       }}}}}}
 
- :notebook2 {:extra-deps {org.pinkgorilla/notebook {:mvn/version "RELEASE"}
-                          org.pinkgorilla/ui-vega  {:mvn/version "0.0.7"}
-                          org.pinkgorilla/ui-input {:mvn/version "0.0.3"}
-                          org.clojure/clojure    {:mvn/version "1.10.3"}
-                          org.clojure/core.async {:mvn/version "1.3.618"}
-                          ta/demo {:local/root "./profiles/demo" :deps/manifest :deps}}
-             :exec-fn pinkgorilla.notebook-ui.app.app/notebook-run!
-             :exec-args {:profile "watch"
-                    :config {:goldly {:enabled true
-                                           :extensions [; taken from goldly-bundel and modified
-                                                        [pinkgorilla.repl.goldly.core]
-                                                        [pinkgorilla.repl.goldly.snippets]
-                                                        [pinkgorilla.vega.goldly]
-                                                        [pinkgorilla.vega.snippets]
-                                           ]}
-                                  :explorer {:client {:repositories [{:name "local"  :url "/api/explorer" :save true}
-                                                                     #_{:name "public" :url "https://raw.githubusercontent.com/pink-gorilla/gorilla-explore/master/resources/list.json"}]}
-                                             :server {:resource-root-path "notebooks-none"
-                                                      :roots
-                                                      {:gorilla-ui "./resources/notebooks"
-                        ;:backtest "../../quant/backtest/notebooks"
-                        ;:fquant "../../quant/clojureQuant/notebooks"
-                                                       }}}}}}
-
-  
-  :goldly
-  {:extra-deps {org.pinkgorilla/goldly-bundel {:mvn/version "RELEASE"}}
-   :exec-fn goldly-bundel/run
-   :exec-args {:config {:goldly {:systems [systems.snippet-registry  ; if you want snippet browser started
-                                           systems.snippet-scratchpad
-                                           demo.hello-user]}}}}
-
-  :demo
-  {:extra-deps {ta/demo {:local/root "./profiles/demo" :deps/manifest :deps}}
-   ;:exec-fn  demo.warehouse/import
-   ;:exec-args {}
-   }
 
 ;
   }}

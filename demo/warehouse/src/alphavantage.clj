@@ -1,8 +1,13 @@
-(ns demo.alphavantage)
+(ns demo.alphavantage
+   (:require
+   [clojure.edn :as edn]
+   [ta.data.alphavantage :as av]
+  ))
 
 
 (-> "creds.edn" slurp edn/read-string
     :alphavantage av/set-key!)
+av/@api-key
 
 (av/search "S&P 500")
 
@@ -36,8 +41,7 @@
 
 (get-crypto-rating "BTC")
 
-(set-key! "hhh")
-@api-key
+
 
 (map get-crypto-rating ["BTC" "ETH" "LTC" "DASH" "NANO" "EOS" "XLM"])
 

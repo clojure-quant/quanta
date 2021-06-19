@@ -14,7 +14,7 @@ See the [examples](dev/examples) directory for some usage examples.
 
  to show in notebook:
  - in terminal run: clojure -X:notebook
- - in webbrowser go to :9000 and create a new notebook
+ - in webbrowser go to :8000 and create a new notebook
  - in your ide connect nrepl to port 9100 
    (in vscode called nrepl jack in)  
    port can be seen in .webly/config.edn
@@ -35,6 +35,10 @@ If it cannot find the latest release, run `clojure -P -X:notebook`
 clojure -M:test
 lein speed
 ```
+
+https://github.com/cnuernber/dtype-next
+https://github.com/cgrand/xforms
+
 
 ## License
 
