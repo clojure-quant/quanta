@@ -18,12 +18,7 @@
 (println "hello from trateg")
 {:a 1 :b 2}
 
-(wh/init-tswh {:series "../../db/"
-               :list "../../resources/etf/"}
-               )
 
-(wh/init-tswh {:series "./db/"
-               :list "./resources/etf/"})
 
 (defn calc-swings [symbol]
   (let [d (wh/load-ts symbol)

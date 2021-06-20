@@ -5,16 +5,13 @@
   ;clj-time/clj-time      {:mvn/version "0.15.2"} ; joda-time wrapper for clj (needed by bybit)
   ;techascent/tech.ml.dataset {:mvn/version "6.001"}
   techascent/tech.io {:mvn/version "4.07"}
-  com.taoensso/nippy {:mvn/version "3.1.1"}
+  com.taoensso/nippy {:mvn/version "2.14.0"}
   cljc.java-time/cljc.java-time {:mvn/version "0.1.16"}
   tick/tick                     {:mvn/version "0.4.31-alpha"} ; replacement for clj-time
   }
  :aliases
  {:outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
              :main-opts ["-m" "antq.core"]}
-  :test {:extra-paths ["test/main/clojure"]
-         :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}
-         :main-opts   ["-m" "kaocha.runner"]}
   
   ;
   }}

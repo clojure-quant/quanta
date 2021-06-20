@@ -7,14 +7,8 @@
    [ta.warehouse :as wh]
    [ta.series.indicator :as ind]
    [ta.backtest.core :as bt]
+   [demo.config]
    ))
-
-#_(wh/init-tswh {:series "../../db/"
-                 :list "../../resources/etf/"})
-
-(wh/init-tswh {:series "./db/"
-               :list "./resources/etf/"})
-
 
 
 (def d (wh/load-ts "MSFT"))

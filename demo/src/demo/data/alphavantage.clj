@@ -1,4 +1,4 @@
-(ns demo.alphavantage
+(ns demo.data.alphavantage
    (:require
    [clojure.edn :as edn]
    [ta.data.alphavantage :as av]

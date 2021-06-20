@@ -6,11 +6,6 @@
    [ta.backtest.core :refer [calc-xf pf-backtest]]
    [ta.swings.transduce :refer [xf-swings]]))
 
-(wh/init-tswh {:series "../../db/"
-               :list "../../resources/etf/"})
-
-(wh/init-tswh {:series "./db/"
-               :list "./resources/etf/"})
 
 
 (def algo (xf-swings true 30))

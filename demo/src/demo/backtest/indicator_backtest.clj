@@ -7,12 +7,6 @@
    [ta.backtest.core :refer [calc-xf pf-backtest]]
    [ta.series.indicator :as ind :refer [field-xf sma-xf indicator  multiple-xf]]))
 
-(wh/init-tswh {:series "../../db/"
-               :list "../../resources/etf/"})
-
-(wh/init-tswh {:series "./db/"
-               :list "./resources/etf/"})
-
 
 (def algo (comp (field-xf :close) (sma-xf 30)))
 

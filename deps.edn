@@ -10,7 +10,9 @@
   org.clojure/data.csv   {:mvn/version "1.0.0"}  ; read/write csv
   net.cgrand/xforms      {:mvn/version "0.19.2"} ; transducers for timeseries (ema sma)
   org.ta4j/ta4j-core     {:mvn/version "0.12"}   ; ta4j java technical indicator library 
-  org.clojure/algo.generic {:mvn/version "0.1.2"}}
+  org.clojure/algo.generic {:mvn/version "0.1.2"}
+  techascent/tech.ml.dataset {:mvn/version "6.001"}
+  }
  :aliases
  {:nrepl {:extra-deps {nrepl/nrepl  {:mvn/version "0.8.3"}}
           :main-opts  ["-m" "nrepl.cmdline"]}

@@ -1,8 +1,7 @@
 {:paths ["src" "classes"]
- :deps {ta/trateg {:local/root "../.." :deps/manifest :deps}}
+ :deps {ta/trateg {:local/root ".." :deps/manifest :deps}}
  :aliases
- {:nrepl {:extra-deps {nrepl/nrepl                {:mvn/version "0.8.3"}}
-          :main-opts  ["-m" "nrepl.cmdline"]}
+ {
 
   :import {:exec-fn demo.warehouse/import
            :exec-args {}}

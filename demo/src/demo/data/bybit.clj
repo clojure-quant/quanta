@@ -1,4 +1,4 @@
-(ns demo.bybit)
+(ns demo.data.bybit)
 
  (c/to-long (-> 2 t/hours t/ago))
 

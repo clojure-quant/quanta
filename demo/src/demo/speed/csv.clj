@@ -1,4 +1,4 @@
-(ns speed.csv
+(ns demo.speed.csv
   (:require
    [clj-time.core :as t]
    [taoensso.tufte :as tufte :refer (defnp p profiled profile)]

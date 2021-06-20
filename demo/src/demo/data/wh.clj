@@ -1,4 +1,4 @@
-(ns demo
+(ns demo.data.wh
   (:require
    [tech.v3.dataset :as ds]
    [ta.warehouse :as w]))

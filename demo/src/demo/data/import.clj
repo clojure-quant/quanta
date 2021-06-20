@@ -5,11 +5,7 @@
    [ta.warehouse :as wh]
    [tech.v3.dataset :as ds]))
 
-#_(wh/init-tswh {:series "../../db/"
-               :list "../../resources/etf/"})
 
-(wh/init-tswh {:series "./db/"
-               :list "./resources/etf/"})
 
 (-> "creds.edn" slurp edn/read-string
     :alphavantage av/set-key!)
