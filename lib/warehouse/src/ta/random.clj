@@ -1,4 +1,4 @@
-(ns ta.data.random
+(ns ta.random
   (:require  
    [tick.alpha.api :as t])
   (:import

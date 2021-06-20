@@ -1,20 +1,24 @@
 (ns ta.data.bybit
   (:require
-   [clj-http.client :as client]
-   [cheshire.core] ; JSON Encoding
-   [clj-time.core :as t]
-   [clj-time.coerce :as c]))
+   [clj-http.client :as http]
+   [cheshire.core :as cheshire] ; JSON Encoding
+   [cljc.java-time.instant :as ti]))
 
 ; https://bybit-exchange.github.io/bybit-official-api-docs/en/index.html#operation/query_symbol
 
 ; Intervals:  1 3 5 15 30 60 120 240 360 720 "D" "M" "W" "Y"
 ; limit:      less than or equal 200
 
-(defn to-epoch-no-ms- [date]
-  (int (/ (c/to-long date) 1000)))
+(defn to-epoch-second [date]
+  (case (type date)
+    java.time.Instant (ti/get-epoch-second date)
+    ;java.time.LocalDate 
+    nil
+    )
+  )
 
 (defn to-date- [epoch-no-ms]
-  (c/from-long (* epoch-no-ms 1000)))
+  (ti/of-epoch-second epoch-no-ms))
 
 (defn as-float [str]
   (if (nil? str)
@@ -35,21 +39,19 @@
        (map convert-bar)))
 
 (defn history [interval from limit symbol]
-  (-> (client/get "https://api.bybit.com/v2/public/kline/list"
+  (-> (http/get "https://api.bybit.com/v2/public/kline/list"
                   {:accept :json
                    :query-params {:symbol symbol
                                   :interval interval
-                                  :from (to-epoch-no-ms- from)
+                                  :from (to-epoch-second from)
                                   :limit limit}})
       (:body)
-      (cheshire.core/parse-string true)
+      (cheshire/parse-string true)
       (parse-history)))
 
-(defn history-recent [symbol bars]
-  (let [start (-> (* bars 15) t/minutes t/ago)]
-    (history "15" start bars symbol)))
 
-(defn requests-needed [bars]
+
+#_(defn requests-needed [bars]
   (let [remaining (atom bars)
         position (atom 0)
         requests (atom [])]
@@ -61,7 +63,7 @@
         (swap! remaining - current)))
     @requests))
 
-(defn history-recent-extended
+#_(defn history-recent-extended
   "gets recent history from bybit
   in case more than 200 bars (the maximum per request allowed by bybit) are needed,
   then multiple requests are made"
@@ -75,3 +77,7 @@
          (map #(history "15" (:start-time %) (:bars %) symbol))
          (reduce concat []))))
 
+
+#_(defn history-recent [symbol bars]
+  (let [start (-> (* bars 15) t/minutes t/ago)]
+    (history "15" start bars symbol)))

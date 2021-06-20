@@ -1,4 +1,4 @@
-(ns demo.warehouse
+(ns demo.data.import
   (:require
    [clojure.edn :as edn]
    [ta.data.alphavantage :as av]
