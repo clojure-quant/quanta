@@ -6,14 +6,17 @@ Seeks to provide tools to run backtests on financial time series and analyze res
 
 Provides a light convenience wrapper over [ta4j](https://github.com/ta4j/ta4j) as well as a very early attempt at a pure clojure implementation of something similar. 
 
-## Usage
+## Demo
 
-See the [examples](dev/examples) directory for some usage examples.
+See the [demo] directory for some usage examples.
 
-## Remote REPL Notebook
+TA ships some notebooks that you can edit in PinkGorilla notebook.
+Clone TA and run: `cd demo && clojure -X:notebook`
 
- to show in notebook:
- - in terminal run: clojure -X:notebook
+If you want to build the notebook from scratch, use: `cd demo && clojure -X:notebook2`
+
+** Remote REPL **
+ - in terminalyou have pinkgorilla notebook running
  - in webbrowser go to :8000 and create a new notebook
  - in your ide connect nrepl to port 9100 
    (in vscode called nrepl jack in)  
@@ -21,13 +24,6 @@ See the [examples](dev/examples) directory for some usage examples.
  - all evals after evaling :gorilla/on will show up in notebook
  - :gorilla/off stops evals in sniffer
 
-
-## PinkGorilla Notebook
-
-TA ships some notebooks that you can edit in PinkGorilla notebook.
-Clone TA and run: `clojure -X:notebook`
-
-If it cannot find the latest release, run `clojure -P -X:notebook`
 
 ## run unit tests / speed tests
 

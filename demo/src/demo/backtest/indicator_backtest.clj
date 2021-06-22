@@ -2,7 +2,7 @@
   (:require
    [clojure.pprint]
    [tech.v3.datatype.functional :as dfn]
-   [ta.date :refer [parse-date]]
+   [ta.data.date :refer [parse-date]]
    [ta.warehouse :as wh]
    [ta.backtest.core :refer [calc-xf pf-backtest]]
    [ta.series.indicator :as ind :refer [field-xf sma-xf indicator  multiple-xf]]))

@@ -1,18 +1,35 @@
 (ns demo.dataset
   (:require
    [net.cgrand.xforms :as x]
-   [tech.v3.dataset :as ds]
+   [tech.v3.dataset :as tds]
    [tech.v3.datatype.functional :as dfn]
-   [ta.date :refer [parse-date]]
+   ;[ta.data.date :refer [parse-date]]
    [ta.warehouse :as wh]
    [ta.series.indicator :as ind]
    [ta.backtest.core :as bt]
+   [ta.backtest.chart :as c]
    [demo.config]
+   [ta.data.date :refer [->epoch]]
    ))
+
+:gorilla/on
+
+
+
 
 
 (def d (wh/load-ts "MSFT"))
 d
+
+(def d-epoch (tds/column-map d :epoch #(->epoch %) [:date]))
+
+(c/series-ohlc d-epoch)
+(c/series d-epoch :close)
+
+(c/study-chart d [{:close "line"}
+                  {:open "line"}
+                  {:volume "column"}
+                  ])
 
 
 (defn pre-process [d]

@@ -1,7 +1,7 @@
 (ns demo.swinger-backtest
   (:require
    [clojure.pprint]
-   [ta.date :refer [parse-date]]
+   [ta.data.date :refer [parse-date]]
    [ta.warehouse :as wh]
    [ta.backtest.core :refer [calc-xf pf-backtest]]
    [ta.swings.transduce :refer [xf-swings]]))

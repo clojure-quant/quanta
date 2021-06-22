@@ -3,7 +3,7 @@
    [tick.alpha.api :as t]
    [tech.v3.dataset :as ds]
    [net.cgrand.xforms :as x]
-   [ta.date :refer [parse-date]]
+   [ta.data.date :refer [parse-date]]
    [ta.warehouse :as wh]
    [ta.backtest.trade :refer [pf trade]]))
 
