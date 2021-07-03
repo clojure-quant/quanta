@@ -4,10 +4,6 @@
    [ta.warehouse :as wh]
   ))
 
-
-(wh/init-tswh {:series "../../db/"
-               :list "../../resources/etf/"})
-
-(wh/init-tswh {:series "./db/"
-               :list "./resources/etf/"})
+(def w (wh/init {:series "../db/"
+                 :list "../resources/etf/"}))
 

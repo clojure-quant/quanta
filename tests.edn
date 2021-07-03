@@ -3,8 +3,6 @@
                                        :kaocha/ns-patterns   ["-test$"]
                                        :kaocha/source-paths  ["src"]
                                        :kaocha/test-paths    ["test"
-                                                               "lib/warehouse/test"
-                                                              
                                                               ]}]
  :kaocha/fail-fast?                  false
  :kaocha/color?                      true

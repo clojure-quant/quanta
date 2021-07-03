@@ -1,5 +1,11 @@
 {:paths ["src" "classes"]
- :deps {ta/trateg {:local/root ".." :deps/manifest :deps}}
+ :deps {ta/trateg {:local/root "../.." :deps/manifest :deps}
+         ta/data {:local/root "../data" :deps/manifest :deps}
+
+        com.taoensso/timbre {:mvn/version "5.1.2"} ; clj/cljs logging
+
+        
+        }
  :aliases
  {:outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
              :main-opts ["-m" "antq.core"]}
@@ -60,10 +66,15 @@
 
   ;; demo jobs
 
-  :import {:exec-fn demo.warehouse/import
-           :exec-args {}}
-  :show {:exec-fn demo.warehouse/show
-         :exec-args {}}
+  :import {:exec-fn demo.data.import/import-ts
+           :exec-args {:symbol-list "test" ; "fidelity-select"
+                       }}
+  
+  :show {:exec-fn demo.data.import/show-ts
+         :exec-args {:symbol-list "test" ; "fidelity-select"
+                     }}
+
+  
   :calc {:exec-fn demo.swinger/calc
          :exec-args {}}
 

@@ -1,7 +1,7 @@
-{:paths ["src" "resources"]
+{:paths ["profiles/trateg/src" "profiles/resources"]
  :deps
- {ta/warehouse {:local/root "./lib/warehouse" :deps/manifest :deps}
-  ta/data {:local/root "./lib/data" :deps/manifest :deps}
+ {ta/warehouse {:local/root "./profiles/warehouse" :deps/manifest :deps}
+  ta/data {:local/root "./profiles/data" :deps/manifest :deps}
   org.clojure/clojure    {:mvn/version "1.10.3"}
   org.clojure/core.async {:mvn/version "1.3.618"}
   org.clojure/data.avl   {:mvn/version "0.1.0"}
@@ -16,10 +16,6 @@
  :aliases
  {:nrepl {:extra-deps {nrepl/nrepl  {:mvn/version "0.8.3"}}
           :main-opts  ["-m" "nrepl.cmdline"]}
-
-  :test {;:extra-paths ["test/main/clojure"]
-         :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}
-         :main-opts   ["-m" "kaocha.runner"]}
 
   :garamond
   {:main-opts ["-m" "garamond.main"]
@@ -55,6 +51,10 @@
   :check {:extra-deps {athos/clj-check {:git/url "https://github.com/athos/clj-check.git"
                                         :sha "518d5a1cbfcd7c952f548e6dbfcb9a4a5faf9062"}}
           :main-opts ["-m" "clj-check.check"]}
+
+    :test {;:extra-paths ["test/main/clojure"]
+           :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}
+           :main-opts   ["-m" "kaocha.runner"]}
 
 
 
