@@ -8,11 +8,17 @@
   com.taoensso/nippy {:mvn/version "2.14.0"}
   cljc.java-time/cljc.java-time {:mvn/version "0.1.16"}
   tick/tick                     {:mvn/version "0.4.31-alpha"} ; replacement for clj-time
+   com.taoensso/timbre {:mvn/version "5.1.2"} ; clj/cljs logging
+
   }
  :aliases
  {:outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
              :main-opts ["-m" "antq.core"]}
   
+  :test {;:extra-paths ["test/main/clojure"]
+         :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}
+         :main-opts   ["-m" "kaocha.runner"]}
+
   ;
   }}
 

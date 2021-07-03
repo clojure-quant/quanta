@@ -1,6 +1,7 @@
 (ns ta.warehouse
   (:require
    [clojure.edn :as edn]
+   [taoensso.timbre :refer [trace debug info error]]
   ; [tech.v3.dataset :as ds]
   ; [tech.v3.dataset.io :as ds-io]
    ;[tech.v3.dataset.base :as ds-base]
@@ -11,33 +12,24 @@
    [taoensso.nippy :as nippy]))
 
 
+(defn init [settings]
+  (info "wh init: " settings)
+  settings)
 
-(def dir (atom {:series "./"
-                :list "./resources/etf/"}
-                ))
-
-(defn init-tswh [path]
-  (reset! dir path))
-
-(defn save-ts [ds name]
-  (let [s (io/gzip-output-stream! (str (:series @dir) name ".nippy.gz"))]
+(defn save-ts [wh ds name]
+  (let [s (io/gzip-output-stream! (str (:series wh) name ".nippy.gz"))]
     (io/put-nippy! s ds)))
 
-(defn load-ts [ name]
-  (let [s (io/gzip-input-stream (str (:series @dir) name ".nippy.gz"))]
+(defn load-ts [wh name]
+  (let [s (io/gzip-input-stream (str (:series wh) name ".nippy.gz"))]
     (io/get-nippy s )))
 
-(defn load-list [name]
+(defn load-list [wh name]
   (println "loading list: " name)
-  (->> (str (:list @dir) name ".edn") 
+  (->> (str (:list wh) name ".edn") 
       slurp
       edn/read-string
       (map :symbol)
       ))
 
 
-(comment
-  
-  (load-list "fidelity-select")
-  
-  )

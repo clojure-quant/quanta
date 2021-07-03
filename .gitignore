@@ -34,3 +34,4 @@ package.json
 shadow-cljs.edn
 goldly_bindings_generated.cljs
 /demo/db
+/profiles/db
