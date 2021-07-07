@@ -85,3 +85,45 @@ https://github.com/rm-hull/clustering
 
 
 https://slugclojure.ahungry.com/package/ztellman.automat
+
+
+
+
+
+--- pivot table
+FANG %>%
+    pivot_table(
+        .rows    = c(symbol, ~ QUARTER(date)),
+        .columns = ~ YEAR(date),
+        .values  = ~ (LAST(adjusted) - FIRST(adjusted)) / FIRST(adjusted)
+    ) %>%
+    kable()
+
+
+-- countif
+FANG %>%
+    group_by(symbol) %>%
+    summarise(
+        high_volume_in_2015 = COUNT_IFS(volume,
+                                        year(date) == 2015,
+                                        volume > quantile(volume, 0.75))
+    )
+
+
+
+80,000 stocks. 15 years, 10 usd a month. splitFactor, dividend. fundamentals.
+https://api.tiingo.com/
+
+
+https://www.business-science.io/finance/2020/03/04/tidyquant-1.0.0.html
+https://github.com/joshuaulrich/quantmod
+
+## List of 5
+##  $ zoo                 : chr [1:14] "rollapply" "rollapplyr" "rollmax" "rollmax.default" ...
+##  $ xts                 : chr [1:27] "apply.daily" "apply.monthly" "apply.quarterly" "apply.weekly" ...
+##  $ quantmod            : chr [1:25] "allReturns" "annualReturn" "ClCl" "dailyReturn" ...
+##  $ TTR                 : chr [1:63] "adjRatios" "ADX" "ALMA" "aroon" ...
+##  $ PerformanceAnalytics: chr [1:7] "Return.annualized" "Return.annualized.excess" "Return.clean" "Return.cumulative" ...
+
+
+

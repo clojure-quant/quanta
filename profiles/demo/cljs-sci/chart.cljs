@@ -6,8 +6,8 @@
                         :symbol nil
                         :symbols "loading symbols"}))
 
-(run-a chart-state [:symbols] :ta/symbols)
-(run-a chart-state [:t] :ta/table-spec "FSDAX")
+(run-a chart-state [:symbols] :ta/symbols "test")
+;(run-a chart-state [:t] :ta/table-spec "FSDAX")
 
 (defmethod reagent-page :user/chart [{:keys [route-params query-params handler] :as route}]
   ^:R
@@ -21,5 +21,5 @@
      :items (:symbols @chart-state)}
     chart-state [:symbol]]
    (when (:table-spec @chart-state)
-     [aggrid (:t @chart-state)])
+     [aggrid (:table-spec @chart-state)])
    [:p "current symbol: " (pr-str (:symbol @chart-state))]])
