@@ -1,10 +1,8 @@
 {:paths ["src" "classes"]
  :deps {ta/trateg {:local/root "../.." :deps/manifest :deps}
-         ta/data {:local/root "../data" :deps/manifest :deps}
+        ta/data {:local/root "../data" :deps/manifest :deps}
 
         com.taoensso/timbre {:mvn/version "5.1.2"} ; clj/cljs logging
-
-        
         }
  :aliases
  {:outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
@@ -29,8 +27,8 @@
   :notebook2
   {:extra-deps {org.pinkgorilla/goldly {:mvn/version "RELEASE"}
                 org.pinkgorilla/notebook {:mvn/version "RELEASE"}
-                org.pinkgorilla/ui-input {:mvn/version "0.0.8"}
-                org.pinkgorilla/ui-highcharts {:mvn/version "0.0.7"}
+                org.pinkgorilla/ui-input {:mvn/version "0.0.11"}
+                org.pinkgorilla/ui-highcharts {:mvn/version "0.0.9"}
                 org.clojure/clojure    {:mvn/version "1.10.3"}
                 org.clojure/core.async {:mvn/version "1.3.618"}
                 ta/demo {:local/root "./profiles/demo" :deps/manifest :deps}}
@@ -44,21 +42,28 @@
 
 
   :goldlyb
-  {:extra-deps {org.pinkgorilla/goldly-bundel {:mvn/version "RELEASE"}}
-   :exec-fn goldly-bundel/run
-   :exec-args {:config {:goldly {:systems [systems.snippet-registry  ; if you want snippet browser started
+  {:extra-deps {org.pinkgorilla/goldly {:mvn/version "0.3.17"}
+                org.pinkgorilla/goldly-bundel {:mvn/version "0.3.17"}}
+   :exec-fn goldly-server.app/goldly-server-run!
+   :exec-args {:config {:goldly {:lazy true
+                                 :routes {"" :user/main
+                                          "chart" :user/chart
+                                          "experiment" :user/experiment}
+                                 :systems [systems.snippet-registry  ; if you want snippet browser started
                                            systems.snippet-scratchpad]}}}}
 
   :goldly
-  {:extra-deps {org.pinkgorilla/goldly {:mvn/version "0.2.111"}
-                org.pinkgorilla/ui-input {:mvn/version "0.0.8"}
-                org.pinkgorilla/ui-highcharts {:mvn/version "0.0.7"}
-                org.pinkgorilla/gorilla-ui  {:mvn/version "0.3.45"}}
+  {:extra-deps {org.pinkgorilla/goldly {:mvn/version "0.3.17"}
+                org.pinkgorilla/ui-input {:mvn/version "0.0.11"}
+                org.pinkgorilla/ui-highcharts {:mvn/version "0.0.9"}
+                org.pinkgorilla/ui-gorilla  {:mvn/version "0.3.50"}
+                org.pinkgorilla/ui-aggrid {:mvn/version "0.0.8"}}
    :exec-fn goldly-server.app/goldly-server-run!
    :exec-args {:profile "watch2"
                :config {:webly {:ns-clj [goldly-server.app
                                          demo.goldly.services]}
-                        :goldly {:routes {"" :user/main
+                        :goldly {:lazy true
+                                 :routes {"" :user/main
                                           "chart" :user/chart
                                           "experiment" :user/experiment}}
                         :systems [systems.snippet-registry  ; if you want snippet browser started
@@ -69,12 +74,12 @@
   :import {:exec-fn demo.data.import/import-ts
            :exec-args {:symbol-list "test" ; "fidelity-select"
                        }}
-  
+
   :show {:exec-fn demo.data.import/show-ts
          :exec-args {:symbol-list "test" ; "fidelity-select"
                      }}
 
-  
+
   :calc {:exec-fn demo.swinger/calc
          :exec-args {}}
 

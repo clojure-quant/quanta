@@ -5,7 +5,8 @@
 (defn table-spec [ds]
   (let [ds-safe (dissoc ds :date)
         data (into [] (tds/mapseq-reader ds-safe))]
-    {:data data}))
+    {:box :lg
+     :data data}))
 
 (defn ds-table [ds]
   ^:R [:p/aggrid

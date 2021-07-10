@@ -11,12 +11,14 @@ rm karma.conf.js
 rm shadow-cljs.edn
 
 
-rm demo/.cpcache -r
-rm demo/node_modules -r
-rm demo/target -r
-rm demo/.webly -r
-rm demo/.shadow-cljs -r
-rm demo/package.json
-rm demo/package-lock.json
-rm demo/karma.conf.js
-rm demo/shadow-cljs.edn
+rm profiles/demo/.cpcache -r
+rm profiles/demo/node_modules -r
+rm profiles/demo/target -r
+rm profiles/demo/.webly -r
+rm profiles/demo/.shadow-cljs -r
+rm profiles/demo/package.json
+rm profiles/demo/package-lock.json
+rm profiles/demo/karma.conf.js
+rm profiles/demo/shadow-cljs.edn
+
+rm profiles/demo/classes -r

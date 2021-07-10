@@ -127,3 +127,5 @@ https://github.com/joshuaulrich/quantmod
 
 
 
+hurst index
+https://r-forge.r-project.org/scm/viewvc.php/pkg/PerformanceAnalytics/R/HurstIndex.R?view=markup&root=returnanalytics
