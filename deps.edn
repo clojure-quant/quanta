@@ -11,8 +11,7 @@
   net.cgrand/xforms      {:mvn/version "0.19.2"} ; transducers for timeseries (ema sma)
   org.ta4j/ta4j-core     {:mvn/version "0.12"}   ; ta4j java technical indicator library 
   org.clojure/algo.generic {:mvn/version "0.1.2"}
-  techascent/tech.ml.dataset {:mvn/version "6.001"}
-  }
+  techascent/tech.ml.dataset {:mvn/version "6.001"}}
  :aliases
  {:nrepl {:extra-deps {nrepl/nrepl  {:mvn/version "0.8.3"}}
           :main-opts  ["-m" "nrepl.cmdline"]}
@@ -22,39 +21,47 @@
    :extra-deps {com.workframe/garamond {:mvn/version "0.4.0"}}}
 
   ;https://github.com/applied-science/deps-library
-  :release {:extra-deps {applied-science/deps-library {:mvn/version "0.4.0"}}
-            :main-opts ["-m" "applied-science.deps-library"]}
+  :release
+  {:extra-deps {applied-science/deps-library {:mvn/version "0.4.0"}}
+   :main-opts ["-m" "applied-science.deps-library"]}
 
   ; https://github.com/weavejester/cljfmt
-  :cljfmt     {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
-               :main-opts ["-m" "cljfmt.main" "check" "--indents" "cljfmt.edn"]}
-  :cljfmt-fix {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
-               :main-opts ["-m" "cljfmt.main" "fix" "--indents" "cljfmt.edn"]}
+  :cljfmt
+  {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
+   :main-opts ["-m" "cljfmt.main" "check" "--indents" "cljfmt.edn"]}
+  :cljfmt-fix
+  {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
+   :main-opts ["-m" "cljfmt.main" "fix" "--indents" "cljfmt.edn"]}
 
  ; https://github.com/clj-kondo/clj-kondo/blob/master/doc/jvm.md
-  :lint {:extra-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}
-         :main-opts ["-m" "clj-kondo.main"
-                     "--lint" "src"]}
+  :lint
+  {:extra-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}
+   :main-opts ["-m" "clj-kondo.main"
+               "--lint" "src"]}
 
-  :cloverage {:extra-paths ["test"]
-              :extra-deps  {cloverage/cloverage {:mvn/version "RELEASE"}}
-              :main-opts   ["-m" "cloverage.coverage"
-                            "--src-ns-path" "src"
-                            "--test-ns-path" "test"]
-              :exec-fn     cloverage.coverage/run-project
-              :exec-args   {:src-ns-path  ["src"]
-                            :test-ns-path ["test"]}}
+  :cloverage
+  {:extra-paths ["test"]
+   :extra-deps  {cloverage/cloverage {:mvn/version "RELEASE"}}
+   :main-opts   ["-m" "cloverage.coverage"
+                 "--src-ns-path" "src"
+                 "--test-ns-path" "test"]
+   :exec-fn     cloverage.coverage/run-project
+   :exec-args   {:src-ns-path  ["src"]
+                 :test-ns-path ["test"]}}
 
-  :outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
-             :main-opts ["-m" "antq.core"]}
+  :outdated
+  {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
+   :main-opts ["-m" "antq.core"]}
 
-  :check {:extra-deps {athos/clj-check {:git/url "https://github.com/athos/clj-check.git"
-                                        :sha "518d5a1cbfcd7c952f548e6dbfcb9a4a5faf9062"}}
-          :main-opts ["-m" "clj-check.check"]}
+  :check
+  {:extra-deps {athos/clj-check {:git/url "https://github.com/athos/clj-check.git"
+                                 :sha "518d5a1cbfcd7c952f548e6dbfcb9a4a5faf9062"}}
+   :main-opts ["-m" "clj-check.check"]}
 
-    :test {;:extra-paths ["test/main/clojure"]
-           :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}
-           :main-opts   ["-m" "kaocha.runner"]}
+  :test
+  {;:extra-paths ["test/main/clojure"]
+   :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}
+   :main-opts   ["-m" "kaocha.runner"]}
 
 
 

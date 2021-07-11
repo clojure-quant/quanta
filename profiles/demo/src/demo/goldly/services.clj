@@ -2,7 +2,7 @@
   (:require
    [goldly.service.core :as service]
    [ta.warehouse :as wh]
-   [ta.backtest.table :refer [table-spec]]
+   [ta.backtest.table :refer [ds->table]]
    [ta.backtest.chart :as c]
    [demo.studies.sma :as study]
    [demo.config :refer [w]]
@@ -14,7 +14,7 @@
 
 (defn table [symbol]
   (-> (study symbol)
-      table-spec))
+      ds->table))
 
 ;(defn chart)
 ;(c/study-chart d [{:sma200 "line"
@@ -27,5 +27,5 @@
 (service/add
  {:ta/symbols (partial wh/load-list w)
   :ta/load-ts (partial wh/load-ts w); needs symbol parameter
-  :ta/table-spec table})
+  :ta/table table})
 

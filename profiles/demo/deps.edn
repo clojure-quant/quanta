@@ -1,7 +1,6 @@
 {:paths ["src" "classes"]
  :deps {ta/trateg {:local/root "../.." :deps/manifest :deps}
         ta/data {:local/root "../data" :deps/manifest :deps}
-
         com.taoensso/timbre {:mvn/version "5.1.2"} ; clj/cljs logging
         }
  :aliases
@@ -42,18 +41,20 @@
 
 
   :goldlyb
-  {:extra-deps {org.pinkgorilla/goldly {:mvn/version "0.3.17"}
-                org.pinkgorilla/goldly-bundel {:mvn/version "0.3.17"}}
+  {:extra-deps {org.pinkgorilla/goldly-bundel {:mvn/version "0.3.21"}}
    :exec-fn goldly-server.app/goldly-server-run!
-   :exec-args {:config {:goldly {:lazy true
+   :exec-args {:profile "jetty"
+               :config {:goldly {:lazy true
                                  :routes {"" :user/main
+                                          "error" :user/error
                                           "chart" :user/chart
                                           "experiment" :user/experiment}
-                                 :systems [systems.snippet-registry  ; if you want snippet browser started
+                                 :systems [demo.goldly.services
+                                           systems.snippet-registry  ; if you want snippet browser started
                                            systems.snippet-scratchpad]}}}}
 
   :goldly
-  {:extra-deps {org.pinkgorilla/goldly {:mvn/version "0.3.17"}
+  {:extra-deps {org.pinkgorilla/goldly {:mvn/version "0.3.20"}
                 org.pinkgorilla/ui-input {:mvn/version "0.0.11"}
                 org.pinkgorilla/ui-highcharts {:mvn/version "0.0.9"}
                 org.pinkgorilla/ui-gorilla  {:mvn/version "0.3.50"}
@@ -66,7 +67,8 @@
                                  :routes {"" :user/main
                                           "chart" :user/chart
                                           "experiment" :user/experiment}}
-                        :systems [systems.snippet-registry  ; if you want snippet browser started
+                        :systems [demo.goldly.services
+                                  systems.snippet-registry  ; if you want snippet browser started
                                   systems.snippet-scratchpad]}}}
 
   ;; demo jobs
