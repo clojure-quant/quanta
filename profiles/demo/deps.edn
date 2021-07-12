@@ -26,8 +26,8 @@
   :notebook2
   {:extra-deps {org.pinkgorilla/goldly {:mvn/version "RELEASE"}
                 org.pinkgorilla/notebook {:mvn/version "RELEASE"}
-                org.pinkgorilla/ui-input {:mvn/version "0.0.11"}
-                org.pinkgorilla/ui-highcharts {:mvn/version "0.0.9"}
+                org.pinkgorilla/ui-input {:mvn/version "0.0.12"}
+                org.pinkgorilla/ui-highcharts {:mvn/version "0.0.10"}
                 org.clojure/clojure    {:mvn/version "1.10.3"}
                 org.clojure/core.async {:mvn/version "1.3.618"}
                 ta/demo {:local/root "./profiles/demo" :deps/manifest :deps}}
@@ -41,35 +41,20 @@
 
 
   :goldlyb
-  {:extra-deps {org.pinkgorilla/goldly-bundel {:mvn/version "0.3.21"}}
+  {:extra-deps {org.pinkgorilla/goldly-bundel {:mvn/version "0.3.22"}}
    :exec-fn goldly-server.app/goldly-server-run!
    :exec-args {:profile "jetty"
-               :config {:goldly {:lazy true
-                                 :routes {"" :user/main
-                                          "error" :user/error
-                                          "chart" :user/chart
-                                          "experiment" :user/experiment}
-                                 :systems [demo.goldly.services
-                                           systems.snippet-registry  ; if you want snippet browser started
-                                           systems.snippet-scratchpad]}}}}
+               :config "goldly-ta.edn"}}
 
   :goldly
-  {:extra-deps {org.pinkgorilla/goldly {:mvn/version "0.3.20"}
-                org.pinkgorilla/ui-input {:mvn/version "0.0.11"}
-                org.pinkgorilla/ui-highcharts {:mvn/version "0.0.9"}
+  {:extra-deps {org.pinkgorilla/goldly {:mvn/version "0.3.22"}
+                org.pinkgorilla/ui-input {:mvn/version "0.0.12"}
+                org.pinkgorilla/ui-highcharts {:mvn/version "0.0.10"}
                 org.pinkgorilla/ui-gorilla  {:mvn/version "0.3.50"}
-                org.pinkgorilla/ui-aggrid {:mvn/version "0.0.8"}}
+                org.pinkgorilla/ui-aggrid {:mvn/version "0.0.11"}}
    :exec-fn goldly-server.app/goldly-server-run!
    :exec-args {:profile "watch2"
-               :config {:webly {:ns-clj [goldly-server.app
-                                         demo.goldly.services]}
-                        :goldly {:lazy true
-                                 :routes {"" :user/main
-                                          "chart" :user/chart
-                                          "experiment" :user/experiment}}
-                        :systems [demo.goldly.services
-                                  systems.snippet-registry  ; if you want snippet browser started
-                                  systems.snippet-scratchpad]}}}
+               :config "goldly-ta.edn"}}
 
   ;; demo jobs
 

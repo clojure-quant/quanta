@@ -1,0 +1,10 @@
+{:goldly {:lazy true
+          :routes {"" :user/main
+                   "error" :user/error
+                   "chart" :user/chart
+                   "test/heatmap" :test/heatmap
+                   "test/histogram" :test/histogram
+                   "test/experiment" :test/experiment}
+          :systems [demo.goldly.services
+                    systems.snippet-registry  ; if you want snippet browser started
+                    systems.snippet-scratchpad]}}

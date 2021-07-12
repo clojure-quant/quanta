@@ -10,6 +10,9 @@ Provides a light convenience wrapper over [ta4j](https://github.com/ta4j/ta4j) a
 
 See the [demo] directory for some usage examples.
 
+TA ships a goldly web-app. 
+Clone TA and run: `cd demo && clojure -X:goldlyb`
+
 TA ships some notebooks that you can edit in PinkGorilla notebook.
 Clone TA and run: `cd demo && clojure -X:notebook`
 
