@@ -15,7 +15,9 @@
          '[fastmath.stats :as stats]
          '[fastmath.clustering :as clustering]
          '[ta.warehouse :as wh]
-         '[demo.goldly.experiments-helpers :as experiments-helpers])
+         '[demo.goldly.experiments-helpers :as experiments-helpers]
+         '[loom.graph]
+         '[loom.alg])
 
 (defonce w
   (wh/init {:series "../db/"
@@ -32,7 +34,7 @@
        (into {})))
 
 
-(def datasets
+(defonce datasets
   (->> symbols
        (map (fn [symbol]
               (-> (wh/load-ts w symbol)
@@ -63,7 +65,7 @@
 
 (def full-symbols
   (->> full-datasets
-       (map dataset->symbol)))
+       (mapv dataset->symbol)))
 
 (def concatenated-dataset
   (->> full-datasets
@@ -91,31 +93,6 @@
        stats/covariance-matrix
        tensor/->tensor))
 
-corrs
-#tech.v3.tensor<object>[38 38]
-[[ 1.000 0.2063 0.9213 ... 0.2799 0.2769 0.2779]
- [0.2063  1.000 0.2261 ... 0.6172 0.6164 0.6170]
- [0.9213 0.2261  1.000 ... 0.3076 0.3034 0.3052]
- ...
- [0.2799 0.6172 0.3076 ...  1.000 0.9981 0.9990]
- [0.2769 0.6164 0.3034 ... 0.9981  1.000 0.9996]
- [0.2779 0.6170 0.3052 ... 0.9990 0.9996  1.000]]
-
-(fun/sq corrs)
-#tech.v3.tensor<object>[38 38]
-[[  1.000 0.04255  0.8488 ... 0.07835 0.07669 0.07722]
- [0.04255   1.000 0.05112 ...  0.3810  0.3800  0.3807]
- [ 0.8488 0.05112   1.000 ... 0.09460 0.09205 0.09313]
- ...
- [0.07835  0.3810 0.09460 ...   1.000  0.9962  0.9980]
- [0.07669  0.3800 0.09205 ...  0.9962   1.000  0.9992]
- [0.07722  0.3807 0.09313 ...  0.9980  0.9992   1.000]]
-
-;; "explained variance"
-;; 47% of MSFT's variance is explained by SPY
-;; 25% of XOM's variance is explained by SPY
-
-
 (def clustering
   (-> full-datasets
       (->> (map #(-> % :return helper/standardize)))
@@ -129,6 +106,111 @@ corrs
     tablecloth/dataset
     (tablecloth/order-by :cluster)
     (print/print-range :all))
+
+(def symbol->cluster
+  (zipmap full-symbols
+          (:clustering clustering)))
+
+
+
+(defn edges [threshold]
+  (let [n (count full-symbols)]
+    (-> (for [j     (range n)
+              i     (range j)
+              :let  [r (corrs i j)]
+              :when (-> r
+                        fun/sq
+                        (>= threshold))]
+          {:i    i
+           :j    j
+           :sign (fun/signum r)}))))
+
+^kind/dataset
+(-> edges
+    tablecloth/dataset
+    (print/print-range :all))
+
+^kind/hiccup
+(let [threshold 0.6
+      stylesheet    [{:selector "node"
+                      :style    {:width  20
+                                 :height 10
+                                 :shape  "rectangle"}}
+                     {:selector "edge"
+                      :style    {:width 5
+                                 :line-color "purple"}}]
+      nodes (->> full-symbols
+                 (map-indexed (fn [i symbol]
+                                {:data {:id i
+                                        :label (name symbol)}})))
+      edges (->> threshold
+                 edges
+                 (map (fn [{:keys [i j sign]}]
+                        {:data {:id (str i "-" j)
+                                :source i
+                                :target j}})))
+      elements (concat nodes edges)]
+  [:p/cytoscape   {:stylesheet stylesheet
+                   :elements   elements
+                   :layout     {:name "cose"}
+                   :style      {:border "9px solid #39b"
+                                :width  "100px"
+                                :height "100px"}}])
+
+
+(-> (->> 0.6
+         edges
+         (map (fn [{:keys [i j sign]}]
+                [i j]))
+         (apply loom.graph/graph)
+         loom.alg/connected-components
+         (map-indexed
+          (fn [i comp-indexes]
+            (tablecloth/dataset
+             {:component      (str "comp" i)
+              :symbol (map full-symbols comp-indexes)})))
+         (apply tablecloth/concat))
+    (tablecloth/add-columns
+     {:name    #(->> % :symbol (mapv symbol->name))
+      :cluster #(->> % :symbol (mapv symbol->cluster))})
+    (print/print-range :all))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+maintain an up to date state of our knowledge of all toplevel forms and evals
+
+
+
+just sychronize the browser with this state
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
