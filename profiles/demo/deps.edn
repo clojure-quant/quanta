@@ -40,6 +40,11 @@
                                             :roots {:ta "./resources/notebooks"}}}}}}
 
 
+  :notespace
+  {:extra-deps {scicloj/notespace {:mvn/version "RELEASE"}
+                nrepl/nrepl {:mvn/version "RELEASE"}}
+   :main-opts ["-m" "nrepl.cmdline"]}
+
   :goldlyb
   {:extra-deps {org.pinkgorilla/goldly-bundel {:mvn/version "0.3.24"}}
    :exec-fn goldly-server.app/goldly-server-run!
