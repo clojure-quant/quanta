@@ -13,7 +13,6 @@
    [demo.studies.helper.sma :refer [sma-study]]
    ))
 
-
 (def d (-> 
         (wh/load-ts w "MSFT")
         sma-study

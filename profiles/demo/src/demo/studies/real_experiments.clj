@@ -1,23 +1,20 @@
 (ns demo.studies.real-experiments
-  (:require ;[notespace.api]
-            [tablecloth.api :as tablecloth]))
-
-(require ;'[notespace.kinds :as kind]
-         '[ta.dataset.helper :as helper]
-         '[tablecloth.api :as tablecloth]
-         '[tech.v3.dataset.print :as print]
-         '[tech.v3.dataset :as dataset]
-         '[tech.v3.datatype :as dtype]
-         '[tech.v3.tensor :as tensor]
-         '[tech.v3.datatype.datetime :as datetime]
-         '[tech.v3.datatype.functional :as fun]
-         '[tech.v3.datatype.statistics :as dtype-stats]
-         '[fastmath.stats :as stats]
-         '[fastmath.clustering :as clustering]
-         '[ta.warehouse :as wh]
-         '[demo.studies.helper.experiments-helpers :as experiments-helpers]
-         '[loom.graph]
-         '[loom.alg])
+  (:require
+   [tech.v3.dataset.print :as print]
+   [tech.v3.dataset :as dataset]
+   [tech.v3.datatype :as dtype]
+   [tech.v3.tensor :as tensor]
+   [tech.v3.datatype.datetime :as datetime]
+   [tech.v3.datatype.functional :as fun]
+   [tech.v3.datatype.statistics :as dtype-stats]
+   [tablecloth.api :as tablecloth]
+   [fastmath.stats :as stats]
+   [fastmath.clustering :as clustering]
+   [loom.graph]
+   [loom.alg]
+   [ta.warehouse :as wh]
+   [ta.dataset.helper :as helper]
+   [demo.studies.helper.experiments-helpers :as experiments-helpers]))
 
 (defonce w
   (wh/init {:series "../db/"
@@ -69,8 +66,8 @@
 
 (def concatenated-dataset
   (->> full-datasets
-      (apply tablecloth/concat)
-      experiments-helpers/add-year-and-month))
+       (apply tablecloth/concat)
+       experiments-helpers/add-year-and-month))
 
 (-> concatenated-dataset
     (tablecloth/random 10))
@@ -125,12 +122,12 @@
            :j    j
            :sign (fun/signum r)}))))
 
-^kind/dataset
+
 (-> edges
     tablecloth/dataset
     (print/print-range :all))
 
-^kind/hiccup
+
 (let [threshold 0.6
       stylesheet    [{:selector "node"
                       :style    {:width  20
@@ -150,12 +147,14 @@
                                 :source i
                                 :target j}})))
       elements (concat nodes edges)]
-  [:p/cytoscape   {:stylesheet stylesheet
+  ^:R
+  [:p/cytoscape   {;:box :lg
+                   :stylesheet stylesheet
                    :elements   elements
                    :layout     {:name "cose"}
                    :style      {:border "9px solid #39b"
-                                :width  "100px"
-                                :height "100px"}}])
+                                :width  "800px"
+                                :height "800px"}}])
 
 
 (-> (->> 0.6
@@ -174,44 +173,3 @@
      {:name    #(->> % :symbol (mapv symbol->name))
       :cluster #(->> % :symbol (mapv symbol->cluster))})
     (print/print-range :all))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-maintain an up to date state of our knowledge of all toplevel forms and evals
-
-
-
-just sychronize the browser with this state
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -2,7 +2,6 @@
   (:require
    [picasso.protocols :refer [Renderable render make]]))
 
-
 (defn text-render
   [o]
   (make :pinkie ; :reagent ; :hiccup

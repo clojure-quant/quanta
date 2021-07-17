@@ -1,11 +1,11 @@
 (ns demo.studies.helper.experiments-helpers
-  (:require ;[notespace.kinds :as kind]
-            [ta.dataset.helper :as helper]
-            [tablecloth.api :as tablecloth]
-            [tech.v3.dataset.print :as print]
-            [tech.v3.dataset :as dataset]
-            [tech.v3.datatype.datetime :as datetime]
-            [tech.v3.datatype :as dtype]))
+  (:require
+   [tech.v3.dataset.print :as print]
+   [tech.v3.dataset :as dataset]
+   [tech.v3.datatype.datetime :as datetime]
+   [tech.v3.datatype :as dtype]
+   [tablecloth.api :as tablecloth]
+   [ta.dataset.helper :as helper]))
 
 (defn add-year-and-month [ds]
   (-> ds

@@ -1,15 +1,12 @@
 (ns demo.studies.random-experiments
-  (:require ;[notespace.api]
+  (:require
+   [tech.v3.dataset.print :as print]
+   [tech.v3.dataset :as dataset]
+   [tech.v3.datatype.datetime :as datetime]
    [tablecloth.api :as tablecloth]
-   [demo.studies.helper.techml]))
-
-(require ;'[notespace.kinds :as kind]
- '[ta.dataset.helper :as helper]
- '[tablecloth.api :as tablecloth]
- '[tech.v3.dataset.print :as print]
- '[tech.v3.dataset :as dataset]
- '[tech.v3.datatype.datetime :as datetime]
- '[demo.studies.helper.experiments-helpers :as experiments-helpers])
+   [ta.dataset.helper :as helper]
+   [demo.studies.helper.techml] ; side-effects (dataset rendering)
+   [demo.studies.helper.experiments-helpers :as experiments-helpers]))
 
 (def datasets
   (->> (helper/random-datasets 3 1000)

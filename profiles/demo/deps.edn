@@ -43,13 +43,13 @@
    :main-opts ["-m" "nrepl.cmdline"]}
 
   :goldlyb
-  {:extra-deps {org.pinkgorilla/goldly-bundel {:mvn/version "0.3.29"}}
+  {:extra-deps {org.pinkgorilla/goldly-bundel {:mvn/version "0.3.30"}}
    :exec-fn goldly-server.app/goldly-server-run!
    :exec-args {:profile "jetty"
                :config "goldly-ta.edn"}}
 
   :goldly
-  {:extra-deps {org.pinkgorilla/goldly {:mvn/version "0.3.29"}
+  {:extra-deps {org.pinkgorilla/goldly {:mvn/version "0.3.30"}
                 org.pinkgorilla/ui-input {:mvn/version "0.0.12"}
                 org.pinkgorilla/ui-highcharts {:mvn/version "0.0.10"}
                 org.pinkgorilla/ui-gorilla  {:mvn/version "0.3.50"}
