@@ -13,13 +13,6 @@
    ))
 
 
-
-:gorilla/on
-(println "hello from trateg")
-{:a 1 :b 2}
-
-
-
 (defn calc-swings [symbol]
   (let [d (wh/load-ts symbol)
         r (ds/mapseq-reader d)
