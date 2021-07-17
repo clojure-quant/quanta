@@ -1,4 +1,4 @@
-(ns demo.dataset
+(ns demo.studies.dataset
   (:require
    [net.cgrand.xforms :as x]
    [tech.v3.dataset :as tds]
@@ -8,15 +8,14 @@
    [ta.series.indicator :as ind]
    [ta.backtest.core :as bt]
    [ta.backtest.chart :as c]
-   [demo.config]
+   [demo.config :refer [w]]
    [ta.data.date :refer  [->epoch]]
+   [demo.studies.helper.sma :refer [sma-study]]
    ))
-
-:gorilla/on
 
 
 (def d (-> 
-        (wh/load-ts "MSFT")
+        (wh/load-ts w "MSFT")
         sma-study
         ))
 d
@@ -34,15 +33,10 @@ d
                   {:volume "column"}
                   ])
 
+;(def r (bt/calc-xf pre-process identity "XOM"))
 
-
-
-
-
-(def r (bt/calc-xf pre-process identity "XOM"))
-
-(r (parse-date "2021-02-03"))
-(r nil)
+;(r (parse-date "2021-02-03"))
+;(r nil)
 
 (into [] identity (range 5))
 

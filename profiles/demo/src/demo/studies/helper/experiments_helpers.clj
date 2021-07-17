@@ -1,5 +1,5 @@
-(ns demo.goldly.experiments-helpers
-  (:require [notespace.kinds :as kind]
+(ns demo.studies.helper.experiments-helpers
+  (:require ;[notespace.kinds :as kind]
             [ta.dataset.helper :as helper]
             [tablecloth.api :as tablecloth]
             [tech.v3.dataset.print :as print]

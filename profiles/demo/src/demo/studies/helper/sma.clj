@@ -1,4 +1,4 @@
-(ns demo.studies.sma 
+(ns demo.studies.helper.sma 
 (:require
    [net.cgrand.xforms :as x]
    [tech.v3.dataset :as tds]

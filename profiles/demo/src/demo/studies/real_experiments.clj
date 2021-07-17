@@ -1,8 +1,8 @@
-(ns demo.goldly.real-experiments
-  (:require [notespace.api]
+(ns demo.studies.real-experiments
+  (:require ;[notespace.api]
             [tablecloth.api :as tablecloth]))
 
-(require '[notespace.kinds :as kind]
+(require ;'[notespace.kinds :as kind]
          '[ta.dataset.helper :as helper]
          '[tablecloth.api :as tablecloth]
          '[tech.v3.dataset.print :as print]
@@ -15,7 +15,7 @@
          '[fastmath.stats :as stats]
          '[fastmath.clustering :as clustering]
          '[ta.warehouse :as wh]
-         '[demo.goldly.experiments-helpers :as experiments-helpers]
+         '[demo.studies.helper.experiments-helpers :as experiments-helpers]
          '[loom.graph]
          '[loom.alg])
 

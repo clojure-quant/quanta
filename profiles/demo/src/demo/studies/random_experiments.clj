@@ -1,14 +1,15 @@
-(ns demo.goldly.random-experiments
-  (:require [notespace.api]
-            [tablecloth.api :as tablecloth]))
+(ns demo.studies.random-experiments
+  (:require ;[notespace.api]
+   [tablecloth.api :as tablecloth]
+   [demo.studies.helper.techml]))
 
-(require '[notespace.kinds :as kind]
-         '[ta.dataset.helper :as helper]
-         '[tablecloth.api :as tablecloth]
-         '[tech.v3.dataset.print :as print]
-         '[tech.v3.dataset :as dataset]
-         '[tech.v3.datatype.datetime :as datetime]
-         '[demo.goldly.experiments-helpers :as experiments-helpers])
+(require ;'[notespace.kinds :as kind]
+ '[ta.dataset.helper :as helper]
+ '[tablecloth.api :as tablecloth]
+ '[tech.v3.dataset.print :as print]
+ '[tech.v3.dataset :as dataset]
+ '[tech.v3.datatype.datetime :as datetime]
+ '[demo.studies.helper.experiments-helpers :as experiments-helpers])
 
 (def datasets
   (->> (helper/random-datasets 3 1000)
@@ -20,7 +21,7 @@
 ^kind/dataset
 (first datasets)
 
-["Check that the `:date` columns of all datasets are equal."]
+;; Check that the `:date` columns of all datasets are equal.
 (->> datasets
      (map :date)
      (apply =)
