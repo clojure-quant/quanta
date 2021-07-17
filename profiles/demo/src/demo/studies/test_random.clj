@@ -1,5 +1,5 @@
 
-(ns notebooks.test-correlation
+(ns demo.studies.test-correlation
   (:require
    [tablecloth.api :as tablecloth]
    [tick.alpha.api :as tick]

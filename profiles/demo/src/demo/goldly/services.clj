@@ -4,7 +4,7 @@
    [ta.warehouse :as wh]
    [ta.backtest.table :refer [ds->table]]
    [ta.backtest.chart :as c]
-   [demo.studies.sma :as study]
+   [demo.studies.helper.sma :as study]
    [demo.config :refer [w]]
    ))
 

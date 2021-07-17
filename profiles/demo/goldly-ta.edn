@@ -21,6 +21,7 @@
  
  :goldly {:lazy true
           :notebook-dir "src/demo/studies"
+          :autoload-dir "src/demo/goldly/cljs"  ; to load cljs files to repl state
           :routes {"" :user/main
                    "error" :user/error
                    "chart" :user/chart

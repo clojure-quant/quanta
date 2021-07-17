@@ -1,4 +1,4 @@
-(ns notebooks.test-correlation
+(ns demo.studies.test-correlation
   (:require
    [fastmath.stats :as stats]
    [tech.v3.datatype.functional :as fun]
