@@ -7,8 +7,6 @@
                               days-ago select-recent-rows]]
    [demo.studies.helper.techml] ; side-effects (dataset rendering)
    ))
-
-
 ;   _unnamed [3 2]:
 ; |      :date |     :close |
 ; |------------|-----------:|
@@ -16,7 +14,6 @@
 ; | 2021-07-11 | 0.49329818 |
 ; | 2021-07-12 | 0.52461530 |
 (random-dataset 3)
-  
 
 ; _unnamed [7 2]:
 ; |      :date |     :close |
@@ -41,7 +38,7 @@
              :date
              (tick/>= date))))
       time))
-  
+
 (def datasets (random-datasets 12 1000))
 (count datasets)
 (first datasets)
@@ -51,4 +48,3 @@
     (tablecloth/rows :as-maps)
     first
     type)
-  

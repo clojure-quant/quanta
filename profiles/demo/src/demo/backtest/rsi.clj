@@ -8,11 +8,11 @@
             [trateg.chart :refer :all]
             [trateg.indicator :as ind]
             [trateg.ta4j :as ta4j]
-   :reload-all))
+            :reload-all))
 
 ; show bar data
 (def spx-bars  (load-csv-bars "trateg/spx.csv"))
-{:first-bar  (first spx-bars) 
+{:first-bar  (first spx-bars)
  :bar-count (count spx-bars)}
 ;(def spx-bars (take 100 spx-bars))
 ;(count spx-bars)
@@ -71,11 +71,9 @@
 ;;let's check out a chart of the performance for the 20 day holding period
 (performance-chart (get results1 20))
 
-
 ;;we can also see trades on a trade-chart. Longs are blue shorts are red, the
 ;;darker shade is a winning trade, while the ligher shade is a loser.
 (second (trade-chart (get results1 20) :rsi))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;ATR based stops;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -89,7 +87,7 @@
     (-> ctx
         (cross-trigger :under :rsi 30 :enter :long)
         (cross-trigger :over :rsi 70 :enter :short)
-        
+
         (initial-stop
          (fn [ctx]
            (let [{:keys [atr]} (:current-bar ctx)]
@@ -100,13 +98,12 @@
            (let [{:keys [atr]} (:current-bar ctx)]
              (when-let [{:keys [entry-price side]} (:pending-entry ctx)]
                (side-add side entry-price  (* tp-mult atr))))))
-        
+
         enforce-single-position
         enforce-no-entry-on-exit-bar
         check-exits
         record-exit-orders
         execute-pending)))
-
 
 (def results2 (into (sorted-map)
                     (for [stop-mult (range 1 5)
@@ -115,12 +112,12 @@
                        (run-strat BARS (rsi-atr-exit-strat stop-mult tp-mult))])))
 
 (do (println "Results for ATR multiple stops:")
-  (->> results2
-       (map (fn [[[stop-mult tp-mult] result]]
-              (-> (gauntlet result)
-                  (assoc :exits
-                         [stop-mult tp-mult]))))
-       (print-result-table :exits)))
+    (->> results2
+         (map (fn [[[stop-mult tp-mult] result]]
+                (-> (gauntlet result)
+                    (assoc :exits
+                           [stop-mult tp-mult]))))
+         (print-result-table :exits)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;Trailing stop;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -162,7 +159,6 @@
         check-exits
         record-exit-orders
         execute-pending)))
-
 
 ;;now lets print some stats about all the results
 (def results3 (into (sorted-map)

@@ -5,8 +5,6 @@
    [ta.data.csv :refer [load-bars-file save-bars-file load-csv-bars-trateg]]
    ;[ta.series.compress :refer [compress group-month]]
    ))
-
-
 (defn- test-load []
   (p :load-csv
      (->>
@@ -17,8 +15,6 @@
       (doall)
             ;(last)
       )))
-
-
 (defn speed-csv-load []
   (profile
    {}

@@ -45,29 +45,24 @@
              (reset! s {:current C
                         :next N}))
            (let [S (if live?
-                     (process-price ret-prct (fn [d] nil) @s close date) 
-                     (process-price ret-prct (fn [d] (xf acc d)) @s close date))
-                 ]
+                     (process-price ret-prct (fn [d] nil) @s close date)
+                     (process-price ret-prct (fn [d] (xf acc d)) @s close date))]
              (reset! s S)
-             (when live? 
-               (xf acc (:current S)))
-             ))
+             (when live?
+               (xf acc (:current S)))))
          acc)))))
 
+(comment
 
-(comment 
-  
   (def series [{:date 1 :close 10}
                {:date 2 :close 30}
                {:date 3 :close 8}
                {:date 4 :close 6}
-                {:date 5 :close 9}
-                {:date 6 :close 11}
-               ])
+               {:date 5 :close 9}
+               {:date 6 :close 11}])
 
   (let [swings (into [] (xf-swings 20) series)]
     (println "swings: " swings)
-    (print-swings2 swings)
-  )
+    (print-swings2 swings))
 ;
-)
+  )

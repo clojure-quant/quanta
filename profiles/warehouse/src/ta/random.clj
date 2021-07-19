@@ -1,5 +1,5 @@
 (ns ta.random
-  (:require  
+  (:require
    [tick.alpha.api :as t])
   (:import
    [java.util Random]))

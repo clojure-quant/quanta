@@ -32,50 +32,45 @@
   (ldt/to-epoch-second dt utc))
 
 (defn- epoch-ld [dt]
-  (epoch-ldt (t/at dt (t/time "13:00:06")) ))
+  (epoch-ldt (t/at dt (t/time "13:00:06"))))
 
  ;(t/at (t/date "2021-06-20") (t/time "13:00:06"))
 (defn ->epoch [dt]
   ;(println "->epoch " dt (type dt))
   (let [t (type dt)]
-  (cond
-     (= t java.time.LocalDate)  (epoch-ld dt)
-     (= t java.time.LocalDateTime)  (epoch-ldt dt)  
-     (= t java.time.Instant) (ti/get-epoch-second dt)
-     :else  99 
-        )
-  ))
+    (cond
+      (= t java.time.LocalDate)  (epoch-ld dt)
+      (= t java.time.LocalDateTime)  (epoch-ldt dt)
+      (= t java.time.Instant) (ti/get-epoch-second dt)
+      :else  99)))
 
 (comment
 
   ; ; java.time.LocalDate
   (-> (t/date "2021-06-20")
       ;(epoch-ld)
-      (->epoch)
-      )
+      (->epoch))
 
-   ; java.time.LocalDateTime  (only seconds)
+; java.time.LocalDateTime  (only seconds)
   (-> (t/date "2021-06-20")
       (t/at  (t/time "13:30:06"))
       ;(epoch-ldt)
-      (->epoch)
-   )
+      (->epoch))
 
-  ; java.time.Instant  (milliseconds)
+; java.time.Instant  (milliseconds)
   (-> (t/now)
       ;(ti/get-epoch-second)
       ;(ti/to-epoch-milli)
-      (->epoch)
-   )
-   (-> (ti/now) ti/get-epoch-second) ; 1624140369
-   (ti/of-epoch-second 1624140369)
-   (-> (ti/now)) ; 1624141864204 
-   (ti/of-epoch-milli 1624141864204)
-  
+      (->epoch))
+  (-> (ti/now) ti/get-epoch-second) ; 1624140369
+  (ti/of-epoch-second 1624140369)
+  (-> (ti/now)) ; 1624141864204 
+  (ti/of-epoch-milli 1624141864204)
+
   ;; comparison
-   (ld/is-after (ld/now)  (parse-date "2021-05-16"))
+  (ld/is-after (ld/now)  (parse-date "2021-05-16"))
 
   ;; duration
-   (t/new-duration 80 :days)
+  (t/new-duration 80 :days)
 ;  
-)
+  )

@@ -9,9 +9,7 @@
    [ta.swings.transduce :refer [xf-swings]]
    [ta.swings.viz :refer [swing-chart]]
    [ta.data.random :refer [process-until random-ts]]
-   [ta.swing.date :refer [parse-date]]
-   ))
-
+   [ta.swing.date :refer [parse-date]]))
 
 (defn calc-swings [symbol]
   (let [d (wh/load-ts symbol)
@@ -23,27 +21,20 @@
     (spit (str "reports/" symbol ".txt")
           (with-out-str
             (print-swings2 swings)))
-    swings
-    ))
-
+    swings))
 
 (defn calc [_]
   ;(doall (map show symbols))
   (calc-swings "MSFT"))
 
-
 (defn no-date [l]
-  (map #(dissoc % :dt-first :dt-last) l)
-  )
+  (map #(dissoc % :dt-first :dt-last) l))
 
 (defn dt-str [d]
-  (when d  (ld/format d iso-date))
-  )
+  (when d  (ld/format d iso-date)))
 (defn str-date [l]
   (map #(assoc % :dt-first (dt-str  (:dt-first %))
-               :dt-last (dt-str (:dt-last %))
-               ) l))
-
+               :dt-last (dt-str (:dt-last %))) l))
 
 (comment
   (->> (calc-swings "XOM")
@@ -51,25 +42,21 @@
        ;(no-date)
        (str-date)
       ;print-swings2
-      swing-chart
+       swing-chart
       ;pr-str
-
-      )
-
-
+       )
   ((xf-swings 30))
 
   (take 1 (random-ts 10))
 
- (parse-date "2021-05-16")
+  (parse-date "2021-05-16")
 
   (def rd (process-until (xf-swings 30) (random-ts 10)))
   (rd (parse-date "2021-06-18"))
   (rd nil)
  ; 
 
-
- ; 
+; 
   )
 
 ;(swings (:spx data) 20)

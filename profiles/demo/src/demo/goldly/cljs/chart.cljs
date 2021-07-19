@@ -16,7 +16,7 @@
            :paginationAutoPageSize true}])
 
 (defn histogram [data]
- [:div "histogram not implemented"])
+  [:div "histogram not implemented"])
 
 (defn chart [data]
   [:div "chart not implemented"])

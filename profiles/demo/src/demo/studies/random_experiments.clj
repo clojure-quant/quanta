@@ -35,7 +35,6 @@
   (-> concatenated-dataset
       (print/print-range :all)))
 
-
 (-> concatenated-dataset
     (tablecloth/pivot->wider :symbol :close))
 
@@ -46,7 +45,6 @@
 (-> concatenated-dataset
     (tablecloth/group-by :symbol))
 
-
 (-> concatenated-dataset
     (tablecloth/group-by :symbol)
     (print/print-policy :repl))
@@ -55,7 +53,6 @@
     (tablecloth/group-by :symbol)
     (tablecloth/random 3)
     (print/print-policy :repl))
-
 
 (-> concatenated-dataset
     (tablecloth/group-by [:symbol])
@@ -67,7 +64,6 @@
     (tablecloth/random 3)
     tablecloth/grouped?)
 
-
 (-> concatenated-dataset
     (tablecloth/group-by :symbol)
     (tablecloth/aggregate {:min (fn [ds]
@@ -90,9 +86,6 @@
                                        :close
                                        (apply max)))}))
 
-
-
-
 (-> concatenated-dataset
     (tablecloth/group-by [:symbol :year])
     (tablecloth/aggregate {:min (fn [ds]
@@ -103,8 +96,6 @@
                                   (->> ds
                                        :close
                                        (apply max)))}))
-
-
 
 (-> concatenated-dataset
     (tablecloth/group-by [:symbol :year])
@@ -118,9 +109,6 @@
                                        (apply max)))})
     (tablecloth/pivot->wider :symbol [:min :max]))
 
-
-
-
 (-> concatenated-dataset
     (tablecloth/group-by [:symbol :year :month])
     (tablecloth/aggregate {:min (fn [ds]
@@ -133,10 +121,6 @@
                                        (apply max)))})
     (tablecloth/pivot->wider :symbol [:min :max])
     (print/print-range :all))
-
-
-
-
 
 (-> concatenated-dataset
     (experiments-helpers/symbols-overview {:grouping-columns [:symbol :year :month]})

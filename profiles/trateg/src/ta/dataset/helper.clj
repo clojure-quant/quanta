@@ -30,12 +30,11 @@
 (defn random-datasets [m n]
   (repeatedly m #(random-dataset n)))
 
-  (defn standardize [xs]
-    (-> xs
-        (fun/- (fun/mean xs))
-        (fun// (fun/standard-deviation xs))))
+(defn standardize [xs]
+  (-> xs
+      (fun/- (fun/mean xs))
+      (fun// (fun/standard-deviation xs))))
 
-
-  (defn rand-numbers [n]
-    (dtype/clone
-     (dtype/make-reader :float32 n (rand))))
+(defn rand-numbers [n]
+  (dtype/clone
+   (dtype/make-reader :float32 n (rand))))

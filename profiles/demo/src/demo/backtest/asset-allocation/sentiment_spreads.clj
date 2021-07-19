@@ -41,7 +41,6 @@
 
 (base/options :width 220 :digits 2)
 
-
 ;; CONFIGURATION 
 ; (secret :alphavantage)
 (set-key! (secret :alphavantage))
@@ -56,8 +55,6 @@
               [:yen-eur-currency :FXE :FXY]
               ; 8th spread- VXX-VXZ – due to insufficient historical data.
               ])
-
-
 (def symbols (set (sort (mapcat rest spreads))))
 symbols
 
@@ -135,7 +132,6 @@ symbols
                     [:SPY :close] [:SPY :chg]
                     [:s :stocks-vs-bonds]]  :first 5)
 
-
 (defn splot [model spread]
   (let [[sname a b] spread]
     (multi-plot {:width 300 :time (get-time model)}
@@ -146,9 +142,8 @@ symbols
                    :grid-template-columns "400px 400px 400px 400px" :background-color "orange"}}
      (map (partial splot model) spreads)]
 
- (def cs (get-ts model [:s :consumer-sentiment]))
+(def cs (get-ts model [:s :consumer-sentiment]))
 (def spy (get-ts model [:SPY :chg]))
-
 
 (stats/cor cs spy :method "spearman" :use "pairwise.complete.obs")
 
@@ -241,7 +236,6 @@ pf
   [symbol]
   (->> symbol get-bar-series (map :date) (map tc/to-long)))
 
-
 (defn get-name [symbol]
   (if-let [instrument (first (filter #(= symbol (:symbol %)) instruments))]
     (:name instrument)
@@ -249,7 +243,6 @@ pf
 
 ; unchanged: 
 ;2019-11-14T00:00:00.000Z,5.81,5.81,5.81,5.81,0.0
-
 
 (defn plot1 [symbol]
   ^:R [:div {:style {:width 500 :max-width 500 :display "inline-block"}}
@@ -279,9 +272,9 @@ pf
 
 (into ^:R [:<> [:h1 "Last 100 Days.."]] (map plot3 symbols-ok))
 
- (def crisis [{:start (tc/to-long (t/date-time 2020 03 03))
-               :end (tc/to-long (t/date-time 2020 03 20))
-               :color "orange"}])
+(def crisis [{:start (tc/to-long (t/date-time 2020 03 03))
+              :end (tc/to-long (t/date-time 2020 03 20))
+              :color "orange"}])
 crisis
 
 (defn plot4 [symbol]

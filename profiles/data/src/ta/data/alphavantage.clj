@@ -34,12 +34,9 @@
 ;; ftp://nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt
 ;; ftp://nasdaqtrader.com/SymbolDirectory/otherlisted.txt
 
-
-
 ;; https://github.com/RomelTorres/alpha_vantage/issues/13
 
 ;; AlphaVantage ApiKey Management
-
 
 (def api-key (atom "demo"))
 

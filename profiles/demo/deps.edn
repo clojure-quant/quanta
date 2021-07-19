@@ -3,8 +3,7 @@
         ta/data {:local/root "../data" :deps/manifest :deps}
         com.taoensso/timbre {:mvn/version "5.1.2"} ; clj/cljs logging
         aysylu/loom {:mvn/version "1.0.2"}
-        scicloj/clojisr {:mvn/version "1.0.0-BETA11-SNAPSHOT"}
-        }
+        scicloj/clojisr {:mvn/version "1.0.0-BETA11-SNAPSHOT"}}
  :aliases
  {:outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
              :main-opts ["-m" "antq.core"]}

@@ -10,15 +10,12 @@
    [ta.backtest.chart :as c]
    [demo.config :refer [w]]
    [ta.data.date :refer  [->epoch]]
-   [demo.studies.helper.sma :refer [sma-study]]
-   ))
+   [demo.studies.helper.sma :refer [sma-study]]))
 
-(def d (-> 
+(def d (->
         (wh/load-ts w "MSFT")
-        sma-study
-        ))
+        sma-study))
 d
-
 
 (def d-epoch (tds/column-map d :epoch #(->epoch %) [:date]))
 
@@ -26,11 +23,9 @@ d
 (c/series d-epoch :close)
 
 (c/study-chart d [{:sma200 "line"
-                   :sma30 "line"
-                   }
+                   :sma30 "line"}
                   {:open "line"}
-                  {:volume "column"}
-                  ])
+                  {:volume "column"}])
 
 ;(def r (bt/calc-xf pre-process identity "XOM"))
 

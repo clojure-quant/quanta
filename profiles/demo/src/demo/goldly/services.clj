@@ -5,8 +5,7 @@
    [ta.backtest.table :refer [ds->table]]
    [ta.backtest.chart :as c]
    [demo.studies.helper.sma :as study]
-   [demo.config :refer [w]]
-   ))
+   [demo.config :refer [w]]))
 
 (defn- study [symbol]
   (-> (wh/load-ts w symbol)

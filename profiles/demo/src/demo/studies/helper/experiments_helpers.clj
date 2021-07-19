@@ -17,7 +17,6 @@
                      :date
                      (datetime/long-temporal-field :months))})))
 
-
 (defn symbols-overview [concatenated-dataset
                         {:keys [grouping-columns pivot?]
                          :or {grouping-columns [:symbol]
@@ -37,7 +36,6 @@
          #(tablecloth/pivot->wider % :symbol [:min :max :count])
          identity))))
 
-
 (defn returns [integrated-values]
   (let [n (count integrated-values)]
     (dtype/clone
@@ -48,7 +46,6 @@
         0
         (- (integrated-values idx)
            (integrated-values (dec idx))))))))
-
 
 (comment
   (->> [1 8 0 -9 1 4]

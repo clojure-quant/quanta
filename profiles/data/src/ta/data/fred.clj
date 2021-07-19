@@ -37,16 +37,12 @@
   (-> (client/get (str base-url service)
                   {:accept :json
                    :query-params (assoc params :api_key @api-key
-                                               :file_type "json"
-                                        )})
+                                        :file_type "json")})
       (:body)
-      (cheshire.core/parse-string true)
-      ))
-
+      (cheshire.core/parse-string true)))
 
 (defn series-search [q] ; "GDP"
   (sget "series/search" {:search_text q}))
-
 
 (defn category [id]
   (sget "category" {:category_id id}))
@@ -57,9 +53,6 @@
 (defn observations [id] ;GNPCA
   (sget "series/observations" {:series_id id}))
 
-
-
-
 #_(def get-av-throttled
-  (throttler.core/throttle-fn get-av-raw 5 :minute))
+    (throttler.core/throttle-fn get-av-raw 5 :minute))
 

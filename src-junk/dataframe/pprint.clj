@@ -36,11 +36,7 @@
 
   ; comment
   )
-
-
-
 ;; PRINT FILTERED TABLE
-
 
 (defn filter-rows [v show & [p]]
   (if (= show :all)
@@ -82,10 +78,7 @@
                [:a [:b :c] [:d :e]] :range [2 4])
   ; comment end
   )
-
-
 ; FLIPPER
-
 
 (defn get-col [map-of-vecs col]
   (if (vector? col)
@@ -155,10 +148,8 @@
     (path-cols m show p)
     (t m (partial chart-filter show p))))
 
-
 ;(defn chart-filter [map-of-vecs show & [p]]
 ;    (map #(chart-one % show p) map-of-vecs))
-
 
 (comment
   (chart-filter  :last 2 m1))

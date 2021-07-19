@@ -5,7 +5,6 @@
             [incanter.core :as ic]
             [incanter.stats :as stats]))
 
-
 (comment
 
   ; Incanter, Clojure's primary statistical computing library used throughout the book. Similar to R.
@@ -17,6 +16,5 @@
 
   (def my-plot (function-plot sin -10 10))
   (view my-plot)
-
 
   (stats/correlation [1 2 3 3] [4 -5 -6 -7]))

@@ -1,8 +1,6 @@
 (ns ta.swings.core
-  (:require 
-   [clojure.pprint]
-   )
-  )
+  (:require
+   [clojure.pprint]))
 
 (defn new-swing [dir p]
   {:dir dir
@@ -36,8 +34,6 @@
 (defn swing-range [{:keys [high low]}]
   (- high low))
 
-
-
 (defn counter% [current next]
   (let [c (swing-range current)
         n (swing-range next)
@@ -46,7 +42,6 @@
             0)]
     ;(println "p: " p "c: " c " n:" n)
     p))
-
 
 (defn toggle-swing [current p]
   (let [dir (:dir current)
@@ -71,7 +66,6 @@
        :current current
        :next next})))
 
-
 (defn swings [series ret-prct]
   (let [p (first series)
         c (new-swing :up p)
@@ -81,9 +75,6 @@
              :current c
              :next n}
             series)))
-
-
-
 
 (defn swing-close [{:keys [dir high low]}]
   (if (= :up dir)
@@ -108,7 +99,6 @@
   (let [s (:swings sd)
         ps (map swing-close s)]
     (swings ps prct)))
-
 
 (defn swing-table [swings]
   ^:R [:p/aggrid {:size :big

@@ -5,11 +5,8 @@
    [tick.alpha.api :as t]
    ;[tick.interval :as ti]
    ))
-
-
 ;; the key is that these tick.interval functions are really powerful:
 ;; https://github.com/juxt/tick/blob/master/src/tick/interval.cljc#L439-L748
-
 
 (def zdt t/zoned-date-time)
 (def dt t/date-time)

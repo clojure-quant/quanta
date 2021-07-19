@@ -30,7 +30,6 @@
        (map (juxt :symbol :name))
        (into {})))
 
-
 (defonce datasets
   (->> symbols
        (map (fn [symbol]
@@ -108,8 +107,6 @@
   (zipmap full-symbols
           (:clustering clustering)))
 
-
-
 (defn edges [threshold]
   (let [n (count full-symbols)]
     (-> (for [j     (range n)
@@ -122,11 +119,9 @@
            :j    j
            :sign (fun/signum r)}))))
 
-
 (-> edges
     tablecloth/dataset
     (print/print-range :all))
-
 
 (let [threshold 0.6
       stylesheet    [{:selector "node"
@@ -155,7 +150,6 @@
                    :style      {:border "9px solid #39b"
                                 :width  "800px"
                                 :height "800px"}}])
-
 
 (-> (->> 0.6
          edges

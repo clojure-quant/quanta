@@ -1,12 +1,10 @@
 (ns backtest.profit)
 
-
 ;  (:require [cheshire.core :as json]
 ;            [cheshire.generate :as json-gen]
 ;            [clojure.java.shell :as shell]
 ;            [medley.core :as m]
 ;            [clojure.java.io :as io]))
-
 
 (defn mean [coll]
   (/ (reduce + coll) (count coll)))
@@ -18,7 +16,6 @@
     (-> (reduce + squares)
         (/ (dec (count coll)))
         Math/sqrt)))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;Calculations on single trade;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -52,8 +49,6 @@
     (case side
       :long  (> exit-price entry-price)
       :short (< exit-price entry-price))))
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;Calculations on multiple trades;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -105,4 +100,4 @@
 (defn max-drawdown-over-trades [trades]
   (max-drawdown (cash-flow-over-trades trades)))
 
-  
+

@@ -17,34 +17,28 @@
    (plot (fn [x] (* x (Math/pow (Math/sin x) 2))) [0 10]))
 
 (def list-plot
- [:div
-          [:h1 "Vega charts"]
-          [:h4 "generated via gorilla-plot dsl"]
-          [:div.flex.flex-row.content-between
-           [:div.flex.flex-col.justify-start
-            [plot/list-plot d :joined true
-             :plot-size 400
-             :color "red"
-             :aspect-ratio 1.6
-             :plot-range [:all :all]
-             :opacity 0.5]]]])
-   
+  [:div
+   [:h1 "Vega charts"]
+   [:h4 "generated via gorilla-plot dsl"]
+   [:div.flex.flex-row.content-between
+    [:div.flex.flex-col.justify-start
+     [plot/list-plot d :joined true
+      :plot-size 400
+      :color "red"
+      :aspect-ratio 1.6
+      :plot-range [:all :all]
+      :opacity 0.5]]]])
 
 (defn histogram-page [h]
   [:div
-     [:h1 "list plot"]
-    list-plot
+   [:h1 "list plot"]
+   list-plot
    [plot/list-plot d :joined true
     :plot-size 400
     :color "red"
     :aspect-ratio 1.6
     :plot-range [:all :all]
-    :opacity 0.5]
-   
-   ]
-  
-  )
-
+    :opacity 0.5]])
 
 (add-page histogram-page :test/histogram)
 

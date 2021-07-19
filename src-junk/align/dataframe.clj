@@ -1,10 +1,9 @@
 (ns demo.dataframe)
 
-
 (require '[clj-time.core :as t])
 
- (def model [{:a 1 :b 10}
-             {:a 2 :b 11}])
+(def model [{:a 1 :b 10}
+            {:a 2 :b 11}])
 
 (get-ts model [:a])
 

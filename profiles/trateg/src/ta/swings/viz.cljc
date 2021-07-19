@@ -2,7 +2,7 @@
   ;(:require 
   ; [reagent.core :as r])
   ;)
-)
+  )
 
 (def swingchart-spec
   {;:$schema "http://localhost:8000/r/vega-lite/build/vega-lite-schema.json"  ;https://vega.github.io/schema/vega-lite/v5.json",
@@ -53,8 +53,7 @@
                     :scale "y"
                     :grid true
                     :format "%"
-                    :type "log"
-                    }]}
+                    :type "log"}]}
            #_{:mark {:type "point"
                      :height 10
                      :width 20}
@@ -85,16 +84,12 @@
                     :spec swingchart-spec
                     :data {:swings swings})]
     ^:R [:div {:style {:width 2400
-                        :height 1000
-                        :overflow "hidden"
-                        :background-color "green"
-                        }}
+                       :height 1000
+                       :overflow "hidden"
+                       :background-color "green"}}
          ;[:p/select {:items (range max_p)} page []]
          ;[:p "state: " (pr-str page)]
-         [:p/vegalite opts]]
-    
-    ))
-
+         [:p/vegalite opts]]))
 
 (comment
   (add-idx  [{:low 18 :high 22 :dir "up" :idx 1 :idx2 2}
@@ -107,9 +102,5 @@
     {:Low 12 :High 22 :dir "down" :idx 4,  :idx2  5}
     {:Low 12 :High 14 :dir "up" :idx 5  :idx2  6}])
 
-
-
-
-
- ; 
+; 
   )

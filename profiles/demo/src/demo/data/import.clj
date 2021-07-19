@@ -23,12 +23,10 @@
     ;(println (pr-str d))
     (wh/save-ts w ds s)))
 
-
 (defn import-ts [{:keys [symbol-list]}]
   (let [symbols (wh/load-list w symbol-list)]
     (infof "importing symbol-list: %s (%s) " symbol-list (count symbols))
     (doall (map import-symbol symbols))))
-
 
 (defn show [s]
   (let [ds (wh/load-ts w s)

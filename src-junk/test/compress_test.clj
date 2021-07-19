@@ -5,19 +5,15 @@
    [ta.data.csv :refer [load-bars-file save-bars-file]]
    [ta.series.compress :refer [compress group-month]]))
 
-
 ;; Note that compress requires datetime and not zoned date.
 ;; Therefore we cannot use trateg parser that produces zoned date time.
 
-
 (def bars  (load-bars-file "test/csv/compress.csv"))
-
 
 ;; Look into the csv file test/compress.csv; 
 ;; I patched it, so we can check the high/low more visually
 ;; November high 99.99   volumes 1 2 3 = 6
 ;; December low 11.11
-
 
 (def expected
   [{:date (t/date-time 2019 11 30)

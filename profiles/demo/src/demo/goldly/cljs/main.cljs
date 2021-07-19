@@ -9,7 +9,6 @@
 
    [link/href "/chart" "chart"]
 
-
    [link/href "/test/heatmap" "test - heatmap"]
    [link/href "/test/histogram" "test - histogram"]
    [link/href "/test/experiment" "test - experiment"]

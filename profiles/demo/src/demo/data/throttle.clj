@@ -1,8 +1,6 @@
 (ns demo.data.throttle
-  (:require 
-   [throttler.core])
-  )
-
+  (:require
+   [throttler.core]))
 
 (def plust (throttler.core/throttle-fn + 5 :minute))
 

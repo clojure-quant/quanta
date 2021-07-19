@@ -18,10 +18,10 @@
 ; in the future the notebook will save creds only in webbrowser local storage
 (av/set-key! (secret :alphavantage))
 
-(-> "creds.edn" 
-    slurp 
+(-> "creds.edn"
+    slurp
     edn/read-string
-    :alphavantage 
+    :alphavantage
     av/set-key!)
 
 (av/search "S&P 500")
@@ -48,7 +48,7 @@
 ; will at least sleep for 1 minutes, after getting the first 5 symbols. However since before 
 ; we also execute requests, it might take 2 minutes
 (clojure.pprint/print-table
- (map av/get-crypto-rating ["BTC" "ETH" "LTC" "DASH" 
+ (map av/get-crypto-rating ["BTC" "ETH" "LTC" "DASH"
                             "NANO" "EOS" "XLM"]))
 
 ;; # fidelity select search

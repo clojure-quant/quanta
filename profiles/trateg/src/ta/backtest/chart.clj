@@ -18,7 +18,6 @@
   (let [r (tds/mapseq-reader ds-epoch)]
     (mapv (juxt :epoch col) r)))
 
-
 ; [{:close "line"
 ;  :sma30 "line"}  
 ; {:volume "line"}]
@@ -39,14 +38,10 @@
               ;:offset 0
               :lineWidth 2}
         plot-no (dec (count yAxis))
-        new-series (map (partial add-series ds-e grouping plot-no) line)
-        ]
-      {:yAxis (conj yAxis axis)
-       :series (concat series new-series)
-       :no (inc no)
-       }
-    ))
-
+        new-series (map (partial add-series ds-e grouping plot-no) line)]
+    {:yAxis (conj yAxis axis)
+     :series (concat series new-series)
+     :no (inc no)}))
 
 (defn add-data [ds axes-spec]
   (let [ds-e (ds-epoch ds)
@@ -61,10 +56,9 @@
                  :data (series-ohlc ds-e)
                  :dataGrouping grouping
                  :id "0"}]]
-    (reduce (partial add-axis ds-e grouping) 
-            {:yAxis axes :series series :no 0} 
+    (reduce (partial add-axis ds-e grouping)
+            {:yAxis axes :series series :no 0}
             axes-spec)))
-
 
 (defn study-chart [ds axes-spec]
   (let [spec-base {;:title {:text title}
@@ -82,6 +76,6 @@
                                           }}
                    :credits {:enabled false}}]
     ^:R
-    [:p/highstock (merge spec-base (add-data ds axes-spec) )]))
+    [:p/highstock (merge spec-base (add-data ds axes-spec))]))
 
 

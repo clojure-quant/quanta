@@ -28,10 +28,7 @@
    (fn [x]
      (into {} (map (fn [[k v]]
                      (println k "x: " x "v: " (v x))
-            [k (v x)]
-            ) m))
-     )))
-
+                     [k (v x)]) m)))))
 
 ; stolen from: https://github.com/pangloss/transducers/blob/master/src/xn/transducers.cljc
 (defn multiplex
@@ -55,7 +52,6 @@
           ([result input]
            (reduce (fn [result f] (f result input)) result rfs)))))
     (map identity)))
-
 
 (defn sma-xf [n]
   (comp (x/window n rfs/avg #(rfs/avg %1 %2 -1))))
@@ -167,7 +163,6 @@
   (if (or (nil? prior) (= 0 prior)) nil
       (* (/ (- current prior) prior) 100.0))) ; absolute change
 
-
 (defn ago
   "returns a timeseries of values n ago.
    first n items are nil."
@@ -187,16 +182,13 @@
 
 (comment
 
-  (sma 3 [1 2 3 3] )
+  (sma 3 [1 2 3 3])
 
-  
-(defn many [x]
-  (into {} (map (fn [[k v]]
-                 [k (v x)]) {:a inc :b dec}))
-  )
+  (defn many [x]
+    (into {} (map (fn [[k v]]
+                    [k (v x)]) {:a inc :b dec})))
 
-(many 7)
- 
+  (many 7)
 
   (def concat-and-reverse (comp (partial apply str) reverse str))
   (concat-and-reverse "hello" "clojuredocs" "!")

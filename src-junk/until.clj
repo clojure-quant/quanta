@@ -2,10 +2,6 @@
 (ns ta.swings.until
   ;(:require [clojure.algo.generic.math-functions :as math])
   (:import [clojure.lang PersistentQueue]))
-  
-
-
-
 
 (defmacro indicator
   ([trans-fn] `(indicator [] ~trans-fn))
@@ -21,14 +17,12 @@
                r# (xf# result# r#))
              result#)))))))
 
-
 (defn hcomp [& xfs]
   (indicator
    [ixf (fn [_ input] input)
     ts (mapv #(% ixf) xfs)]
    (fn [x]
      (mapv #(% nil x) ts))))
-
 
 (defn align []
   (indicator
@@ -52,5 +46,4 @@
      (when (= (count @values) p)
        (/ @sum p)))))
 
-
-(into [] sma [ 4 5 6 7 8 6 5 4 3 ])
+(into [] sma [4 5 6 7 8 6 5 4 3])

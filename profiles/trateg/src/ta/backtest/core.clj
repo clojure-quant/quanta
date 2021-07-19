@@ -31,7 +31,6 @@
             @r)
         @r))))
 
-
 (defn calc-xf [pre-process xf-algo symbol]
   (let [d (wh/load-ts symbol)
         d (if pre-process
@@ -44,8 +43,7 @@
                     :or {initial-equity 100000
                          pre-process nil
                          algo identity ; (comp identity x/last ) 
-                         trade-price-field :last
-                         }} symbols]
+                         trade-price-field :last}} symbols]
   (let [dt-start (parse-date start)
         dt-end (parse-date end)
         p1d (t/new-period 1 :days)

@@ -1,37 +1,31 @@
-(ns junk.time)
-
-(ns learning.types.time
+(ns junk.time
   (:require
-    [clojure.string :as str]
-    [clj-time.core :as t]
-    [clj-time.format :as fmt]
-    [clj-time.periodic :as per]
-    [clj-time.coerce :as coerce]
-    [clojure.pprint :as p]))
+   [clojure.string :as str]
+   [clj-time.core :as t]
+   [clj-time.format :as fmt]
+   [clj-time.periodic :as per]
+   [clj-time.coerce :as coerce]
+   [clojure.pprint :as p]))
 
+; http://www.rkn.io/2014/02/13/clojure-cookbook-date-ranges/
 
-(comment  ;**************************************************
-
-  ; http://www.rkn.io/2014/02/13/clojure-cookbook-date-ranges/
-
-  (->> "1/31/1993 12:00:00 AM"
-      (fmt/parse (fmt/formatter "M/d/yyyy H:m:s a"))
+(->> "1/31/1993 12:00:00 AM"
+     (fmt/parse (fmt/formatter "M/d/yyyy H:m:s a"))
       ;(println)
-      (t/month))
+     (t/month))
 
-  (t/date-time 1986 10 30)
+(t/date-time 1986 10 30)
 
-  (t/after? (t/date-time 1986 10) (t/date-time 1986 9))
+(t/after? (t/date-time 1986 10) (t/date-time 1986 9))
 
-  (t/date-time 1986 10 30)
+(t/date-time 1986 10 30)
 
-  (fmt/show-formatters)
+(fmt/show-formatters)
 
+(fmt/parse (:basic-date-time-no-ms fmt/formatters) "20181020T140412Z")
 
-  (fmt/parse (:basic-date-time-no-ms fmt/formatters) "20181020T140412Z" )
+(t/now)
 
-  (t/now)
+(.plusDays (t/now) 30)
 
-  (.plusDays (t/now) 30)
-
-  (.plusYears (t/now) 30)
+(.plusYears (t/now) 30)

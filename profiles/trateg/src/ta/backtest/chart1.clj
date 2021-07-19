@@ -11,7 +11,6 @@
 ;(json-gen/add-encoder java.time.ZonedDateTime
 ;                      (fn [zdt gen] (.writeNumber gen (-> zdt .toInstant .toEpochMilli str))))
 
-
 (defn zoned-time-to-epoch-milli [zdt]
   (-> zdt .toInstant .toEpochMilli))
 
@@ -65,7 +64,6 @@
                :yAxis        1
                :dataGrouping {:enabled false}}]}))
 
-
 #_(when stops
     {:type         "line"
      :name         "stop"
@@ -80,7 +78,6 @@
              :dataGrouping {:enabled false}
              :yAxis        0
              :color        "black"})
-
 
 #_:plotBands #_(for [{:keys [side] :as trade} trades]
                  {:color
@@ -98,7 +95,6 @@
                     "rgba(255, 0, 0, 0.10)")
                   :from (:entry-time trade)
                   :to   (:exit-time trade)})
-
 
 ; y axis
 
@@ -127,14 +123,9 @@
  :shape "flag"  ;// Defines the shape of the flags.
  :dataGrouping grouping}
 
-
-
-
-
 (def close-series
   [[1560864600000,49.01]
    [1560951000000,49.92]])
-
 
 (def volume-series
   [[1560864600000,49.01]
@@ -146,10 +137,6 @@
     :ohlc ohlc-series
     :close close-series
     :volume volume-series}))
-
-
-
-
 
 (defn performance-chart [{:keys [trades bars]}]
   (let [bars       bars

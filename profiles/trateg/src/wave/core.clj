@@ -1,35 +1,31 @@
 (ns wave.core
   (:require
-    [backtest.random :refer [random-series]]
-    [backtest.indicator :refer [sma ema]]
-    [backtest.series :refer :all]
-    ))
-
+   [backtest.random :refer [random-series]]
+   [backtest.indicator :refer [sma ema]]
+   [backtest.series :refer :all]))
 
 (defn nil-to-false [x]
   (if (nil? x) false x))
 
 (defn bigger [p l c]
   (if (or (nil? p) (nil? l))
-      false
-      (and (> p l) (> p c))
-      ))
+    false
+    (and (> p l) (> p c))))
 
 (defn past-higher?
   [c s]
   (let [[all l] (split-at (- (count s) 1) s)  ; all= all pivots except the last
-         l (first l) ]                        ; l = only the last pivot.
-     (if (nil? l)
-         false
-         (nil-to-false (some #(bigger % l c) all))
-         )
+        l (first l)]                        ; l = only the last pivot.
+    (if (nil? l)
+      false
+      (nil-to-false (some #(bigger % l c) all)))
     ;l
-  ))
+    ))
 
 (defn lower [p l c]
   (if (or (nil? p) (nil? l))
     false
-    (and (< p l) (< p c) )))
+    (and (< p l) (< p c))))
 
 (defn past-lower?
   "true if:  series[i] < const
@@ -37,11 +33,10 @@
   "
   [const series]
   (let [[prior current] (split-at (- (count series) 1) series)  ; all= all pivots except the last
-        current (first current) ]                        ; l = only the last pivot.
+        current (first current)]                        ; l = only the last pivot.
     (if (nil? current)
-         false
-         (nil-to-false (some #(lower % current const) prior)))))
-
+      false
+      (nil-to-false (some #(lower % current const) prior)))))
 
 (defn significant-pivot-short? [pivot-oscillator-lt params]
   (let [lookback-window (get-in params [:pivot-lookback :window])
@@ -52,7 +47,7 @@
         match-past (series-roll (partial past-higher? past-const) lookback-window pivot-oscillator-lt)
         match-current (series-inrange current-min current-max pivot-oscillator-lt)
         match-both (series-and match-past match-current)]
-  match-both))
+    match-both))
 
 (defn significant-pivot-long? [pivot-oscillator-lt params]
   (let [lookback-window (get-in params [:pivot-lookback :window])
@@ -63,8 +58,7 @@
         match-past (series-roll (partial past-lower? past-const) lookback-window pivot-oscillator-lt)
         match-current (series-inrange current-min current-max pivot-oscillator-lt)
         match-both (series-and match-past match-current)]
-  match-both))
-
+    match-both))
 
 (defn waves [params price-series]
   (let [price-ema  (ema (:price-ema params) price-series)
@@ -93,50 +87,34 @@
 
         spivot-long?  (significant-pivot-long? pivot-long-oscillator-lt params)
         spivot-long-oscillator-lt (doall (series? oscillator-lt spivot-long?))
-        spivot-long-price (doall (series? price-series spivot-long?))
+        spivot-long-price (doall (series? price-series spivot-long?))]
 
-        ]
-     {:price (vec price-series)
-      :price-ema price-ema
-      :delta delta
-      :delta-abs (vec delta-abs)
-      :oscillator {
-        :v oscillator
-        :lt oscillator-lt
-        :st oscillator-st
-        :trend oscillator-trend
-      }
-      :pivot-long {
-        :b pivot-long?
-        :price pivot-long-price
-        :oscillator-lt pivot-long-oscillator-lt
-        :oscillator-trend pivot-long-oscillator-trend
-      }
-      :pivot-short {
-        :b pivot-short?
-        :price pivot-short-price
-        :oscillator-lt pivot-short-oscillator-lt
-        :oscillator-trend pivot-short-oscillator-trend
-      }
+    {:price (vec price-series)
+     :price-ema price-ema
+     :delta delta
+     :delta-abs (vec delta-abs)
+     :oscillator {:v oscillator
+                  :lt oscillator-lt
+                  :st oscillator-st
+                  :trend oscillator-trend}
+     :pivot-long {:b pivot-long?
+                  :price pivot-long-price
+                  :oscillator-lt pivot-long-oscillator-lt
+                  :oscillator-trend pivot-long-oscillator-trend}
+     :pivot-short {:b pivot-short?
+                   :price pivot-short-price
+                   :oscillator-lt pivot-short-oscillator-lt
+                   :oscillator-trend pivot-short-oscillator-trend}
 
-      :spivot-long {
-        :oscillator-lt spivot-long-oscillator-lt
-        :price spivot-long-price
-      }
+     :spivot-long {:oscillator-lt spivot-long-oscillator-lt
+                   :price spivot-long-price}
 
-      :spivot-short {
-        :oscillator-lt spivot-short-oscillator-lt
-        :price spivot-short-price
-      }
+     :spivot-short {:oscillator-lt spivot-short-oscillator-lt
+                    :price spivot-short-price}
 
-      ;(series-roll higher-than-last? (:pivot-trend-lookback params) price-pivot-long )
-    }
-  ))
-
-
-
-
-  ; d = ema(abs(ap - esa), n1)      EMA of the Absolute Difference from EMA  [Channel Length]  “Avg Move Intensity”
+;(series-roll higher-than-last? (:pivot-trend-lookback params) price-pivot-long )
+     }))
+; d = ema(abs(ap - esa), n1)      EMA of the Absolute Difference from EMA  [Channel Length]  “Avg Move Intensity”
   ; ci = (ap - esa) / (0.015 * d)       Oscillator of Current Deviation from EMA  66=same deviation as average
   ; 			 	  Current Difference from EMA, normalized with Average Difference.
   ; ci = (ap-esa) / d * 66.6
@@ -144,56 +122,35 @@
   ; wt1 = tci
   ; wt2 = sma(wt1,4)                    SMA of EMA of Oscillator [4]
 
-
-
-
-
-
 (comment
 
   (higher-than-last? [0 1 2 3 4 5 6 7 8 9])
   (higher-than-last? [-1 -3 -2])
 
-  (def test-params {
-      :price-ema 2   ; EMA on price-series
+  (def test-params {:price-ema 2   ; EMA on price-series
 
       ; Oscillator Trend Calculation -> The crossover determines the pivots
-      :oscillator-lt 8
-      :oscillator-st 4
+                    :oscillator-lt 8
+                    :oscillator-st 4
 
-      :pivot-lookback { ; compared are oscillator-lt (= wt2)
-        :window 20	;sliding-lookback window to compare current pivot to prior pivots
-        :pivot-short {
-          :prior-min 40
-          :current-min 0
-          :current-max 40}
-        :pivot-long {
-          :prior-max 40
-          :current-min 0
-          :current-max 40}}
-      })
+                    :pivot-lookback {; compared are oscillator-lt (= wt2)
+                                     :window 20	;sliding-lookback window to compare current pivot to prior pivots
+                                     :pivot-short {:prior-min 40
+                                                   :current-min 0
+                                                   :current-max 40}
+                                     :pivot-long {:prior-max 40
+                                                  :current-min 0
+                                                  :current-max 40}}})
 
-(backtest.print/print-map-of-vecs
-  (waves test-params (random-series 300))
-  [:price
-   :price-ema
+  (backtest.print/print-map-of-vecs
+   (waves test-params (random-series 300))
+   [:price
+    :price-ema
    ;:pivot-long
    ;[:pivot-long :price]
    ;[:pivot-long :oscillator-lt]
-   [:spivot-long :price]
-   [:spivot-short :price]
-  ]
-  :all)
+    [:spivot-long :price]
+    [:spivot-short :price]]
+   :all)
 
-  (series-inrange  4 7 [nil 1 2 3 4 5 6 7 8 9 nil])
-
-
-
-
-
-
-
-
-
-
-  )
+  (series-inrange  4 7 [nil 1 2 3 4 5 6 7 8 9 nil]))

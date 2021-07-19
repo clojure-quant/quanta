@@ -14,7 +14,6 @@
   (render [self]
     (text-render self)))
 
-
 (extend-type tech.v3.dataset.impl.dataset.Dataset
   Renderable
   (render [self]

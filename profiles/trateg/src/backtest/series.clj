@@ -2,19 +2,17 @@
 
 (defn subtract [a b]
   (if (or (nil? a) (nil? b))
-      nil
-      (- a b)
-      ))
+    nil
+    (- a b)))
 
 (defn series-subtract
   [a b]
   (vec (map subtract a b)))
 
-
 (defn div [a b]
   (if (or (nil? a) (nil? b))
-      nil
-      (if (> b 0) (/ a b) 0)))
+    nil
+    (if (> b 0) (/ a b) 0)))
 
 (defn series-divide
   [a b]
@@ -23,40 +21,37 @@
 (defn abs
   [n]
   (if (nil? n)
-      nil
-      (max n (- n))))
+    nil
+    (max n (- n))))
 
 (defn series-abs
   [s]
   (vec (map abs s)))
 
-
 (defn mult-c [n c]
-    (if (or (nil? n) (nil? c))
-        nil
-        (* n c)
-        ))
+  (if (or (nil? n) (nil? c))
+    nil
+    (* n c)))
 
 (defn series-mult-c
-    [series c]
-    (vec (map #(mult-c % c) series)))
+  [series c]
+  (vec (map #(mult-c % c) series)))
 
 (defn diff [coll]
   (map - coll (rest coll)))
 
-
 (defn cross-up? [p c]
   (if (or (nil? p) (nil? c))
-      false
-      (and (< p 0) (> c 0))))
+    false
+    (and (< p 0) (> c 0))))
 
 (defn cross-down? [p c]
   (if (or (nil? p) (nil? c))
-      false
-      (and (> p 0) (< c 0))))
+    false
+    (and (> p 0) (< c 0))))
 
 (defn cross [cross? series]
-   (vec (conj (map cross? series (rest series)) false)))
+  (vec (conj (map cross? series (rest series)) false)))
 
 (def cross-up (partial cross cross-up?))
 (def cross-down (partial cross cross-down?))
@@ -64,27 +59,25 @@
 (defn series-inrange
   [r-min r-max s]
   (vec (map #(if (nil? %)
-                 false
-                 (and (> % r-min) (< % r-max)))
-           s) ))
-
+               false
+               (and (> % r-min) (< % r-max)))
+            s)))
 
 (defn series>c
   [c s]
-  (vec (map #(> % c) s) ))
+  (vec (map #(> % c) s)))
 
 (defn series<c
   [c s]
-  (vec (map #(< % c) s) ))
-
+  (vec (map #(< % c) s)))
 
 (defn series>0
   [s]
-  (vec (map #(> % 0) s) ))
+  (vec (map #(> % 0) s)))
 
 (defn series<0
   [s]
-  (vec (map #(< % 0) s) ))
+  (vec (map #(< % 0) s)))
 
 (defn series-and
   [a b]
@@ -93,7 +86,6 @@
 (defn series?
   [s show?]
   (vec (map #(if %2 %1 nil) s show?)))
-
 
 (defn roll-apply
   "
@@ -111,9 +103,7 @@
    the first (n-1) elements will be nil"
   [f n s]
   (let [empty (vec (repeat (- n 1) nil))]
-    (into empty (roll-apply f n s))
-  ))
-
+    (into empty (roll-apply f n s))))
 
 (defn start-at
   "override series until start-at time"
@@ -122,8 +112,6 @@
         [bad good] (split-at idx- s)
         empty (vec (repeat idx- nil))]
     (into empty good)))
-
-
 
 (comment
 
@@ -149,8 +137,4 @@
   (roll-apply sum 3 [0 1 2 3 4 5 6 7 8 9])
   (series-roll sum 3 [0 1 2 3 4 5 6 7 8 9])
 
-
-  (start-at [1 2 3 4 5 6 7 8 9] 4)
-
-
-)
+  (start-at [1 2 3 4 5 6 7 8 9] 4))

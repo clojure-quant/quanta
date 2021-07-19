@@ -29,9 +29,7 @@
 (defn map-symbols [f model]
   (map f (:symbols @model)))
 
-
 ;; Position Management in backtest
-
 
 (defn initial-portfolio []
   (atom {:balance 100000
@@ -126,9 +124,7 @@
       (open-position model portfolio (first signal) :long index))
     entry-signals)))
 
-
 ;; backtest loop
-
 
 (defn trade-index [model portfolio p-exit p-entry index]
   ;(println "trading " index)

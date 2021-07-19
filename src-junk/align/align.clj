@@ -1,10 +1,10 @@
 (ns demo.align)
 
- (def instruments {:spy {"2020-01-01" {:close 10}
-                         "2020-01-02" {:close 11}
-                         "2020-01-03" {:close 11}}
-                   :iwm {"2020-01-02" {:close 11}
-                         "2020-01-03" {:close 11}}})
+(def instruments {:spy {"2020-01-01" {:close 10}
+                        "2020-01-02" {:close 11}
+                        "2020-01-03" {:close 11}}
+                  :iwm {"2020-01-02" {:close 11}
+                        "2020-01-03" {:close 11}}})
 
 (def calendar ["2020-01-01" "2020-01-02" "2020-01-03"])
 

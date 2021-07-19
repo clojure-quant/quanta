@@ -11,8 +11,7 @@
 (defn ds-table [ds]
   ^:R [:p/aggrid
        {:box :lg
-        :data (ds->table ds)}
-       ])
+        :data (ds->table ds)}])
 
 
 

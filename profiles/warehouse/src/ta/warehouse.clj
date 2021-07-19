@@ -11,7 +11,6 @@
    [tech.v3.io :as io]
    [taoensso.nippy :as nippy]))
 
-
 (defn init [settings]
   (info "wh init: " settings)
   settings)
@@ -22,14 +21,13 @@
 
 (defn load-ts [wh name]
   (let [s (io/gzip-input-stream (str (:series wh) name ".nippy.gz"))]
-    (io/get-nippy s )))
+    (io/get-nippy s)))
 
 (defn load-list [wh name]
   (println "loading list: " name)
-  (->> (str (:list wh) name ".edn") 
-      slurp
-      edn/read-string
-      (map :symbol)
-      ))
+  (->> (str (:list wh) name ".edn")
+       slurp
+       edn/read-string
+       (map :symbol)))
 
 
