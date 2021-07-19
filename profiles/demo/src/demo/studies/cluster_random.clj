@@ -5,7 +5,6 @@
    [tech.v3.datatype.datetime :as datetime]
    [tablecloth.api :as tablecloth]
    [ta.dataset.helper :as helper]
-   [demo.studies.helper.techml] ; side-effects (dataset rendering)
    [demo.studies.helper.experiments-helpers :as experiments-helpers]))
 
 (def datasets

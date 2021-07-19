@@ -4,9 +4,7 @@
    [tablecloth.api :as tablecloth]
    [tick.alpha.api :as tick]
    [ta.dataset.helper :refer [random-dataset random-datasets
-                              days-ago select-recent-rows]]
-   [demo.studies.helper.techml] ; side-effects (dataset rendering)
-   ))
+                              days-ago select-recent-rows]]))
 ;   _unnamed [3 2]:
 ; |      :date |     :close |
 ; |------------|-----------:|
