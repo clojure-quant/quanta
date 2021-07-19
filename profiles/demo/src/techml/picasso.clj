@@ -5,7 +5,8 @@
 (defn text-render
   [o]
   (make :pinkie ; :reagent ; :hiccup
-        [:span {:class "bg-blue-200"}
+        [:span {:class "bg-blue-500"}
+         "tecghml yippie! "
          [:p/text
           (pr-str o)]]))
 

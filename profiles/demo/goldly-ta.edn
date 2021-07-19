@@ -23,7 +23,9 @@
           :autoload-dir "src/demo/goldly/cljs"  ; to load cljs files to repl state
           :notebook-dir ["src/demo/datasource"
                          "src/demo/studies"
-                         "src/demo/backtest"]
+                         "src/demo/backtest"
+                         "src/techml"
+                         ]
            :routes {"" :user/main
                    "error" :user/error
                    "chart" :user/chart
@@ -31,5 +33,6 @@
                    "test/histogram" :test/histogram
                    "test/experiment" :test/experiment}
           :systems [demo.goldly.services
+                    techml.picasso ; for techml rendering (no needto require namespace)
                     systems.snippet-registry  ; if you want snippet browser started
                     systems.snippet-scratchpad]}}
