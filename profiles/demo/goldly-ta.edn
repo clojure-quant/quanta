@@ -1,38 +1,33 @@
-{:keybindings  [{:kb "alt-g k" :handler [:palette/show]           :desc "Keybindings dialog"}
-                {:kb "esc"     :handler [:modal/close]            :desc "Dialog Close"} ; for ALL dialogs!
-                {:kb "alt-g t" :handler [:reframe10x-toggle] :desc "10x visibility toggle"}
-                ; goldly:
-                {:kb "alt-g a" :handler [:bidi/goto "/"]  :desc "goto user app"}
-                {:kb "alt-g m" :handler [:bidi/goto :goldly/about]  :desc "goto main"}
-                {:kb "alt-g r" :handler [:bidi/goto :goldly/repl]  :desc "goto repl"}
-                {:kb "alt-g s" :handler [:bidi/goto :goldly/system :system-id :snippet-registry] :desc "goto snippets"}]
-
-:settings {; settings can be changed by user (via dialog)
+{:settings {; settings can be changed by user (via dialog)
             ; :use-localstorage is true: load settings from localstorage, and only use
             ; config-settings to initialize the app when localstorage is empty
-           :use-localstorage  false
+            :use-localstorage  false
 
-           :notebook  {:layout :horizontal ; :vertical
-                       :view-only false}}
+            :notebook  {:layout :horizontal ; :vertical
+                        :view-only false}}
 
-:nrepl {:enabled true
-        :bind "0.0.0.0"
-        :port 9100}
- 
+ :nrepl {:enabled true
+         :bind "0.0.0.0"
+         :port 9100}
+
  :goldly {:lazy true
           :autoload-dir "src/demo/goldly/cljs"  ; to load cljs files to repl state
           :notebook-dir ["src/demo/datasource"
                          "src/demo/studies"
                          "src/demo/backtest"
-                         "src/techml"
-                         ]
-           :routes {"" :user/main
-                   "error" :user/error
-                   "chart" :user/chart
-                   "test/heatmap" :test/heatmap
-                   "test/histogram" :test/histogram
-                   "test/experiment" :test/experiment}
+                         "src/techml"]
+          :routes {:app {"" :user/main
+                         "error" :user/error
+                         "chart" :user/chart
+                         "test/heatmap" :test/heatmap
+                         "test/histogram" :test/histogram
+                         "test/experiment" :test/experiment}
+                   :api {"arrow" :dataset/arrow}
+                   }
           :systems [demo.goldly.services
-                    techml.picasso ; for techml rendering (no needto require namespace)
+                    techml.picasso ; for techml rendering (no need to require namespace)
+                    ta.viz.arrow ; dataset->arrow 
                     systems.snippet-registry  ; if you want snippet browser started
-                    systems.snippet-scratchpad]}}
+                    systems.snippet-scratchpad
+                     
+                    ]}}

@@ -3,7 +3,7 @@
    [goldly.service.core :as service]
    [ta.warehouse :as wh]
    [ta.backtest.table :refer [ds->table]]
-   [ta.backtest.chart :as c]
+   ;[ta.backtest.chart :as c]
    [demo.studies.helper.sma :as study]
    [demo.config :refer [w]]))
 

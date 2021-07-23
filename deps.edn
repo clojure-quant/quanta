@@ -15,9 +15,7 @@
   scicloj/tablecloth {:mvn/version "6.002"}
   generateme/fastmath {:mvn/version "2.1.5"}}
  :aliases
- {:nrepl {:extra-deps {nrepl/nrepl  {:mvn/version "0.8.3"}}
-          :main-opts  ["-m" "nrepl.cmdline"]}
-
+ {
   :garamond
   {:main-opts ["-m" "garamond.main"]
    :extra-deps {com.workframe/garamond {:mvn/version "0.4.0"}}}
@@ -71,6 +69,9 @@
   {;:extra-paths ["test/main/clojure"]
    :extra-deps  {lambdaisland/kaocha {:mvn/version "1.0.861"}}
    :main-opts   ["-m" "kaocha.runner"]}
+
+  :nrepl {:extra-deps {nrepl/nrepl  {:mvn/version "0.8.3"}}
+          :main-opts  ["-m" "nrepl.cmdline"]}
 
 
 

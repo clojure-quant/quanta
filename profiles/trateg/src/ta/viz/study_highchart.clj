@@ -1,4 +1,4 @@
-(ns ta.backtest.chart
+(ns ta.viz.study-highchart
   (:require
    [tech.v3.dataset :as tds]
    [ta.data.date :as dt]))
@@ -60,7 +60,7 @@
             {:yAxis axes :series series :no 0}
             axes-spec)))
 
-(defn study-chart [ds axes-spec]
+(defn study-highchart [ds axes-spec]
   (let [spec-base {;:title {:text title}
                    ;:xAxis {:categories (:labels data)}
                    ;:tooltip {:valueSuffix " %"}
