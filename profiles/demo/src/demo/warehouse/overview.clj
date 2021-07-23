@@ -14,6 +14,7 @@
    [demo.env.warehouse :refer [w]]
    ;[demo.studies.helper.sma :refer [sma-study]]
 [demo.studies.helper.experiments-helpers :as helpers]
+   [ta.dataset.helper :as h]
    ))
 
 (def ds1 (->
@@ -56,23 +57,34 @@ ds1
 
 (tablecloth/shape concatenated-dataset)
 
+; just inspect some random rows o see if it looks good.
 (-> concatenated-dataset
     (tablecloth/random 10))
 
-
-(a/publish-ds! concatenated-dataset :test)
+(-> concatenated-dataset
+    (tablecloth/select-columns [:symbol :date :close])
+    h/ds-epoch
+    (a/publish-ds! :test)
+    )
 
 
 ^:R
 [:p/vegalite
- {:width 800
-  :height 600
+ {:width 1200
+  :height 300
   :spec {:data {:url "/api/arrow"
                 :format {:type "arrow"}}
-         :mark {:type "line"
+         :mark {:type "bar"
                ;:tooltip true
-                :tooltip {:content "data"}}
-         :encoding {:x {:field "date" :type "quantitative"}
+               ; :tooltip {:content "data"}
+                }
+         :encoding {:x {;:field "epoch" 
+                        :timeUnit "month"
+                        :field "date"
+                        ;:type "temporal"
+                        ;:type "quantitative"
+                        
+                        }
                     :y {:field "close" :type "quantitative"}
                     :row {:field "symbol"}
                     }}}]

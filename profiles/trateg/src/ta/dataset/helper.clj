@@ -5,12 +5,21 @@
             [fastmath.core :as math]
             [fastmath.stats :as stats]
             [tech.v3.datatype.functional :as fun]
-            [tech.v3.datatype :as dtype]))
+            [tech.v3.datatype :as dtype]
+            [ta.data.date :as dt]))
 
 (defn days-ago [n]
   (-> (tick/now)
       (tick/- (tick/new-duration n :days))
       (tick/date)))
+
+
+(defn ds-epoch [ds]
+  (dataset/column-map ds :epoch #(* 1000 (dt/->epoch %)) [:date]))
+
+;tablecloth/select
+;tick/epoch
+
 
 (defn random-dataset [n]
   (tablecloth/dataset

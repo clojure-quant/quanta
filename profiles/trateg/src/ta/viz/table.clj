@@ -1,4 +1,4 @@
-(ns ta.backtest.table
+(ns ta.viz.table
   (:require
    [tech.v3.dataset :as tds]))
 
