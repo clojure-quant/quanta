@@ -70,7 +70,7 @@ ds1
 
 ^:R
 [:p/vegalite
- {:width 1200
+ {:width 800
   :height 300
   :spec {:data {:url "/api/arrow"
                 :format {:type "arrow"}}
@@ -81,6 +81,7 @@ ds1
          :encoding {:x {;:field "epoch" 
                         :timeUnit "month"
                         :field "date"
+                        
                         ;:type "temporal"
                         ;:type "quantitative"
                         
