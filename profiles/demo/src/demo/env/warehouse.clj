@@ -1,4 +1,4 @@
-(ns demo.config
+(ns demo.env.warehouse
   (:require
    [clojure.pprint]
    [ta.warehouse :as wh]))

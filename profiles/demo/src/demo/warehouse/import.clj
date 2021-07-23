@@ -1,11 +1,11 @@
-(ns demo.data.import
+(ns demo.warehouse.import
   (:require
    [clojure.edn :as edn]
    [taoensso.timbre :refer [trace debug info infof  error]]
    [tech.v3.dataset :as tds]
    [ta.data.alphavantage :as av]
    [ta.warehouse :as wh]
-   [demo.config :refer [w]]))
+   [demo.env.warehouse :refer [w]]))
 
 (-> "creds.edn" slurp edn/read-string
     :alphavantage av/set-key!)

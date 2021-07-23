@@ -1,11 +1,11 @@
-(ns demo.goldly.services
+(ns demo.env.services
   (:require
    [goldly.service.core :as service]
    [ta.warehouse :as wh]
    [ta.backtest.table :refer [ds->table]]
    ;[ta.backtest.chart :as c]
    [demo.studies.helper.sma :as study]
-   [demo.config :refer [w]]))
+   [demo.env.warehouse :refer [w]]))
 
 (defn- study [symbol]
   (-> (wh/load-ts w symbol)

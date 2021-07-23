@@ -15,6 +15,7 @@
           :notebook-dir ["src/demo/datasource"
                          "src/demo/studies"
                          "src/demo/backtest"
+                         "src/demo/warehouse"
                          "src/techml"]
           :routes {:app {"" :user/main
                          "error" :user/error
@@ -22,10 +23,10 @@
                          "test/heatmap" :test/heatmap
                          "test/histogram" :test/histogram
                          "test/experiment" :test/experiment}
-                   :api {"arrow" :dataset/arrow}
-                   }
-          :systems [demo.goldly.services
-                    techml.picasso ; for techml rendering (no need to require namespace)
+                   :api {"arrow" :dataset/arrow}}
+          :systems [demo.env.services
+                    demo.env.warehouse
+                    demo.env.picasso ; for techml rendering (no need to require namespace)
                     ta.viz.arrow ; dataset->arrow 
                     systems.snippet-registry  ; if you want snippet browser started
                     systems.snippet-scratchpad

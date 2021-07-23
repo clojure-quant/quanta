@@ -1,4 +1,4 @@
-(ns techml.picasso
+(ns demo.env.picasso
   (:require
    [picasso.protocols :refer [Renderable render make]]))
 
