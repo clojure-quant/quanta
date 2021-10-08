@@ -3,7 +3,7 @@
    [net.cgrand.xforms :as x]
    [tech.v3.dataset :as tds]
    [tech.v3.datatype.functional :as dfn]
-    [tablecloth.api :as tablecloth]
+   [tablecloth.api :as tablecloth]
    ;[ta.data.date :refer [parse-date]]
    [ta.warehouse :as wh]
    ;[ta.series.indicator :as ind]
@@ -13,12 +13,11 @@
    [ta.viz.arrow :as a]
    [demo.env.warehouse :refer [w]]
    ;[demo.studies.helper.sma :refer [sma-study]]
-[demo.studies.helper.experiments-helpers :as helpers]
-   [ta.dataset.helper :as h]
-   ))
+   [demo.studies.helper.experiments-helpers :as helpers]
+   [ta.dataset.helper :as h]))
 
 (def ds1 (->
-        (wh/load-ts w "MSFT")))
+          (wh/load-ts w "MSFT")))
 
 ds1
 
@@ -36,10 +35,8 @@ ds1
          :encoding {:x {:field "date" :type "quantitative"}
                     :y {:field "close" :type "quantitative"}}}}]
 
-
 (def symbols
   (wh/load-list w "fidelity-select"))
-
 
 (defonce datasets
   (->> symbols
@@ -49,7 +46,6 @@ ds1
                   (tablecloth/add-column :return #(-> %
                                                       :close
                                                       helpers/returns)))))))
-
 
 (def concatenated-dataset
   (->> datasets
@@ -64,9 +60,7 @@ ds1
 (-> concatenated-dataset
     (tablecloth/select-columns [:symbol :date :close])
     h/ds-epoch
-    (a/publish-ds! :test)
-    )
-
+    (a/publish-ds! :test))
 
 ^:R
 [:p/vegalite
@@ -81,11 +75,9 @@ ds1
          :encoding {:x {;:field "epoch" 
                         :timeUnit "month"
                         :field "date"
-                        
+
                         ;:type "temporal"
                         ;:type "quantitative"
-                        
                         }
                     :y {:field "close" :type "quantitative"}
-                    :row {:field "symbol"}
-                    }}}]
+                    :row {:field "symbol"}}}}]

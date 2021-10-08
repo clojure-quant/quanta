@@ -16,7 +16,7 @@
                          "src/demo/studies"
                          "src/demo/backtest"
                          "src/demo/warehouse"
-                         "src/demo/victor"
+                         "src/demo/viktor"
                          "src/techml"]
           :routes {:app {"" :user/main
                          "error" :user/error

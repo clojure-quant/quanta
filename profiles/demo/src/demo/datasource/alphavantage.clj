@@ -18,7 +18,6 @@
 ; in the future the notebook will save creds only in webbrowser local storage
 (av/set-key! (secret :alphavantage))
 
-
 (-> "creds.edn"
     slurp
     edn/read-string

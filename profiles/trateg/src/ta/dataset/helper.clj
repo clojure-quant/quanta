@@ -13,13 +13,11 @@
       (tick/- (tick/new-duration n :days))
       (tick/date)))
 
-
 (defn ds-epoch [ds]
   (dataset/column-map ds :epoch #(* 1000 (dt/->epoch %)) [:date]))
 
 ;tablecloth/select
 ;tick/epoch
-
 
 (defn random-dataset [n]
   (tablecloth/dataset
