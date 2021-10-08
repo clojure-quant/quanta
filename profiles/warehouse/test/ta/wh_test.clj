@@ -1,11 +1,11 @@
-(ns wh-test
+(ns ta.wh-test
   (:require
    [clojure.test :refer :all]
    [ta.random :refer [random-ts]]
-   [ta.warehouse :as wh]))
+   [ta.warehouse :as wh]
+   [ta.config :refer [w]]
+   ))
 
-(def w (wh/init {:series "/tmp/"
-                 :list "../resources/etf/"}))
 
 
 (deftest test-symbollist
@@ -29,3 +29,5 @@
     (is (= (count ts2) (count r2)))
     (is (= ts1 r1))
     (is (= ts2 r2))))
+
+ts1

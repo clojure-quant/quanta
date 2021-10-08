@@ -1,19 +1,22 @@
-(ns demo.warehouse.nippy-test
+(ns ta.nippy-test
   (:require
    [tech.v3.dataset :as ds]
-   [ta.warehouse :as w]))
+   [ta.warehouse :as wh]
+   [tech.v3.io :as io]
+   [ta.config :refer [w]]
+   ))
 
 
 (->> [{:a 1 :b 2} {:a 2 :c 3}]
      ds/->dataset
-     (io/put-nippy! "test.nippy"))
+     (io/put-nippy! "/tmp/test.nippy"))
 
 
 
 (let [ds (ds/->dataset "https://github.com/techascent/tech.ml.dataset/raw/master/test/data/stocks.csv")]
     ds
-    (w/save-ts ds "bongo")
-    (w/load-ts "bongo"))
+    (wh/save-ts w ds "bongo")
+    (wh/load-ts w "bongo"))
 
 (comment
 

@@ -11,12 +11,12 @@ Provides a light convenience wrapper over [ta4j](https://github.com/ta4j/ta4j) a
 See the [demo] directory for some usage examples.
 
 TA ships a goldly web-app. 
-Clone TA and run: `cd demo && clojure -X:goldlyb`
+Clone TA and run: `cd profiles/demo && clj -X:goldlyb`
 
 TA ships some notebooks that you can edit in PinkGorilla notebook.
-Clone TA and run: `cd demo && clojure -X:notebook`
+Clone TA and run: `cd demo && clj -X:notebook`
 
-If you want to build the notebook from scratch, use: `cd demo && clojure -X:notebook2`
+If you want to build the notebook from scratch, use: `cd demo && clj -X:notebook2`
 
 ** Remote REPL **
  - in terminalyou have pinkgorilla notebook running
