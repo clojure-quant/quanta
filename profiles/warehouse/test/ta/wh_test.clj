@@ -3,10 +3,7 @@
    [clojure.test :refer :all]
    [ta.random :refer [random-ts]]
    [ta.warehouse :as wh]
-   [ta.config :refer [w]]
-   ))
-
-
+   [ta.config :refer [w]]))
 
 (deftest test-symbollist
   (let [symbol "fidelity-select"
@@ -14,20 +11,22 @@
     (is (= (count l) 41))))
 
 
+(defn series-generate-save-reload 
+  [size name]
+    (let [ts-original (random-ts size) 
+          symbol (str "_test_" name "_")
+          _ (wh/save-ts w ts-original symbol)
+          ts-reloaded (wh/load-ts w symbol)]
+       (is (= (count ts-original) (count ts-reloaded)))
+   (is (= ts-original ts-reloaded))  
+  ))
 
-(def ts1 (random-ts 2000))
-(def ts2 (random-ts 2000))
+
 
 (deftest test-wh
-  (let [symbol1 "_test1_"
-        symbol2 "_test2_"
-        _ (wh/save-ts w ts1 symbol1)
-        _ (wh/save-ts w ts2 symbol2)
-        r2 (wh/load-ts w symbol2)
-        r1 (wh/load-ts w symbol1)]
-    (is (= (count ts1) (count r1)))
-    (is (= (count ts2) (count r2)))
-    (is (= ts1 r1))
-    (is (= ts2 r2))))
+  (series-generate-save-reload 2000 "small")
+  (series-generate-save-reload 20000 "big")) ; tradingview limit
+  
 
-ts1
+
+

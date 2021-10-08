@@ -8,24 +8,43 @@
   com.taoensso/nippy {:mvn/version "2.14.0"}
   cljc.java-time/cljc.java-time {:mvn/version "0.1.16"}
   tick/tick                     {:mvn/version "0.4.31-alpha"} ; replacement for clj-time
-   com.taoensso/timbre {:mvn/version "5.1.2"} ; clj/cljs logging
-
+  com.taoensso/timbre {:mvn/version "5.1.2"} ; clj/cljs logging
   }
  :aliases
  {:outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
              :main-opts ["-m" "antq.core"]}
 
-  :nrepl {:extra-deps {nrepl/nrepl  {:mvn/version "0.8.3"}}
+  ; https://github.com/weavejester/cljfmt
+  :cljfmt
+  {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
+   :main-opts ["-m" "cljfmt.main" "check" "--indents" "cljfmt.edn"]}
+  :cljfmt-fix
+  {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
+   :main-opts ["-m" "cljfmt.main" "fix"
+               "src-junk"
+               "profiles/data/src"
+               "profiles/demo/src"
+               "profiles/trateg/src"
+               "profiles/warehouse/src"
+               "profiles/smile/src"
+               "--indents" "cljfmt.edn"]}
+
+  :nrepl {:extra-deps {nrepl/nrepl  {:mvn/version "0.8.3"}
+                       cider/cider-nrepl {:mvn/version,"0.26.0"}}
           :main-opts  ["-m" "nrepl.cmdline"]}
-  
+
   :test {:extra-paths ["test"]
          :extra-deps {io.github.cognitect-labs/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
-                                                            :sha "9e35c979860c75555adaff7600070c60004a0f44"}
-                      
-                      }
+                                                            :sha "9e35c979860c75555adaff7600070c60004a0f44"}}
          :main-opts ["-m" "cognitect.test-runner"]
          :exec-fn cognitect.test-runner.api/test}
 
-  ;
-  }}
+  :performance-test {:extra-paths ["test"]
+                     :exec-fn ta.performance/performance-test
+                     :exec-args {}}
+
+
+  :victor-print {:extra-paths ["test"]
+                 :exec-fn repl.experiment/main-print-symbol-list
+                 :exec-args {:name "equity-region"}}}}
 
