@@ -1,5 +1,6 @@
 (ns ta.random
   (:require
+   [clojure.repl]
    [tick.alpha.api :as t])
   (:import
    [java.util Random]))
@@ -11,13 +12,16 @@
   [min max]
   (+ min (* (.nextDouble rnd) (- max min))))
 
+ ; (random-float 10.0 100.0)
+
 (defn random-series
   "creates a random series starting at 10, each bar changing randomly
    [-1 .. +1] "
   [size]
   (into []
         (reductions + 10
-                    (take (- size 1) (repeatedly #(random-float -1.0 1.0))))))
+                    (take (- size 1)
+                          (repeatedly #(random-float -1.0 1.0))))))
 
 (defn random-walk
   "Returns a lazy seq of new values randomly adjusted from x
@@ -43,10 +47,24 @@
                           (reverse pseries)))))
 
 (comment
+
+  (clojure.repl/doc reductions)
+
+  (take 4 (repeatedly #(random-float -1.0 1.0)))
+
+  (reductions + 10 [1 1 1 1 1 -1 -1 -1])
+
+  (random-series 5)
+
   (random-float -100 100)
   (repeatedly 3 #(random-float -3.0 3.0))
 
   (random-series 10)
   (count (random-series 100))
 
-  (random-ts 3))
+  (random-ts 3)
+
+  (clojure.pprint/print-table (random-ts 3))
+
+ ; 
+  )

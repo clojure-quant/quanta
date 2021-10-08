@@ -28,8 +28,13 @@
                      :exec-fn ta.performance/performance-test
                      :exec-args {}}
 
+  :print-list {:extra-paths ["test"]
+               :main-opts ["-m" "repl.experiment"]}
 
   :victor-print {:extra-paths ["test"]
-                 :exec-fn repl.experiment/main-print-symbol-list
-                 :exec-args {:name "equity-region"}}}}
+                 :exec-fn repl.experiment/fn-print-symbol-list
+                 :exec-args {:name "equity-region"}}
+  
+  
+  }}
 

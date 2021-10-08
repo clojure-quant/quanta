@@ -1,10 +1,11 @@
 (ns repl.experiment
   (:require
    [clojure.test :refer :all]
-   [taoensso.timbre :refer [trace debug info error]]
+   [taoensso.timbre :refer [trace debug info warn error]]
    [ta.random :refer [random-ts]]
    [ta.warehouse :as wh]
-   [ta.config :refer [w]]))
+   [ta.config :refer [w]])
+  (:gen-class))
 
 (taoensso.timbre/info "hi victor")
 (info "hi victor")
@@ -30,6 +31,18 @@
 ; (print-symbol-list "currency")
 ; (print-symbol-list "fidelity-select")
 
-(defn main-print-symbol-list
+(defn fn-print-symbol-list
   [list-map]
   (print-symbol-list (:name list-map)))
+
+(defn -main
+  ([]
+   (warn "printing default list: currency")
+   (print-symbol-list "currency"))
+  ([list-name]
+   (warn "printing user defined list: " list-name)
+   (print-symbol-list list-name)))
+
+;  (-main "currency")
+
+;  (-main "fidelity-select")
