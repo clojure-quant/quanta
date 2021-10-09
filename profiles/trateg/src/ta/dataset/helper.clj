@@ -1,12 +1,14 @@
 (ns ta.dataset.helper
-  (:require [tech.v3.dataset :as dataset]
-            [tablecloth.api :as tablecloth]
-            [tick.alpha.api :as tick]
-            [fastmath.core :as math]
-            [fastmath.stats :as stats]
-            [tech.v3.datatype.functional :as fun]
-            [tech.v3.datatype :as dtype]
-            [ta.data.date :as dt]))
+  (:require
+   [tick.alpha.api :as tick]
+   [tech.v3.dataset :as dataset]
+   [tech.v3.datatype.functional :as fun]
+   [tech.v3.datatype :as dtype]
+   [tech.v3.dataset.print :refer [print-range]]
+   [tablecloth.api :as tablecloth]
+   [fastmath.core :as math]
+   [fastmath.stats :as stats]
+   [ta.data.date :as dt]))
 
 (defn days-ago [n]
   (-> (tick/now)
@@ -45,3 +47,16 @@
 (defn rand-numbers [n]
   (dtype/clone
    (dtype/make-reader :float32 n (rand))))
+
+(defn ds-rows [ds]
+  (-> (tablecloth/shape ds) first))
+
+(defn pprint-dataset [ds]
+  (let [l (ds-rows ds)]
+    (if (< l 11)
+      (print-range ds :all)
+      (do
+        (println "printing first+last 5 rows - total rows: " l)
+        (print-range ds (concat (range 5)
+                                (range (- l 6) (- l 1))))))))
+

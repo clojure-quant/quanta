@@ -9,7 +9,9 @@
   ;;Support for tensor/array buffers in nippy
   ; [tech.v3.datatype.nippy]
    [tech.v3.io :as io]
-   [taoensso.nippy :as nippy]))
+   [taoensso.nippy :as nippy]
+   [tablecloth.api :as tablecloth]
+   [ta.dataset.helper :as h]))
 
 (defn init [settings]
   (info "wh init: " settings)
@@ -17,11 +19,15 @@
 
 (defn save-ts [wh ds name]
   (let [s (io/gzip-output-stream! (str (:series wh) name ".nippy.gz"))]
+    (info "saving series " name " count: " (h/ds-rows ds))
     (io/put-nippy! s ds)))
 
 (defn load-ts [wh name]
-  (let [s (io/gzip-input-stream (str (:series wh) name ".nippy.gz"))]
-    (io/get-nippy s)))
+  (let [s (io/gzip-input-stream (str (:series wh) name ".nippy.gz"))
+        ds (io/get-nippy s)
+        ds (tablecloth/set-dataset-name ds name)]
+    (info "loaded series " name " count: " (-> (tablecloth/shape ds) first))
+    ds))
 
 (defn load-list [wh name]
   (println "loading list: " name)

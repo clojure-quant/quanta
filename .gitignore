@@ -23,7 +23,6 @@ creds.edn
 .webly
 .sniffer.edn
 .nrepl-port
-/db
 reports/*.txt
 node_modules
 .shadow-cljs
@@ -33,5 +32,4 @@ package-lock.json
 package.json
 shadow-cljs.edn
 goldly_bindings_generated.cljs
-/demo/db
-/profiles/db
+/profiles/db/*.nippy.gz

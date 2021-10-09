@@ -1,18 +1,19 @@
 (ns ta.data.bybit
   (:require
+   [taoensso.timbre :refer [trace debug info warn error]]
    [clj-http.client :as http]
    [cheshire.core :as cheshire] ; JSON Encoding
    [cljc.java-time.instant :as ti]
    [tick.alpha.api :as t] ; tick uses cljc.java-time
-   ))
+   [ta.data.date :as d]))
 
-; https://bybit-exchange.github.io/bybit-official-api-docs/en/index.html#operation/query_symbol
-
-(defn to-epoch-second [date]
-  (case (type date)
-    java.time.Instant (ti/get-epoch-second date)
-    ;java.time.LocalDate 
-    nil))
+;; # Bybit api
+;; The query api does NOT need credentials. The trading api does.
+;; https://www.bybit.com/
+;; https://bybit-exchange.github.io/docs/spot/#t-introduction
+;; https://bybit-exchange.github.io/bybit-official-api-docs/en/index.html#operation/query_symbol
+;; Intervals:  1 3 5 15 30 60 120 240 360 720 "D" "M" "W" "Y"
+;; limit:      less than or equal 200
 
 (defn- str->float [str]
   (if (nil? str)
@@ -32,7 +33,7 @@
        (:result)
        (map convert-bar)))
 
-(defn history-page
+(defn get-history-page-from-epoch-second
   "gets crypto price history
    symbol: BTC, ....
    interval: #{ 1 3 5 15 30 60 120 240 360 720 \"D\" \"M\" \"W\" \"Y\"}  
@@ -49,32 +50,64 @@
       (cheshire/parse-string true)
       (parse-history)))
 
-(defn requests-needed [bars]
-  (let [remaining (atom bars)
-        position (atom 0)
-        requests (atom [])]
-    (while (pos? @remaining)
-      (let [current (min 200 @remaining)
-            _ (println "cur: " current)]
-        (swap! position + current)
-        (swap! requests conj {:bars current :position @position})
-        (swap! remaining - current)))
-    @requests))
+(defn get-history-page
+  [interval from-ti limit symbol]
+  (info "bybit get page " symbol interval from-ti)
+  (get-history-page-from-epoch-second interval (ti/get-epoch-second from-ti) limit symbol))
 
-(defn history-recent-extended
-  "gets recent history from bybit
-  in case more than 200 bars (the maximum per request allowed by bybit) are needed,
-  then multiple requests are made"
-  [symbol bars]
-  (let [requests (requests-needed bars)
-        now (t/now)
-        set-start-time #(assoc % :start-time (t/- now (t/minutes (* 15 (:position %)))))]
-    (->> requests
-         (map set-start-time)
-         (reverse)
-         (map #(history-page "15" (:start-time %) (:bars %) symbol))
-         (reduce concat []))))
+(defn- remove-first-bar-if-timestamp-equals
+  "helper function. 
+   when we request the next page, it might return the last bar of the last page 
+   in the next page. If so, we do not want to have it included."
+  [series last-dt]
+  (let [date-first (-> series first :date)
+        eq?    (and (not (nil? last-dt))
+                    (ti/equals last-dt date-first))]
+    (debug "first date: " date-first "last date:" last-dt " eq:" eq?)
+    (if eq? (rest series) series)))
 
-(defn history-recent [symbol bars]
-  (let [start (-> (* bars 15) t/minutes t/ago)]
-    (history-page "15" start bars symbol)))
+(defn get-history
+  "gets history since timestamp.
+   joins multiple pages
+   works nicely to request new bars to add to existing series."
+  [interval from-ti symbol]
+  (let [page-no-limit 1000
+        page-no (atom 0)
+        page-size 200 ; for testing this might be reduced
+        total (atom '())
+        last-page-date (atom nil)]
+    (loop [page-from-ti from-ti]
+      (let [page-series (get-history-page interval page-from-ti page-size symbol)
+            current-page-size  (count page-series)
+            page-last-date (-> page-series last :date)
+            page-series (remove-first-bar-if-timestamp-equals page-series @last-page-date)]
+        (reset! last-page-date page-last-date)
+        (swap! page-no inc)
+        (swap! total concat page-series)
+        (when (and (= page-size current-page-size)
+                   (< @page-no page-no-limit))
+          (recur page-last-date))))
+    @total))
+
+(comment
+
+  (get-history-page "D" (d/days-ago 10) 3 "ETHUSD")
+
+  (-> (get-history-page "D" (d/days-ago 10) 3 "ETHUSD")
+      (clojure.pprint/print-table))
+
+  ; does not remove
+  (remove-first-bar-if-timestamp-equals
+   [{:date (ti/now)}]
+   nil)
+
+  ; removes
+  (remove-first-bar-if-timestamp-equals
+   [{:date (t/instant "1999-12-31T00:00:00Z")}]
+   (t/instant "1999-12-31T00:00:00Z"))
+
+  (-> (get-history "D" (d/days-ago 20) "ETHUSD")
+      (clojure.pprint/print-table))
+
+;
+  )

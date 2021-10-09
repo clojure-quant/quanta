@@ -44,9 +44,24 @@
       (= t java.time.Instant) (ti/get-epoch-second dt)
       :else  99)))
 
+(defn days-ago [n]
+  (-> (t/now)
+      (t/- (t/new-duration n :days))
+        ;(t/date)
+      ))
+
+(defn to-epoch-second [date]
+  (case (type date)
+    java.time.Instant (ti/get-epoch-second date)
+    ;java.time.LocalDate 
+    nil))
+
+; *****************************************************************************
 (comment
 
-  ; ; java.time.LocalDate
+  (t/instant "1999-12-31T00:00:00Z")
+
+; ; java.time.LocalDate
   (-> (t/date "2021-06-20")
       ;(epoch-ld)
       (->epoch))
@@ -56,6 +71,9 @@
       (t/at  (t/time "13:30:06"))
       ;(epoch-ldt)
       (->epoch))
+
+  (t/instant "2021-06-20T00:00:00")
+  (t/date "2021-06-20")
 
 ; java.time.Instant  (milliseconds)
   (-> (t/now)
@@ -73,4 +91,14 @@
   ;; duration
   (t/new-duration 80 :days)
 ;  
+
+  (days-ago 70)
+
+; start (-> (* bars 15) t/minutes t/ago)
+  ; (t/- now (t/minutes (* 15 (:position %))))
+
+ ; (-> 2 t/hours t/ago)
+
+;(tc/to-long (-> 2 t/hours t/ago))
+;(-> 2 t/hours t/ago)
   )
