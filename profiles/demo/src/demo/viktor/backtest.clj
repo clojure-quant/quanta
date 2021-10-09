@@ -1,5 +1,21 @@
+(ns demo.viktor.backtest
+  (:require
+   [taoensso.timbre :refer [trace debug info error]]
+   [tick.alpha.api :as t]
+   [tech.v3.dataset.print :as print]
+   [tech.v3.dataset :as tds]
+   [tech.v3.datatype.datetime :as datetime]
+   [tablecloth.api :as tablecloth]
+   [ta.dataset.helper :as helper]
+   [ta.series.indicator :as ind]
+   [ta.series.ta4j :as ta4j]
+   [ta.warehouse :as wh]
+   [demo.env.warehouse :refer [w]]
+   [demo.studies.helper.experiments-helpers :as experiments-helpers]))
 
 
+(defn make-filename [frequency symbol]
+  (str symbol "-" frequency))
 
 ; 1x
 ; fetch 15 min bars bybit
@@ -15,6 +31,28 @@
 ; max/min relativ zur range normalisieren
 ; ist der move ge-skewed (up fuer cross lower-channel, down fuer cross upper-channel)
 ; optimizer fuer beste parameter.
+
+
+; https://github.com/ta4j/ta4j
+
+
+
+(-> (wh/load-ts w (make-filename "D" "ETHUSD"))
+    (ta4j/ta4j-ind :ATR 14)
+    count)
+
+
+(ind/sma 2 [1 1 2 2 3 3 4 4 5 5])
+
+
+
+
+
+
+(def series4j (ta4j/->series data/spx-bars))
+)
+
+
 
 ; parameter
 ; bollinger moving average length

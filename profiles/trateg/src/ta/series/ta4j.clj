@@ -1,5 +1,12 @@
 (ns ta.series.ta4j
   "convenience wrapper on the java library ta4j"
+   (:require
+   [taoensso.timbre :refer [trace debug info error]]
+   [tick.alpha.api :as t]
+   [tech.v3.dataset.print :as print]
+   [tech.v3.dataset :as tds]
+   [tech.v3.datatype.datetime :as datetime]
+   [tablecloth.api :as tablecloth])
   (:import [org.ta4j.core BaseStrategy #_BaseTimeSeries$SeriesBuilder
             TimeSeriesManager]))
 
@@ -20,6 +27,29 @@
 (defn ind [class-key & args]
   (let [ctor (constructor "org.ta4j.core.indicators." "Indicator")]
     (ctor class-key args)))
+
+
+(defn ds->ta4j-series
+  [ds]
+  (let [series (.build (org.ta4j.core.BaseTimeSeries$SeriesBuilder.))
+        r (tds/mapseq-reader ds)]
+    (doseq [{:keys [date open high low close volume]} r]
+      (let [ldt (t/in date "UTC")] ; convert time instance to (zoned)localdate
+        ;(info "adding: " date open ldt)
+        (.addBar series ldt open high low close volume)))
+    series))
+
+
+(defn ta4j-ind [ds indicator-kw & indicator-args]
+  "calculates ta4j indicator on a tml-dataset"
+  (let [ta4j-series (ds->ta4j-series ds)
+        _ (info "ta4j ind: " indicator-kw " args:" indicator-args)
+        ;indicator (ta4j/ind :ATR ta4j-series 14)
+        indicator (apply ind indicator-kw ta4j-series indicator-args)
+        ind-vals (ind-values indicator)]
+    ind-vals))
+
+
 
 (defn rule [class-key & args]
   (let [ctor (constructor "org.ta4j.core.trading.rules." "Rule")]
