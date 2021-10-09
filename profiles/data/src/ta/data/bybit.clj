@@ -55,7 +55,7 @@
   (info "bybit get page " symbol interval from-ti)
   (get-history-page-from-epoch-second interval (ti/get-epoch-second from-ti) limit symbol))
 
-(defn- remove-first-bar-if-timestamp-equals
+(defn remove-first-bar-if-timestamp-equals
   "helper function. 
    when we request the next page, it might return the last bar of the last page 
    in the next page. If so, we do not want to have it included."

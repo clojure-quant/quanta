@@ -12,8 +12,7 @@
   :goldlyb
   {:extra-deps {org.pinkgorilla/goldly-bundel {:mvn/version "0.3.38"}
                 org.apache.arrow/arrow-vector {:mvn/version  "2.0.0"}
-                org.apache.arrow/arrow-memory-unsafe {:mvn/version "2.0.0"}
-                }
+                org.apache.arrow/arrow-memory-unsafe {:mvn/version "2.0.0"}}
    :exec-fn goldly-server.app/goldly-server-run!
    :exec-args {:profile "jetty"
                :config "goldly-ta.edn"}}
@@ -45,6 +44,12 @@
   :demo {;:exec-fn demo.swinger/calc
           ;:exec-args {}
          }
+
+  
+  :bybit-import-initial {:exec-fn demo.warehouse.import-task/task-bybit-import-initial}
+  :bybit-import-append {:extra-deps {org.pinkgorilla/webly {:mvn/version "0.3.50"}} ; log config
+                        :exec-fn demo.warehouse.import-task/task-bybit-import-append}
+
 
 ;
   }}

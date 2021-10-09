@@ -1,6 +1,6 @@
 (ns demo.warehouse.import-bybit
   (:require
-   [taoensso.timbre :refer [trace debug info infof  error]]
+   [taoensso.timbre :refer [trace debug info infof warn error]]
    [tick.alpha.api :as t] ; tick uses cljc.java-time
    [tech.v3.dataset :as tds]
    [tablecloth.api :as tablecloth]
@@ -33,12 +33,21 @@
 
 ; append symbol - add missing bars at the end.
 
-(defn append-symbol [s]
-  (let [d  (bybit/get-history "D" (d/days-ago 20) s)
-        ds (tds/->dataset d)]
-    (info "imported " s " - " (count d) "bars.")
-    ;(println (pr-str d))
-    (wh/save-ts w ds s)))
+(defn append-symbol [frequency symbol]
+  (let [ds-old (wh/load-ts w (make-filename frequency symbol))
+        last-row (h/last-row ds-old)
+        last-date (:date last-row)]
+    (if last-date
+      (let [s-new (bybit/get-history frequency last-date symbol)
+            s-new-no-duplicate (bybit/remove-first-bar-if-timestamp-equals s-new last-date)
+            ds-new (tds/->>dataset s-new-no-duplicate)
+            count-new (tablecloth/row-count ds-new)]
+        (if (> count-new 0)
+          (let [ds-combined (tablecloth/concat ds-old ds-new)]
+            (info "adding " count-new "bars to " symbol frequency "since:" last-date " total: " (tablecloth/row-count ds-combined))
+            (wh/save-ts w ds-combined (make-filename frequency symbol)))
+          (warn "no new bars for " symbol frequency "since" last-date)))
+      (error "no existing series for " symbol frequency  "SKIPPING APPEND."))))
 
 ;; BYBIT UNIVERSE
 
@@ -64,12 +73,24 @@
           (partial print-symbol "15")
           bybit-symbols)))
 
+(defn append-all-15 []
+  (doall (map
+          (partial append-symbol "15")
+          bybit-symbols)))
+
+(defn append-all-daily []
+  (doall (map
+          (partial append-symbol "D")
+          bybit-symbols)))
+
 ; ********************************************************************************************+
 (comment
 
   ; init daily - one
   (init-symbol "D" (d/days-ago 20) "ETHUSD")
   (print-symbol "D" "ETHUSD")
+  (print-symbol "15" "ETHUSD")
+  (print-symbol "15" "BTCUSD")
 
   ; init daily - all
   (init-all-daily)
@@ -79,6 +100,12 @@
   (init-all-15)
   (print-all-15)
 
+  (append-symbol "D" "ETHUSD")
+  (append-symbol "15" "ETHUSD")
+  (append-symbol "15" "BTCUSD")
+
+  (append-all-daily)
+  (append-all-15)
 ;
   )
 

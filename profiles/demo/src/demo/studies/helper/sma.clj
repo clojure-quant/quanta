@@ -15,6 +15,7 @@
         ;                   (dfn/- 1))
         (assoc :sma200 sma30)
         (assoc :rsma200 (dfn// (d :close) sma200)))))
+
 (def sma-chart
   [{:sma200 "line"
     :sma30 "line"}
