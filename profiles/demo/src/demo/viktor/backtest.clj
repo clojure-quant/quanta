@@ -5,6 +5,7 @@
    [tech.v3.dataset.print :as print]
    [tech.v3.dataset :as tds]
    [tech.v3.datatype.datetime :as datetime]
+   [tech.v3.datatype.functional :as fun]
    [tablecloth.api :as tablecloth]
    [ta.dataset.helper :as helper]
    [ta.series.indicator :as ind]
@@ -20,8 +21,7 @@
   "adds bollinger indicator to dataset
    * Middle Band = 20-day simple moving average (SMA)
    * Upper Band = 20-day SMA + (20-day standard deviation of price x 2) 
-   * Lower Band = 20-day SMA - (20-day standard deviation of price x 2) 
-   "
+   * Lower Band = 20-day SMA - (20-day standard deviation of price x 2)"
   (let [; input data needed for ta4j indicators
         bars (ta4j/ds->ta4j-ohlcv ds)
         close (ta4j/ds->ta4j-close ds)
@@ -56,11 +56,45 @@
 (defn drop-beginning [ds {:keys [sma-length stddev-length mult-up mult-down] :as options}]
   (tablecloth/select-rows ds (range sma-length (tablecloth/row-count ds))))
 
+(defn xf-trailing-true-counter [xf]
+  (let [past-up-count (atom 0)]
+    (fn
+      ;; SET-UP
+      ([]
+       (xf)
+       (reset! past-up-count 0))
+     	;; PROCESS
+      ([result input]
+       (if input
+         (swap! past-up-count inc)
+         (reset! past-up-count 0))
+       (xf result @past-up-count))
+      ;; TEAR-DOWN
+      ([result]
+       (xf result)))))
+
+(defn calc-trailing-true-counter [df column]
+  (into [] xf-trailing-true-counter (get df column)))
+
+(defn add-trailing-count [ds]
+  (tablecloth/add-columns
+   ds
+   {:above-count (calc-trailing-true-counter ds :above)
+    :below-count (calc-trailing-true-counter ds :below)}))
+
+(defn filter-count-1 [ds]
+  (tablecloth/select-rows
+   ds
+   (fn [{:keys [above-count below-count]}]
+     (or (= 1 above-count) (= 1 below-count)))))
+
 (defn study-bollinger [ds {:keys [sma-length stddev-length mult-up mult-down] :as options}]
   (let [ds-study (study-bollinger-indicator ds options)]
     (-> ds-study
         add-above-below
-        (drop-beginning options))))
+        (drop-beginning options)
+        add-trailing-count
+        filter-count-1)))
 
 ; study runner (will go to ta library)
 
@@ -77,27 +111,6 @@
 (defn load-study [symbol frequency study-name]
   (let [ds (wh/load-ts w (make-study-filename study-name frequency symbol))]
     ds))
-
-; event finden: close>upper oder close<lower => seqence of index.
-; filter events, sodass nur alle 30 bars ein event stattfindet
-; walk-forward window anlegen
-; max/min innerhalb des walk-forward window finden
-; max/min relativ zur range normalisieren
-; ist der move ge-skewed (up fuer cross lower-channel, down fuer cross upper-channel)
-; optimizer fuer beste parameter.
-
-; event bollinger cross     ==> liste of event-bollinger-cross
-; cross-type #{:up :down}
-; up
-; down
-; up%
-; down%
-; diff   (up-down)
-; diff%  (up% - down%)
-
-; target funktion
-; for cross-type-up: average diff% 
-; for cross-type-down: (-average diff%)
 
 (defn make-window
   "Takes a look-forward window out of a dataframe.
@@ -169,10 +182,43 @@
                                                :mult-up 1.5
                                                :mult-down 1.5} "bollinger-upcross")
       (tablecloth/select-rows is-above-or-below)
-      (tablecloth/select-columns [:date :close :bb-lower :bb-upper :above :below])
+      (tablecloth/select-columns [:date :close
+                                  :bb-lower :bb-upper
+                                  :above :below
+                                  :above-count :below-count])
       (helper/pprint-all)
       ;(helper/pprint-dataset)
       )
+
+  (into [] xf-trailing-true-counter
+        [true false false true true true false false])
+
+  (defn bad-add [a b]
+    (info "bad add params:" a b)
+    (+ a b 1000))
+
+  (defn bad-add2 [[a b]]
+    ;(info "bad add params:" a b)
+    (+ a b 1000))
+
+  (defn bad-add-vec [a b]
+    (info "bad add-vec params:" a b)
+    (map bad-add a b))
+
+  (->> (load-study  "ETHUSD" "D" "bollinger")
+       ((juxt :close :bb-upper))
+       (apply bad-add-vec)
+       ;(apply fun/>)
+       )
+
+  (-> (load-study  "ETHUSD" "D" "bollinger")
+      (tablecloth/map-columns :test [:close :bb-upper] bad-add)
+       ;(apply bad-add-vec)
+       ;(apply fun/>)
+      )
+
+  ((juxt + -) 1 2 3)
+
 ;  
   )
 

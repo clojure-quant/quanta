@@ -27,7 +27,11 @@
        options
        "bollinger-upcross")
       (tablecloth/select-rows strategy/is-above-or-below)
-      (tablecloth/select-columns [:date :close :bb-lower :bb-upper :below  :above])
+      (tablecloth/select-columns [:date :close
+                                  :bb-lower :bb-upper
+                                  :above :below
+                                  ;:above-count :below-count
+                                  ])
       (helper/pprint-all)
       ;(helper/pprint-dataset)
       info)
