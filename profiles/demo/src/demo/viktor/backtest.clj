@@ -17,6 +17,9 @@
 (defn make-filename [frequency symbol]
   (str symbol "-" frequency))
 
+
+;; CALCULATE STRATEGY
+
 (defn study-bollinger-indicator [ds {:keys [sma-length stddev-length mult-up mult-down] :as options}]
   "adds bollinger indicator to dataset
    * Middle Band = 20-day simple moving average (SMA)
@@ -88,14 +91,25 @@
    (fn [{:keys [above-count below-count]}]
      (or (= 1 above-count) (= 1 below-count)))))
 
+(defn add-running-index [ds]
+  (tablecloth/add-column ds :index (range 1 (inc (tablecloth/row-count ds)))))
+
+
 (defn study-bollinger [ds {:keys [sma-length stddev-length mult-up mult-down] :as options}]
   (let [ds-study (study-bollinger-indicator ds options)]
     (-> ds-study
+        add-running-index
         add-above-below
-        (tablecloth/select-rows is-above-or-below)
-        (drop-beginning options)
-        add-trailing-count
-        filter-count-1)))
+        add-trailing-count)))
+
+
+(defn study-bollinger-filter-events [ds-study options]
+  (-> ds-study
+      (drop-beginning options)
+      (tablecloth/select-rows is-above-or-below)
+      filter-count-1))
+
+
 
 ; study runner (will go to ta library)
 
@@ -119,27 +133,62 @@
 
 ; forward statistics
 
-(defn make-window
+(defn p-row-index-in-range [index-begin index-end]
+  (fn [{:keys [index]}]
+    (and (>= index index-begin)
+         (<= index index-end))))
+
+
+
+(defn get-forward-window
   "Takes a look-forward window out of a dataframe.
   Returns nil if full window not possible
   Start is after the event"
-  [df idx forward-size]
+  [df-study idx forward-size]
   ;(assert (and (df? df) (int? Idx) (int? forward-size))
-  ;        (when (< (size df) (+ idx forward-size))
+  (info "get-forward-window " idx forward-size)
+  (let [index-end (+ idx forward-size)]
+    (when (< index-end (tablecloth/row-count df-study))
+      (tablecloth/select-rows df-study (p-row-index-in-range (inc idx) index-end))
   ;          (select-cols df idx (+ idx forward-size))))
-  )
+      )))
 
-(defn calc-channel-turningpoint-event
-  [df idx dir-label forward-size]
+
+
+(defn calc-forward-window-stats
+  [ds-study idx forward-size] ;label
   ;(assert (df-has-cols df #{:close :high :low :chan-up :chan-down})
-        ;  (when-let [w (window df idx forward-size)] ; at end of series window might be nil. 
-        ;    (let [;[p band-up band-down]  (cols df idx [:close :chan-up :chan-down])
-        ;          r (- band-up band-down)
-        ;          h (high (:high w))
-        ;          l (low (:low w))]))
+  (when-let [forward-window (get-forward-window ds-study idx forward-size)] ; at end of series window might be nil.
+    (let [event-row (tablecloth/first (tablecloth/select-rows  ds-study idx))
+           ;{:keys [close bb-upper bb-lower]} 
+          close (first (:close event-row))
+          bb-upper (first (:bb-upper event-row))
+          bb-lower (first (:bb-lower event-row))
+          above (first (:above event-row))
+          below (first (:below event-row))
+          ; calculated
+          event-type (cond
+                       above :bb-up
+                       below :bb-down
+                       :else :bb-unknown)
+          bb-range (- bb-upper bb-lower)
+          forward-high (apply fun/max (:high forward-window))
+          forward-low (apply fun/min (:low forward-window))
+          max-forward-up (- forward-high close)
+          max-forward-down (- close forward-low)]
+      (info "event range:"  bb-range event-row)
+      {:idx idx
+       :bb-range bb-range
+       :close close
+       :forward-high forward-high
+       :forward-low forward-low
+       :max-forward-up   max-forward-up
+       :max-forward-down max-forward-down
+       :forward-skew (-  max-forward-up max-forward-down)
+       :bb-event-type event-type}))
   )
 
-; (let [df  :close
+
 
 (defn events-goodness
   [df bollinger-events]
@@ -240,6 +289,30 @@
       )
 
   ((juxt + -) 1 2 3)
+
+  (->> (load-study  "ETHUSD" "D" "bollinger")
+
+       (apply bad-add-vec)
+       ;(apply fun/>)
+       )
+
+  ; Forward-Window Selector - TODO: make this a unit test
+  ((p-row-index-in-range 100 200) {:index 150})
+  ((p-row-index-in-range 100 200) {:index 100})
+  ((p-row-index-in-range 100 200) {:index 200})
+  ((p-row-index-in-range 100 200) {:index 50})
+  ((p-row-index-in-range 100 200) {:index 250})
+
+  (-> (run-study "ETHUSD" "D" study-bollinger {:sma-length 20
+                                               :stddev-length 20
+                                               :mult-up 1.5
+                                               :mult-down 1.5})
+
+         ;24 | 2019-02-17T00:00:00Z
+     ;(get-forward-window 24 5) ; idx 24 , forward-size 24
+      (calc-forward-window-stats 24 5)
+      ;    (helper/pprint-all)
+      )
 
 ;  
   )

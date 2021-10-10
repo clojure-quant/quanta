@@ -21,12 +21,10 @@
 
 (defn task-bollinger-study [& _]
   (info "running bollinger strategy with options: " options)
-  (-> (strategy/run-study
-       "ETHUSD" "D"
-       strategy/study-bollinger
-       options)
+  (-> (strategy/run-study "ETHUSD" "D" strategy/study-bollinger options)
+      (strategy/study-bollinger-filter-events options)
       (strategy/save-study  "ETHUSD" "D" "bollinger-upcross")
-      (tablecloth/select-columns [:date :close
+      (tablecloth/select-columns [:index :date :close
                                   :bb-lower :bb-upper
                                   :above :below
                                   ;:above-count :below-count
@@ -46,10 +44,8 @@
                     :stddev-length length
                     :mult-up  1.5
                     :mult-down 1.5}]
-       (-> (strategy/run-study
-            "ETHUSD" "D"
-            strategy/study-bollinger
-            options)
+       (-> (strategy/run-study "ETHUSD" "D" strategy/study-bollinger options)
+           (strategy/study-bollinger-filter-events options)
           ;(strategy/goodness-event-count)
           ;(info "<== COUNT - " "l:" length)
            (strategy/event-stats options))))
