@@ -51,6 +51,9 @@
 (defn ds-rows [ds]
   (-> (tablecloth/shape ds) first))
 
+(defn pprint-all [ds]
+  (print-range ds :all))
+
 (defn pprint-dataset [ds]
   (let [l (ds-rows ds)]
     (if (< l 11)

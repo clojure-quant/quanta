@@ -33,3 +33,4 @@ package.json
 shadow-cljs.edn
 goldly_bindings_generated.cljs
 /profiles/db/*.nippy.gz
+/profiles/db/*.csv

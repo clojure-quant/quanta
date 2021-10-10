@@ -24,6 +24,35 @@
 ; the original ta4j wrapper used 0.12 - we upgraded to 0.14
 ; some of the function names have changed.
 
+;; ta4j class helpers
+
+(defn constructor [pre-str post-str]
+  (fn [class-key args]
+    (let [kns       (when-let [x (namespace class-key)] (str x "."))
+          class-str (str pre-str kns (name class-key) post-str)]
+      ;(println "TA4J constructor name: " class-str)
+      (clojure.lang.Reflector/invokeConstructor
+       (resolve (symbol class-str))
+       (to-array args)))))
+
+(defn ind [class-key & args]
+  (let [ctor (constructor "org.ta4j.core.indicators." "Indicator")]
+    (ctor class-key args)))
+
+(defn ind-values
+  ([ind] (ind-values (-> ind .getBarSeries .getBarCount) ind))
+  ([n ind]
+   (->> (map #(->> % (.getValue ind) .doubleValue)
+             (range n)))))
+
+(defn num-double [d]
+  (DoubleNum/valueOf d))
+
+(defn num-decimal [d]
+  (DecimalNum/valueOf d))
+
+; tml-dataset -> ta4j data conversion
+
 (defn ds->ta4j-ohlcv
   [ds]
   (let [series (org.ta4j.core.BaseBarSeries.)
@@ -39,50 +68,8 @@
   (let [ta4j-series (ds->ta4j-ohlcv ds)]
     (ind :helpers/ClosePrice ta4j-series)))
 
-(defn ind-values
-  ([ind] (ind-values (-> ind .getBarSeries .getBarCount) ind))
-  ([n ind]
-   (->> (map #(->> % (.getValue ind) .doubleValue)
-             (range n)))))
+; trading rules
 
-(defn constructor [pre-str post-str]
-  (fn [class-key args]
-    (let [kns       (when-let [x (namespace class-key)] (str x "."))
-          class-str (str pre-str kns (name class-key) post-str)]
-      (println "TA4J constructor name: " class-str)
-      (clojure.lang.Reflector/invokeConstructor
-       (resolve (symbol class-str))
-       (to-array args)))))
-
-(defn ind [class-key & args]
-  (let [ctor (constructor "org.ta4j.core.indicators." "Indicator")]
-    (ctor class-key args)))
-
-(defn num-double [d]
-  (DoubleNum/valueOf d))
-
-(defn num-decimal [d]
-  (DecimalNum/valueOf d))
-
-(defn ta4j-ind [ds what indicator-kw & indicator-args]
-  "calculates ta4j indicator on a tml-dataset"
-  (let [ta4j-series (ds->ta4j-ohlcv ds)
-        ta4j-input (case what
-                     :bar ta4j-series
-                     :close (ind :helpers/ClosePrice ta4j-series))
-        _ (info "ta4j ind: " indicator-kw " args:" indicator-args)
-        ;indicator (ta4j/ind :ATR ta4j-series 14)
-        indicator (if (> (count indicator-args) 0)
-                    (apply ind indicator-kw ta4j-input indicator-args)
-                    (apply ind indicator-kw ta4j-input))
-        ind-vals (ind-values indicator)]
-    ind-vals))
-
-(defn add-column-ta4j-ind [ds col-name what indicator-kw & indicator-args]
-  (-> (ta4j-ind ds what indicator-kw))
-
-;(tablecloth/add-column ds :symbol symbol)
-  )
 (defn rule [class-key & args]
   (let [ctor (constructor "org.ta4j.core.trading.rules." "Rule")]
     (ctor class-key args)))

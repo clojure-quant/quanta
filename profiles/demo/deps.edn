@@ -50,6 +50,11 @@
   :bybit-import-append {:extra-deps {org.pinkgorilla/webly {:mvn/version "0.3.50"}} ; log config
                         :exec-fn demo.warehouse.import-task/task-bybit-import-append}
 
+  :bollinger-strategy {:extra-deps {org.pinkgorilla/webly {:mvn/version "0.3.50"}} ; log config
+                       :exec-fn demo.viktor.task/task-bollinger-study}
+  
+
+
 
 ;
   }}
