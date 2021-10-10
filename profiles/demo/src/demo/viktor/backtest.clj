@@ -102,12 +102,16 @@
 (defn make-study-filename [study-name frequency symbol]
   (str "study-" study-name "-" symbol "-" frequency))
 
-(defn run-study [symbol frequency algo options study-name]
+(defn run-study [symbol frequency algo options]
   (let [ds (wh/load-ts w (make-filename frequency symbol))
         ds-study (algo ds options)]
-    (wh/save-ts w ds-study (make-study-filename study-name frequency symbol))
-    (tablecloth/write! ds-study (str "../db/study-" study-name "-" symbol "-" frequency ".csv"))
     ds-study))
+
+(defn save-study [ds-study symbol frequency study-name]
+  (wh/save-ts w ds-study (make-study-filename study-name frequency symbol))
+  (tablecloth/write! ds-study (str "../db/study-" study-name "-" symbol "-" frequency ".csv"))
+  ds-study ; important to be here, as save-study is used often in a threading macro
+  )
 
 (defn load-study [symbol frequency study-name]
   (let [ds (wh/load-ts w (make-study-filename study-name frequency symbol))]
@@ -142,24 +146,20 @@
   "input: sequence of bollinger events
    output: value that can be put to the optimizer (average difference of range)")
 
-
-
-
-
+(defn event-stats [dst-event options]
+  (merge options
+         {:evt-count (tablecloth/row-count dst-event)
+         ;:shape (tablecloth/shape ds-event)
+          }))
 (defn goodness-event-count [ds]
   (tablecloth/row-count ds)
   ;(tablecloth/shape ds)
   )
-
-
 (strategy/run-study
  "ETHUSD" "D"
  strategy/study-bollinger
  options
  "bollinger-upcross")
-
-
-
 
 ; *** REPL EXPERIMENTS ********************************************************
 
