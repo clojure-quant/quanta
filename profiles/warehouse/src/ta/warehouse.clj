@@ -27,6 +27,7 @@
         ds (io/get-nippy s)
         ds (tablecloth/set-dataset-name ds name)]
     (info "loaded series " name " count: " (-> (tablecloth/shape ds) first))
+     ;(tablecloth/add-column ds :symbol symbol)
     ds))
 
 (defn load-list [wh name]

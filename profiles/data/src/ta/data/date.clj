@@ -56,8 +56,6 @@
     ;java.time.LocalDate 
     nil))
 
-
-
 ; *****************************************************************************
 (comment
 
@@ -103,24 +101,14 @@
 
 ;(tc/to-long (-> 2 t/hours t/ago))
 ;(-> 2 t/hours t/ago)
-  
 
-(->
- (t/instant "1999-12-31T00:59:59Z")
- (t/in "UTC")
+  (->
+   (t/instant "1999-12-31T00:59:59Z")
+   (t/in "UTC")
  ;(t/date)
- class
- )
+   class)
 
-  
-
-  ; (ZonedDateTime/of (LocalDate/parse date date-fmt)
+; (ZonedDateTime/of (LocalDate/parse date date-fmt)
   ;   (LocalTime/parse time)
   ;                EST)
-
-  
-
-
-
-
   )

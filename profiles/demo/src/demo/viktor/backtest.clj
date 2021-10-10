@@ -13,16 +13,46 @@
    [demo.env.warehouse :refer [w]]
    [demo.studies.helper.experiments-helpers :as experiments-helpers]))
 
-
 (defn make-filename [frequency symbol]
   (str symbol "-" frequency))
 
-; 1x
-; fetch 15 min bars bybit
-; save ts to disk
+(defn study-bollinger [ds {:keys [sma-length stddev-length mult-up mult-down] :as options}]
+  "adds bollinger indicator to dataset
+   * Middle Band = 20-day simple moving average (SMA)
+   * Upper Band = 20-day SMA + (20-day standard deviation of price x 2) 
+   * Lower Band = 20-day SMA - (20-day standard deviation of price x 2) 
+   "
+  (let [; input data needed for ta4j indicators
+        bars (ta4j/ds->ta4j-ohlcv2 ds)
+        close (ta4j/ds->ta4j-close ds)
+      ; setup the ta4j indicators
+        sma (ta4j/ind :SMA close sma-length)
+        stddev (ta4j/ind :statistics/StandardDeviation close stddev-length)
+        bb-middle (ta4j/ind :bollinger/BollingerBandsMiddle sma)
+        bb-upper (ta4j/ind :bollinger/BollingerBandsUpper bb-middle stddev (ta4j/num-decimal mult-up))
+        bb-lower (ta4j/ind :bollinger/BollingerBandsLower bb-middle stddev (ta4j/num-decimal mult-down))
+      ; calculate the indicators
+        bb-upper-values  (ta4j/ind-values bb-upper)
+        bb-lower-values  (ta4j/ind-values bb-lower)]
+    (-> ds
+        (tablecloth/add-column :bb-lower bb-lower-values)
+        (tablecloth/add-column :bb-upper bb-upper-values))))
 
-; fuer jede analyse
-; load ts from disk
+; study runner (will go to ta library)
+
+(defn make-study-filename [study-name frequency symbol]
+  (str "study-" study-name "-" symbol "-" frequency))
+
+(defn run-study [symbol frequency algo options study-name]
+  (let [ds (wh/load-ts w (make-filename frequency symbol))
+        ds-study (algo ds options)]
+    (wh/save-ts w ds-study (make-study-filename study-name frequency symbol))
+    ds-study))
+
+(defn load-study [symbol frequency study-name]
+  (let [ds (wh/load-ts w (make-study-filename study-name frequency symbol))]
+    ds))
+
 ; bollinger band (moving average + std dev) upper-band lower-band
 ; event finden: close>upper oder close<lower => seqence of index.
 ; filter events, sodass nur alle 30 bars ein event stattfindet
@@ -31,35 +61,6 @@
 ; max/min relativ zur range normalisieren
 ; ist der move ge-skewed (up fuer cross lower-channel, down fuer cross upper-channel)
 ; optimizer fuer beste parameter.
-
-
-; https://github.com/ta4j/ta4j
-
-
-
-(-> (wh/load-ts w (make-filename "D" "ETHUSD"))
-    (ta4j/ta4j-ind :ATR 14)
-    count)
-
-
-(ind/sma 2 [1 1 2 2 3 3 4 4 5 5])
-
-
-
-
-
-
-(def series4j (ta4j/->series data/spx-bars))
-)
-
-
-
-; parameter
-; bollinger moving average length
-; bollinger standard derivation multiplyer
-; bollinger std dev lookback length
-; forward window length
-
 
 ; event bollinger cross     ==> liste of event-bollinger-cross
 ; cross-type #{:up :down}
@@ -73,7 +74,6 @@
 ; target funktion
 ; for cross-type-up: average diff% 
 ; for cross-type-down: (-average diff%)
-
 
 (defn find-cross-up
   [ds]
@@ -108,3 +108,34 @@
   [df bollinger-events]
   "input: sequence of bollinger events
    output: value that can be put to the optimizer (average difference of range)")
+
+(comment
+
+   ; test our indicators
+  (ind/sma 2 [1 1 2 2 3 3 4 4 5 5])
+
+    ; test calculating simple indicators
+  (let [ds (wh/load-ts w (make-filename "D" "ETHUSD"))
+        bars (ta4j/ds->ta4j-ohlcv2 ds)
+        close (ta4j/ds->ta4j-close ds)]
+    (-> (ta4j/ind :ATR bars 14) (ta4j/ind-values))
+    (-> (ta4j/ind :SMA close 14) (ta4j/ind-values)))
+
+  ; calculate bollinger strategy
+  (let [ds (wh/load-ts w (make-filename "D" "ETHUSD"))]
+    (study-bollinger ds {:sma-length 20
+                         :stddev-length 20
+                         :mult-up 1.5
+                         :mult-down 1.5}))
+
+; study interface
+  (run-study "ETHUSD" "D" study-bollinger {:sma-length 20
+                                           :stddev-length 20
+                                           :mult-up 1.5
+                                           :mult-down 1.5} "bollinger")
+
+  (load-study  "ETHUSD" "D" "bollinger")
+
+;  
+  )
+
