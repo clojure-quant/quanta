@@ -26,7 +26,6 @@
        strategy/study-bollinger
        options
        "bollinger-upcross")
-      (tablecloth/select-rows strategy/is-above-or-below)
       (tablecloth/select-columns [:date :close
                                   :bb-lower :bb-upper
                                   :above :below
@@ -35,12 +34,31 @@
       (helper/pprint-all)
       ;(helper/pprint-dataset)
       info)
-
   (info "study calculation finished."))
+
+
+(defn task-bollinger-optimizer [& _]
+  (info "running bollinger strategy optimizer")
+  (for [length (range 10 200 10)
+      ; mult-up (range 0.5 3.5 0.5)
+        ]
+    (do
+      (-> (strategy/run-study
+           "ETHUSD" "D"
+           strategy/study-bollinger
+           {:sma-length length
+            :stddev-length length
+            :mult-up  1.5
+            :mult-down 1.5}
+           "bollinger-upcross")
+          (strategy/goodness-event-count)
+          (info "<== COUNT - " "l:" length)))))
+
 
 (comment
 
   (task-bollinger-study)
+  (task-bollinger-optimizer)
 
  ; 
   )

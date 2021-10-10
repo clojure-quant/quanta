@@ -92,6 +92,7 @@
   (let [ds-study (study-bollinger-indicator ds options)]
     (-> ds-study
         add-above-below
+        (tablecloth/select-rows is-above-or-below)
         (drop-beginning options)
         add-trailing-count
         filter-count-1)))
@@ -111,6 +112,8 @@
 (defn load-study [symbol frequency study-name]
   (let [ds (wh/load-ts w (make-study-filename study-name frequency symbol))]
     ds))
+
+; forward statistics
 
 (defn make-window
   "Takes a look-forward window out of a dataframe.
@@ -138,6 +141,25 @@
   [df bollinger-events]
   "input: sequence of bollinger events
    output: value that can be put to the optimizer (average difference of range)")
+
+
+
+
+
+(defn goodness-event-count [ds]
+  (tablecloth/row-count ds)
+  ;(tablecloth/shape ds)
+  )
+
+
+(strategy/run-study
+ "ETHUSD" "D"
+ strategy/study-bollinger
+ options
+ "bollinger-upcross")
+
+
+
 
 ; *** REPL EXPERIMENTS ********************************************************
 

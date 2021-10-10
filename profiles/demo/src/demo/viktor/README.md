@@ -1,30 +1,30 @@
 # 2021 10 - bollinger strategy backtest
 
-; bollinger band strategy:
-; assumption is, that crossing lower-bollinger statistically means we will go up.
+bollinger band strategy:
+assumption is, that crossing lower-bollinger statistically means we will go up.
 
-; bollinger-event-analysis
-; event index: :above=true and :above-count=1
-; for each bollinger-evnet:
-; - create walk-forward window (if it is possible
-; - find min/max in walk-forward window 
-; - normalize min/max with range=bollinger-up - bollinger-down
-; the bollinger band is significant if range is squed
+bollinger-event-analysis
+event index: :above=true and :above-count=1
+for each bollinger-evnet:
+- create walk-forward window (if it is possible
+- find min/max in walk-forward window 
+- normalize min/max with range=bollinger-up - bollinger-down
+the bollinger band is significant if range is squed
 
-; optimize for best parameter
+optimize for best parameter
 
-; event bollinger cross     ==> liste of event-bollinger-cross
-; cross-type #{:up :down}
-; up
-; down
-; up%
-; down%
-; diff   (up-down)
-; diff%  (up% - down%)
+event bollinger cross     ==> liste of event-bollinger-cross
+cross-type #{:up :down}
+up
+down
+up%
+down%
+diff   (up-down)
+diff%  (up% - down%)
 
-; target funktion
-; for cross-type-up: average diff% 
-; for cross-type-down: (-average diff%)
+target funktion
+for cross-type-up: average diff% 
+for cross-type-down: (-average diff%)
 
 
 
