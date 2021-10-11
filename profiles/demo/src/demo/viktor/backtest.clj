@@ -17,7 +17,6 @@
 (defn make-filename [frequency symbol]
   (str symbol "-" frequency))
 
-
 ;; CALCULATE STRATEGY
 
 (defn study-bollinger-indicator [ds {:keys [sma-length stddev-length mult-up mult-down] :as options}]
@@ -94,7 +93,6 @@
 (defn add-running-index [ds]
   (tablecloth/add-column ds :index (range 1 (inc (tablecloth/row-count ds)))))
 
-
 (defn study-bollinger [ds {:keys [sma-length stddev-length mult-up mult-down] :as options}]
   (let [ds-study (study-bollinger-indicator ds options)]
     (-> ds-study
@@ -102,14 +100,11 @@
         add-above-below
         add-trailing-count)))
 
-
 (defn study-bollinger-filter-events [ds-study options]
   (-> ds-study
       (drop-beginning options)
       (tablecloth/select-rows is-above-or-below)
       filter-count-1))
-
-
 
 ; study runner (will go to ta library)
 
@@ -138,8 +133,6 @@
     (and (>= index index-begin)
          (<= index index-end))))
 
-
-
 (defn get-forward-window
   "Takes a look-forward window out of a dataframe.
   Returns nil if full window not possible
@@ -152,9 +145,6 @@
       (tablecloth/select-rows df-study (p-row-index-in-range (inc idx) index-end))
   ;          (select-cols df idx (+ idx forward-size))))
       )))
-
-
-
 (defn calc-forward-window-stats
   [ds-study idx forward-size] ;label
   ;(assert (df-has-cols df #{:close :high :low :chan-up :chan-down})
@@ -185,10 +175,7 @@
        :max-forward-up   max-forward-up
        :max-forward-down max-forward-down
        :forward-skew (-  max-forward-up max-forward-down)
-       :bb-event-type event-type}))
-  )
-
-
+       :bb-event-type event-type})))
 
 (defn events-goodness
   [df bollinger-events]
@@ -200,10 +187,33 @@
          {:evt-count (tablecloth/row-count dst-event)
          ;:shape (tablecloth/shape ds-event)
           }))
+
 (defn goodness-event-count [ds]
   (tablecloth/row-count ds)
   ;(tablecloth/shape ds)
   )
+
+(defn backtest-bollinger [symbol frequency options]
+  (let [ds-study (run-study symbol frequency  study-bollinger options)
+        ds-events (study-bollinger-filter-events ds-study options)
+
+        calc-event (fn [{:keys [index] :as row}]
+                     (calc-forward-window-stats ds-study index (:forward-size options)))]
+
+    (as-> (map calc-event (tds/mapseq-reader ds-events)) v
+      (remove nil? v)
+      (tablecloth/dataset v)
+      (tablecloth/select-columns v [:idx
+                                    :close
+                                    :bb-event-type
+                                    :forward-skew]))))
+
+(backtest-bollinger "ETHUSD" "D"  {:sma-length 20
+                                   :stddev-length 20
+                                   :mult-up 1.5
+                                   :mult-down 1.5
+                                   :forward-size 20})
+
 (strategy/run-study
  "ETHUSD" "D"
  strategy/study-bollinger
