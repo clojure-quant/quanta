@@ -153,6 +153,7 @@
     (let [event-row (tablecloth/first (tablecloth/select-rows  ds-study (dec idx)))
            ;{:keys [close bb-upper bb-lower]} 
           close (first (:close event-row))
+          date (first (:date event-row))
           bb-upper (first (:bb-upper event-row))
           bb-lower (first (:bb-lower event-row))
           above (first (:above event-row))
@@ -166,16 +167,21 @@
           forward-high (apply fun/max (:high forward-window))
           forward-low (apply fun/min (:low forward-window))
           max-forward-up (- forward-high close)
-          max-forward-down (- close forward-low)]
+          max-forward-down (- close forward-low)
+          forward-skew (-  max-forward-up max-forward-down)
+          ]
+         
       (info "event range:"  bb-range event-row)
       {:idx idx
+       :date date
        :bb-range bb-range
        :close close
        :forward-high forward-high
        :forward-low forward-low
        :max-forward-up   max-forward-up
        :max-forward-down max-forward-down
-       :forward-skew (-  max-forward-up max-forward-down)
+       :forward-skew forward-skew
+       :forward-skew-prct (* 100 (/ forward-skew close))
        :bb-event-type event-type})))
 
 (defn backtest-bollinger [symbol frequency options]
@@ -187,25 +193,30 @@
       (remove nil? v)
       (tablecloth/dataset v)
       (tablecloth/select-columns v [:idx
+                                    :date
                                     :close
                                     :bb-event-type
-                                    :forward-skew]))))
+                                    :forward-skew
+                                    :forward-skew-prct
+                                    :max-forward-up
+                                    :max-forward-down
+                                    ]))))
 
 (defn backtest-grouper [ds-backtest]
   (-> ds-backtest
       (tablecloth/group-by :bb-event-type)
       (tablecloth/aggregate {:min (fn [ds]
                                     (->> ds
-                                         :forward-skew
+                                         :forward-skew-prct
                                          (apply min)))
                              :max (fn [ds]
                                     (->> ds
-                                         :forward-skew
+                                         :forward-skew-prct
                                          (apply max)))
 
                              :avg (fn [ds]
                                     (->> ds
-                                         :forward-skew
+                                         :forward-skew-prct
                                          fun/mean))
 
                              :count (fn [ds]
