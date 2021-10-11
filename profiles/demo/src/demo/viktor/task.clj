@@ -3,9 +3,11 @@
    [taoensso.timbre :refer [trace debug info infof warn error]]
    [tablecloth.api :as tablecloth]
    [webly.log]
-
    [ta.dataset.helper :as helper]
-   [demo.viktor.backtest :as strategy]))
+   [ta.dataset.backtest :as backtest]
+   [demo.env.warehouse :refer [w]]
+   [demo.viktor.strategy-bollinger :as bs]
+   [demo.viktor.strategy-bollinger :as strategy]))
 
 (webly.log/timbre-config!
  {:timbre-loglevel
@@ -14,60 +16,25 @@
    [#{"webly.*"} :info]
    [#{"*"} :info]]})
 
-(def options {:sma-length 20
-              :stddev-length 20
-              :mult-up 2.0
-              :mult-down 2.0
-              :forward-size 20
-              })
+(def default-options {:sma-length 20
+                      :stddev-length 20
+                      :mult-up 2.0
+                      :mult-down 2.0
+                      :forward-size 20})
 
 (defn task-bollinger-study [& _]
-  (info "running bollinger strategy with options: " options)
-  (let [ds-study  (strategy/run-study "ETHUSD" "D" strategy/study-bollinger options)
-        ds-events (strategy/study-bollinger-filter-events ds-study options)
-        ds-forward (strategy/backtest-bollinger "ETHUSD" "D" options)
-        ds-forward-grouped (strategy/backtest-grouper ds-forward)
-        ]
-    (info "Bollinger Events:")
-    (-> ds-events
-        (strategy/save-study  "ETHUSD" "D" "bollinger-upcross")
-        (tablecloth/select-columns [:index :date :close
-                                    :bb-lower :bb-upper
-                                    :above :below
-                                  ;:above-count :below-count
-                                    ])
-        (helper/pprint-all)
-      ;(helper/pprint-dataset)
-        info)
-    (-> ds-forward
-        (strategy/save-study  "ETHUSD" "D" "bollinger-forward")
-        #_(tablecloth/select-columns [:index :date :close
-                                    :bb-lower :bb-upper
-                                    :above :below
-                                  ;:above-count :below-count
-                                    ])
-        (helper/pprint-all)
-      ;(helper/pprint-dataset)
-        info)
+  (info "running bollinger strategy with options: " default-options)
+  (let [r (backtest/run-study w "ETHUSD" "D"
+                              bs/bollinger-study
+                              default-options)]
+    (bs/print-all r :ds-study)
+    (bs/print-all r :ds-events-all)
+    (bs/print-all r :ds-events-forward)
+    (bs/print-all r :ds-performance)
+    (bs/print-backtest-numbers r)
 
-    (-> ds-forward-grouped
-        (helper/pprint-all)
-        info)
-
-    (-> ds-forward-grouped
-        strategy/bollinger-goodness
-        #_(tablecloth/select-columns [:index :date :close
-                                      :bb-lower :bb-upper
-                                      :above :below
-                                  ;:above-count :below-count
-                                      ])
-        (helper/pprint-all)
-      ;(helper/pprint-dataset)
-        info)
-
+    (backtest/save-study w (:ds-study r) "ETHUSD" "D" "bollinger-upcross")
     (info "study calculation finished.")))
-
-
 
 (defn task-bollinger-optimizer [& _]
   (info "running bollinger strategy optimizer")
@@ -79,15 +46,16 @@
                     :stddev-length length
                     :mult-up  1.5
                     :mult-down 1.5
-                    :forward-size length}]
-       (strategy/pipeline-bollinger-goodness "ETHUSD" "D" options)))
+                    :forward-size length}
+           r (backtest/run-study w "ETHUSD" "D"
+                                 bs/bollinger-study
+                                 options)]
+       (:backtest-numbers r)))
    (tablecloth/dataset)
-   (tablecloth/select-columns [:sma-length
-                               :down-count
-                               :up-count
-                               :goodness])
-   (helper/pprint-all)
-   info))
+   (bs/print-ds-cols-all [:sma-length
+                          :down-count
+                          :up-count
+                          :goodness])))
 
 (comment
 
