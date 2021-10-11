@@ -43,12 +43,9 @@
      (let [options {:sma-length length
                     :stddev-length length
                     :mult-up  1.5
-                    :mult-down 1.5}]
-       (-> (strategy/run-study "ETHUSD" "D" strategy/study-bollinger options)
-           (strategy/study-bollinger-filter-events options)
-          ;(strategy/goodness-event-count)
-          ;(info "<== COUNT - " "l:" length)
-           (strategy/event-stats options))))
+                    :mult-down 1.5
+                    :forward-size length}]
+       (strategy/pipeline-bollinger-goodness "ETHUSD" "D" options)))
    (tablecloth/dataset)
    (helper/pprint-all)))
 

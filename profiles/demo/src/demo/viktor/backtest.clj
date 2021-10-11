@@ -145,11 +145,12 @@
       (tablecloth/select-rows df-study (p-row-index-in-range (inc idx) index-end))
   ;          (select-cols df idx (+ idx forward-size))))
       )))
+
 (defn calc-forward-window-stats
   [ds-study idx forward-size] ;label
   ;(assert (df-has-cols df #{:close :high :low :chan-up :chan-down})
   (when-let [forward-window (get-forward-window ds-study idx forward-size)] ; at end of series window might be nil.
-    (let [event-row (tablecloth/first (tablecloth/select-rows  ds-study idx))
+    (let [event-row (tablecloth/first (tablecloth/select-rows  ds-study (dec idx)))
            ;{:keys [close bb-upper bb-lower]} 
           close (first (:close event-row))
           bb-upper (first (:bb-upper event-row))
@@ -177,10 +178,52 @@
        :forward-skew (-  max-forward-up max-forward-down)
        :bb-event-type event-type})))
 
-(defn events-goodness
-  [df bollinger-events]
-  "input: sequence of bollinger events
-   output: value that can be put to the optimizer (average difference of range)")
+
+(defn backtest-bollinger [symbol frequency options]
+  (let [ds-study (run-study symbol frequency  study-bollinger options)
+        ds-events (study-bollinger-filter-events ds-study options)
+        calc-event (fn [{:keys [index] :as row}]
+                     (calc-forward-window-stats ds-study index (:forward-size options)))]
+    (as-> (map calc-event (tds/mapseq-reader ds-events)) v
+      (remove nil? v)
+      (tablecloth/dataset v)
+      (tablecloth/select-columns v [:idx
+                                    :close
+                                    :bb-event-type
+                                    :forward-skew]))))
+
+
+(defn backtest-grouper [ds-backtest]
+  (-> ds-backtest
+      (tablecloth/group-by :bb-event-type)
+      (tablecloth/aggregate {:min (fn [ds]
+                                    (->> ds
+                                         :forward-skew
+                                         (apply min)))
+                             :max (fn [ds]
+                                    (->> ds
+                                         :forward-skew
+                                         (apply max)))
+
+                             :avg (fn [ds]
+                                    (->> ds
+                                         :forward-skew
+                                         fun/mean))
+
+                             :count (fn [ds]
+                                      (tablecloth/row-count ds))})))
+
+
+(defn bollinger-goodness
+  [df-result ]
+   (let [row-bb-up (tablecloth/select-rows df-result  (fn [r] (= (:$group-name r) :bb-up)))
+         breakout-up-result (first (:avg row-bb-up))
+         row-bb-down (tablecloth/select-rows df-result  (fn [r] (= (:$group-name r) :bb-down)))
+         breakout-down-result (first (:avg row-bb-down))
+         ]
+     (info "up:" breakout-up-result "down: " breakout-down-result)
+     {:goodness (- breakout-up-result breakout-down-result)}
+  ))
 
 (defn event-stats [dst-event options]
   (merge options
@@ -193,32 +236,42 @@
   ;(tablecloth/shape ds)
   )
 
-(defn backtest-bollinger [symbol frequency options]
-  (let [ds-study (run-study symbol frequency  study-bollinger options)
-        ds-events (study-bollinger-filter-events ds-study options)
+(defn pipeline-bollinger-goodness 
+  [symbol frequency options]
+  (-> (backtest-bollinger symbol frequency options)
+      (backtest-grouper)
+      bollinger-goodness
+      (merge options)
+   ))
 
-        calc-event (fn [{:keys [index] :as row}]
-                     (calc-forward-window-stats ds-study index (:forward-size options)))]
 
-    (as-> (map calc-event (tds/mapseq-reader ds-events)) v
-      (remove nil? v)
-      (tablecloth/dataset v)
-      (tablecloth/select-columns v [:idx
-                                    :close
-                                    :bb-event-type
-                                    :forward-skew]))))
+(comment
 
-(backtest-bollinger "ETHUSD" "D"  {:sma-length 20
-                                   :stddev-length 20
-                                   :mult-up 1.5
-                                   :mult-down 1.5
-                                   :forward-size 20})
+  ; calculate study only
+  (run-study "ETHUSD" "D"
+             study-bollinger
+             {:sma-length 20
+              :stddev-length 20
+              :mult-up 1.5
+              :mult-down 1.5
+              :forward-size 20})
 
-(strategy/run-study
- "ETHUSD" "D"
- strategy/study-bollinger
- options
- "bollinger-upcross")
+  ; backtest
+   (pipeline-bollinger-goodness "ETHUSD" "D"  {:sma-length 20
+                                      :stddev-length 20
+                                      :mult-up 1.5
+                                      :mult-down 1.5
+                                      :forward-size 20})
+
+   )
+  ;
+  )
+
+
+
+
+
+
 
 ; *** REPL EXPERIMENTS ********************************************************
 
