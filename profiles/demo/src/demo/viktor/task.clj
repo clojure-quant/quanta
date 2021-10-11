@@ -47,7 +47,12 @@
                     :forward-size length}]
        (strategy/pipeline-bollinger-goodness "ETHUSD" "D" options)))
    (tablecloth/dataset)
-   (helper/pprint-all)))
+   (tablecloth/select-columns [:sma-length
+                               :down-count
+                               :up-count
+                               :goodness])
+   (helper/pprint-all)
+   info))
 
 (comment
 

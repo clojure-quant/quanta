@@ -47,3 +47,5 @@ create this file: profiles/demo/creds.edn - then add your secret key in this for
 ## run strategy
 
 `clj -X:bollinger-strategy`
+
+`clj -X:bollinger-optimizer`

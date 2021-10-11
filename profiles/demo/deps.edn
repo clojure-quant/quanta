@@ -53,6 +53,8 @@
   :bollinger-strategy {:extra-deps {org.pinkgorilla/webly {:mvn/version "0.3.50"}} ; log config
                        :exec-fn demo.viktor.task/task-bollinger-study}
   
+  :bollinger-optimizer {:extra-deps {org.pinkgorilla/webly {:mvn/version "0.3.50"}} ; log config
+                       :exec-fn demo.viktor.task/task-bollinger-optimizer}
 
 
 

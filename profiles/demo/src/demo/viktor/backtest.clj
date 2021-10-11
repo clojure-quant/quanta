@@ -178,7 +178,6 @@
        :forward-skew (-  max-forward-up max-forward-down)
        :bb-event-type event-type})))
 
-
 (defn backtest-bollinger [symbol frequency options]
   (let [ds-study (run-study symbol frequency  study-bollinger options)
         ds-events (study-bollinger-filter-events ds-study options)
@@ -191,7 +190,6 @@
                                     :close
                                     :bb-event-type
                                     :forward-skew]))))
-
 
 (defn backtest-grouper [ds-backtest]
   (-> ds-backtest
@@ -213,17 +211,18 @@
                              :count (fn [ds]
                                       (tablecloth/row-count ds))})))
 
-
 (defn bollinger-goodness
-  [df-result ]
-   (let [row-bb-up (tablecloth/select-rows df-result  (fn [r] (= (:$group-name r) :bb-up)))
-         breakout-up-result (first (:avg row-bb-up))
-         row-bb-down (tablecloth/select-rows df-result  (fn [r] (= (:$group-name r) :bb-down)))
-         breakout-down-result (first (:avg row-bb-down))
-         ]
-     (info "up:" breakout-up-result "down: " breakout-down-result)
-     {:goodness (- breakout-up-result breakout-down-result)}
-  ))
+  [df-result]
+  (let [row-bb-up (tablecloth/select-rows df-result  (fn [r] (= (:$group-name r) :bb-up)))
+        breakout-up-count (first (:count row-bb-up))
+        breakout-up-result (first (:avg row-bb-up))
+        row-bb-down (tablecloth/select-rows df-result  (fn [r] (= (:$group-name r) :bb-down)))
+        breakout-down-count (first (:count row-bb-down))
+        breakout-down-result (first (:avg row-bb-down))]
+    (info "up:" breakout-up-result "down: " breakout-down-result)
+    {:up-count breakout-up-count
+     :down-count breakout-down-count
+     :goodness (- breakout-up-result breakout-down-result)}))
 
 (defn event-stats [dst-event options]
   (merge options
@@ -236,14 +235,12 @@
   ;(tablecloth/shape ds)
   )
 
-(defn pipeline-bollinger-goodness 
+(defn pipeline-bollinger-goodness
   [symbol frequency options]
   (-> (backtest-bollinger symbol frequency options)
       (backtest-grouper)
       bollinger-goodness
-      (merge options)
-   ))
-
+      (merge options)))
 
 (comment
 
@@ -257,22 +254,14 @@
               :forward-size 20})
 
   ; backtest
-   (pipeline-bollinger-goodness "ETHUSD" "D"  {:sma-length 20
-                                      :stddev-length 20
-                                      :mult-up 1.5
-                                      :mult-down 1.5
-                                      :forward-size 20})
+  (pipeline-bollinger-goodness "ETHUSD" "D"  {:sma-length 20
+                                              :stddev-length 20
+                                              :mult-up 1.5
+                                              :mult-down 1.5
+                                              :forward-size 20})
 
-   )
-  ;
+;
   )
-
-
-
-
-
-
-
 ; *** REPL EXPERIMENTS ********************************************************
 
 (comment
