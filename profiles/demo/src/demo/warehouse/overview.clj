@@ -13,6 +13,7 @@
    [ta.viz.arrow :as a]
    [demo.env.warehouse :refer [w]]
    ;[demo.studies.helper.sma :refer [sma-study]]
+   [ta.dataset.returns :refer [returns]]
    [demo.studies.helper.experiments-helpers :as helpers]
    [ta.dataset.helper :as h]))
 
@@ -45,7 +46,7 @@ ds1
                   (tablecloth/add-column :symbol symbol)
                   (tablecloth/add-column :return #(-> %
                                                       :close
-                                                      helpers/returns)))))))
+                                                      returns)))))))
 
 (def concatenated-dataset
   (->> datasets

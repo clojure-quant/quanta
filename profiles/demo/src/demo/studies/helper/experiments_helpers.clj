@@ -7,16 +7,6 @@
    [tablecloth.api :as tablecloth]
    [ta.dataset.helper :as helper]))
 
-(defn add-year-and-month [ds]
-  (-> ds
-      (tablecloth/add-columns
-       {:year  #(->> %
-                     :date
-                     (datetime/long-temporal-field :years))
-        :month #(->> %
-                     :date
-                     (datetime/long-temporal-field :months))})))
-
 (defn symbols-overview [concatenated-dataset
                         {:keys [grouping-columns pivot?]
                          :or {grouping-columns [:symbol]
@@ -35,23 +25,3 @@
       ((if pivot?
          #(tablecloth/pivot->wider % :symbol [:min :max :count])
          identity))))
-
-(defn returns [integrated-values]
-  (let [n (count integrated-values)]
-    (dtype/clone
-     (dtype/make-reader
-      :float32
-      n
-      (if (= idx 0)
-        0
-        (- (integrated-values idx)
-           (integrated-values (dec idx))))))))
-
-(comment
-  (->> [1 8 0 -9 1 4]
-       (reductions +)
-       vec
-       returns)
-  ;; #array-buffer<float32> [6]
-  ;; [0.000, 8.000, 0.000, -9.000, 1.000, 4.000]
-  )

@@ -49,3 +49,19 @@ create this file: profiles/demo/creds.edn - then add your secret key in this for
 `clj -X:bollinger-strategy`
 
 `clj -X:bollinger-optimizer`
+
+
+# ma-ma confirmation
+- kuerzerer ma (1h = 4* 15 min) cross-up laengere ma. (6h = 24* 15 min) => long
+
+
+# supertrend
+- :up or :down
+- regieme: zeitraum durchgehend gleicher wert.
+- regieme period dataset.
+
+- number regiemes
+- average-bars-regieme-up + maverage-bars-regieme-up
+- average next bar return (for up + down)
+
+

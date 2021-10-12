@@ -63,13 +63,10 @@
    (fn [{:keys [above-count below-count]}]
      (or (= 1 above-count) (= 1 below-count)))))
 
-(defn add-running-index [ds]
-  (tablecloth/add-column ds :index (range 1 (inc (tablecloth/row-count ds)))))
-
 (defn add-bollinger-with-signal [ds {:keys [sma-length stddev-length mult-up mult-down] :as options}]
   (let [ds-study (add-bollinger-indicator ds options)]
     (-> ds-study
-        add-running-index
+        backtest/add-running-index
         add-above-below
         add-trailing-count)))
 

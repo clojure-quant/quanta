@@ -5,6 +5,7 @@
    [tech.v3.datatype.datetime :as datetime]
    [tablecloth.api :as tablecloth]
    [ta.dataset.helper :as helper]
+   [ta.dataset.date :refer [add-year-and-month]]
    [demo.studies.helper.experiments-helpers :as experiments-helpers]))
 
 (def datasets
@@ -25,7 +26,7 @@
 
 (def concatenated-dataset
   (-> (apply tablecloth/concat datasets)
-      experiments-helpers/add-year-and-month))
+      add-year-and-month))
 
 (-> concatenated-dataset
     (tablecloth/random 10))

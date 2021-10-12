@@ -8,15 +8,8 @@
    [tablecloth.api :as tablecloth]
    [fastmath.core :as math]
    [fastmath.stats :as stats]
+   [ta.dataset.date :refer [days-ago]]
    [ta.data.date :as dt]))
-
-(defn days-ago [n]
-  (-> (tick/now)
-      (tick/- (tick/new-duration n :days))
-      (tick/date)))
-
-(defn ds-epoch [ds]
-  (dataset/column-map ds :epoch #(* 1000 (dt/->epoch %)) [:date]))
 
 ;tablecloth/select
 ;tick/epoch
@@ -27,14 +20,6 @@
                (map days-ago)
                reverse)
     :close (repeatedly n rand)}))
-
-(defn select-recent-rows [ds date]
-  (-> ds
-      (tablecloth/select-rows
-       (fn [row]
-         (-> row
-             :date
-             (tick/>= date))))))
 
 (defn random-datasets [m n]
   (repeatedly m #(random-dataset n)))
@@ -48,13 +33,7 @@
   (dtype/clone
    (dtype/make-reader :float32 n (rand))))
 
-(defn ds-rows [ds]
-  (-> (tablecloth/shape ds) first))
-
-(defn pprint-all [ds]
-  (print-range ds :all))
-
-(defn pprint-dataset [ds]
+(defn print-overview [ds]
   (let [l (tablecloth/row-count ds)]
     (if (< l 11)
       (print-range ds :all)
@@ -62,6 +41,9 @@
         (println "printing first+last 5 rows - total rows: " l)
         (print-range ds (concat (range 5)
                                 (range (- l 6) (- l 1))))))))
+
+(defn print-all [ds]
+  (print-range ds :all))
 
 (defn rows
   "Get the rows of the dataset as a list of flyweight maps.  This is a shorter form

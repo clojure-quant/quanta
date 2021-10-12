@@ -13,6 +13,12 @@
    [ta.warehouse :as wh]
    [ta.data.date :as dt]))
 
+(defn running-index-vec [ds]
+  (range 1 (inc (tablecloth/row-count ds))))
+
+(defn add-running-index [ds]
+  (tablecloth/add-column ds :index (running-index-vec ds)))
+
 (defn drop-beginning [ds beginning-row-drop-count]
   (tablecloth/select-rows ds (range beginning-row-drop-count (tablecloth/row-count ds))))
 
@@ -77,3 +83,11 @@
 
 (defn calc-trailing-true-counter [df column]
   (into [] xf-trailing-true-counter (get df column)))
+
+(comment
+
+  (into [] xf-trailing-true-counter
+        [false true true true false true true false true])
+
+;  
+  )

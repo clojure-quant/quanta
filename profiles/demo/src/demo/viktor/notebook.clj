@@ -1,8 +1,11 @@
 (ns demo.viktor.notebook
   (:require
    [taoensso.timbre :refer [trace debug info error]]
+   [tablecloth.api :as tablecloth]
    [ta.dataset.backtest :as backtest]
    [ta.dataset.helper :as helper]
+   [ta.dataset.sma :as sma]
+   [ta.dataset.supertrend :as supertrend]
    [demo.viktor.strategy-bollinger :as bs]
    [demo.env.warehouse :refer [w]]))
 
@@ -31,3 +34,38 @@
 (bs/print-all r :ds-performance)
 
 (bs/print-backtest-numbers r)
+
+; check if :max-forward-up is correct event index: 24 ****************************************
+
+;  get event bar
+(-> (:ds-study r)
+    (backtest/get-forward-window 23 1)
+    (tablecloth/select-columns [:index :date :close :bb-lower :bb-upper :above :below]))
+; close: 132.5 
+; bb-lower: 100.84180207
+; bb-upper: 126.24319777
+(def bb-range (- 126.24319777 100.84180207))
+
+; get forward window
+(-> (:ds-study r)
+    (backtest/get-forward-window 24 20)
+    (tablecloth/select-columns [:index :date :low :high :close]))
+; highest high: 166.00000000
+
+(def highest-close
+  (- 166.0 132.5))
+
+bb-range
+highest-close
+
+(def sma-cross-options {:sma-length-st  4  ; (1h = 4* 15 min)
+                        :sma-length-lt 24  ; (6h = 24* 15 min)
+                        })
+(def r2
+  (backtest/run-study w "ETHUSD" "D"
+                      sma/add-sma-indicator
+                      sma-cross-options))
+
+(helper/print-overview r2)
+
+r2

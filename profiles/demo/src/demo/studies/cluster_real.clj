@@ -14,6 +14,8 @@
    [loom.alg]
    [ta.warehouse :as wh]
    [ta.dataset.helper :as helper]
+   [ta.dataset.date :refer [add-year-and-month]]
+   [ta.dataset.returns :refer [returns]]
    [demo.studies.helper.experiments-helpers :as experiments-helpers]))
 
 (defonce w
@@ -37,7 +39,7 @@
                   (tablecloth/add-column :symbol symbol)
                   (tablecloth/add-column :return #(-> %
                                                       :close
-                                                      experiments-helpers/returns)))))))
+                                                      returns)))))))
 
 (defn dataset->symbol [ds]
   (-> ds :symbol first))
@@ -66,7 +68,7 @@
 (def concatenated-dataset
   (->> full-datasets
        (apply tablecloth/concat)
-       experiments-helpers/add-year-and-month))
+       add-year-and-month))
 
 (-> concatenated-dataset
     (tablecloth/random 10))

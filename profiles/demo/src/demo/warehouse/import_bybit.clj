@@ -58,7 +58,7 @@
 
 (defn print-symbol [interval symbol]
   (-> (wh/load-ts w (make-filename interval symbol))
-      (h/pprint-dataset)))
+      (h/print-overview)))
 
 (defn print-all-daily []
   (doall (map

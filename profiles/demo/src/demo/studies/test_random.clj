@@ -3,8 +3,8 @@
   (:require
    [tablecloth.api :as tablecloth]
    [tick.alpha.api :as tick]
-   [ta.dataset.helper :refer [random-dataset random-datasets
-                              days-ago select-recent-rows]]))
+   [ta.dataset.date :refer [days-ago select-rows-since]]
+   [ta.dataset.helper :refer [random-dataset random-datasets]]))
 ;   _unnamed [3 2]:
 ; |      :date |     :close |
 ; |------------|-----------:|
@@ -24,7 +24,7 @@
 ; | 2021-07-11 | 0.78036337 |
 ; | 2021-07-12 | 0.40634932 |
 (-> (random-dataset 1000)
-    (select-recent-rows (days-ago 6)))
+    (select-rows-since (days-ago 6)))
 
 (def ds-1 (random-dataset 1000000))
 ; ~ 200 msecs

@@ -2,8 +2,8 @@
   (:require
    [fastmath.stats :as stats]
    [tech.v3.datatype.functional :as fun]
+   [ta.dataset.date :refer [days-ago select-rows-since]]
    [ta.dataset.helper :refer [random-dataset random-datasets
-                              days-ago select-recent-rows
                               standardize rand-numbers]]))
 
 ; [1044.9983800434406 0.5564513730783689]

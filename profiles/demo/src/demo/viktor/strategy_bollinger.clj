@@ -25,13 +25,13 @@
   ;(assert (df-has-cols df #{:close :high :low :chan-up :chan-down})
   (when-let [forward-window (backtest/get-forward-window ds-study idx forward-size)] ; at end of series window might be nil.
     (let [event-row (tablecloth/first (tablecloth/select-rows  ds-study (dec idx)))
-           ;{:keys [close bb-upper bb-lower]} 
-          close (first (:close event-row))
-          date (first (:date event-row))
-          bb-upper (first (:bb-upper event-row))
-          bb-lower (first (:bb-lower event-row))
-          above (first (:above event-row))
-          below (first (:below event-row))
+          {:keys [date close bb-upper bb-lower above below]} (tds/row-at ds-study (dec idx))
+          ;close (first (:close event-row))
+          ;date (first (:date event-row))
+          ;bb-upper (first (:bb-upper event-row))
+          ;bb-lower (first (:bb-lower event-row))
+          ;above (first (:above event-row))
+          ;below (first (:below event-row))
           ; calculated
           event-type (cond
                        above :bb-up
@@ -42,6 +42,8 @@
           forward-low (apply fun/min (:low forward-window))
           max-forward-up (- forward-high close)
           max-forward-down (- close forward-low)
+          max-forward-up-prct (- forward-high close)
+          max-forward-down-prct (- close forward-low)
           forward-skew (-  max-forward-up max-forward-down)]
       (info "event range:"  bb-range event-row)
       {:idx idx
@@ -115,7 +117,7 @@
   (let [ds2 (if cols
               (tablecloth/select-columns ds1 cols)
               ds1)
-        ds3 (helper/pprint-all ds2)]
+        ds3 (helper/print-all ds2)]
     (println ds3)))
 
 (defn- ds-print-cols-all [r k cols]
@@ -123,7 +125,7 @@
         ds2 (if cols
               (tablecloth/select-columns ds1 cols)
               ds1)
-        ds3 (helper/pprint-all ds2)]
+        ds3 (helper/print-all ds2)]
     (println ds3)))
 
 (defn- ds-print-cols-overview [r k cols]
@@ -131,7 +133,7 @@
         ds2 (if cols
               (tablecloth/select-columns ds1 cols)
               ds1)]
-    (helper/pprint-dataset ds2)))
+    (helper/print-overview ds2)))
 
 (def cols
   {:ds-study  nil
@@ -201,8 +203,8 @@
                                   :bb-lower :bb-upper
                                   :above :below
                                   :above-count :below-count])
-      (helper/pprint-all)
-      ;(helper/pprint-dataset)
+      (helper/print-all)
+      ;(helper/print-overview)
       )
 
   (into [] xf-trailing-true-counter

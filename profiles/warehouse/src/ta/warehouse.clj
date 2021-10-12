@@ -19,14 +19,14 @@
 
 (defn save-ts [wh ds name]
   (let [s (io/gzip-output-stream! (str (:series wh) name ".nippy.gz"))]
-    (info "saving series " name " count: " (h/ds-rows ds))
+    (info "saving series " name " count: " (tablecloth/row-count ds))
     (io/put-nippy! s ds)))
 
 (defn load-ts [wh name]
   (let [s (io/gzip-input-stream (str (:series wh) name ".nippy.gz"))
         ds (io/get-nippy s)
         ds (tablecloth/set-dataset-name ds name)]
-    (info "loaded series " name " count: " (-> (tablecloth/shape ds) first))
+    (info "loaded series " name " count: " (tablecloth/row-count ds))
      ;(tablecloth/add-column ds :symbol symbol)
     ds))
 
