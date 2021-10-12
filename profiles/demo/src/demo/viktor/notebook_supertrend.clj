@@ -54,7 +54,9 @@
                              :prct (fn [ds]
                                      (->> ds
                                           :chg-p
-                                          (apply +)))})))
+                                          (apply +)))})
+      (tablecloth/set-dataset-name (tablecloth/dataset-name ds-study))
+      ))
 
 (defn trades [ds-study]
   ; this function runs differently if outisde a function!
@@ -149,4 +151,61 @@
 (trade-details r)
 
 
+(-> (stats r)
+    (tablecloth/group-by :$group-name :as-map)
+    )
 
+
+;; see if it works better for 15min bars
+
+(def options-15
+  {:atr-length 40
+   :atr-mult 0.75})
+
+
+(def r15
+  (backtest/run-study w "ETHUSD" "15"
+                      supertrend/study-supertrend
+                      options-15))
+
+(stats r15)
+
+(trade-details r15)
+
+;; run a couple different variations
+
+(def default-options
+  {:atr-length 20
+   :atr-mult 0.5})
+
+(for [m [0.5 0.75 1.0 1.25 1.5 1.75 2.0]]
+  (let [options (assoc default-options 
+                       :atr-mult m)
+        _ (println "options: " options)
+        r (backtest/run-study w "ETHUSD" "15"
+                              supertrend/study-supertrend
+                              options)
+        r (tablecloth/set-dataset-name r m)
+        ]
+    (println r)
+    (println "atr-mult: " m)
+    (stats r)
+    ))
+
+
+(def next-options
+  {:atr-length 20
+   :atr-mult 0.75})
+
+(for [m [10 15 20 25 30 35 40 45 50]]
+  (let [options (assoc next-options
+                       :atr-length m)
+        _ (println "options: " options)
+        r (backtest/run-study w "ETHUSD" "15"
+                              supertrend/study-supertrend
+                              options)
+        r (tablecloth/set-dataset-name r m)
+        ]
+    (println r)    
+    (println (stats r))
+    ))

@@ -42,6 +42,8 @@
     (when v
       (* v c))))
 
+; (+ 3 Double/NaN)
+
 (comment
   (calc-supertrend-signal 12 11 9) ; :long   (close above upper)
   (calc-supertrend-signal 10 11 9) ; nil     (between the bands)
@@ -59,6 +61,34 @@
 
  ; 
   )
+
+(defn forward-shift-col [col offset]
+   (dtype/make-reader :float64 (count col) (if (> idx offset)
+                                    (col (- idx offset))
+                                    0)))
+  
+(def d (tds/->dataset {:a [1.0 2.0 3.0 4.0 5.0]
+                       :b [1.0 2.0 3.0 4.0 5.0]
+                       :c [1.0 2.0 3.0 4.0 100.0]}))
+
+
+(defn calc-add [close upper lower]
+  (+ close upper lower
+   
+  ))
+  
+
+(dtype/emap calc-add :float64 
+            (:a d) (:b d) (:c d))
+
+
+
+(-> d
+    :a
+    (forward-shift-col 2)
+    )
+
+
 (defn study-supertrend [ds {:keys [atr-length atr-mult] :as options}]
   (let [atr (calc-atr ds atr-length)
         close (:close ds)
@@ -69,17 +99,23 @@
         ; upper = (min (+ close (* atr multp))
         ;               upper-1
         ;               (- upper-1 (* multp * (atr-1 atr))))
+        ;  (-> (c* atr mult)
+        ;       (+ close))
+
         atr-v (into [] atr)
-        atr-scaled (into [] (map (*-const atr-mult) atr-v))
+        atr-scaled  (fun/* atr-v atr-mult) ; (into [] (map (*-const atr-mult) atr-v))
         upper (fun/+ close atr-scaled)
+        ; upper-cached (dtype/clone upper)
         lower (fun/- close atr-scaled)
         close-f1  (into [] xf-future close)
         chg (fun/- close-f1 close)
         chg-p (fun// chg close)
-        chg-p (into [] (map (*-const 100.0) chg-p))
+        chg-p (fun/* 100.0 chg-p)  ;  (into [] (map (*-const 100.0) chg-p))
         upper-1  (into [] xf-ago upper)
         lower-1  (into [] xf-ago lower)
         signal (into [] (map calc-supertrend-signal close upper-1 lower-1))
+        ;signal  (dtype/emap calc-supertrend-signal :object close upper-1 lower-1)
+        
         trade (signal->trade signal)
         trade-no (trade->trade-no trade)
         position (signal->position signal)]
@@ -99,19 +135,40 @@
 
 (comment
 
-  (signal->trade [:hold :buy :buy])
+   (defn add3 [a] 
+     (println "type: " (class a))
+     (+ 3 a)
+     )
 
-  (-> (tds/->dataset {:date [(tick/now) (tick/now) (tick/now)]
-                      :open [1 2 3]
-                      :high [1 2 3]
-                      :low [1 2 3]
-                      :close [1 2 3]
-                      :volume [0 0 0]})
-      (study-supertrend {:atr-length 10
-                         :atr-mult 0.5}))
+   (into [] 
+         (map add3) 
+         [5 7 8])
+  
+
+   (into  (->   (dtype/make-reader :float64 5 (* 3 idx))
+                (dtype/clone))
+         (map add3)
+         [5 7 8])
+
+
+  (->   (dtype/make-reader :float64 5 (* 3 idx))
+        (dtype/clone))
+             dtype/->iterable                            
+    
+
+         (signal->trade [:hold :buy :buy])
+
+         (-> (tds/->dataset {:date [(tick/now) (tick/now) (tick/now)]
+                             :open [1 2 3]
+                             :high [1 2 3]
+                             :low [1 2 3]
+                             :close [1 2 3]
+                             :volume [0 0 0]})
+             (study-supertrend {:atr-length 10
+                                :atr-mult 0.5}))
 
 ;  
-  )
+         )
 (defn add-bar-indicator [ds add-col-kw indicator]
   (tablecloth/add-column ds add-col-kw indicator))
 
