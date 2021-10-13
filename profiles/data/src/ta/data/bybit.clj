@@ -5,7 +5,8 @@
    [cheshire.core :as cheshire] ; JSON Encoding
    [cljc.java-time.instant :as ti]
    [tick.alpha.api :as t] ; tick uses cljc.java-time
-   [ta.data.date :as d]))
+   [ta.data.date :as d]
+   [ta.data.helper :as h]))
 
 ;; # Bybit api
 ;; The query api does NOT need credentials. The trading api does.
@@ -55,17 +56,6 @@
   (info "bybit get page " symbol interval from-ti)
   (get-history-page-from-epoch-second interval (ti/get-epoch-second from-ti) limit symbol))
 
-(defn remove-first-bar-if-timestamp-equals
-  "helper function. 
-   when we request the next page, it might return the last bar of the last page 
-   in the next page. If so, we do not want to have it included."
-  [series last-dt]
-  (let [date-first (-> series first :date)
-        eq?    (and (not (nil? last-dt))
-                    (ti/equals last-dt date-first))]
-    (debug "first date: " date-first "last date:" last-dt " eq:" eq?)
-    (if eq? (rest series) series)))
-
 (defn get-history
   "gets history since timestamp.
    joins multiple pages
@@ -80,7 +70,7 @@
       (let [page-series (get-history-page interval page-from-ti page-size symbol)
             current-page-size  (count page-series)
             page-last-date (-> page-series last :date)
-            page-series (remove-first-bar-if-timestamp-equals page-series @last-page-date)]
+            page-series (h/remove-first-bar-if-timestamp-equals page-series @last-page-date)]
         (reset! last-page-date page-last-date)
         (swap! page-no inc)
         (swap! total concat page-series)

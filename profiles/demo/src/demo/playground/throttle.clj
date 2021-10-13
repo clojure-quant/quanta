@@ -1,4 +1,4 @@
-(ns demo.data.throttle
+(ns demo.playground.throttle
   (:require
    [throttler.core]))
 

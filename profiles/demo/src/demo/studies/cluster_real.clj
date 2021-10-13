@@ -32,43 +32,7 @@
        (map (juxt :symbol :name))
        (into {})))
 
-(defonce datasets
-  (->> symbols
-       (map (fn [symbol]
-              (-> (wh/load-ts w symbol)
-                  (tablecloth/add-column :symbol symbol)
-                  (tablecloth/add-column :return #(-> %
-                                                      :close
-                                                      returns)))))))
-
-(defn dataset->symbol [ds]
-  (-> ds :symbol first))
-
-(def full-symbols-set
-  (let [symbol->row-count (->> datasets
-                               (map (fn [ds]
-                                      {:symbol (dataset->symbol ds)
-                                       :row-count (tablecloth/row-count ds)})))
-        max-row-count (->> symbol->row-count
-                           (map :row-count)
-                           (apply max))]
-    (->> symbol->row-count
-         (filter #(-> % :row-count (= max-row-count)))
-         (map :symbol)
-         set)))
-
-(def full-datasets
-  (->> datasets
-       (filter #(-> % dataset->symbol full-symbols-set))))
-
-(def full-symbols
-  (->> full-datasets
-       (mapv dataset->symbol)))
-
-(def concatenated-dataset
-  (->> full-datasets
-       (apply tablecloth/concat)
-       add-year-and-month))
+symbol->name
 
 (-> concatenated-dataset
     (tablecloth/random 10))

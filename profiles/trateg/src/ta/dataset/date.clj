@@ -16,6 +16,10 @@
       (tick/- (tick/new-duration n :days))
       (tick/date)))
 
+(defn days-ago-instant [n]
+  (-> (tick/now)
+      (tick/- (tick/new-duration n :days))))
+
 (defn ds-epoch [ds]
   (dataset/column-map ds :epoch #(* 1000 (dt/->epoch %)) [:date]))
 
@@ -27,7 +31,7 @@
              :date
              (tick/>= date))))))
 
-(defn add-year-and-month [ds]
+(defn add-year-and-month-date-as-local-date [ds]
   (-> ds
       (tablecloth/add-columns
        {:year  #(->> %
@@ -36,6 +40,30 @@
         :month #(->> %
                      :date
                      (datetime/long-temporal-field :months))})))
+
+(defn year [v]
+  (let [n (count v)]
+    ;(println "year vec count: " n " v: " v)
+    (dtype/clone
+     (dtype/make-reader
+      :object
+      n
+      (tick/year (v idx))))))
+
+(defn month [v]
+  (let [n (count v)]
+    ;(println "year vec count: " n " v: " v)
+    (dtype/clone
+     (dtype/make-reader
+      :object
+      n
+      (tick/month (v idx))))))
+
+(defn add-year-and-month-date-as-instant [ds]
+  (-> ds
+      (tablecloth/add-columns
+       {:year  (year (:date ds))
+        :month (month (:date ds))})))
 
 ; (require '[clj-time.coerce])
 ; (clj-time.coerce/to-long dt)

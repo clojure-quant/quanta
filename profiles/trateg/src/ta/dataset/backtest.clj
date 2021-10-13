@@ -88,6 +88,13 @@
 
   (into [] xf-trailing-true-counter
         [false true true true false true true false true])
+;  
+  )
+
+;; statistics summary
+
+(comment
+   ; (dataset/->) 
 
 ;  
   )

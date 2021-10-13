@@ -1,4 +1,4 @@
-(ns demo.speed.main
+(ns demo.main.performance
   (:require
    [taoensso.tufte :as tufte :refer (defnp p profiled profile)]
    [speed.csv :refer [speed-csv-load]])

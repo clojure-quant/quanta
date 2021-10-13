@@ -1,3 +1,9 @@
+# visual studio code
+
+add this extensions
+- calva
+- kondo
+
 # 2021 10 - bollinger strategy backtest
 
 bollinger band strategy:

@@ -1,16 +1,12 @@
-(ns repl.experiment
+(ns demo.main.warehouse-status
   (:require
-   [clojure.test :refer :all]
    [taoensso.timbre :refer [trace debug info warn error]]
    [ta.random :refer [random-ts]]
    [ta.warehouse :as wh]
-   [ta.config :refer [w]])
+   [demo.env.warehouse :refer [w]])
   (:gen-class))
 
-(taoensso.timbre/info "hi victor")
-(info "hi victor")
-
-(ta.warehouse/load-list ta.config/w "currency")
+(ta.warehouse/load-list w "currency")
 
 (let [liste (wh/load-list w "currency")]
   (count liste))

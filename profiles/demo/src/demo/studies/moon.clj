@@ -1,3 +1,5 @@
+(ns demo.studies.moon)
+
 (def moon-period 29.530588853)
 (def phase-length (/ moon-period 8))
 ; current moon phase is computed relative to the new moon of 2000-01-06

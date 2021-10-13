@@ -14,16 +14,6 @@
 ;tablecloth/select
 ;tick/epoch
 
-(defn random-dataset [n]
-  (tablecloth/dataset
-   {:date (->> (range n)
-               (map days-ago)
-               reverse)
-    :close (repeatedly n rand)}))
-
-(defn random-datasets [m n]
-  (repeatedly m #(random-dataset n)))
-
 (defn standardize [xs]
   (-> xs
       (fun/- (fun/mean xs))

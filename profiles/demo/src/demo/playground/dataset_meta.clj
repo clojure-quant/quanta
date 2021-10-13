@@ -1,8 +1,9 @@
-(ns techml.meta
-  (:require [tablecloth.api :as tablecloth]
-            [tech.v3.dataset :as dataset]
-            [tech.v3.datatype.functional :as fun]
-            [tech.v3.dataset.print :as print]))
+(ns demo.playground.dataset.meta
+  (:require
+   [tablecloth.api :as tablecloth]
+   [tech.v3.dataset :as dataset]
+   [tech.v3.datatype.functional :as fun]
+   [tech.v3.dataset.print :as print]))
 
 (def ds1
   (let [n 10]

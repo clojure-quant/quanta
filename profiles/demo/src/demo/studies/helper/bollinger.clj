@@ -1,4 +1,4 @@
-(ns demo.viktor.strategy-bollinger
+(ns demo.studies.helper.bollinger
   (:require
    [taoensso.timbre :refer [trace debug info error]]
    [tick.alpha.api :as t]

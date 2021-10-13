@@ -1,4 +1,4 @@
-(ns demo.viktor.task
+(ns demo.studies.task
   (:require
    [taoensso.timbre :refer [trace debug info infof warn error]]
    [tablecloth.api :as tablecloth]
@@ -6,8 +6,7 @@
    [ta.dataset.helper :as helper]
    [ta.dataset.backtest :as backtest]
    [demo.env.warehouse :refer [w]]
-   [demo.viktor.strategy-bollinger :as bs]
-   [demo.viktor.strategy-bollinger :as strategy]))
+   [demo.studies.helper.bollinger :as bs]))
 
 (webly.log/timbre-config!
  {:timbre-loglevel

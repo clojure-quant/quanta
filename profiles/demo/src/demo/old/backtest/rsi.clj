@@ -2,16 +2,16 @@
 
 (ns demo.studies.rsi
   (:require [clojure.pprint :refer :all]
-            [trateg.csv :refer [load-csv-bars]]
+            ;[trateg.csv :refer [load-csv-bars]]
             [medley.core :as m]
-            [trateg.core :refer :all]
-            [trateg.chart :refer :all]
-            [trateg.indicator :as ind]
-            [trateg.ta4j :as ta4j]
+            ;[trateg.core :refer :all]
+            ;[trateg.chart :refer :all]
+            ;[trateg.indicator :as ind]
+            ;[trateg.ta4j :as ta4j]
             :reload-all))
 
 ; show bar data
-(def spx-bars  (load-csv-bars "trateg/spx.csv"))
+;(def spx-bars  (load-csv-bars "trateg/spx.csv"))
 {:first-bar  (first spx-bars)
  :bar-count (count spx-bars)}
 ;(def spx-bars (take 100 spx-bars))

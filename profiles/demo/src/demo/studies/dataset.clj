@@ -7,7 +7,7 @@
    [ta.warehouse :as wh]
    [ta.series.indicator :as ind]
    [ta.backtest.core :as bt]
-   [ta.backtest.chart :as c]
+   ;[ta.backtest.chart :as c]
    [demo.config :refer [w]]
    [ta.data.date :refer  [->epoch]]
    [demo.studies.helper.sma :refer [sma-study]]))

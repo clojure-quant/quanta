@@ -1,77 +1,34 @@
-(ns demo.warehouse.import
+(ns demo.warehouse.import-alphavantage
   (:require
    [taoensso.timbre :refer [trace debug info infof  error]]
    [tech.v3.dataset :as tds]
    [ta.data.alphavantage :as av]
    [ta.warehouse :as wh]
-   [demo.env.warehouse :refer [w]]))
+   [ta.warehouse.since-importer :as since-importer]
+   [demo.env.config :refer [w-stocks log-config!]]))
 
-(defn gc [s]
-  (av/get-daily "compact" s))
+(defn alphavantage-get-since-ds [_ #_frequency _ #_since symbol]
+  (-> (av/get-daily "full" symbol)
+      (tds/->dataset)))
 
-(gc "MSFT")
+(def alphavantage-symbols
+  ["SPY" "EURUSD" "MSFT" "ORCL"]
+  ;(wh/load-list w-stocks "fidelity-select")  
+  )
 
-(defn gf [s]
-  (->> s
-       (av/get-daily "full")))
+(defn init-alphavantage-daily []
+  (let  [start-date-dummy nil]
+    (since-importer/init-symbols w-stocks alphavantage-get-since-ds "D"
+                                 start-date-dummy alphavantage-symbols)))
 
-(defn import-symbol [s]
-  (let [d (gf s)
-        ds (tds/->dataset d)]
-    (println "imported " s " - " (count d) "bars.")
-    ;(println (pr-str d))
-    (wh/save-ts w ds s)))
+(defn task-alphavantage-import-initial [& _]
+  (log-config!)
+  (init-alphavantage-daily))
 
-(defn import-ts [{:keys [symbol-list]}]
-  (let [symbols (wh/load-list w symbol-list)]
-    (infof "importing symbol-list: %s (%s) " symbol-list (count symbols))
-    (doall (map import-symbol symbols))))
-
-(defn show [s]
-  (let [ds (wh/load-ts w s)
-        r (tds/mapseq-reader ds)
-        l (last r)]
-    (println s " - last: " l)))
-
-(defn show-ts [{:keys [symbol-list]}]
-  (let [symbols (wh/load-list w symbol-list)]
-    (infof "showing symbol-list: %s (%s) " symbol-list (count symbols))
-    (doall (map show symbols))))
-
+; ********************************************************************************************+
 (comment
 
-  (av/search "S&P 500")
-  (print-table [:symbol :type :name] (av/search "BA"))
+  (init-alphavantage-daily)
 
-;; # stock series
-
-  (av/get-daily :compact "MSFT")
-  (print-table (->> (av/get-daily :compact "MSFT")
-                    reverse
-                    (take 5)))
-
-;; # fx series
-
-  (print-table (take 5 (reverse (av/get-daily-fx :compact "EURUSD"))))
-
-;; # crypto series
-
-  (print-table (take 5 (reverse (av/get-daily-crypto :compact "BTC"))))
-
-  (av/get-crypto-rating "BTC")
-
-; since we can only do 5 requests a minute, and we have 7 symbols, this
-; will at least sleep for 1 minutes, after getting the first 5 symbols. However since before 
-; we also execute requests, it might take 2 minutes
-  (clojure.pprint/print-table
-   (map av/get-crypto-rating ["BTC" "ETH" "LTC" "DASH"
-                              "NANO" "EOS" "XLM"]))
-
-;; # fidelity select search
-
-  (clojure.pprint/print-table (av/search "Fidelity MSCI"))
-
-  (clojure.pprint/print-table (load-edn-resource "ta/fidelity-select.edn"))
-
- ; 
+;
   )
