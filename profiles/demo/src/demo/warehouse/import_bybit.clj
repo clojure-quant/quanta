@@ -55,7 +55,7 @@
   (init-bybit-daily)
 
 ; init 15 - all
-  (init-all-15)
+  (init-bybit-15)
 
   (append-bybit-daily)
   (append-bybit-15)

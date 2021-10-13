@@ -98,6 +98,7 @@
   (signal->position [:none
                      :buy :buy :buy :none nil nil :buy :none :none
                      :sell :none])
+  
 
   (signal->trade [:none
                   :buy :buy :buy :none nil nil :buy :none :none
@@ -109,6 +110,17 @@
       signal->trade
       trade->trade-no)
 
+  
+  (-> (signal->trade [:none
+                      :buy :buy :buy :none nil nil :buy :none :none
+                      :sell :none])
+       trade->trade-no
+   
+   
+   )
+  
+
+  
   (signal->trade [:neutral :long :long])
 
 ;  

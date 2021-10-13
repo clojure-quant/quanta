@@ -4,12 +4,11 @@
    [tablecloth.api :as tablecloth]
    [ta.dataset.backtest :as backtest]
    [ta.dataset.helper :as helper]
-   [ta.dataset.date :refer [add-year-and-month]]
-   [ta.dataset.sma :as sma]
-   [ta.dataset.supertrend :as supertrend]
+
    [ta.dataset.backtest-stats :as stats]
-   [demo.viktor.strategy-bollinger :as bs]
-   [demo.env.warehouse :refer [w]]))
+   [ta.dataset.supertrend :as supertrend]
+   
+   [demo.env.config :refer [w-crypto w-random]]))
 
 ;; daily backtest
 
@@ -18,7 +17,7 @@
    :atr-mult 0.5})
 
 (def r-d
-  (backtest/run-study w "ETHUSD" "D"
+  (backtest/run-study w-crypto "ETHUSD" "D"
                       supertrend/study-supertrend
                       options-d))
 
@@ -37,11 +36,16 @@
    :atr-mult 0.75})
 
 (def r15
-  (backtest/run-study w "ETHUSD" "15"
+  (backtest/run-study w-crypto "ETHUSD" "15"
                       supertrend/study-supertrend
                       options-15))
 
-(stats/stats r15)
+(def r15-rand
+  (backtest/run-study w-random "ETHUSD" "15"
+                      supertrend/study-supertrend
+                      options-15))
+
+(stats/stats r15-rand)
 (stats/trade-details r15)
 
 (-> r15
@@ -59,7 +63,7 @@
   (let [options (assoc options-change-atr-mult
                        :atr-mult m)
         _ (println "options: " options)
-        r (backtest/run-study w "ETHUSD" "15"
+        r (backtest/run-study w-crypto "ETHUSD" "15"
                               supertrend/study-supertrend
                               options)
         r (tablecloth/set-dataset-name r m)]

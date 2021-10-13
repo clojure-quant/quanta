@@ -14,7 +14,7 @@
    [ta.dataset.backtest :as backtest]
    [ta.warehouse :as wh]
    [ta.data.date :as dt]
-   [ta.dataset.transducer :refer [row-major into-dataset]]
+;   [ta.dataset.transducer :refer [row-major into-dataset]]
    [ta.xf.ago :refer [xf-ago xf-future]]
    [ta.dataset.trading :refer [signal->trade signal->position  trade->trade-no]]))
 
@@ -29,11 +29,11 @@
         atr-values  (ta4j/ind-values atr)]
     atr-values))
 
-(defn calc-supertrend-signal [close upper lower]
+(defn calc-supertrend-signal [close upper-1 lower-1]
   (if close
     (cond
-      (and upper (> close upper)) :buy
-      (and lower (< close lower)) :sell
+      (and upper-1 (> close upper-1)) :buy
+      (and lower-1 (< close lower-1)) :sell
       :else :hold)
     :hold))
 
@@ -45,6 +45,7 @@
 ; (+ 3 Double/NaN)
 
 (comment
+  (calc-supertrend-signal nil 11 9)
   (calc-supertrend-signal 12 11 9) ; :long   (close above upper)
   (calc-supertrend-signal 10 11 9) ; nil     (between the bands)
   (calc-supertrend-signal 9 11 9)  ; nil     (right on the lower band)

@@ -1,31 +1,17 @@
-(ns demo.main.warehouse-status
+(ns demo.playground.symbol-list
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [ta.random :refer [random-ts]]
    [ta.warehouse :as wh]
-   [demo.env.warehouse :refer [w]])
+   [demo.env.config :refer [w-stocks log-config!]])
   (:gen-class))
 
-(ta.warehouse/load-list w "currency")
-
-(let [liste (wh/load-list w "currency")]
-  (count liste))
-
-(->> "currency"
-     (wh/load-list w)
-    ; count
-     ;last
-     first)
-
-(ta.warehouse/load-list ta.config/w "fidelity-select")
+(def w w-stocks)
 
 (defn print-symbol-list
   [list-name]
   (let [liste (wh/load-list w list-name)]
     (info (pr-str liste))))
-
-; (print-symbol-list "currency")
-; (print-symbol-list "fidelity-select")
 
 (defn fn-print-symbol-list
   [list-map]
@@ -38,6 +24,16 @@
   ([list-name]
    (warn "printing user defined list: " list-name)
    (print-symbol-list list-name)))
+
+(comment 
+
+  (wh/load-list w "currency")
+  
+  (print-symbol-list "currency")
+  (print-symbol-list "fidelity-select")
+;  
+  )
+
 
 ;  (-main "currency")
 
