@@ -1,11 +1,35 @@
 (ns ta.trade.backtest-stats
   (:require
    [taoensso.timbre :refer [trace debug info error]]
+   [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as fun]
    [tablecloth.api :as tablecloth]
    [ta.dataset.backtest :as backtest]
    [ta.dataset.helper :as helper]
    [ta.xf.ago :refer [xf-future]]))
+
+
+ (comment 
+ (- (Math/log10 101) (Math/log10 100)) ; 1% 0.004
+
+(- (Math/log10 120) (Math/log10 100)) ; 20% 0.08
+(- (Math/log10 1200) (Math/log10 1000)) ; 20% 0.08
+(- (Math/log10 1000) (Math/log10 2000)) ; -0.3
+(- (Math/log10 2000) (Math/log10 1000)) ; +0.3
+  
+;   
+   )
+
+ (defn roundtrip-pl [position chg-p]
+   (if (= position :short)
+     (- 0 chg-p)
+     chg-p))
+
+ (defn win [chg-p]
+    (> chg-p 0 ))
+
+    
+ 
 
 (defn- trade->roundtrip [ds]
   (let [close (:close ds)
@@ -13,6 +37,8 @@
         chg (fun/- close-f1 close)
         chg-p (fun// chg close)
         chg-p (fun/* 100.0 chg-p)  ;  (into [] (map (*-const 100.0) chg-p))
+        chg-p (dtype/emap roundtrip-pl :float64 (:position ds) chg-p)
+        win (dtype/emap win :bool chg-p)
         ]
     (->  ds
          (tablecloth/rename-columns {:index :index-open
@@ -20,7 +46,9 @@
                                      :date :date-open})
          (tablecloth/add-columns  {:price-close close-f1
                                    :chg chg
-                                   :chg-p chg-p}))))
+                                   :chg-p chg-p
+                                   :win win
+                                   }))))
 
 (defn calc-roundtrips [ds-study]
   (-> ds-study
@@ -30,6 +58,7 @@
       (tablecloth/group-by :trade-no)
       (tablecloth/aggregate {:trade (fn [ds] (->> ds :trade first))
                              :position (fn [ds] (->> ds :position first))
+                             :win (fn [ds] (->> ds :win first))
                              ; open
                              :index-open (fn [ds] (->> ds :index-open first))
                              :date-open (fn [ds] (->> ds :date-open first))
@@ -68,7 +97,9 @@
                                   ; :position
                                    ;:trade
                              ;:chg
-                                       :prct])
+                                       :prct
+                               :win
+                               ])
      (helper/print-all)))
 
 
@@ -82,10 +113,10 @@
       (print-roundtrips-view)))
 
 
-(defn roundtrip-stats [backtest-result]
+(defn calc-roundtrip-stats [backtest-result group-by]
   (let [ds-roundtrips (:ds-roundtrips backtest-result)]
   (-> ds-roundtrips
-      (tablecloth/group-by :position)
+      (tablecloth/group-by group-by)
       (tablecloth/aggregate {:bars (fn [ds]
                                      (->> ds
                                           :bars
@@ -103,7 +134,14 @@
                                      (->> ds
                                           :prct
                                           (apply +)))})
-      (tablecloth/set-dataset-name (tablecloth/dataset-name ds-roundtrips)))))
+      (tablecloth/set-dataset-name (tablecloth/dataset-name ds-roundtrips))
+      (helper/print-all)
+      println
+      )))
 
 
+(defn print-roundtrip-stats [backtest-result]
+  (calc-roundtrip-stats backtest-result :position)
+  (calc-roundtrip-stats backtest-result [:position :win])
+  )
 

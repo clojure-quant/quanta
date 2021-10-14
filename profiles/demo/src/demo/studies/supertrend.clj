@@ -51,8 +51,8 @@
 r-d
 (:ds-roundtrips r-d)
 
+(stats/print-roundtrip-stats r-d)
 (stats/print-roundtrips r-d)
-(stats/roundtrip-stats r-d)
 (stats/print-roundtrips-pl-desc r-d)
 
 
