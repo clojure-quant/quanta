@@ -1,4 +1,4 @@
-(ns ta.dataset.bollinger
+(ns ta.indicator.bollinger
   (:require
    [taoensso.timbre :refer [trace debug info error]]
    [tick.alpha.api :as tick]

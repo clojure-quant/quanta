@@ -1,4 +1,4 @@
-(ns ta.dataset.sma
+(ns ta.indicator.sma
   (:require
    [taoensso.timbre :refer [trace debug info error]]
    [tick.alpha.api :as tick]

@@ -1,4 +1,4 @@
-(ns ta.dataset.trading
+(ns ta.trade.signal
   (:require
    [taoensso.timbre :refer [trace debug info error]]
    [tick.alpha.api :as tick]
@@ -76,6 +76,23 @@
   (into [] xf-trade->trade-no
         trade-seq))
 
+
+; this function is also in ta.dataset.backtest
+(defn running-index-vec [ds]
+  (range 1 (inc (tablecloth/row-count ds))))
+
+(defn trade-signal [ds]
+  (let [signal (:signal ds)
+        trade (signal->trade signal)
+        trade-no (trade->trade-no trade)
+        position (signal->position signal)]
+    (tablecloth/add-columns ds {:index (running-index-vec ds)
+                                :signal signal
+                                :trade trade
+                                :trade-no trade-no
+                                :position position})))
+
+
 (comment
 
   (into [] xf-signal->position
@@ -98,7 +115,7 @@
   (signal->position [:none
                      :buy :buy :buy :none nil nil :buy :none :none
                      :sell :none])
-  
+
 
   (signal->trade [:none
                   :buy :buy :buy :none nil nil :buy :none :none
@@ -110,17 +127,14 @@
       signal->trade
       trade->trade-no)
 
-  
+
   (-> (signal->trade [:none
                       :buy :buy :buy :none nil nil :buy :none :none
                       :sell :none])
-       trade->trade-no
-   
-   
-   )
-  
+      trade->trade-no)
 
-  
+
+
   (signal->trade [:neutral :long :long])
 
 ;  

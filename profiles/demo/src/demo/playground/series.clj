@@ -45,3 +45,12 @@
  (print-range :all))
 
 ds-m-y
+
+
+; calculate via map
+
+(defn calc-add [close upper lower]
+  (+ close upper lower))
+
+(dtype/emap calc-add :float64
+            (:a d) (:b d) (:c d))

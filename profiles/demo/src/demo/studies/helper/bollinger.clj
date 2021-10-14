@@ -11,9 +11,10 @@
    [ta.series.indicator :as ind]
    [ta.warehouse :as wh]
    [ta.dataset.backtest :as backtest]
-   [ta.dataset.bollinger :as bollinger]
-   [demo.env.warehouse :refer [w]]
-   [demo.studies.helper.experiments-helpers :as experiments-helpers]))
+   [ta.indicator.bollinger :as bollinger]
+   [demo.env.config :refer [w-crypto]]
+   ;[demo.studies.helper.experiments-helpers :as experiments-helpers]
+   ))
 
 (defn make-filename [frequency symbol]
   (str symbol "-" frequency))

@@ -1,13 +1,12 @@
-(ns demo.viktor.notebook
+(ns demo.studies.bollinger
   (:require
    [taoensso.timbre :refer [trace debug info error]]
    [tablecloth.api :as tablecloth]
    [ta.dataset.backtest :as backtest]
    [ta.dataset.helper :as helper]
-   [ta.dataset.sma :as sma]
-   [ta.dataset.supertrend :as supertrend]
-   [demo.viktor.strategy-bollinger :as bs]
-   [demo.env.warehouse :refer [w]]))
+   [ta.indicator.sma :as sma]
+   [demo.studies.helper.bollinger :as bs]
+   [demo.env.config :refer [w-crypto]]))
 
 (def default-options
   {:sma-length 20
@@ -17,7 +16,7 @@
    :forward-size 20})
 
 (def r
-  (backtest/run-study w "ETHUSD" "D"
+  (backtest/run-study w-crypto "ETHUSD" "D"
                       bs/bollinger-study
                       default-options))
 
