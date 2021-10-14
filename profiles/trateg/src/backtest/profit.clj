@@ -6,17 +6,6 @@
 ;            [medley.core :as m]
 ;            [clojure.java.io :as io]))
 
-(defn mean [coll]
-  (/ (reduce + coll) (count coll)))
-
-;;for sample (not population)
-(defn standard-deviation [coll]
-  (let [avg     (mean coll)
-        squares (map #(Math/pow (- % avg) 2) coll)]
-    (-> (reduce + squares)
-        (/ (dec (count coll)))
-        Math/sqrt)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;Calculations on single trade;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -11,8 +11,6 @@
    [ta.trade.backtest-stats :as stats :refer [calc-roundtrips]]
    [demo.env.config :refer [w-crypto w-random]]))
 
-
-
 (defn study-supertrend [ds {:keys [atr-length atr-mult] :as options}]
   (let [ds-study (-> ds
                      (supertrend/add-supertrend-signal options)
@@ -33,10 +31,6 @@
 
 ;  
   )
-
-
-
-
 ;; daily backtest
 
 (def options-d
@@ -50,36 +44,33 @@
 
 r-d
 (:ds-roundtrips r-d)
-
 (stats/print-roundtrip-stats r-d)
 (stats/print-roundtrips r-d)
 (stats/print-roundtrips-pl-desc r-d)
 
-
-
-
-(-> (stats/stats r-d)
-    (tablecloth/group-by :$group-name :as-map))
-
 ;; 15min backtest
 
 (def options-15
-  {:atr-length 40
+  {:atr-length 20
    :atr-mult 0.75})
 
-(def r15
+(def r-15
   (backtest/run-study w-crypto "ETHUSD" "15"
-                      supertrend/study-supertrend
+                      study-supertrend
                       options-15))
 
-(def r15-rand
+(stats/print-roundtrip-stats r-15)
+(stats/print-roundtrips r-15)
+
+; test with random walk
+
+(def r-15-rand
   (backtest/run-study w-random "ETHUSD" "15"
-                      supertrend/study-supertrend
+                      study-supertrend
                       options-15))
 
-(stats/stats r15-rand)
-(stats/trade-details r15)
-
+(stats/print-roundtrip-stats r-15-rand)
+(stats/print-roundtrips r-15-rand)
 
 ;; run a couple different variations
 

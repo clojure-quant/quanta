@@ -32,10 +32,10 @@
     (reduce f init (r/cat (ds/mapseq-reader (.ds coll))
                           (ds/mapseq-reader (ds/->dataset (.rows coll)))))))
 
-#_(extend-protocol
+(extend-protocol
    ITransposable
     tech.v3.dataset.impl.dataset.Dataset
-    (-row-major [this] (row-view. d {}))
+    (-row-major [this] (row-view. this {}))
     (-column-major [this] this)
     nil
     (-row-major [this] (row-view. (ds/->dataset {}) {}))
@@ -44,21 +44,21 @@
     (-row-major [this] (row-view. (ds/->dataset {}) {}))
     (-column-major [this] (ds/->dataset {})))
 
-#_(defn row-major [coll]
+(defn row-major [coll]
     (if (extends? ITransposable (type coll))
       (-row-major coll)
       (if (seq coll)
         coll
         (throw (ex-info "under construction!" {})))))
 
-#_(defn column-major [coll]
+(defn column-major [coll]
     (if (extends? ITransposable (type coll))
       (-column-major coll)
       (if (seq coll)
         coll
         (throw (ex-info "under construction!" {})))))
 
-#_(defn into-dataset
+(defn into-dataset
     ([to] (column-major to))
     ([to from]
      (->> from
@@ -71,7 +71,7 @@
           (into (row-major to) xform)
           column-major)))
 
-#_(def +empty-records+ (row-major (ds/->dataset {})))
+(def +empty-records+ (row-major (ds/->dataset {})))
 
 (comment
 
@@ -102,7 +102,7 @@
 
 ;
 
-  (->> (row-major (tablecloth/dataset  [{:a 1 :b 6}
+  (->> (row-major (tablecloth.api/dataset  [{:a 1 :b 6}
                                         {:a 1 :b 6}
                                         {:a 1 :b 6}
                                         {:a 1 :b 6}]))

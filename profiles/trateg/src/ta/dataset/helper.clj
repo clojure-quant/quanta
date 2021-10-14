@@ -1,15 +1,10 @@
 (ns ta.dataset.helper
   (:require
-   [tick.alpha.api :as tick]
    [tech.v3.dataset :as dataset]
    [tech.v3.datatype.functional :as fun]
    [tech.v3.datatype :as dtype]
    [tech.v3.dataset.print :refer [print-range]]
-   [tablecloth.api :as tablecloth]
-   [fastmath.core :as math]
-   [fastmath.stats :as stats]
-   [ta.dataset.date :refer [days-ago]]
-   [ta.data.date :as dt]))
+   [tablecloth.api :as tablecloth]))
 
 ;tablecloth/select
 ;tick/epoch

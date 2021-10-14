@@ -1,19 +1,6 @@
 (ns ta.trade.signal
   (:require
-   [taoensso.timbre :refer [trace debug info error]]
-   [tick.alpha.api :as tick]
-   [tech.v3.dataset :as tds]
-   [tech.v3.dataset :as dataset]
-   [tech.v3.datatype.functional :as fun]
-   [tech.v3.datatype :as dtype]
-   [tech.v3.dataset.print :refer [print-range]]
    [tablecloth.api :as tablecloth]
-   [fastmath.core :as math]
-   [fastmath.stats :as stats]
-   [ta.series.ta4j :as ta4j]
-   [ta.dataset.backtest :as backtest]
-   [ta.warehouse :as wh]
-   [ta.data.date :as dt]
    [ta.xf.ago :refer [xf-ago-pair]]))
 
 ; signal :buy :sell :hold  
@@ -76,7 +63,6 @@
   (into [] xf-trade->trade-no
         trade-seq))
 
-
 ; this function is also in ta.dataset.backtest
 (defn running-index-vec [ds]
   (range 1 (inc (tablecloth/row-count ds))))
@@ -91,7 +77,6 @@
                                 :trade trade
                                 :trade-no trade-no
                                 :position position})))
-
 
 (comment
 
@@ -116,7 +101,6 @@
                      :buy :buy :buy :none nil nil :buy :none :none
                      :sell :none])
 
-
   (signal->trade [:none
                   :buy :buy :buy :none nil nil :buy :none :none
                   :sell :none])
@@ -127,13 +111,10 @@
       signal->trade
       trade->trade-no)
 
-
   (-> (signal->trade [:none
                       :buy :buy :buy :none nil nil :buy :none :none
                       :sell :none])
       trade->trade-no)
-
-
 
   (signal->trade [:neutral :long :long])
 

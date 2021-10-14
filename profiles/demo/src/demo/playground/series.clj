@@ -9,35 +9,33 @@
    [ta.dataset.date :refer [add-year-and-month-date-as-instant]]
    [demo.env.config :as c]))
 
-(def ds-m-y 
-(->
- (wh/load-symbol c/w-crypto "D" "BTCUSD")
- add-year-and-month-date-as-instant
- (tablecloth/group-by [:month :year])
- (tablecloth/aggregate {:min (fn [ds]
-                               (->> ds
-                                    :close
-                                    (apply min)))
-                        :max (fn [ds]
-                               (->> ds
-                                    :close
-                                    (apply max)))})))
+(def ds-m-y
+  (->
+   (wh/load-symbol c/w-crypto "D" "BTCUSD")
+   add-year-and-month-date-as-instant
+   (tablecloth/group-by [:month :year])
+   (tablecloth/aggregate {:min (fn [ds]
+                                 (->> ds
+                                      :close
+                                      (apply min)))
+                          :max (fn [ds]
+                                 (->> ds
+                                      :close
+                                      (apply max)))})))
 
 (def ds-m-y
-  (tablecloth/dataset 
+  (tablecloth/dataset
    {:min [1.0 2 3 4 5 6 7 8 9 10 11 12]
     :max [10.0 12 13 41 5 6 7 8 9 10 11 12]
     :month (map #(java.time.Month/of %) [1 2 3 4 5 6 7 8 9 10 11 12])
     :year (map #(java.time.Year/of %) [2022 2022 2023 2023
                                        2022 2022 2023 2023
-                                       2022 2022 2023 2023
-                                       ])}))
+                                       2022 2022 2023 2023])}))
 
 (->
-  ds-m-y
+ ds-m-y
  (tablecloth/pivot->wider :month [:min :max])
  (print-range :all))
-
 
 (->
  ds-m-y
@@ -45,7 +43,6 @@
  (print-range :all))
 
 ds-m-y
-
 
 ; calculate via map
 

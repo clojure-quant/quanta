@@ -1,27 +1,18 @@
 (ns ta.indicator.bollinger
   (:require
-   [taoensso.timbre :refer [trace debug info error]]
-   [tick.alpha.api :as tick]
    [tech.v3.dataset :as tds]
-   [tech.v3.dataset :as dataset]
-   [tech.v3.datatype.functional :as fun]
-   [tech.v3.datatype :as dtype]
-   [tech.v3.dataset.print :refer [print-range]]
    [tablecloth.api :as tablecloth]
-   [fastmath.core :as math]
-   [fastmath.stats :as stats]
    [ta.series.ta4j :as ta4j]
-   [ta.dataset.backtest :as backtest]
-   [ta.warehouse :as wh]
-   [ta.data.date :as dt]))
+   [ta.dataset.backtest :as backtest]))
 
-(defn add-bollinger-indicator [ds {:keys [sma-length stddev-length mult-up mult-down] :as options}]
+(defn add-bollinger-indicator
   "adds bollinger indicator to dataset
    * Middle Band = 20-day simple moving average (SMA)
    * Upper Band = 20-day SMA + (20-day standard deviation of price x 2) 
    * Lower Band = 20-day SMA - (20-day standard deviation of price x 2)"
+  [ds {:keys [sma-length stddev-length mult-up mult-down] #_:as #_options}]
   (let [; input data needed for ta4j indicators
-        bars (ta4j/ds->ta4j-ohlcv ds)
+        ;bars (ta4j/ds->ta4j-ohlcv ds)
         close (ta4j/ds->ta4j-close ds)
         ; setup the ta4j indicators
         sma (ta4j/ind :SMA close sma-length)
@@ -36,10 +27,10 @@
         (tablecloth/add-column :bb-lower bb-lower-values)
         (tablecloth/add-column :bb-upper bb-upper-values))))
 
-(defn calc-is-above [{:keys [close bb-upper] :as row}]
+(defn calc-is-above [{:keys [close bb-upper] #_:as #_row}]
   (> close bb-upper))
 
-(defn calc-is-below [{:keys [close bb-lower] :as row}]
+(defn calc-is-below [{:keys [close bb-lower] #_:as #_row}]
   (< close bb-lower))
 
 (defn add-above-below [ds]
@@ -63,7 +54,7 @@
    (fn [{:keys [above-count below-count]}]
      (or (= 1 above-count) (= 1 below-count)))))
 
-(defn add-bollinger-with-signal [ds {:keys [sma-length stddev-length mult-up mult-down] :as options}]
+(defn add-bollinger-with-signal [ds options]
   (let [ds-study (add-bollinger-indicator ds options)]
     (-> ds-study
         backtest/add-running-index

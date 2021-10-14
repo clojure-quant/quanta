@@ -6,6 +6,7 @@
    [tablecloth.api :as tablecloth]
    [ta.dataset.helper :as helper]
    [ta.dataset.date :refer [days-ago-instant]]
+   [ta.math.random :refer [random-series]]
    [ta.warehouse :as wh]))
 
 (defn add-open-high-low-volume [ds]
@@ -21,7 +22,7 @@
        {:date (->> (range n)
                    (map days-ago-instant)
                    reverse)
-        :close (repeatedly n rand)})
+        :close (random-series n)})
       add-open-high-low-volume))
 
 (comment
@@ -48,7 +49,8 @@
 (comment
   (let [w-random (wh/init {:series "../db/random/"
                            :list "../resources/etf/"})]
-    (create-random-datasets w-random ["BTC" "ETH"] "EOD" 10))
+    ; do not run this directly. instead use demo.warehouse.create-random/task-create-random
+    (create-random-datasets w-random ["BTCUSD" "ETHUSD"] "EOD" 10))
 ;  
   )
 

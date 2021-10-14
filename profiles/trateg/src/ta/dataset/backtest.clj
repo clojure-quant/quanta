@@ -1,17 +1,7 @@
 (ns ta.dataset.backtest
   (:require
-   [taoensso.timbre :refer [trace debug info error]]
-   [tick.alpha.api :as tick]
-   [tech.v3.dataset :as dataset]
-   [tech.v3.datatype.functional :as fun]
-   [tech.v3.datatype :as dtype]
-   [tech.v3.dataset.print :refer [print-range]]
    [tablecloth.api :as tablecloth]
-   [fastmath.core :as math]
-   [fastmath.stats :as stats]
-   [ta.series.ta4j :as ta4j]
-   [ta.warehouse :as wh]
-   [ta.data.date :as dt]))
+   [ta.warehouse :as wh]))
 
 (defn running-index-vec [ds]
   (range 1 (inc (tablecloth/row-count ds))))
@@ -33,7 +23,7 @@
   Start is after the event"
   [df-study idx forward-size]
   ;(assert (and (df? df) (int? Idx) (int? forward-size))
-  (info "get-forward-window " idx forward-size)
+  ;(println "get-forward-window " idx forward-size)
   (let [index-end (+ idx forward-size)]
     (when (< index-end (tablecloth/row-count df-study))
       (tablecloth/select-rows df-study (p-row-index-in-range (inc idx) index-end))

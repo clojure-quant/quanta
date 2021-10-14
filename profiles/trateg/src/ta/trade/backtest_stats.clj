@@ -1,35 +1,30 @@
 (ns ta.trade.backtest-stats
   (:require
-   [taoensso.timbre :refer [trace debug info error]]
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as fun]
    [tablecloth.api :as tablecloth]
-   [ta.dataset.backtest :as backtest]
    [ta.dataset.helper :as helper]
+   [ta.trade.drawdown :refer [max-drawdown]]
    [ta.xf.ago :refer [xf-future]]))
 
+(comment
+  (- (Math/log10 101) (Math/log10 100)) ; 1% 0.004
 
- (comment 
- (- (Math/log10 101) (Math/log10 100)) ; 1% 0.004
+  (- (Math/log10 120) (Math/log10 100)) ; 20% 0.08
+  (- (Math/log10 1200) (Math/log10 1000)) ; 20% 0.08
+  (- (Math/log10 1000) (Math/log10 2000)) ; -0.3
+  (- (Math/log10 2000) (Math/log10 1000)) ; +0.3
 
-(- (Math/log10 120) (Math/log10 100)) ; 20% 0.08
-(- (Math/log10 1200) (Math/log10 1000)) ; 20% 0.08
-(- (Math/log10 1000) (Math/log10 2000)) ; -0.3
-(- (Math/log10 2000) (Math/log10 1000)) ; +0.3
-  
 ;   
-   )
+  )
 
- (defn roundtrip-pl [position chg-p]
-   (if (= position :short)
-     (- 0 chg-p)
-     chg-p))
+(defn roundtrip-pl [position chg-p]
+  (if (= position :short)
+    (- 0 chg-p)
+    chg-p))
 
- (defn win [chg-p]
-    (> chg-p 0 ))
-
-    
- 
+(defn win [chg-p]
+  (> chg-p 0))
 
 (defn- trade->roundtrip [ds]
   (let [close (:close ds)
@@ -38,8 +33,7 @@
         chg-p (fun// chg close)
         chg-p (fun/* 100.0 chg-p)  ;  (into [] (map (*-const 100.0) chg-p))
         chg-p (dtype/emap roundtrip-pl :float64 (:position ds) chg-p)
-        win (dtype/emap win :bool chg-p)
-        ]
+        win (dtype/emap win :bool chg-p)]
     (->  ds
          (tablecloth/rename-columns {:index :index-open
                                      :close :price-open
@@ -47,8 +41,7 @@
          (tablecloth/add-columns  {:price-close close-f1
                                    :chg chg
                                    :chg-p chg-p
-                                   :win win
-                                   }))))
+                                   :win win}))))
 
 (defn calc-roundtrips [ds-study]
   (-> ds-study
@@ -81,27 +74,23 @@
                              :prct (fn [ds]
                                      (->> ds
                                           :chg-p
-                                          (apply +)))})
-
-     ))
+                                          (apply +)))})))
 
 (defn- print-roundtrips-view [ds-rt]
   (->  ds-rt
-   (tablecloth/select-columns [:$group-name
-                                       :index-open :index-close
-                                       :bars
-                                       :trade
+       (tablecloth/select-columns [:$group-name
+                                   :index-open :index-close
+                                   :bars
+                                   :trade
                                    ; :date-open :date-close
                                   ; :price-open :price-close
                                  ; :signal
                                   ; :position
                                    ;:trade
                              ;:chg
-                                       :prct
-                               :win
-                               ])
-     (helper/print-all)))
-
+                                   :prct
+                                   :win])
+       (helper/print-all)))
 
 (defn print-roundtrips [backtest-result]
   (-> (:ds-roundtrips backtest-result)
@@ -112,36 +101,52 @@
       (tablecloth/order-by :prct)
       (print-roundtrips-view)))
 
+(defn mean [coll]
+  (/ (reduce + coll) (count coll)))
+
+;;for sample (not population)
+(defn standard-deviation [coll]
+  (let [avg     (mean coll)
+        squares (map #(Math/pow (- % avg) 2) coll)]
+    (-> (reduce + squares)
+        (/ (dec (count coll)))
+        Math/sqrt)))
 
 (defn calc-roundtrip-stats [backtest-result group-by]
   (let [ds-roundtrips (:ds-roundtrips backtest-result)]
-  (-> ds-roundtrips
-      (tablecloth/group-by group-by)
-      (tablecloth/aggregate {:bars (fn [ds]
-                                     (->> ds
-                                          :bars
-                                          (apply +)))
-                             :trades (fn [ds]
+    (-> ds-roundtrips
+        (tablecloth/group-by group-by)
+        (tablecloth/aggregate {:bars (fn [ds]
                                        (->> ds
-                                            :trade
-                                            (remove nil?)
-                                            count))
-                             :points (fn [ds]
-                                       (->> ds
-                                            :points
+                                            :bars
                                             (apply +)))
-                             :prct (fn [ds]
-                                     (->> ds
-                                          :prct
-                                          (apply +)))})
-      (tablecloth/set-dataset-name (tablecloth/dataset-name ds-roundtrips))
-      (helper/print-all)
-      println
-      )))
-
+                               :trades (fn [ds]
+                                         (->> ds
+                                              :trade
+                                              (remove nil?)
+                                              count))
+                               :pl-points-cum (fn [ds]
+                                                (->> ds
+                                                     :points
+                                                     (apply +)))
+                               :pl-prct-cum (fn [ds]
+                                              (->> ds
+                                                   :prct
+                                                   (apply +)))
+                               :pl-prct-mean (fn [ds]
+                                               (->> ds
+                                                    :prct
+                                                    mean))
+                               :pl-prct-max-dd (fn [ds]
+                                                 (-> ds
+                                            ;:prct
+                                                     (tablecloth/->array :prct)
+                                                     max-drawdown))})
+        (tablecloth/set-dataset-name (tablecloth/dataset-name ds-roundtrips))
+        (helper/print-all)
+        println)))
 
 (defn print-roundtrip-stats [backtest-result]
   (calc-roundtrip-stats backtest-result :position)
-  (calc-roundtrip-stats backtest-result [:position :win])
-  )
+  (calc-roundtrip-stats backtest-result [:position :win]))
 

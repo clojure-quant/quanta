@@ -1,16 +1,8 @@
 (ns ta.indicator.supertrend
   (:require
-   [taoensso.timbre :refer [trace debug info error]]
-   [tick.alpha.api :as tick]
-   [tech.v3.dataset :as tds]
    [tech.v3.datatype.functional :as fun]
-   [tech.v3.datatype :as dtype]
-   [tech.v3.dataset.print :refer [print-range]]
    [tablecloth.api :as tablecloth]
-   [fastmath.core :as math]
-   [fastmath.stats :as stats]
    [ta.series.ta4j :as ta4j]
-   [ta.data.date :as dt]
    [ta.xf.ago :refer [xf-ago]]))
 
 (defn calc-atr
@@ -18,12 +10,11 @@
   [ds atr-length]
   (let [; input data needed for ta4j indicators
         bars (ta4j/ds->ta4j-ohlcv ds)
-        close (ta4j/ds->ta4j-close ds)
+        ;close (ta4j/ds->ta4j-close ds)
         ; setup the ta4j indicators
         atr (ta4j/ind :ATR bars atr-length)
         atr-values  (ta4j/ind-values atr)]
     atr-values))
-
 
 (defn calc-supertrend-signal [close upper-1 lower-1]
   (if close
@@ -46,7 +37,7 @@
  ; 
   )
 
-(defn add-supertrend-signal [ds {:keys [atr-length atr-mult] :as options}]
+(defn add-supertrend-signal [ds {:keys [atr-length atr-mult] #_:as #_options}]
   (let [atr (calc-atr ds atr-length)
         close (:close ds)
         ; Lower  = close - atr * atr-mult

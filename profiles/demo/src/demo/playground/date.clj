@@ -24,20 +24,15 @@
        ;(datetime/long-temporal-field :months) ; this does not work.
      type)
 
-
-(def ds-y-m 
+(def ds-y-m
   (api/dataset {:min [1.0 2 3 4 5 6 7 8 9 10 11 12]
                 :max [10.0 12 13 41 5 6 7 8 9 10 11 12]
                 :month (map #(java.time.Month/of %) [1 2 3 4 5 6 7 8 9 10 11 12])
-                :year (map #(java.time.Year/of %) [2022 2022 2023 2023])}
-               
-               )
-  )
+                :year (map #(java.time.Year/of %) [2022 2022 2023 2023])}))
 
 (-> ds-y-m
     (api/pivot->wider :month [:min :max]
-                      {:drop-missing? false}
-                      ) )
+                      {:drop-missing? false}))
 ;; => _unnamed [2 5]:
 ;;    | :year | JANUARY-min | JANUARY-max | FEBRUARY-min | FEBRUARY-max |
 ;;    |-------|------------:|------------:|-------------:|-------------:|
@@ -49,5 +44,4 @@
                   :month (map #(java.time.Month/of %) [1 2 1 2])
                   :year (map #(java.time.Year/of %) [2022 2022 2023 2023])})
     (api/pivot->wider :year [:min :max]
-                  {:drop-missing? false}                  
-                      ))
+                      {:drop-missing? false}))

@@ -25,16 +25,14 @@
    (warn "printing user defined list: " list-name)
    (print-symbol-list list-name)))
 
-(comment 
+(comment
 
   (wh/load-list w "currency")
-  
+
   (print-symbol-list "currency")
   (print-symbol-list "fidelity-select")
 ;  
   )
-
-
 ;  (-main "currency")
 
 ;  (-main "fidelity-select")
