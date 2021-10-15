@@ -8,6 +8,26 @@
    [ta.backtest.signal :refer [trade-signal]]))
 
 (comment
+
+  ; we want to operate on log-10. With them *10 = 1
+  (->>  (Math/log10 13)
+        (Math/pow 10))
+
+  (defn log10 [a]
+    (Math/log10 a))
+
+  (->>  [0.01 0.1 1 10 100 100]
+        (map log10))
+  ; negative logs mean we have lost money
+  ; so log-pl negative=loss positive=profit
+
+  (let [lo (log10 5601.5)
+        lc (log10 57159.0)
+        d (- lc lo)]
+    (Math/pow d 10))
+     ; 1.09    1=*10
+     ;          0.09 = + a little bit
+
   (- (Math/log10 101) (Math/log10 100)) ; 1% 0.004
 
   (- (Math/log10 120) (Math/log10 100)) ; 20% 0.08
@@ -30,8 +50,8 @@
   (let [close (:close ds)
         close-f1  (into [] xf-future close)
         ; log
-        log-close (fun/log close)
-        log-close-f1 (fun/log close-f1)
+        log-close (fun/log10 close)
+        log-close-f1 (fun/log10 close-f1)
         d-log-c-f1 (fun/- log-close-f1 log-close)
         pl-log (dtype/emap roundtrip-pl :float64 (:position ds) d-log-c-f1)
         ; prct 

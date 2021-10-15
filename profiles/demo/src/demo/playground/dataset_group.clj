@@ -9,6 +9,8 @@
   (-> (random-datasets 3 10)
       (concatenate-datasets)))
 
+concatenated-dataset
+
 (-> concatenated-dataset
     (tc/pivot->wider :symbol :close))
 
@@ -25,11 +27,6 @@
 
 (-> concatenated-dataset
     (tc/group-by :symbol)
-    (tc/random 3)
-    (print/print-policy :repl))
-
-(-> concatenated-dataset
-    (tc/group-by [:symbol])
     (tc/random 3)
     (print/print-policy :repl))
 

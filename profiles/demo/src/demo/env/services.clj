@@ -9,7 +9,7 @@
 
 (defn- study [symbol]
   (-> (wh/load-ts w-crypto symbol)
-       sma-study))
+      sma-study))
 
 (defn table [symbol]
   (-> (study symbol)

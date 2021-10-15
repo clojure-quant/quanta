@@ -38,19 +38,6 @@
 (print-overview-stats r)
 (print-roundtrip-stats r)
 
-(Math/exp 2)
-(Math/pow 10 2)
-
-(defn log [a]
-  (Math/log a))
-
-(let [lo (log 5601.5)
-      lc (log 57159.0)
-      d (- lc lo)]
-  ;d
-  (Math/pow d 10))
-
-; 
 
 
 

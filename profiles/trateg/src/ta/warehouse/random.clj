@@ -3,7 +3,7 @@
    ;[tech.v3.dataset.print :as print]
    ;[tech.v3.dataset :as dataset]
    ;[tech.v3.datatype.datetime :as datetime]
-   [tablecloth.api :as tablecloth]
+   [tablecloth.api :as tc]
    ;[ta.helper.print :as helper]
    [ta.backtest.date :refer [days-ago-instant]]
    [ta.helper.random :refer [random-series]]
@@ -12,14 +12,14 @@
 
 (defn add-open-high-low-volume [ds]
   (let [c (:close ds)]
-    (tablecloth/add-columns ds
-                            {:open c
-                             :high c
-                             :low c
-                             :volume 0})))
+    (tc/add-columns ds
+                    {:open c
+                     :high c
+                     :low c
+                     :volume 0})))
 
 (defn random-dataset [n]
-  (-> (tablecloth/dataset
+  (-> (tc/dataset
        {:date (->> (range n)
                    (map days-ago-instant)
                    reverse)
@@ -32,11 +32,13 @@
   )
 
 (defn random-datasets [m n]
-  (repeatedly m #(random-dataset n)))
+  (->> (repeatedly m #(random-dataset n))
+       (map-indexed (fn [idx ds]
+                      (tc/add-column ds :symbol idx)))))
 
 (comment
   (random-datasets 2 10)
-  (first (random-datasets 2 10))
+  (last (random-datasets 2 10))
 ;
   )
 
