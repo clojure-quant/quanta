@@ -1,11 +1,8 @@
-(ns demo.playground.dataset.meta
+(ns demo.playground.dataset-meta
   (:require
-   [tablecloth.api :as tablecloth]
-   [tech.v3.dataset :as dataset]
+   [tablecloth.api :as tc]
    [tech.v3.datatype.functional :as fun]
    [tech.v3.dataset.print :as print]))
-
-
 
 (def ds1
   (let [n 10]
@@ -13,7 +10,7 @@
          :x (range n)
          :y (fun/+ 0.1 (range n))
          :z (map str (range n))}
-        (tablecloth/dataset {:dataset-name "ds1"}))))
+        (tc/dataset {:dataset-name "ds1"}))))
 ds1
 
 (-> ds1
@@ -22,7 +19,7 @@ ds1
 ; {:name "ds1"}
 
 (->> ds1
-     tablecloth/columns
+     tc/columns
      (map meta))
 
 ; # how it looks in repl: 
@@ -35,11 +32,11 @@ ds1
 ; |        :z |   :string |       10 |          0 |      |       |     9 |      |                     |                |      0 |     9 |
 
 (->> ds1
-     tablecloth/info)
+     tc/info)
 
 ; [10 4]
 (-> ds1
-    tablecloth/shape)
+    tc/shape)
 
 ; {:name :x, :datatype :int64, :n-elems 10, :hidden? true}
 (-> ds1
@@ -63,36 +60,36 @@ ds1
     meta)
 
 (-> ds1
-    (tablecloth/group-by [:w]))
+    (tc/group-by [:w]))
 
 (-> ds1
-    (tablecloth/group-by [:w])
+    (tc/group-by [:w])
     meta)
 
 (-> ds1
-    (tablecloth/group-by [:w])
+    (tc/group-by [:w])
     (print/print-policy :repl))
 
 (-> ds1
-    (tablecloth/group-by [:w])
+    (tc/group-by [:w])
     (print/print-policy :markdown))
 
 (-> ds1
     (->> (repeat 10)
-         (apply tablecloth/bind))
-    (tablecloth/set-dataset-name :many-ds1)
+         (apply tc/bind))
+    (tc/set-dataset-name :many-ds1)
     (print/print-range 4))
 
 (-> ds1
     (->> (repeat 10)
-         (apply tablecloth/bind))
-    (tablecloth/set-dataset-name :many-ds1)
+         (apply tc/bind))
+    (tc/set-dataset-name :many-ds1)
     (print/print-range :all))
 
 (-> ds1
     (->> (repeat 10)
-         (apply tablecloth/bind))
-    (tablecloth/set-dataset-name :many-ds1)
+         (apply tc/bind))
+    (tc/set-dataset-name :many-ds1)
     (print/print-range (concat (range 4)
                                (range 96 100))))
 

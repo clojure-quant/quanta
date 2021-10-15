@@ -1,11 +1,11 @@
 (ns demo.studies.bollinger
   (:require
-   [taoensso.timbre :refer [trace debug info error]]
-   [tablecloth.api :as tablecloth]
-   [ ta.backtest.backtester :as backtest]
+   [tablecloth.api :as tc]
+   [ta.backtest.backtester :refer [run-study]]
    [ta.helper.print :as helper]
+   [ta.helper.window :refer [get-forward-window]]
    [demo.strategy.sma :as sma]
-   [demo.studies.helper.bollinger :as bs]
+   [demo.study.bollinger :as bs]
    [demo.env.config :refer [w-crypto]]))
 
 (def default-options
@@ -16,9 +16,9 @@
    :forward-size 20})
 
 (def r
-  (backtest/run-study w-crypto "ETHUSD" "D"
-                      bs/bollinger-study
-                      default-options))
+  (run-study w-crypto "ETHUSD" "D"
+             bs/bollinger-study
+             default-options))
 
 (keys r)
 
@@ -38,8 +38,8 @@
 
 ;  get event bar
 (-> (:ds-study r)
-    (backtest/get-forward-window 23 1)
-    (tablecloth/select-columns [:index :date :close :bb-lower :bb-upper :above :below]))
+    (get-forward-window 23 1)
+    (tc/select-columns [:index :date :close :bb-lower :bb-upper :above :below]))
 ; close: 132.5 
 ; bb-lower: 100.84180207
 ; bb-upper: 126.24319777
@@ -47,8 +47,8 @@
 
 ; get forward window
 (-> (:ds-study r)
-    (backtest/get-forward-window 24 20)
-    (tablecloth/select-columns [:index :date :low :high :close]))
+    (get-forward-window 24 20)
+    (tc/select-columns [:index :date :low :high :close]))
 ; highest high: 166.00000000
 
 (def highest-close
@@ -61,9 +61,9 @@ highest-close
                         :sma-length-lt 24  ; (6h = 24* 15 min)
                         })
 (def r2
-  (backtest/run-study w "ETHUSD" "D"
-                      sma/add-sma-indicator
-                      sma-cross-options))
+  (run-study w-crypto "ETHUSD" "D"
+             sma/add-sma-indicator
+             sma-cross-options))
 
 (helper/print-overview r2)
 

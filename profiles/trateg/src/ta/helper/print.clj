@@ -1,17 +1,17 @@
 (ns ta.helper.print
   (:require
    [tech.v3.dataset :as dataset]
-   [tech.v3.datatype.functional :as fun]
-   [tech.v3.datatype :as dtype]
+  ; [tech.v3.datatype.functional :as fun]
+  ; [tech.v3.datatype :as dtype]
    [tech.v3.dataset.print :refer [print-range]]
-   [tablecloth.api :as tablecloth]))
+   [tablecloth.api :as tc]
+   [ta.helper.print]))
 
-;tablecloth/select
+;tc/select
 ;tick/epoch
 
-
 (defn print-overview [ds]
-  (let [l (tablecloth/row-count ds)]
+  (let [l (tc/row-count ds)]
     (if (< l 11)
       (print-range ds :all)
       (do

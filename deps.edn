@@ -44,11 +44,22 @@
   :lint
   {:extra-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}
    :main-opts ["-m" "clj-kondo.main"
-               "--lint"  
-               "profiles/trateg/src/ta/dataset"
-               ;"profiles/demo"
+               "--lint"
                ;"src"
-               ]}
+               "profiles/trateg/src/ta"
+               "profiles/warehouse/src"
+               "profiles/data/src"
+
+               ; demo
+               "profiles/demo/src/demo/algo"
+               "profiles/demo/src/demo/env"
+               ;
+               ;
+               "profiles/demo/src/demo/playground"
+               ;
+               "profiles/demo/src/demo/studies"
+               "profiles/demo/src/demo/study"
+               "profiles/demo/src/demo/warehouse"]}
 
   :cloverage
   {:extra-paths ["test"]

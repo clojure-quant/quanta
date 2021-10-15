@@ -1,15 +1,14 @@
 (ns ta.warehouse.random
   (:require
-   [tech.v3.dataset.print :as print]
-   [tech.v3.dataset :as dataset]
-   [tech.v3.datatype.datetime :as datetime]
+   ;[tech.v3.dataset.print :as print]
+   ;[tech.v3.dataset :as dataset]
+   ;[tech.v3.datatype.datetime :as datetime]
    [tablecloth.api :as tablecloth]
-   [ta.helper.print :as helper]
-   [ ta.backtest.date :refer [days-ago-instant]]
+   ;[ta.helper.print :as helper]
+   [ta.backtest.date :refer [days-ago-instant]]
    [ta.helper.random :refer [random-series]]
    [ta.warehouse :as wh]
-   [ta.warehouse.shuffle :refer [shuffle-bar-series]]
-   ))
+   [ta.warehouse.shuffle :refer [shuffle-bar-series]]))
 
 (defn add-open-high-low-volume [ds]
   (let [c (:close ds)]
@@ -52,11 +51,9 @@
   (doall
    (map (fn [s]
           (let [ds (wh/load-symbol w-source frequency s)
-                ds-shuffled (shuffle-bar-series ds)
-                ]
+                ds-shuffled (shuffle-bar-series ds)]
             (wh/save-symbol w-shuffled ds-shuffled frequency s)))
         symbols)))
-
 
 (comment
   (let [w-random (wh/init {:series "../db/random/"

@@ -1,4 +1,4 @@
-(ns demo.strategy.supertrend
+(ns demo.algo.supertrend
   (:require
    [tech.v3.datatype.functional :as fun]
    [tablecloth.api :as tablecloth]
@@ -37,7 +37,7 @@
  ; 
   )
 
-(defn add-supertrend-signal [ds {:keys [atr-length atr-mult] #_:as #_options}]
+(defn supertrend-signal [ds {:keys [atr-length atr-mult] #_:as #_options}]
   (let [atr (calc-atr ds atr-length)
         close (:close ds)
         ; Lower  = close - atr * atr-mult

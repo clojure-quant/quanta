@@ -1,9 +1,7 @@
-(ns demo.playground.symbol-list
+(ns demo.playground.symbollist
   (:require
-   [taoensso.timbre :refer [trace debug info warn error]]
-   [ta.random :refer [random-ts]]
    [ta.warehouse :as wh]
-   [demo.env.config :refer [w-stocks log-config!]])
+   [demo.env.config :refer [w-stocks]])
   (:gen-class))
 
 (def w w-stocks)
@@ -11,7 +9,7 @@
 (defn print-symbol-list
   [list-name]
   (let [liste (wh/load-list w list-name)]
-    (info (pr-str liste))))
+    (println (pr-str liste))))
 
 (defn fn-print-symbol-list
   [list-map]
@@ -19,10 +17,10 @@
 
 (defn -main
   ([]
-   (warn "printing default list: currency")
+   (println "printing default list: currency")
    (print-symbol-list "currency"))
   ([list-name]
-   (warn "printing user defined list: " list-name)
+   (println "printing user defined list: " list-name)
    (print-symbol-list list-name)))
 
 (comment

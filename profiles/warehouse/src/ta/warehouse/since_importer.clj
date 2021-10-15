@@ -1,10 +1,10 @@
 (ns ta.warehouse.since-importer
   (:require
-   [taoensso.timbre :refer [trace debug info infof warn error]]
-   [tick.alpha.api :as t] ; tick uses cljc.java-time
+   [taoensso.timbre :refer [info warn error]]
+   ;[tick.alpha.api :as t] ; tick uses cljc.java-time
    [tech.v3.dataset :as tds]
    [tablecloth.api :as tablecloth]
-   [ta.data.date :as d]
+   ;[ta.data.date :as d]
    [ta.warehouse :as wh]
    [ta.helper.print :as h]
    [ta.data.helper :as data-helper]))

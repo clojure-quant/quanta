@@ -2,7 +2,7 @@
   (:require
    [clojure.pprint]
    [clojure.edn :as edn]
-   [taoensso.timbre :refer [trace debug info warn error]]
+   [taoensso.timbre :refer [warn]]
    [webly.log]
    [ta.warehouse :as wh]
    [ta.data.alphavantage :as av]))
@@ -28,8 +28,7 @@
                         :list "../resources/etf/"}))
 
 (def w-shuffled (wh/init {:series "../db/shuffled/"
-                        :list "../resources/etf/"}))
-
+                          :list "../resources/etf/"}))
 
 (defn log-config! []
   (webly.log/timbre-config!

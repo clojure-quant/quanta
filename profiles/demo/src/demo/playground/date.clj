@@ -2,7 +2,7 @@
   (:require
    [tick.alpha.api :as tick]
    [tech.v3.datatype.datetime :as datetime]
-   [ ta.backtest.date :refer [days-ago]]
+   [ta.backtest.date :refer [days-ago]]
    [tablecloth.api :as api]
    [java-time]))
 

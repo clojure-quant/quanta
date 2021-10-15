@@ -1,14 +1,12 @@
 
 (ns demo.playground.dataset-random
   (:require
-   [tech.v3.datatype.functional :as fun]
-   [tablecloth.api :as tablecloth]
+   [tablecloth.api :as tc]
    [tick.alpha.api :as tick]
-   [fastmath.random :as fr]
-   [ ta.backtest.date :refer [days-ago-instant select-rows-since]]
+   [ta.backtest.date :refer [days-ago-instant select-rows-since]]
    [ta.warehouse.random :refer [random-dataset random-datasets]]
-   [ta.dataset.returns :refer [forward-shift-col]]))
-
+   ;[ta.dataset.returns :refer [forward-shift-col]]
+   ))
 
 (random-dataset 3)
 
@@ -19,7 +17,7 @@
 
 (let [date (days-ago-instant 6)]
   (-> ds-1
-      (tablecloth/select-rows
+      (tc/select-rows
        (fn [row]
          (-> row
              :date
@@ -32,7 +30,7 @@
 
 ; tech.v3.dataset.FastStruct
 (-> (random-dataset 1000)
-    (tablecloth/rows :as-maps)
+    (tc/rows :as-maps)
     first
     type)
 

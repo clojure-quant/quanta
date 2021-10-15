@@ -2,11 +2,10 @@
   (:require
    [clojure.java.io :as java-io]
    [clojure.edn :as edn]
-   [taoensso.timbre :refer [trace debug info warnf  error]]
+   [taoensso.timbre :refer [debug info warnf]]
    [tech.v3.io :as io]
-   [taoensso.nippy :as nippy]
-   [tablecloth.api :as tablecloth]
-   [ta.helper.print :as h]))
+   ;[taoensso.nippy :as nippy]
+   [tablecloth.api :as tablecloth]))
 
 (defn init [settings]
   (info "wh init: " settings)

@@ -1,11 +1,12 @@
 (ns ta.data.helper
   (:require
-   [taoensso.timbre :refer [trace debug info warn error]]
-   [clj-http.client :as http]
-   [cheshire.core :as cheshire] ; JSON Encoding
+   [taoensso.timbre :refer [debug]]
+   ;[clj-http.client :as http]
+   ;[cheshire.core :as cheshire] ; JSON Encoding
    [cljc.java-time.instant :as ti]
-   [tick.alpha.api :as t] ; tick uses cljc.java-time
-   [ta.data.date :as d]))
+   ;[tick.alpha.api :as t] ; tick uses cljc.java-time
+   ;[ta.data.date :as d]
+   ))
 
 (defn remove-first-bar-if-timestamp-equals
   "helper function. 

@@ -1,9 +1,10 @@
 (ns demo.strategy.bollinger
   (:require
    [tech.v3.dataset :as tds]
-   [tablecloth.api :as tablecloth]
+   [tablecloth.api :as tc]
    [ta.series.ta4j :as ta4j]
-   [ ta.backtest.backtester :as backtest]))
+   [ta.backtest.signal :refer [add-running-index]]
+   [ta.helper.window :refer [drop-beginning calc-trailing-true-counter]]))
 
 (defn add-bollinger-indicator
   "adds bollinger indicator to dataset
@@ -24,8 +25,8 @@
         bb-upper-values  (ta4j/ind-values bb-upper)
         bb-lower-values  (ta4j/ind-values bb-lower)]
     (-> ds
-        (tablecloth/add-column :bb-lower bb-lower-values)
-        (tablecloth/add-column :bb-upper bb-upper-values))))
+        (tc/add-column :bb-lower bb-lower-values)
+        (tc/add-column :bb-upper bb-upper-values))))
 
 (defn calc-is-above [{:keys [close bb-upper] #_:as #_row}]
   (> close bb-upper))
@@ -34,7 +35,7 @@
   (< close bb-lower))
 
 (defn add-above-below [ds]
-  (tablecloth/add-columns
+  (tc/add-columns
    ds
    {:above (map calc-is-above (tds/mapseq-reader ds))
     :below (map calc-is-below (tds/mapseq-reader ds))}))
@@ -43,13 +44,13 @@
   (or (:above row) (:below row)))
 
 (defn add-trailing-count [ds]
-  (tablecloth/add-columns
+  (tc/add-columns
    ds
-   {:above-count (backtest/calc-trailing-true-counter ds :above)
-    :below-count (backtest/calc-trailing-true-counter ds :below)}))
+   {:above-count (calc-trailing-true-counter ds :above)
+    :below-count (calc-trailing-true-counter ds :below)}))
 
 (defn filter-count-1 [ds]
-  (tablecloth/select-rows
+  (tc/select-rows
    ds
    (fn [{:keys [above-count below-count]}]
      (or (= 1 above-count) (= 1 below-count)))))
@@ -57,12 +58,12 @@
 (defn add-bollinger-with-signal [ds options]
   (let [ds-study (add-bollinger-indicator ds options)]
     (-> ds-study
-        backtest/add-running-index
+        add-running-index
         add-above-below
         add-trailing-count)))
 
 (defn filter-bollinger-events [ds-study options]
   (-> ds-study
-      (backtest/drop-beginning (:sma-length options))
-      (tablecloth/select-rows is-above-or-below)
+      (drop-beginning (:sma-length options))
+      (tc/select-rows is-above-or-below)
       filter-count-1))

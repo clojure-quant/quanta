@@ -1,67 +1,77 @@
+(ns demo.playground.dataset-group
+  (:require
+   [tablecloth.api :as tc]
+   [tech.v3.dataset.print :as print]
+   [ta.warehouse.random :refer [random-datasets]]
+   [ta.warehouse.overview :refer [concatenate-datasets overview-view]]))
+
+(def concatenated-dataset
+  (-> (random-datasets 3 10)
+      (concatenate-datasets)))
 
 (-> concatenated-dataset
-    (tablecloth/pivot->wider :symbol :close))
+    (tc/pivot->wider :symbol :close))
 
 (-> concatenated-dataset
-    (tablecloth/pivot->wider :symbol :close)
-    tablecloth/last)
+    (tc/pivot->wider :symbol :close)
+    tc/last)
 
 (-> concatenated-dataset
-    (tablecloth/group-by :symbol))
+    (tc/group-by :symbol))
 
 (-> concatenated-dataset
-    (tablecloth/group-by :symbol)
+    (tc/group-by :symbol)
     (print/print-policy :repl))
 
 (-> concatenated-dataset
-    (tablecloth/group-by :symbol)
-    (tablecloth/random 3)
+    (tc/group-by :symbol)
+    (tc/random 3)
     (print/print-policy :repl))
 
 (-> concatenated-dataset
-    (tablecloth/group-by [:symbol])
-    (tablecloth/random 3)
+    (tc/group-by [:symbol])
+    (tc/random 3)
     (print/print-policy :repl))
 
 (-> concatenated-dataset
-    (tablecloth/group-by [:symbol])
-    (tablecloth/random 3)
-    tablecloth/grouped?)
+    (tc/group-by [:symbol])
+    (tc/random 3)
+    tc/grouped?)
 
 (-> concatenated-dataset
-    (tablecloth/group-by :symbol)
-    (tablecloth/aggregate {:min (fn [ds]
-                                  (->> ds
-                                       :close
-                                       (apply min)))
-                           :max (fn [ds]
-                                  (->> ds
-                                       :close
-                                       (apply max)))}))
+    (tc/group-by :symbol)
+    (tc/aggregate {:min (fn [ds]
+                          (->> ds
+                               :close
+                               (apply min)))
+                   :max (fn [ds]
+                          (->> ds
+                               :close
+                               (apply max)))}))
 
 (-> concatenated-dataset
-    (tablecloth/group-by [:symbol :year])
-    (tablecloth/aggregate {:min (fn [ds]
-                                  (->> ds
-                                       :close
-                                       (apply min)))
-                           :max (fn [ds]
-                                  (->> ds
-                                       :close
-                                       (apply max)))}))
+    (tc/group-by [:symbol :year])
+    (tc/aggregate {:min (fn [ds]
+                          (->> ds
+                               :close
+                               (apply min)))
+                   :max (fn [ds]
+                          (->> ds
+                               :close
+                               (apply max)))}))
 
 (-> concatenated-dataset
-    (tablecloth/group-by [:symbol :year])
-    (tablecloth/aggregate {:min (fn [ds]
-                                  (->> ds
-                                       :close
-                                       (apply min)))
-                           :max (fn [ds]
-                                  (->> ds
-                                       :close
-                                       (apply max)))})
-    (tablecloth/pivot->wider :symbol [:min :max]))
+    (tc/group-by [:symbol :year])
+    (tc/aggregate {:min (fn [ds]
+                          (->> ds
+                               :close
+                               (apply min)))
+                   :max (fn [ds]
+                          (->> ds
+                               :close
+                               (apply max)))})
+    (tc/pivot->wider :symbol [:min :max]))
 
 (-> concatenated-dataset
-    (experiments-helpers/symbols-overview {:grouping-columns [:symbol :year :month]})
+    (overview-view {:grouping-columns [:symbol :year :month]})
     (print/print-range :all))

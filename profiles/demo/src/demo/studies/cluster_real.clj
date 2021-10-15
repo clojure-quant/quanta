@@ -1,29 +1,21 @@
-(ns demo.studies.real-experiments
+(ns demo.studies.cluster-real
   (:require
    [tech.v3.dataset.print :as print]
-   [tech.v3.dataset :as dataset]
-   [tech.v3.datatype :as dtype]
-   [tech.v3.tensor :as tensor]
-   [tech.v3.datatype.datetime :as datetime]
    [tech.v3.datatype.functional :as fun]
-   [tech.v3.datatype.statistics :as dtype-stats]
-   [tablecloth.api :as tablecloth]
+   [tech.v3.tensor :as tensor]
+   [tablecloth.api :as tc]
    [fastmath.stats :as stats]
    [fastmath.clustering :as clustering]
    [loom.graph]
    [loom.alg]
    [ta.warehouse :as wh]
-   [ta.helper.print :as helper]
-   [ ta.backtest.date :refer [add-year-and-month]]
-   [ta.dataset.returns :refer [returns]]
-   [demo.studies.helper.experiments-helpers :as experiments-helpers]))
-
-(defonce w
-  (wh/init {:series "../db/"
-            :list   "../resources/etf/"}))
+   [ta.warehouse.overview :refer [load-datasets concatenate-datasets overview-view]]
+   [ta.helper.stats :refer [standardize]]
+   [ta.helper.multiple :refer [make-full-datasets make-full-symbols]]
+   [demo.env.config :refer [w-stocks]]))
 
 (def symbols
-  (wh/load-list w "fidelity-select"))
+  (wh/load-list w-stocks "fidelity-select"))
 
 (def symbol->name
   (->> "../resources/etf/fidelity-select.edn"
@@ -34,30 +26,40 @@
 
 symbol->name
 
-(-> concatenated-dataset
-    (tablecloth/random 10))
+(def concatenated-dataset
+  (-> (load-datasets w-stocks "D" symbols)
+      (concatenate-datasets)))
 
 (-> concatenated-dataset
-    (experiments-helpers/symbols-overview {:grouping-columns [:symbol :year :month]})
+    (tc/random 10))
+
+(-> concatenated-dataset
+    (overview-view {:grouping-columns [:symbol :year :month]})
     (print/print-range :all))
 
 (-> concatenated-dataset
-    (experiments-helpers/symbols-overview {})
+    (overview-view {})
     (print/print-range :all))
 
 (-> concatenated-dataset
-    (experiments-helpers/symbols-overview {:pivot? false})
+    (overview-view {:pivot? false})
     (print/print-range :all))
+
+(def full-datasets
+  (make-full-datasets concatenated-dataset))
+
+(def full-symbols
+  (make-full-symbols concatenated-dataset))
 
 (def corrs
   (->> full-datasets
-       (map #(-> % :return helper/standardize))
+       (map #(-> % :return standardize))
        stats/covariance-matrix
        tensor/->tensor))
 
 (def clustering
   (-> full-datasets
-      (->> (map #(-> % :return helper/standardize)))
+      (->> (map #(-> % :return standardize)))
       (clustering/k-means 5)))
 
 (:sizes clustering)
@@ -65,8 +67,8 @@ symbol->name
 (-> {:symbol  full-symbols
      :name (map symbol->name full-symbols)
      :cluster (:clustering clustering)}
-    tablecloth/dataset
-    (tablecloth/order-by :cluster)
+    tc/dataset
+    (tc/order-by :cluster)
     (print/print-range :all))
 
 (def symbol->cluster
@@ -86,7 +88,7 @@ symbol->name
            :sign (fun/signum r)}))))
 
 (-> edges
-    tablecloth/dataset
+    tc/dataset
     (print/print-range :all))
 
 (let [threshold 0.6
@@ -103,7 +105,7 @@ symbol->name
                                         :label (name symbol)}})))
       edges (->> threshold
                  edges
-                 (map (fn [{:keys [i j sign]}]
+                 (map (fn [{:keys [i j #_sign]}]
                         {:data {:id (str i "-" j)
                                 :source i
                                 :target j}})))
@@ -119,17 +121,17 @@ symbol->name
 
 (-> (->> 0.6
          edges
-         (map (fn [{:keys [i j sign]}]
+         (map (fn [{:keys [i j #_sign]}]
                 [i j]))
          (apply loom.graph/graph)
          loom.alg/connected-components
          (map-indexed
           (fn [i comp-indexes]
-            (tablecloth/dataset
+            (tc/dataset
              {:component      (str "comp" i)
               :symbol (map full-symbols comp-indexes)})))
-         (apply tablecloth/concat))
-    (tablecloth/add-columns
+         (apply tc/concat))
+    (tc/add-columns
      {:name    #(->> % :symbol (mapv symbol->name))
       :cluster #(->> % :symbol (mapv symbol->cluster))})
     (print/print-range :all))

@@ -1,6 +1,6 @@
 (ns ta.data.bybit
   (:require
-   [taoensso.timbre :refer [trace debug info warn error]]
+   [taoensso.timbre :refer [info]]
    [clj-http.client :as http]
    [cheshire.core :as cheshire] ; JSON Encoding
    [cljc.java-time.instant :as ti]
@@ -83,16 +83,17 @@
 
   (get-history-page "D" (d/days-ago 10) 3 "ETHUSD")
 
+  (require '[clojure.pprint])
   (-> (get-history-page "D" (d/days-ago 10) 3 "ETHUSD")
       (clojure.pprint/print-table))
 
   ; does not remove
-  (remove-first-bar-if-timestamp-equals
+  (h/remove-first-bar-if-timestamp-equals
    [{:date (ti/now)}]
    nil)
 
   ; removes
-  (remove-first-bar-if-timestamp-equals
+  (h/remove-first-bar-if-timestamp-equals
    [{:date (t/instant "1999-12-31T00:00:00Z")}]
    (t/instant "1999-12-31T00:00:00Z"))
 

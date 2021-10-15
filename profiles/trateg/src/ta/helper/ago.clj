@@ -1,6 +1,4 @@
-(ns ta.helper.ago
-  (:require
-   [taoensso.timbre :refer [trace debug info error]]))
+(ns ta.helper.ago)
 
 (defn xf-ago [xf]
   (let [ago-val (atom nil)]

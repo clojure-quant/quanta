@@ -1,12 +1,11 @@
-(ns demo.studies.task
+(ns demo.study.task
   (:require
-   [taoensso.timbre :refer [trace debug info infof warn error]]
-   [tablecloth.api :as tablecloth]
+   [taoensso.timbre :refer [info]]
+   [tablecloth.api :as tc]
    [webly.log]
-   [ta.helper.print :as helper]
-   [ ta.backtest.backtester :as backtest]
-   [demo.env.config :refer [w-crypto]]
-   [demo.studies.helper.bollinger :as bs]))
+   [ta.backtest.backtester :as backtest]
+   [demo.study.bollinger :as bs]
+   [demo.env.config :refer [w-crypto]]))
 
 (webly.log/timbre-config!
  {:timbre-loglevel
@@ -50,7 +49,7 @@
                                  bs/bollinger-study
                                  options)]
        (:backtest-numbers r)))
-   (tablecloth/dataset)
+   (tc/dataset)
    (bs/print-ds-cols-all [:sma-length
                           :down-count
                           :up-count

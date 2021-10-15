@@ -20,10 +20,11 @@
 ; (let [output (ByteArrayOutputStream.)]
 
 (defonce ds-atom (atom nil))
-(defn publish-ds! [ds id]
+
+(defn publish-ds! [ds _ #_id]
   (reset! ds-atom ds))
 
-(defn ds-arrow-handler [req]
+(defn ds-arrow-handler [_ #_req]
   (res/response
    (ring-io/piped-input-stream
     (fn [ostream]

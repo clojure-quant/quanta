@@ -2,7 +2,7 @@
   (:require
    [clj-http.client :as client]
    [cheshire.core] ; JSON Encoding
-   [cljc.java-time.local-date :as ld]
+   ;[cljc.java-time.local-date :as ld]
    [throttler.core]))
 
 ;; ApiKey Management
@@ -23,13 +23,13 @@
 
 ;; helper
 
-(defn- fix-keywords-
-  "Alphavantage responses are unusually structured.
+#_(defn- fix-keywords-
+    "Alphavantage responses are unusually structured.
    field '1. open'  will be converted to :open keyword"
-  [m]
-  (let [ks (keys m)
-        vs (vals m)]
-    (zipmap (map #(keyword (second (re-find #"\d+.\s(\w+)" (name %)))) ks) vs)))
+    [m]
+    (let [ks (keys m)
+          vs (vals m)]
+      (zipmap (map #(keyword (second (re-find #"\d+.\s(\w+)" (name %)))) ks) vs)))
 
 (def base-url "https://api.stlouisfed.org/fred/")
 

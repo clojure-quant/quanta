@@ -33,43 +33,43 @@
                           (ds/mapseq-reader (ds/->dataset (.rows coll)))))))
 
 (extend-protocol
-   ITransposable
-    tech.v3.dataset.impl.dataset.Dataset
-    (-row-major [this] (row-view. this {}))
-    (-column-major [this] this)
-    nil
-    (-row-major [this] (row-view. (ds/->dataset {}) {}))
-    (-column-major [this] (ds/->dataset {}))
-    clojure.lang.PersistentArrayMap
-    (-row-major [this] (row-view. (ds/->dataset {}) {}))
-    (-column-major [this] (ds/->dataset {})))
+ ITransposable
+  tech.v3.dataset.impl.dataset.Dataset
+  (-row-major [this] (row-view. this {}))
+  (-column-major [this] this)
+  nil
+  (-row-major [this] (row-view. (ds/->dataset {}) {}))
+  (-column-major [this] (ds/->dataset {}))
+  clojure.lang.PersistentArrayMap
+  (-row-major [this] (row-view. (ds/->dataset {}) {}))
+  (-column-major [this] (ds/->dataset {})))
 
 (defn row-major [coll]
-    (if (extends? ITransposable (type coll))
-      (-row-major coll)
-      (if (seq coll)
-        coll
-        (throw (ex-info "under construction!" {})))))
+  (if (extends? ITransposable (type coll))
+    (-row-major coll)
+    (if (seq coll)
+      coll
+      (throw (ex-info "under construction!" {})))))
 
 (defn column-major [coll]
-    (if (extends? ITransposable (type coll))
-      (-column-major coll)
-      (if (seq coll)
-        coll
-        (throw (ex-info "under construction!" {})))))
+  (if (extends? ITransposable (type coll))
+    (-column-major coll)
+    (if (seq coll)
+      coll
+      (throw (ex-info "under construction!" {})))))
 
 (defn into-dataset
-    ([to] (column-major to))
-    ([to from]
-     (->> from
-          row-major
-          (into (row-major to))
-          column-major))
-    ([to xform from]
-     (->> from
-          row-major
-          (into (row-major to) xform)
-          column-major)))
+  ([to] (column-major to))
+  ([to from]
+   (->> from
+        row-major
+        (into (row-major to))
+        column-major))
+  ([to xform from]
+   (->> from
+        row-major
+        (into (row-major to) xform)
+        column-major)))
 
 (def +empty-records+ (row-major (ds/->dataset {})))
 
@@ -103,9 +103,9 @@
 ;
 
   (->> (row-major (tablecloth.api/dataset  [{:a 1 :b 6}
-                                        {:a 1 :b 6}
-                                        {:a 1 :b 6}
-                                        {:a 1 :b 6}]))
+                                            {:a 1 :b 6}
+                                            {:a 1 :b 6}
+                                            {:a 1 :b 6}]))
      ;;semantically equivalent to ds/mapseq-reader here
        (filter #(= (:b %) :baz)) ; filter evemts
        (map (fn [r] (assoc r :c "some-value")))

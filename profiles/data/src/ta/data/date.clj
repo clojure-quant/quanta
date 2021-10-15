@@ -2,7 +2,9 @@
   (:require
    [cljc.java-time.instant :as ti]
    [cljc.java-time.local-date :as ld]
-   [cljc.java-time.format.date-time-formatter :as fmt :refer [of-pattern iso-date]]
+   [cljc.java-time.format.date-time-formatter :as fmt :refer [of-pattern
+                                                              ;iso-date
+                                                              ]]
    [cljc.java-time.local-date-time :as ldt]
    [cljc.java-time.zone-offset :refer [utc]]
    [tick.alpha.api :as t]

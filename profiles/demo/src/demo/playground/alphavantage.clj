@@ -1,12 +1,8 @@
 (ns demo.playground.alphavantage
   (:require
-   [taoensso.timbre :refer [trace debug info infof error]]
    [clojure.pprint :refer [print-table]]
-   [tech.v3.dataset :as tds]
-   [ta.data.alphavantage :as av]
-   [ta.warehouse :as wh]
-   ;[demo.env.warehouse :refer [w]]
-   ))
+   [ta.data.alphavantage :as av]))
+
 ; select search
 (av/search "S&P 500")
 (print-table [:symbol :type :name] (av/search "BA"))

@@ -1,7 +1,5 @@
-(ns demo.studies.helper.sma
+(ns demo.study.sma
   (:require
-   [net.cgrand.xforms :as x]
-   [tech.v3.dataset :as tds]
    [tech.v3.datatype.functional :as dfn]
    [ta.series.indicator :as ind]))
 

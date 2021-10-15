@@ -1,11 +1,7 @@
 (ns demo.warehouse.import-bybit
   (:require
-   [taoensso.timbre :refer [trace debug info infof warn error]]
    [tick.alpha.api :as t] ; tick uses cljc.java-time
    [tech.v3.dataset :as tds]
-   [tablecloth.api :as tablecloth]
-   [ta.data.date :as d]
-   [ta.warehouse :as wh]
    [ta.data.bybit :as bybit]
    [ta.warehouse.since-importer :as since-importer]
    [demo.env.config :refer [w-crypto log-config!]]))

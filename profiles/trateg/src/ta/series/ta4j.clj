@@ -1,12 +1,12 @@
 (ns ta.series.ta4j
   "convenience wrapper on the java library ta4j"
   (:require
-   [taoensso.timbre :refer [trace debug info error]]
    [tick.alpha.api :as t]
-   [tech.v3.dataset.print :as print]
+  ; [tech.v3.dataset.print :as print]
    [tech.v3.dataset :as tds]
-   [tech.v3.datatype.datetime :as datetime]
-   [tablecloth.api :as tablecloth])
+  ; [tech.v3.datatype.datetime :as datetime]
+  ; [tablecloth.api :as tablecloth]
+   )
   (:import [org.ta4j.core.num DoubleNum DecimalNum])
   (:import [org.ta4j.core BaseStrategy #_BaseTimeSeries$SeriesBuilder
             ;TimeSeriesManager

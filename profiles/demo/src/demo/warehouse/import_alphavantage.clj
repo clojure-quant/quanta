@@ -1,9 +1,7 @@
 (ns demo.warehouse.import-alphavantage
   (:require
-   [taoensso.timbre :refer [trace debug info infof  error]]
    [tech.v3.dataset :as tds]
    [ta.data.alphavantage :as av]
-   [ta.warehouse :as wh]
    [ta.warehouse.since-importer :as since-importer]
    [demo.env.config :refer [w-stocks log-config!]]))
 
