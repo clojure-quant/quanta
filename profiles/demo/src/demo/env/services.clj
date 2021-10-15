@@ -4,12 +4,12 @@
    [ta.warehouse :as wh]
    [ta.viz.table :refer [ds->table]]
    ;[ta.backtest.chart :as c]
-   [demo.studies.helper.sma :as study]
+   [demo.study.sma :refer [sma-study]]
    [demo.env.config :refer [w-crypto]]))
 
 (defn- study [symbol]
   (-> (wh/load-ts w-crypto symbol)
-      study/sma-study))
+       sma-study))
 
 (defn table [symbol]
   (-> (study symbol)

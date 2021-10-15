@@ -33,7 +33,8 @@
    :atr-mult 0.5})
 
 (def r-d
-  (run-backtest supertrend-signal options-d)
+  ;(run-backtest supertrend-signal options-d)
+  (run-backtest supertrend-signal (assoc options-d :w w-shuffled))
   ;(run-backtest supertrend-signal (assoc options-d :symbol "BTCUSD"))
   ;(run-backtest buy-hold-signal (assoc options-d :symbol "BTCUSD"))
   )
