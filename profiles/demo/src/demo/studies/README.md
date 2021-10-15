@@ -71,3 +71,13 @@ create this file: profiles/demo/creds.edn - then add your secret key in this for
 - average next bar return (for up + down)
 
 
+
+DANIEL:
+
+- histogram / quartiles.
+
+- rolling correlation every x bars based on the PAST window.
+  so say every month calculate the correlations and show them.
+
+  
+  

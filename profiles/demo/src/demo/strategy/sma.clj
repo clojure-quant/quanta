@@ -1,4 +1,4 @@
-(ns ta.indicator.sma
+(ns demo.strategy.sma
   (:require
    [tablecloth.api :as tablecloth]
    [ta.series.ta4j :as ta4j]))

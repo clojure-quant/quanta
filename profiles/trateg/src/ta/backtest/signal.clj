@@ -1,7 +1,7 @@
-(ns ta.trade.signal
+(ns ta.backtest.signal
   (:require
    [tablecloth.api :as tablecloth]
-   [ta.xf.ago :refer [xf-ago-pair]]))
+   [ta.helper.ago :refer [xf-ago-pair]]))
 
 ; signal :buy :sell :hold  
 ; one or more buy signals mean we do want to be long.

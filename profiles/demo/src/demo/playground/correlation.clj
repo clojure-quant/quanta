@@ -3,8 +3,8 @@
    [fastmath.stats :as stats]
    [tech.v3.datatype.functional :as fun]
    [fastmath.stats :as stats]
-   [ta.dataset.date :refer [days-ago select-rows-since]]
-   [ta.math.stats :refer [;random-dataset random-datasets
+   [ ta.backtest.date :refer [days-ago select-rows-since]]
+   [ta.helper.stats :refer [;random-dataset random-datasets
                           standardize rand-numbers]]))
 
 ; [1044.9983800434406 0.5564513730783689]
@@ -66,4 +66,13 @@
        stats/covariance-matrix))
 
 
+fun/quartile-1
 
+
+(fun/quartiles (range 1000))
+
+(fun/quartile-1 (range 1000)
+ 
+ )
+
+()

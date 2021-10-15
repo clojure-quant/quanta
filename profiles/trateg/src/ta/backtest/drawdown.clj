@@ -1,4 +1,4 @@
-(ns ta.trade.drawdown)
+(ns ta.backtest.drawdown)
 
 (defn xf-trailing-high [xf]
   (let [high-val (atom 0)]

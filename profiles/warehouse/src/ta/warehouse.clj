@@ -6,7 +6,7 @@
    [tech.v3.io :as io]
    [taoensso.nippy :as nippy]
    [tablecloth.api :as tablecloth]
-   [ta.dataset.helper :as h]))
+   [ta.helper.print :as h]))
 
 (defn init [settings]
   (info "wh init: " settings)

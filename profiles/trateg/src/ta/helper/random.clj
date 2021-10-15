@@ -1,4 +1,4 @@
-(ns ta.math.random
+(ns ta.helper.random
   (:require
    [clojure.repl])
   (:import

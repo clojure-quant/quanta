@@ -6,7 +6,7 @@
    [tech.v3.dataset.print :refer [print-range]]
    [tablecloth.api :as tablecloth]
    [ta.warehouse :as wh]
-   [ta.dataset.date :refer [add-year-and-month-date-as-instant]]
+   [ ta.backtest.date :refer [add-year-and-month-date-as-instant]]
    [demo.env.config :as c]))
 
 (def ds-m-y

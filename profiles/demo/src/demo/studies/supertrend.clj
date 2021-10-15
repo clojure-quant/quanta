@@ -4,11 +4,11 @@
    [tick.alpha.api :as tick]
    [tablecloth.api :as tablecloth]
    [tech.v3.dataset :as tds]
-   [ta.dataset.helper :as helper]
-   [ta.indicator.supertrend :as supertrend]
-   [ta.trade.signal :refer [trade-signal]]
-   [ta.trade.backtest :as backtester]
-   [ta.trade.backtest-stats :as stats :refer [calc-roundtrips]]
+   [ta.helper.print :as helper]
+   [ta.backtest.signal :refer [trade-signal]]
+   [ta.backtest.backtester :as backtester]
+   [ta.backtest.stats :as stats :refer [calc-roundtrips]]
+   [demo.strategy.supertrend :as supertrend]
    [demo.env.config :refer [w-crypto w-random w-shuffled]]))
 
 (defn study-supertrend [ds {:keys [atr-length atr-mult] :as options}]

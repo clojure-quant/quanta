@@ -4,9 +4,9 @@
    [tech.v3.dataset :as dataset]
    [tech.v3.datatype.datetime :as datetime]
    [tablecloth.api :as tablecloth]
-   [ta.dataset.helper :as helper]
-   [ta.dataset.date :refer [days-ago-instant]]
-   [ta.math.random :refer [random-series]]
+   [ta.helper.print :as helper]
+   [ ta.backtest.date :refer [days-ago-instant]]
+   [ta.helper.random :refer [random-series]]
    [ta.warehouse :as wh]
    [ta.warehouse.shuffle :refer [shuffle-bar-series]]
    ))

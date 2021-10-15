@@ -1,4 +1,4 @@
-(ns ta.trade.backtest
+(ns ta.backtest.backtester
   (:require
    [tablecloth.api :as tablecloth]
    [ta.warehouse :as wh]))

@@ -13,8 +13,8 @@
    [loom.graph]
    [loom.alg]
    [ta.warehouse :as wh]
-   [ta.dataset.helper :as helper]
-   [ta.dataset.date :refer [add-year-and-month]]
+   [ta.helper.print :as helper]
+   [ ta.backtest.date :refer [add-year-and-month]]
    [ta.dataset.returns :refer [returns]]
    [demo.studies.helper.experiments-helpers :as experiments-helpers]))
 

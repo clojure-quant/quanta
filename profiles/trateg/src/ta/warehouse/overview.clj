@@ -6,7 +6,7 @@
    [tech.v3.datatype :as dtype]
    [tablecloth.api :as tablecloth]
    [ta.warehouse :as wh]
-   [ta.dataset.date :refer [add-year-and-month-date-as-instant]]))
+   [ ta.backtest.date :refer [add-year-and-month-date-as-instant]]))
 
 (defn load-datasets [w frequency symbols]
   (->> symbols

@@ -5,7 +5,7 @@
    [tablecloth.api :as tablecloth]
    [tick.alpha.api :as tick]
    [fastmath.random :as fr]
-   [ta.dataset.date :refer [days-ago-instant select-rows-since]]
+   [ ta.backtest.date :refer [days-ago-instant select-rows-since]]
    [ta.warehouse.random :refer [random-dataset random-datasets]]
    [ta.dataset.returns :refer [forward-shift-col]]))
 

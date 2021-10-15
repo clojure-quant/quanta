@@ -1,4 +1,4 @@
-(ns ta.math.stats
+(ns ta.helper.stats
   (:require
    [tech.v3.datatype.functional :as fun]
    [tech.v3.datatype :as dtype]))

@@ -2,9 +2,9 @@
   (:require
    [taoensso.timbre :refer [trace debug info error]]
    [tablecloth.api :as tablecloth]
-   [ta.trade.backtest :as backtest]
-   [ta.dataset.helper :as helper]
-   [ta.indicator.sma :as sma]
+   [ ta.backtest.backtester :as backtest]
+   [ta.helper.print :as helper]
+   [demo.strategy.sma :as sma]
    [demo.studies.helper.bollinger :as bs]
    [demo.env.config :refer [w-crypto]]))
 

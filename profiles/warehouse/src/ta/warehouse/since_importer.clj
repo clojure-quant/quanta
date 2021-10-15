@@ -6,7 +6,7 @@
    [tablecloth.api :as tablecloth]
    [ta.data.date :as d]
    [ta.warehouse :as wh]
-   [ta.dataset.helper :as h]
+   [ta.helper.print :as h]
    [ta.data.helper :as data-helper]))
 
 ; init symbols - download complete timeseries once and save to disk.

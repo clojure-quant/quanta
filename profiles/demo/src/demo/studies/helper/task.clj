@@ -3,9 +3,9 @@
    [taoensso.timbre :refer [trace debug info infof warn error]]
    [tablecloth.api :as tablecloth]
    [webly.log]
-   [ta.dataset.helper :as helper]
-   [ta.trade.backtest :as backtest]
-   [demo.env.warehouse :refer [w]]
+   [ta.helper.print :as helper]
+   [ ta.backtest.backtester :as backtest]
+   [demo.env.config :refer [w-crypto]]
    [demo.studies.helper.bollinger :as bs]))
 
 (webly.log/timbre-config!
@@ -23,7 +23,7 @@
 
 (defn task-bollinger-study [& _]
   (info "running bollinger strategy with options: " default-options)
-  (let [r (backtest/run-study w "ETHUSD" "D"
+  (let [r (backtest/run-study w-crypto "ETHUSD" "D"
                               bs/bollinger-study
                               default-options)]
     (bs/print-all r :ds-study)
@@ -32,7 +32,7 @@
     (bs/print-all r :ds-performance)
     (bs/print-backtest-numbers r)
 
-    (backtest/save-study w (:ds-study r) "ETHUSD" "D" "bollinger-upcross")
+    (backtest/save-study w-crypto (:ds-study r) "ETHUSD" "D" "bollinger-upcross")
     (info "study calculation finished.")))
 
 (defn task-bollinger-optimizer [& _]
@@ -46,7 +46,7 @@
                     :mult-up  1.5
                     :mult-down 1.5
                     :forward-size length}
-           r (backtest/run-study w "ETHUSD" "D"
+           r (backtest/run-study w-crypto "ETHUSD" "D"
                                  bs/bollinger-study
                                  options)]
        (:backtest-numbers r)))

@@ -1,9 +1,9 @@
-(ns ta.indicator.supertrend
+(ns demo.strategy.supertrend
   (:require
    [tech.v3.datatype.functional :as fun]
    [tablecloth.api :as tablecloth]
    [ta.series.ta4j :as ta4j]
-   [ta.xf.ago :refer [xf-ago]]))
+   [ta.helper.ago :refer [xf-ago]]))
 
 (defn calc-atr
   "calculates ATR for the price series in dataset"

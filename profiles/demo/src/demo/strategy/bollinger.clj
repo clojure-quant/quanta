@@ -1,9 +1,9 @@
-(ns ta.indicator.bollinger
+(ns demo.strategy.bollinger
   (:require
    [tech.v3.dataset :as tds]
    [tablecloth.api :as tablecloth]
    [ta.series.ta4j :as ta4j]
-   [ta.trade.backtest :as backtest]))
+   [ ta.backtest.backtester :as backtest]))
 
 (defn add-bollinger-indicator
   "adds bollinger indicator to dataset
