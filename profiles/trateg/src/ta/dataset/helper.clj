@@ -9,14 +9,6 @@
 ;tablecloth/select
 ;tick/epoch
 
-(defn standardize [xs]
-  (-> xs
-      (fun/- (fun/mean xs))
-      (fun// (fun/standard-deviation xs))))
-
-(defn rand-numbers [n]
-  (dtype/clone
-   (dtype/make-reader :float32 n (rand))))
 
 (defn print-overview [ds]
   (let [l (tablecloth/row-count ds)]

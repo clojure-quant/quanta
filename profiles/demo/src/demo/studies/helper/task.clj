@@ -4,7 +4,7 @@
    [tablecloth.api :as tablecloth]
    [webly.log]
    [ta.dataset.helper :as helper]
-   [ta.dataset.backtest :as backtest]
+   [ta.trade.backtest :as backtest]
    [demo.env.warehouse :refer [w]]
    [demo.studies.helper.bollinger :as bs]))
 

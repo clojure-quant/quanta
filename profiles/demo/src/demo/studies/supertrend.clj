@@ -7,9 +7,9 @@
    [ta.dataset.helper :as helper]
    [ta.indicator.supertrend :as supertrend]
    [ta.trade.signal :refer [trade-signal]]
-   [ta.dataset.backtest :as backtest]
+   [ta.trade.backtest :as backtester]
    [ta.trade.backtest-stats :as stats :refer [calc-roundtrips]]
-   [demo.env.config :refer [w-crypto w-random]]))
+   [demo.env.config :refer [w-crypto w-random w-shuffled]]))
 
 (defn study-supertrend [ds {:keys [atr-length atr-mult] :as options}]
   (let [ds-study (-> ds
@@ -38,9 +38,17 @@
    :atr-mult 0.5})
 
 (def r-d
-  (backtest/run-study w-crypto "ETHUSD" "D"
-                      study-supertrend
-                      options-d))
+  (backtester/run-study
+   w-crypto "ETHUSD" "D"
+   study-supertrend
+   options-d))
+
+(def r-d
+  (backtester/run-study
+   w-crypto "BTCUSD" "D"
+   study-supertrend
+   options-d))
+
 
 r-d
 (:ds-roundtrips r-d)
@@ -55,52 +63,96 @@ r-d
    :atr-mult 0.75})
 
 (def r-15
-  (backtest/run-study w-crypto "ETHUSD" "15"
-                      study-supertrend
-                      options-15))
+  (backtester/run-study w-crypto "ETHUSD" "15"
+                        study-supertrend
+                        options-15))
+
+(def r-15
+  (backtester/run-study w-crypto "BTCUSD" "15"
+                        study-supertrend
+                        options-15))
 
 (stats/print-roundtrip-stats r-15)
 (stats/print-roundtrips r-15)
+(stats/print-roundtrips-pl-desc r-15)
+
+
 
 ; test with random walk
 
 (def r-15-rand
-  (backtest/run-study w-random "ETHUSD" "15"
-                      study-supertrend
-                      options-15))
+  (backtester/run-study w-random "ETHUSD" "15"
+                        study-supertrend
+                        options-15))
+
+(def r-15-rand
+  (backtester/run-study w-shuffled "ETHUSD" "15"
+                        study-supertrend
+                        options-15))
 
 (stats/print-roundtrip-stats r-15-rand)
 (stats/print-roundtrips r-15-rand)
+(stats/print-roundtrips-pl-desc r-15-rand)
 
-;; run a couple different variations
+
+; optimize ATR MULTIPLYER
 
 (def options-change-atr-mult
   {:atr-length 20
    :atr-mult 0.5})
 
-(for [m [0.5 0.75 1.0 1.25 1.5 1.75 2.0]]
-  (let [options (assoc options-change-atr-mult
-                       :atr-mult m)
-        _ (println "options: " options)
-        r (backtest/run-study w-crypto "ETHUSD" "15"
-                              supertrend/study-supertrend
-                              options)
-        r (tablecloth/set-dataset-name r m)]
-    (println r)
-    (println "atr-mult: " m)
-    (stats/stats r)))
+(backtester/run-study-parameter-range
+ w-crypto "ETHUSD" "15"
+ study-supertrend options-change-atr-mult
+ :atr-mult [0.5 0.75 1.0 1.25 1.5 1.75 2.0 2.5 3.0]
+ stats/print-overview-stats)
+
+(defn profit-factor-long [rt-stats]
+  (as-> backtest-result x
+    (tds/mapseq-reader x)
+    (map (juxt :$group-name identity) x)
+    (into {} x)
+    (:long x)
+    (/ (:pl-prct-cum x) (:pl-prct-max-dd x))
+    ;)
+    ))
+
+(defn print-profit-factor [backtest-result]
+  ;(println "XXX")
+  (let [rt-stats (stats/calc-roundtrip-stats backtest-result :position)
+        pf (profit-factor-long rt-stats)]
+     ;(println "profit factor: " pf)  
+    pf))
+
+
+(defn run-range [w freq]
+  (println "run range  wh: " w " freq:" freq)
+  (->> (backtester/run-study-parameter-range
+        w-crypto "ETHUSD" "15"
+        study-supertrend options-change-atr-mult
+        :atr-mult [0.5 0.75 1.0 1.25 1.5 1.75 2.0 2.5 3.0]
+        print-profit-factor)
+       (println (map print-profit-factor)))
+  nil)
+
+(run-range w-crypto "D")
+
+(do (run-range w-crypto "D")
+    (run-range w-crypto "15")
+    (run-range w-random "D")
+    (run-range w-random "15"))
+
+
+
+
+; optimize ATR LENGTH
 
 (def options-change-atr-length
   {:atr-length 20
    :atr-mult 0.75})
 
-(for [m [10 15 20 25 30 35 40 45 50]]
-  (let [options (assoc options-change-atr-length
-                       :atr-length m)
-        _ (println "options: " options)
-        r (backtest/run-study w "ETHUSD" "15"
-                              supertrend/study-supertrend
-                              options)
-        r (tablecloth/set-dataset-name r m)]
-    (println r)
-    (println (stats/stats r))))
+(backtester/run-study-parameter-range
+ w-crypto "ETHUSD" "15"
+ study-supertrend options-change-atr-mult
+ :atr-length  [10 15 20 25 30 35 40 45 50]
+ stats/print-overview-stats)

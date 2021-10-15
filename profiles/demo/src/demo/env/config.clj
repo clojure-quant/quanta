@@ -27,6 +27,10 @@
 (def w-random (wh/init {:series "../db/random/"
                         :list "../resources/etf/"}))
 
+(def w-shuffled (wh/init {:series "../db/shuffled/"
+                        :list "../resources/etf/"}))
+
+
 (defn log-config! []
   (webly.log/timbre-config!
    {:timbre-loglevel

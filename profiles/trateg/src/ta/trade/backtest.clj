@@ -1,4 +1,4 @@
-(ns ta.dataset.backtest
+(ns ta.trade.backtest
   (:require
    [tablecloth.api :as tablecloth]
    [ta.warehouse :as wh]))
@@ -88,3 +88,20 @@
 
 ;  
   )
+
+
+
+(defn run-study-parameter-range
+  [w symbol frequency
+   algo base-options
+   prop-to-change prop-range
+   printer]
+  (for [m prop-range]
+    (let [options (assoc base-options prop-to-change m)
+          r (run-study w symbol frequency
+                                algo options)
+          r (-> r
+                (assoc :ds-roundtrips (tablecloth/set-dataset-name (:ds-roundtrips r) m)))]
+      (printer r)
+      r
+      )))

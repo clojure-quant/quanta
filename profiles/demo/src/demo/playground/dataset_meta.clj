@@ -5,6 +5,8 @@
    [tech.v3.datatype.functional :as fun]
    [tech.v3.dataset.print :as print]))
 
+
+
 (def ds1
   (let [n 10]
     (-> {:w (map #(>= % (quot n 2)) (range n))

@@ -30,7 +30,7 @@
   (let [s (io/gzip-input-stream (str (:series w) name ".nippy.gz"))
         ds (io/get-nippy s)
         ds (tablecloth/set-dataset-name ds name)]
-    (info "loaded series " name " count: " (tablecloth/row-count ds))
+    (debug "loaded series " name " count: " (tablecloth/row-count ds))
      ;(tablecloth/add-column ds :symbol symbol)
     ds))
 

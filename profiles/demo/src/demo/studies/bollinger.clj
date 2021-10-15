@@ -2,7 +2,7 @@
   (:require
    [taoensso.timbre :refer [trace debug info error]]
    [tablecloth.api :as tablecloth]
-   [ta.dataset.backtest :as backtest]
+   [ta.trade.backtest :as backtest]
    [ta.dataset.helper :as helper]
    [ta.indicator.sma :as sma]
    [demo.studies.helper.bollinger :as bs]

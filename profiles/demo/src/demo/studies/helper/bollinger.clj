@@ -10,8 +10,8 @@
    [ta.dataset.helper :as helper]
    [ta.series.indicator :as ind]
    [ta.warehouse :as wh]
-   [ta.dataset.backtest :as backtest]
    [ta.indicator.bollinger :as bollinger]
+   [ta.trade.backtest :as backtest]
    [demo.env.config :refer [w-crypto]]
    ;[demo.studies.helper.experiments-helpers :as experiments-helpers]
    ))

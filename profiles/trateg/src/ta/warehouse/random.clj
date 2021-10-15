@@ -7,7 +7,9 @@
    [ta.dataset.helper :as helper]
    [ta.dataset.date :refer [days-ago-instant]]
    [ta.math.random :refer [random-series]]
-   [ta.warehouse :as wh]))
+   [ta.warehouse :as wh]
+   [ta.warehouse.shuffle :refer [shuffle-bar-series]]
+   ))
 
 (defn add-open-high-low-volume [ds]
   (let [c (:close ds)]
@@ -45,6 +47,16 @@
           (let [ds (random-dataset n)]
             (wh/save-symbol w ds frequency s)))
         symbols)))
+
+(defn create-shuffled-datasets [w-source w-shuffled symbols frequency]
+  (doall
+   (map (fn [s]
+          (let [ds (wh/load-symbol w-source frequency s)
+                ds-shuffled (shuffle-bar-series ds)
+                ]
+            (wh/save-symbol w-shuffled ds-shuffled frequency s)))
+        symbols)))
+
 
 (comment
   (let [w-random (wh/init {:series "../db/random/"

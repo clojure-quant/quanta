@@ -142,11 +142,19 @@
                                             ;:prct
                                                      (tablecloth/->array :prct)
                                                      max-drawdown))})
-        (tablecloth/set-dataset-name (tablecloth/dataset-name ds-roundtrips))
-        (helper/print-all)
-        println)))
+        (tablecloth/set-dataset-name (tablecloth/dataset-name ds-roundtrips)))))
+
+(defn- calc-roundtrip-stats-print [backtest-result group-by]
+  (-> backtest-result
+      (calc-roundtrip-stats group-by)
+      (helper/print-all)
+      println))
+
+
+(defn print-overview-stats [backtest-result]
+  (calc-roundtrip-stats-print backtest-result :position))
 
 (defn print-roundtrip-stats [backtest-result]
-  (calc-roundtrip-stats backtest-result :position)
-  (calc-roundtrip-stats backtest-result [:position :win]))
+  (calc-roundtrip-stats-print backtest-result :position)
+  (calc-roundtrip-stats-print backtest-result [:position :win]))
 
