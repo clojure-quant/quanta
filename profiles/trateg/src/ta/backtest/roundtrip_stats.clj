@@ -74,6 +74,22 @@
      :avg-bars-loss  (* 1.0 (/ (:bars loss) (:trades loss)))}))
 
 (defn roundtrip-performance-metrics [backtest-result]
-  (let [wl-stats (win-loss-stats backtest-result)
-        metrics (win-loss-performance-metrics wl-stats)]
-    metrics))
+  (let [ds-roundtrips (:ds-roundtrips backtest-result)
+
+        wl-stats (win-loss-stats backtest-result)
+        metrics (win-loss-performance-metrics wl-stats)
+        metrics-ds (tc/dataset metrics)]
+    (-> metrics-ds
+        (tc/add-column :p (tc/dataset-name ds-roundtrips)))))
+
+
+; {:drop-missing? false} as an option
+
+
+
+(defn backtests->performance-metrics [backtest-results]
+  (->> (map roundtrip-performance-metrics backtest-results)
+       (apply tc/concat)
+       ;(reduce tc/append (tc/dataset {}))
+       ))
+
