@@ -74,6 +74,8 @@ create this file: profiles/demo/creds.edn - then add your secret key in this for
 
 DANIEL:
 
+- time / memory useage.
+
 - histogram / quartiles.
 
 - rolling correlation every x bars based on the PAST window.

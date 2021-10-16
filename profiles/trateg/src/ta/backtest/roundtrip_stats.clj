@@ -62,11 +62,12 @@
 (defn win-loss-performance-metrics [win-loss-stats]
   (let [win (:win win-loss-stats)
         loss (:loss win-loss-stats)
-
-        pf-log-diff (+ (:pl-log-cum win)
+        pl-log-cum (+ (:pl-log-cum win)
                        (:pl-log-cum loss))] ; loss is negative
-    {:pf-log-diff pf-log-diff
-     :pf (Math/pow pf-log-diff 10)
+    {:trades (+ (:trades win) (:trades loss))
+     :pl-log-cum pl-log-cum
+     ;:pf-log-diff pf-log-diff
+     ;:pf (Math/pow pf-log-diff 10)
      :avg-win-log (:pl-log-mean win)
      :avg-loss-log (:pl-log-mean loss)
      :win-nr-prct (* 100.0 (/ (:trades win) (:trades loss)))

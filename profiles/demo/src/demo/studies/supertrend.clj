@@ -95,6 +95,25 @@ r-d
 (-> backtests
     backtests->performance-metrics)
 
+; optimize ATR LENGTH
+
+(def options-change-atr-length
+  {:w w-crypto
+   :symbol "ETHUSD"
+   :frequency "15"
+   :atr-length 20
+   :atr-mult 0.75})
+
+(-> (run-backtest-parameter-range
+     supertrend-signal options-change-atr-length
+     :atr-length [5 10 15 20 25 30 35 40 45 50])
+   backtests->performance-metrics)
+
+(-> (run-backtest-parameter-range
+     supertrend-signal (assoc options-change-atr-length :w w-shuffled)
+     :atr-length [5 10 15 20 25 30 35 40 45 50])
+    backtests->performance-metrics)
+
 
 
 (defn run-range [w freq]
@@ -111,15 +130,4 @@ r-d
     (run-range w-random "D")
     (run-range w-random "15"))
 
-; optimize ATR LENGTH
 
-(def options-change-atr-length
-  {:w w-crypto
-   :symbol "ETHUSD"
-   :frequency "15"
-   :atr-length 20
-   :atr-mult 0.75})
-
-(run-backtest-parameter-range supertrend-signal options-change-atr-length
-                              :atr-mult [5 10 15 20 25 30 35 40 45 50]
-                              print-overview-stats)
