@@ -59,6 +59,20 @@
     (clojure.set/rename-keys x {true :win
                                 false :loss})))
 
+(comment
+
+  (let [p 120
+        l 40
+        plog (Math/log10 p)
+        llog (Math/log10 l)
+        diff (- plog llog)
+        ]
+    [plog llog diff (Math/pow 10 diff)]
+    )
+  ;
+  )
+
+
 (defn win-loss-performance-metrics [win-loss-stats]
   (let [win (:win win-loss-stats)
         loss (:loss win-loss-stats)
@@ -67,7 +81,7 @@
     {:trades (+ (:trades win) (:trades loss))
      :pl-log-cum pl-log-cum
      ;:pf-log-diff pf-log-diff
-     ;:pf (Math/pow pf-log-diff 10)
+     :pf (Math/pow 10 pl-log-cum)
      :avg-win-log (:pl-log-mean win)
      :avg-loss-log (:pl-log-mean loss)
      :win-nr-prct (* 100.0 (/ (:trades win) (:trades loss)))
