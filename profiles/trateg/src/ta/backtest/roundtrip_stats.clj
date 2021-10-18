@@ -20,7 +20,7 @@
                                     :trade
                                     (remove nil?)
                                     count))
-                               ; log
+                     ; log
                      :pl-log-cum (fn [ds]
                                    (->> ds
                                         :pl-log
@@ -36,7 +36,7 @@
                                           (tc/->array :pl-log)
                                           max-drawdown))
 
-                               ; prct 
+                     ; prct 
                        ;:pl-prct-cum (fn [ds]
                        ;               (->> ds
                        ;                    :pl-prct

@@ -40,11 +40,11 @@
       println))
 
 (defn print-overview-stats [backtest-result]
-  (calc-roundtrip-stats-print backtest-result :position))
+  (calc-roundtrip-stats-print (:ds-roundtrips backtest-result) :position))
 
 (defn print-roundtrip-stats [backtest-result]
-  (calc-roundtrip-stats-print backtest-result :position)
-  (calc-roundtrip-stats-print backtest-result [:position :win]))
+  (calc-roundtrip-stats-print (:ds-roundtrips backtest-result) :position)
+  (calc-roundtrip-stats-print (:ds-roundtrips backtest-result) [:position :win]))
 
 (defn print-performance [backtest-result]
   (-> (performance backtest-result)

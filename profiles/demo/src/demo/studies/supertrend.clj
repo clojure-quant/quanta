@@ -65,13 +65,9 @@ r-d
 (p/viz-roundtrips r-15)
 (p/print-performance r-15)
 
-
 ; BTC history
 (-> (run-backtest supertrend-signal (assoc options-15 :symbol "BTCUSD" :atr-mult 1.0))
-    (p/print-performance)
- )
- 
-
+    (p/print-performance))
 
 ; test with random walk
 

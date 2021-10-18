@@ -1,4 +1,4 @@
-(ns demo.strategy.sma
+(ns demo.algo.sma
   (:require
    [tablecloth.api :as tablecloth]
    [ta.series.ta4j :as ta4j]))
@@ -18,7 +18,18 @@
         (tablecloth/add-column :sma-st sma-st-values)
         (tablecloth/add-column :sma-lt sma-lt-values))))
 
-(comment
+(defn calc-sma-signal [sma-st sma-lt]
+  (if (and sma-st sma-lt)
+    (cond
+      (> sma-st sma-lt) :buy
+      (< sma-st sma-lt) :sell
+      :else :hold)
+    :hold))
 
-;  
-  )
+(defn sma-signal [ds-bars options]
+  (let [ds-study (add-sma-indicator ds-bars options)
+        sma-st (:sma-st ds-study)
+        sma-lt (:sma-lt ds-study)
+        signal (into [] (map calc-sma-signal sma-st sma-lt))]
+    (tablecloth/add-columns ds-study {:signal signal})))
+
