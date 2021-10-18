@@ -4,7 +4,8 @@
    [ta.backtest.roundtrip-backtest :refer [run-backtest run-backtest-parameter-range]]
    [ta.backtest.roundtrip-stats :as s]
    [ta.backtest.print :as p]
-   [demo.algo.sma :refer [sma-signal]]))
+   [demo.algo.sma :refer [sma-signal]]
+   [ta.algo.buy-hold :refer [buy-hold-signal]]))
 
 ;; daily backtest
 
@@ -51,8 +52,17 @@
   ;(run-backtest supertrend-signal (assoc options-d :w w-shuffled))
   ;(run-backtest buy-hold-signal (assoc options-d :symbol "BTCUSD"))
   )
-(p/print-performance r-15)
+(:ds-study r-15)
+
+(p/print-roundtrips r-15)
+(p/print-nav r-15)
 (p/print-roundtrip-stats r-15)
+(s/roundtrip-performance-metrics r-15)
+
+(-> (run-backtest buy-hold-signal options-15)
+    p/print-nav)
+
+; sma strategy brings *2 the total return of buy+hold
 
 (->> (run-backtest-parameter-range
       sma-signal options-15

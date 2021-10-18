@@ -22,6 +22,11 @@
   (->>  returns-vec
         (reductions +)))
 
+(defn drawdowns-from-value [prices]
+  (let [cum-ret-high  (into [] xf-trailing-high prices)
+        drawdowns  (into [] (map - cum-ret-high prices))]
+    drawdowns))
+
 (defn drawdowns [returns]
   (let [cum-ret (cumulated-return returns)
         cum-ret-high  (into [] xf-trailing-high cum-ret)

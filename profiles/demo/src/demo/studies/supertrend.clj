@@ -63,11 +63,11 @@ r-d
 (p/print-roundtrips-pl-desc r-15)
 (s/roundtrip-performance-metrics r-15)
 (p/viz-roundtrips r-15)
-(p/print-performance r-15)
+(p/print-nav r-15)
 
 ; BTC history
 (-> (run-backtest supertrend-signal (assoc options-15 :symbol "BTCUSD" :atr-mult 1.0))
-    (p/print-performance))
+    (p/print-nav))
 
 ; test with random walk
 

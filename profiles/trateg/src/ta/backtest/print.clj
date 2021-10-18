@@ -1,7 +1,8 @@
 (ns ta.backtest.print
   (:require
    [tablecloth.api :as tc]
-   [ta.backtest.roundtrip-stats :refer [calc-roundtrip-stats performance]]
+   [ta.backtest.roundtrip-stats :refer [calc-roundtrip-stats]]
+   [ta.backtest.nav :refer [nav]]
    [ta.helper.print :refer [print-all]]
    [ta.viz.table :as viz]))
 
@@ -46,8 +47,8 @@
   (calc-roundtrip-stats-print (:ds-roundtrips backtest-result) :position)
   (calc-roundtrip-stats-print (:ds-roundtrips backtest-result) [:position :win]))
 
-(defn print-performance [backtest-result]
-  (-> (performance backtest-result)
+(defn print-nav [backtest-result]
+  (-> (nav backtest-result)
       (print-all)))
 
 (defn viz-roundtrips [backtest-result]
