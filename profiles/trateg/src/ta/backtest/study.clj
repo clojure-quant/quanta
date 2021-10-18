@@ -1,4 +1,4 @@
-(ns ta.backtest.backtester
+(ns ta.backtest.study
   (:require
    [tablecloth.api :as tc]
    [ta.warehouse :as wh]))
@@ -21,7 +21,7 @@
   (let [ds (wh/load-ts w (make-study-filename study-name frequency symbol))]
     ds))
 
-(defn run-study [w symbol frequency algo options]
+(defn run-study [algo {:keys [w symbol frequency] :as options}]
   (let [ds (wh/load-symbol w frequency symbol)
         ds-study (algo ds options)]
     ds-study))

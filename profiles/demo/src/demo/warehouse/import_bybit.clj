@@ -4,7 +4,8 @@
    [tech.v3.dataset :as tds]
    [ta.data.bybit :as bybit]
    [ta.warehouse.since-importer :as since-importer]
-   [demo.env.config :refer [w-crypto log-config!]]))
+   [demo.env.config :refer [log-config!]] ; side effects
+   ))
 
 (defn bybit-get-since-ds [frequency since symbol]
   (-> (bybit/get-history frequency since symbol)
@@ -19,19 +20,19 @@
 (def start-date-15 (t/instant "1999-12-31T00:00:00Z"))
 
 (defn init-bybit-daily []
-  (since-importer/init-symbols w-crypto bybit-get-since-ds "D"
+  (since-importer/init-symbols :crypto bybit-get-since-ds "D"
                                start-date-daily bybit-symbols))
 
 (defn init-bybit-15 []
-  (since-importer/init-symbols w-crypto bybit-get-since-ds "15"
+  (since-importer/init-symbols :crypto bybit-get-since-ds "15"
                                start-date-15 bybit-symbols))
 
 (defn append-bybit-daily []
-  (since-importer/append-symbols w-crypto bybit-get-since-ds "D"
+  (since-importer/append-symbols :crypto bybit-get-since-ds "D"
                                  bybit-symbols))
 
 (defn append-bybit-15 []
-  (since-importer/append-symbols w-crypto bybit-get-since-ds "15"
+  (since-importer/append-symbols :crypto bybit-get-since-ds "15"
                                  bybit-symbols))
 
 (defn task-bybit-import-initial [& _]

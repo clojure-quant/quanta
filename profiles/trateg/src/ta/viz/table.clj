@@ -8,10 +8,12 @@
         data (into [] (tds/mapseq-reader ds-safe))]
     data))
 
-(defn ds-table [ds]
+(defn print-table [ds]
   ^:R [:p/aggrid
        {:box :lg
         :data (ds->table ds)}])
+
+
 
 
 

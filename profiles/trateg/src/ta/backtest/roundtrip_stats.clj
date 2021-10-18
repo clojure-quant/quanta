@@ -3,68 +3,84 @@
    [clojure.set]
    [tablecloth.api :as tc]
    [tech.v3.dataset :as tds]
+   ;[tech.v3.datatype.functional :as dfn]
    [ta.helper.stats :refer [mean]]
-   [ta.backtest.drawdown :refer [max-drawdown]]))
+   [ta.backtest.drawdown :refer [max-drawdown trailing-sum]]
+   [ta.backtest.date :as d]))
 
-(defn calc-roundtrip-stats [backtest-result group-by]
-  (let [ds-roundtrips (:ds-roundtrips backtest-result)]
-    (-> ds-roundtrips
-        (tc/group-by group-by)
-        (tc/aggregate {:bars (fn [ds]
+(defn calc-roundtrip-stats [ds-roundtrips group-by]
+  (-> ds-roundtrips
+      (tc/group-by group-by)
+      (tc/aggregate {:bars (fn [ds]
+                             (->> ds
+                                  :bars
+                                  (apply +)))
+                     :trades (fn [ds]
                                (->> ds
-                                    :bars
-                                    (apply +)))
-                       :trades (fn [ds]
-                                 (->> ds
-                                      :trade
-                                      (remove nil?)
-                                      count))
+                                    :trade
+                                    (remove nil?)
+                                    count))
                                ; log
-                       :pl-log-cum (fn [ds]
-                                     (->> ds
-                                          :pl-log
-                                          (apply +)))
+                     :pl-log-cum (fn [ds]
+                                   (->> ds
+                                        :pl-log
+                                        (apply +)))
 
-                       :pl-log-mean (fn [ds]
-                                      (->> ds
-                                           :pl-log
-                                           mean))
+                     :pl-log-mean (fn [ds]
+                                    (->> ds
+                                         :pl-log
+                                         mean))
 
-                       :pl-log-max-dd (fn [ds]
-                                        (-> ds
-                                            (tc/->array :pl-log)
-                                            max-drawdown))
+                     :pl-log-max-dd (fn [ds]
+                                      (-> ds
+                                          (tc/->array :pl-log)
+                                          max-drawdown))
 
                                ; prct 
-                       :pl-prct-cum (fn [ds]
-                                      (->> ds
-                                           :pl-prct
-                                           (apply +)))
-                       :pl-prct-mean (fn [ds]
-                                       (->> ds
-                                            :pl-prct
-                                            mean))
-                       :pl-prct-max-dd (fn [ds]
-                                         (-> ds
-                                             (tc/->array :pl-prct)
-                                             max-drawdown))})
-        (tc/set-dataset-name (tc/dataset-name ds-roundtrips)))))
+                       ;:pl-prct-cum (fn [ds]
+                       ;               (->> ds
+                       ;                    :pl-prct
+                       ;                    (apply +)))
+                       ;:pl-prct-mean (fn [ds]
+                       ;                (->> ds
+                       ;                     :pl-prct
+                       ;                     mean))
+                       ;:pl-prct-max-dd (fn [ds]
+                       ;                  (-> ds
+                       ;                      (tc/->array :pl-prct)
+                       ;                      max-drawdown))
+                     }{:drop-missing? false})
+      (tc/set-dataset-name (tc/dataset-name ds-roundtrips))))
 
 (defn position-stats [backtest-result]
-  (as-> backtest-result x
-    (calc-roundtrip-stats x [:position])
-    (tds/mapseq-reader x)
-    (map (juxt :position identity) x)
-    (into {} x)))
+  (let [ds-roundtrips (:ds-roundtrips backtest-result)]
+    (as-> ds-roundtrips x
+      (calc-roundtrip-stats x [:position])
+      (tds/mapseq-reader x)
+      (map (juxt :position identity) x)
+      (into {} x))))
 
 (defn win-loss-stats [backtest-result]
-  (as-> backtest-result x
-    (calc-roundtrip-stats x [:win])
-    (tds/mapseq-reader x)
-    (map (juxt :win identity) x)
-    (into {} x)
-    (clojure.set/rename-keys x {true :win
-                                false :loss})))
+  (let [ds-roundtrips (:ds-roundtrips backtest-result)]
+    (as-> ds-roundtrips x
+      (calc-roundtrip-stats x [:win])
+      (tds/mapseq-reader x)
+      (map (juxt :win identity) x)
+      (into {} x)
+      (clojure.set/rename-keys x {true :win
+                                  false :loss}))))
+
+(defn performance [backtest-result]
+  (let [ds-roundtrip (:ds-roundtrips backtest-result)
+        ds-by-month (-> ds-roundtrip
+                        (tc/add-columns
+                         {:year  (d/year (:date-open ds-roundtrip))
+                          :month (d/month (:date-open ds-roundtrip))})
+                        (calc-roundtrip-stats [:year :month]))]
+    (-> ds-by-month
+        (tc/add-columns
+         {:cum-pl-t  (trailing-sum (:pl-log-cum ds-by-month))})
+        (tc/select-columns [:year :month :pl-log-cum :cum-pl-t :trades]))))
 
 (comment
 

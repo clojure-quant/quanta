@@ -3,7 +3,8 @@
    [tech.v3.dataset :as tds]
    [ta.data.alphavantage :as av]
    [ta.warehouse.since-importer :as since-importer]
-   [demo.env.config :refer [w-stocks log-config!]]))
+   [demo.env.config :refer [log-config!]] ; side effects
+   ))
 
 (defn alphavantage-get-since-ds [_ #_frequency _ #_since symbol]
   (-> (av/get-daily "full" symbol)
@@ -16,8 +17,9 @@
 
 (defn init-alphavantage-daily []
   (let  [start-date-dummy nil]
-    (since-importer/init-symbols w-stocks alphavantage-get-since-ds "D"
-                                 start-date-dummy alphavantage-symbols)))
+    (since-importer/init-symbols
+     :stocks alphavantage-get-since-ds "D"
+     start-date-dummy alphavantage-symbols)))
 
 (defn task-alphavantage-import-initial [& _]
   (log-config!)

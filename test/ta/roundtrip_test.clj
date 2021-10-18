@@ -14,7 +14,6 @@
          :close [1 1 1 1 10 10 10 10 100 100 100 100]}
         (tc/dataset {:dataset-name "ds1"}))))
 
-; ds-bars
 
 (def position-metrics
   (-> ds-bars
@@ -22,6 +21,13 @@
     ;:ds-roundtrips
     ;(calc-roundtrip-stats :position)
       (position-stats)))
+
+(comment
+  ds-bars
+  position-metrics
+  ; 
+  )
+
 
 
 (deftest position-metrics-test

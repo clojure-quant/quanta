@@ -11,11 +11,10 @@
    [ta.warehouse :as wh]
    [ta.warehouse.overview :refer [load-datasets concatenate-datasets overview-view]]
    [ta.helper.stats :refer [standardize]]
-   [ta.helper.multiple :refer [make-full-datasets make-full-symbols]]
-   [demo.env.config :refer [w-stocks]]))
+   [ta.helper.multiple :refer [make-full-datasets make-full-symbols]]))
 
 (def symbols
-  (wh/load-list w-stocks "fidelity-select"))
+  (wh/load-list "fidelity-select"))
 
 (def symbol->name
   (->> "../resources/etf/fidelity-select.edn"
@@ -27,7 +26,7 @@
 symbol->name
 
 (def concatenated-dataset
-  (-> (load-datasets w-stocks "D" symbols)
+  (-> (load-datasets :stocks "D" symbols)
       (concatenate-datasets)))
 
 (-> concatenated-dataset

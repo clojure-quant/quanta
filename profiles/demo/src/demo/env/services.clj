@@ -5,10 +5,11 @@
    [ta.viz.table :refer [ds->table]]
    ;[ta.backtest.chart :as c]
    [demo.study.sma :refer [sma-study]]
-   [demo.env.config :refer [w-crypto]]))
+   [demo.env.config] ; side-effects
+   ))
 
 (defn- study [symbol]
-  (-> (wh/load-ts w-crypto symbol)
+  (-> (wh/load-ts :crypto symbol)
       sma-study))
 
 (defn table [symbol]
@@ -24,7 +25,8 @@
 ;sma-charts
 
 (service/add
- {:ta/symbols (partial wh/load-list w-crypto)
-  :ta/load-ts (partial wh/load-ts w-crypto); needs symbol parameter
+ {:ta/symbols  wh/load-list
+  :ta/load-ts (partial wh/load-symbol :crypto); needs symbol parameter
   :ta/table table})
+
 

@@ -48,17 +48,21 @@
 
 (defn- bar->roundtrip-partial [ds]
   (let [close (:close ds)
+        date-open (:date ds)
+        index-open (:index ds)
         close-f1  (into [] xf-future close)
+        date-close (into [] xf-future date-open)
+        index-close (fun/+ index-open 1)
         ; log
         log-close (fun/log10 close)
         log-close-f1 (fun/log10 close-f1)
         d-log-c-f1 (fun/- log-close-f1 log-close)
         pl-log (dtype/emap roundtrip-pl :float64 (:position ds) d-log-c-f1)
         ; prct 
-        d-c-f1 (fun/- close-f1 close) ; delta close future-1
-        prct-c-f1  (->> (fun// d-c-f1 close)
-                        (fun/* 100.0))
-        pl-prct (dtype/emap roundtrip-pl :float64 (:position ds) prct-c-f1)
+        ;d-c-f1 (fun/- close-f1 close) ; delta close future-1
+        ;prct-c-f1  (->> (fun// d-c-f1 close)
+        ;                (fun/* 100.0))
+        ;pl-prct (dtype/emap roundtrip-pl :float64 (:position ds) prct-c-f1)
         ;win
         ]
     (->  ds
@@ -66,8 +70,11 @@
                              :close :price-open
                              :date :date-open})
          (tc/add-columns  {:price-close close-f1
+                           :date-close date-close
+                           :index-close index-close
                            :pl-log pl-log
-                           :pl-prct pl-prct}))))
+                           ;:pl-prct pl-prct
+                           }))))
 
 (defn calc-roundtrips [ds-study]
   (as-> ds-study ds
@@ -82,8 +89,8 @@
                       :date-open (fn [ds] (->> ds :date-open first))
                       :price-open (fn [ds] (->> ds :price-open first))
                              ; close
-                      :index-close (fn [ds] (->> ds :index-open last)) ; plus 1 bar
-                      :date-close (fn [ds] (->> ds :date-open last))  ; plus 1 bar
+                      :index-close (fn [ds] (->> ds :index-close last))
+                      :date-close (fn [ds] (->> ds :date-close last))
                       :price-close (fn [ds] (->> ds :price-close last))
                              ; trade
                       :trade (fn [ds] (->> ds :trade first))
@@ -97,10 +104,11 @@
                                 (->> ds
                                      :pl-log
                                      (apply +)))
-                      :pl-prct (fn [ds]
-                                 (->> ds
-                                      :pl-prct
-                                      (apply +)))})
+                      ;:pl-prct (fn [ds]
+                      ;           (->> ds
+                      ;                :pl-prct
+                      ;                (apply +)))
+                      })
 
     (tc/rename-columns ds {:$group-name :rt-no})
     (tc/add-column ds :win

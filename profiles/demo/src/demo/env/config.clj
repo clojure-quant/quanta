@@ -18,17 +18,11 @@
 ; in the future the notebook will save creds only in webbrowser local storage
 ; (av/set-key! (secret :alphavantage))
 
-(def w-crypto (wh/init {:series "../db/crypto/"
-                        :list "../resources/etf/"}))
-
-(def w-stocks (wh/init {:series "../db/stocks/"
-                        :list "../resources/etf/"}))
-
-(def w-random (wh/init {:series "../db/random/"
-                        :list "../resources/etf/"}))
-
-(def w-shuffled (wh/init {:series "../db/shuffled/"
-                          :list "../resources/etf/"}))
+(wh/init {:list "../resources/etf/"
+          :series  {:crypto "../db/crypto/"
+                    :stocks "../db/stocks/"
+                    :random "../db/random/"
+                    :shuffled  "../db/shuffled/"}})
 
 (defn log-config! []
   (webly.log/timbre-config!

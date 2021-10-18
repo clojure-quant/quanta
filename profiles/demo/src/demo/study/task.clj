@@ -4,8 +4,7 @@
    [tablecloth.api :as tc]
    [webly.log]
    [ta.backtest.backtester :as backtest]
-   [demo.study.bollinger :as bs]
-   [demo.env.config :refer [w-crypto]]))
+   [demo.study.bollinger :as bs]))
 
 (webly.log/timbre-config!
  {:timbre-loglevel
@@ -14,7 +13,10 @@
    [#{"webly.*"} :info]
    [#{"*"} :info]]})
 
-(def default-options {:sma-length 20
+(def default-options {:w :crypto
+                      :frequency "D"
+                      :symbol "ETHUSD"
+                      :sma-length 20
                       :stddev-length 20
                       :mult-up 2.0
                       :mult-down 2.0
@@ -22,8 +24,7 @@
 
 (defn task-bollinger-study [& _]
   (info "running bollinger strategy with options: " default-options)
-  (let [r (backtest/run-study w-crypto "ETHUSD" "D"
-                              bs/bollinger-study
+  (let [r (backtest/run-study bs/bollinger-study
                               default-options)]
     (bs/print-all r :ds-study)
     (bs/print-all r :ds-events-all)
@@ -31,7 +32,7 @@
     (bs/print-all r :ds-performance)
     (bs/print-backtest-numbers r)
 
-    (backtest/save-study w-crypto (:ds-study r) "ETHUSD" "D" "bollinger-upcross")
+    (backtest/save-study :crypto (:ds-study r) "ETHUSD" "D" "bollinger-upcross")
     (info "study calculation finished.")))
 
 (defn task-bollinger-optimizer [& _]
@@ -40,13 +41,15 @@
    (for [length (range 10 200 10)
       ; mult-up (range 0.5 3.5 0.5)
          ]
-     (let [options {:sma-length length
+     (let [options {:w :crypto
+                    :frequency "D"
+                    :symbol "ETHUSD"
+                    :sma-length length
                     :stddev-length length
                     :mult-up  1.5
                     :mult-down 1.5
                     :forward-size length}
-           r (backtest/run-study w-crypto "ETHUSD" "D"
-                                 bs/bollinger-study
+           r (backtest/run-study bs/bollinger-study
                                  options)]
        (:backtest-numbers r)))
    (tc/dataset)

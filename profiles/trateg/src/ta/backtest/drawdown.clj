@@ -43,3 +43,27 @@
 
 ;  
   )
+
+(defn xf-trailing-sum [xf]
+  (let [sum (atom 0)]
+    (fn
+      ;; SET-UP
+      ([]
+       (reset! sum 0)
+       (xf))
+      ;; PROCESS
+      ([result input]
+       (let [v (swap! sum + input)]
+         (xf result v)))
+      ;; TEAR-DOWN
+      ([result]
+       (xf result)))))
+
+(defn trailing-sum [v]
+  (into [] xf-trailing-sum v))
+
+(comment
+  (trailing-sum [1 1 1 1 1])
+
+ ; 
+  )

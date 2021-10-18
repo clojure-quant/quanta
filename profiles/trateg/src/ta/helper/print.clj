@@ -9,7 +9,6 @@
 
 ;tc/select
 
-
 (defn print-overview [ds]
   (let [l (tc/row-count ds)]
     (if (< l 11)

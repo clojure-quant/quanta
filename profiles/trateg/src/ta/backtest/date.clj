@@ -4,7 +4,7 @@
    [tech.v3.dataset :as dataset]
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.datetime :as datetime]
-   [tablecloth.api :as tablecloth]
+   [tablecloth.api :as tc]
    [ta.data.date :as dt]))
 
 (defn days-ago [n]
@@ -21,7 +21,7 @@
 
 (defn select-rows-since [ds date]
   (-> ds
-      (tablecloth/select-rows
+      (tc/select-rows
        (fn [row]
          (-> row
              :date
@@ -29,7 +29,7 @@
 
 (defn add-year-and-month-date-as-local-date [ds]
   (-> ds
-      (tablecloth/add-columns
+      (tc/add-columns
        {:year  #(->> %
                      :date
                      (datetime/long-temporal-field :years))
@@ -57,7 +57,7 @@
 
 (defn add-year-and-month-date-as-instant [ds]
   (-> ds
-      (tablecloth/add-columns
+      (tc/add-columns
        {:year  (year (:date ds))
         :month (month (:date ds))})))
 

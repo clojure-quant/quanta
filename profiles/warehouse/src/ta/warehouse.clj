@@ -7,26 +7,35 @@
    ;[taoensso.nippy :as nippy]
    [tablecloth.api :as tablecloth]))
 
+(defonce config
+  (atom {}))
+
+(defn get-wh-path [kw]
+  (get-in @config [:series kw]))
+
 (defn init [settings]
   (info "wh init: " settings)
+  (reset! config settings)
   settings)
 
-(defn load-list [w name]
+(defn load-list [name]
   (println "loading list: " name)
-  (->> (str (:list w) name ".edn")
+  (->> (str (:list @config) name ".edn")
        slurp
        edn/read-string
        (map :symbol)))
 
 ; on name
 
-(defn save-ts [w ds name]
-  (let [s (io/gzip-output-stream! (str (:series w) name ".nippy.gz"))]
+(defn save-ts [wkw ds name]
+  (let [p (get-wh-path wkw)
+        s (io/gzip-output-stream! (str p name ".nippy.gz"))]
     (info "saving series " name " count: " (tablecloth/row-count ds))
     (io/put-nippy! s ds)))
 
-(defn load-ts [w name]
-  (let [s (io/gzip-input-stream (str (:series w) name ".nippy.gz"))
+(defn load-ts [wkw name]
+  (let [p (get-wh-path wkw)
+        s (io/gzip-input-stream (str p name ".nippy.gz"))
         ds (io/get-nippy s)
         ds (tablecloth/set-dataset-name ds name)]
     (debug "loaded series " name " count: " (tablecloth/row-count ds))
@@ -61,7 +70,7 @@
   (-> (java-io/file filename) .isDirectory))
 
 (defn symbols-available [w frequency]
-  (let [dir (java-io/file (:series w))
+  (let [dir (java-io/file (get-wh-path w))
         files (if (.exists dir)
                 (into [] (->> (.list dir)
                               (remove dir?)
@@ -77,7 +86,18 @@
          (map :symbol))))
 
 (comment
-  (symbols-available {:series "../db/crypto"} "D")
+
+  (init {:list "../resources/etf/"
+         :series  {:crypto "../db/crypto/"
+                   :stocks "../db/stocks/"
+                   :random "../db/random/"
+                   :shuffled  "../db/shuffled/"}})
+
+  @config
+  (get-wh-path :crypto)
+
+  (symbols-available :crypto "D")
+  (load-symbol :crypto "D" "ETHUSD")
 
  ; 
   )

@@ -1,14 +1,11 @@
 (ns demo.playground.symbollist
   (:require
-   [ta.warehouse :as wh]
-   [demo.env.config :refer [w-stocks]])
+   [ta.warehouse :as wh])
   (:gen-class))
-
-(def w w-stocks)
 
 (defn print-symbol-list
   [list-name]
-  (let [liste (wh/load-list w list-name)]
+  (let [liste (wh/load-list list-name)]
     (println (pr-str liste))))
 
 (defn fn-print-symbol-list
@@ -25,7 +22,7 @@
 
 (comment
 
-  (wh/load-list w "currency")
+  (wh/load-list "currency")
 
   (print-symbol-list "currency")
   (print-symbol-list "fidelity-select")

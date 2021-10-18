@@ -1,7 +1,9 @@
 (ns ta.warehouse.overview
   (:require
    [tablecloth.api :as tc]
-   [ta.warehouse :as wh]))
+   [ta.warehouse :as wh]
+   [demo.env.config] ; for side effects
+   ))
 
 (defn load-datasets [w frequency symbols]
   (->> symbols
@@ -54,13 +56,12 @@
 
 (comment
 
-  (def w {:series "../db/crypto/"})
-  (def w {:series "../db/random/"})
+  (wh/symbols-available :crypto "D")
 
-  (wh/symbols-available w "D")
+  (warehouse-overview :crypto "D")
+  (warehouse-overview :crypto "15")
 
-  (warehouse-overview w "D")
-  (warehouse-overview w "15")
+  (wh/symbols-available :shuffled "D")
 
 ;  
   )

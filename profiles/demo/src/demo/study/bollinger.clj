@@ -7,8 +7,7 @@
    [ta.helper.print :as helper]
    [ta.warehouse :as wh]
    [ta.helper.window :refer [get-forward-window]]
-   [demo.strategy.bollinger :as bollinger]
-   [demo.env.config :refer [w-crypto]]))
+   [demo.strategy.bollinger :as bollinger]))
 
 ; forward statistics
 
@@ -108,7 +107,7 @@
 (comment
 
   ; calculate bollinger strategy
-  (let [ds (wh/load-symbol  w-crypto  "D" "ETHUSD")]
+  (let [ds (wh/load-symbol  :crypto  "D" "ETHUSD")]
     (bollinger-study ds {:sma-length 20
                          :stddev-length 20
                          :mult-up 1.5

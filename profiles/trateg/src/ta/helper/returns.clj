@@ -1,8 +1,9 @@
 (ns ta.dataset.returns
   (:require
-   [tech.v3.datatype :as dtype]))
+   [tech.v3.datatype :as dtype]
+   [tech.v3.datatype.functional :as fun]))
 
-(defn returns [integrated-values]
+(defn diff [integrated-values]
   (let [n (count integrated-values)]
     (dtype/clone
      (dtype/make-reader
@@ -17,11 +18,15 @@
   (->> [1 8 0 -9 1 4]
        (reductions +)
        vec
-       returns)
+       diff)
 
-;; #array-buffer<float32> [6]
+  ;; #array-buffer<float32> [6]
   ;; [0.000, 8.000, 0.000, -9.000, 1.000, 4.000]
   )
+(defn log-return [price-vec]
+  (let [log-price (fun/log10 price-vec)]
+    (diff log-price)))
+
 (defn forward-shift-col [col offset]
   (dtype/make-reader :float64 (count col) (if (>= idx offset)
                                             (col (- idx offset))

@@ -50,7 +50,7 @@
         ;  (-> (c* atr mult)
         ;       (+ close))
         atr-v (into [] atr)
-        atr-scaled  (fun/* atr-v atr-mult) ; (into [] (map (*-const atr-mult) atr-v))
+        atr-scaled  (fun/* atr-v atr-mult)
         upper (fun/+ close atr-scaled)
         ; upper-cached (dtype/clone upper)
         lower (fun/- close atr-scaled)

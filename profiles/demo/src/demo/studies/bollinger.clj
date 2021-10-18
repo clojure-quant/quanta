@@ -5,19 +5,20 @@
    [ta.helper.print :as helper]
    [ta.helper.window :refer [get-forward-window]]
    [demo.strategy.sma :as sma]
-   [demo.study.bollinger :as bs]
-   [demo.env.config :refer [w-crypto]]))
+   [demo.study.bollinger :as bs]))
 
 (def default-options
-  {:sma-length 20
+  {:w :crypto
+   :f "D"
+   :symbol "ETHUSD"
+   :sma-length 20
    :stddev-length 20
    :mult-up 1.5
    :mult-down 1.5
    :forward-size 20})
 
 (def r
-  (run-study w-crypto "ETHUSD" "D"
-             bs/bollinger-study
+  (run-study bs/bollinger-study
              default-options))
 
 (keys r)
@@ -57,12 +58,14 @@
 bb-range
 highest-close
 
-(def sma-cross-options {:sma-length-st  4  ; (1h = 4* 15 min)
+(def sma-cross-options {:w :crypto
+                        :symbol "ETHUSD"
+                        :freqzency "D"
+                        :sma-length-st  4  ; (1h = 4* 15 min)
                         :sma-length-lt 24  ; (6h = 24* 15 min)
                         })
 (def r2
-  (run-study w-crypto "ETHUSD" "D"
-             sma/add-sma-indicator
+  (run-study sma/add-sma-indicator
              sma-cross-options))
 
 (helper/print-overview r2)

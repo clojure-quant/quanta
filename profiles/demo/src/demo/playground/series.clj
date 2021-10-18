@@ -4,11 +4,12 @@
    [tech.v3.dataset.print :as print]
    [ta.warehouse :as wh]
    [ta.backtest.date :refer [add-year-and-month-date-as-instant]]
-   [demo.env.config :as c]))
+   [demo.env.config] ; side effects
+   ))
 
 (def ds-m-y-real
   (->
-   (wh/load-symbol c/w-crypto "D" "BTCUSD")
+   (wh/load-symbol :crypto "D" "BTCUSD")
    add-year-and-month-date-as-instant
    (tc/group-by [:month :year])
    (tc/aggregate {:min (fn [ds]
@@ -31,7 +32,7 @@
 
 (->
  ds-m-y
- (tc/pivot->wider :month [:min :max])
+ (tc/pivot->wider :month [:min :max] {:drop-missing? false})
  (print/print-range :all))
 
 (->

@@ -1,34 +1,35 @@
 (ns ta.backtest.print
   (:require
-   [tablecloth.api :as tablecloth]
-   [ta.backtest.roundtrip-stats :refer [calc-roundtrip-stats]]
-   [ta.helper.print :refer [print-all]]))
+   [tablecloth.api :as tc]
+   [ta.backtest.roundtrip-stats :refer [calc-roundtrip-stats performance]]
+   [ta.helper.print :refer [print-all]]
+   [ta.viz.table :as viz]))
 
-;; PRINT
+;; ROUNDTRIPS
 
-;; PRINT ROUNDTRIPS
-
-(defn- print-roundtrips-view [ds-rt]
-  (->  ds-rt
-       (tablecloth/select-columns [:rt-no ; :$group-name
-                                   :index-open :index-close
-                                   :bars
-                                   :trade
-                                   :date-open :date-close
-                                   :price-open :price-close
-                                   :pl-log
-                                   :pl-prct
-                                   :win])
-       (print-all)))
+(defn- roundtrips-view [ds-rt]
+  (tc/select-columns
+   ds-rt
+   [:rt-no ; :$group-name
+    :trade
+    :date-open :price-open
+    :date-close :price-close
+    :pl-log
+    :bars
+    :index-open :index-close
+    ;:pl-prct
+    :win]))
 
 (defn print-roundtrips [backtest-result]
   (-> (:ds-roundtrips backtest-result)
-      (print-roundtrips-view)))
+      (roundtrips-view)
+      (print-all)))
 
 (defn print-roundtrips-pl-desc [backtest-result]
   (-> (:ds-roundtrips backtest-result)
-      (tablecloth/order-by :pl-log)
-      (print-roundtrips-view)))
+      (tc/order-by :pl-log)
+      (roundtrips-view)
+      (print-all)))
 
 ;; PRINT ROUNDTRIP-STATS
 
@@ -44,4 +45,24 @@
 (defn print-roundtrip-stats [backtest-result]
   (calc-roundtrip-stats-print backtest-result :position)
   (calc-roundtrip-stats-print backtest-result [:position :win]))
+
+(defn print-performance [backtest-result]
+  (-> (performance backtest-result)
+      (print-all)))
+
+(defn viz-roundtrips [backtest-result]
+  (let [ds-rt (:ds-roundtrips backtest-result)
+        ds-view (roundtrips-view ds-rt)]
+    ^:R [:p/aggrid
+         {:box :lg
+          :rowData (viz/ds->table ds-view)
+          :columnDefs [{:field "rt-no" :headerName "rt-no" :resizable true :sortable true :filter true}
+                       {:field "trade" :headerName "dir" :resizable true :sortable true :filter true}
+                       {:field "date-open" :headerName "dt-open" :resizeable true}
+                       {:field "price-open" :headerName "px-open" :resizable true :sortable true :filter true}
+                       {:field "date-close" :headerName "dt-close" :resizable true :sortable true :filter true}
+                       {:field "price-close" :headerName "px-close" :resizable true :sortable true :filter true}
+                       {:field "pl-log" :headerName "pl" :resizable true :sortable true :filter true}
+                       {:field "index-open" :headerName "idx-open" :resizable true :sortable true :filter true}
+                       {:field "index-close" :headerName "idx-close" :resizable true :sortable true :filter true}]}]))
 
