@@ -8,7 +8,7 @@
    [ta.helper.print]))
 
 ;tc/select
-;tick/epoch
+
 
 (defn print-overview [ds]
   (let [l (tc/row-count ds)]

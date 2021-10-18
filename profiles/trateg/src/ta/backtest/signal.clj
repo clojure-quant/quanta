@@ -14,17 +14,18 @@
 ; vice versa sell signal.
 
 (defn xf-signal->position [xf]
-  (let [position (atom :none)]
+  (let [position (atom :flat)]
     (fn
       ;; SET-UP
       ([]
-       (reset! position :none)
+       (reset! position :flat)
        (xf))
      	;; PROCESS
       ([result input]
        (xf result (case input
                     :buy (reset! position :long) ;reset! returns the new value
                     :sell (reset! position :short)
+                    :flat (reset! position :flat)
                     @position)))
       ;; TEAR-DOWN
       ([result]
@@ -36,6 +37,7 @@
     (case position-current
       :long :buy
       :short :sell
+      :flat :flat
       nil)))
 
 (defn signal->position [signal-seq]

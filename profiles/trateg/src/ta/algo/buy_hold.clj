@@ -5,7 +5,7 @@
 (defn buyhold-signal-bar-length [n]
   (concat [:buy]
           (repeat (- n 2) :hold)
-          [:sell]))
+          [:flat]))
 
 (comment
   (buyhold-signal-bar-length 5)

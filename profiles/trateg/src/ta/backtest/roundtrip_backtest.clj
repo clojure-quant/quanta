@@ -106,19 +106,24 @@
     (tc/add-column ds :win
                    (dtype/emap win :bool (:pl-log ds)))))
 
-(defn run-backtest
+(defn backtest-ds
   "algo has to create :position column
    creates roundtrips based on this column"
-
-  [algo {:keys [w symbol frequency] :as options}]
-  (let [algo-options (dissoc options :w :symbol :frequency)
-        ds-bars  (wh/load-symbol w frequency symbol)
-        ds-study (-> ds-bars
+  [ds-bars algo algo-options]
+  (let [ds-study (-> ds-bars
                      (algo algo-options)
                      trade-signal)
         ds-roundtrips (calc-roundtrips ds-study)]
     {:ds-study ds-study
      :ds-roundtrips ds-roundtrips}))
+
+(defn run-backtest
+  "algo has to create :position column
+   creates roundtrips based on this column"
+  [algo {:keys [w symbol frequency] :as options}]
+  (let [algo-options (dissoc options :w :symbol :frequency)
+        ds-bars  (wh/load-symbol w frequency symbol)]
+    (backtest-ds ds-bars algo algo-options)))
 
 (defn run-backtest-parameter-range
   [algo base-options
