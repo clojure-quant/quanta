@@ -21,8 +21,9 @@
     (do (swap! backtest-state assoc :data nil)
         nil)))
 
-(defn metrics-view [{:keys [rt-metrics nav-metrics]}]
+(defn metrics-view [{:keys [rt-metrics nav-metrics options]}]
   [:div
+   [:p "options:" (pr-str options)]
    [:table
     [:tr
      [:td "cum-pl"]

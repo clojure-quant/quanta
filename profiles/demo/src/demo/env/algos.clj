@@ -69,7 +69,8 @@
       (println "roundtrip cols: " (->> ds-rts
                                        tc/columns
                                        (map meta)))
-      {:rt-metrics (-> (roundtrip-performance-metrics b) ds->map first) ; ds
+      {:options algo-options
+       :rt-metrics (-> (roundtrip-performance-metrics b) ds->map first) ; ds
        :nav-metrics (nav-metrics b)
        :roundtrips (-> ds-rts ds->map)
        :nav (-> (nav b) ds->map)}) ;ds
