@@ -6,7 +6,7 @@
    ;[ta.backtest.chart :as c]
    ;[demo.study.sma :refer [sma-study]]
    [demo.env.config] ; side-effects
-   ))
+   [demo.env.algos :refer [algo-names run-algo]]))
 
 (defn- study [symbol]
   (-> (wh/load-ts :crypto symbol)
@@ -29,6 +29,7 @@
  {:ta/symbols  wh/load-list
   :ta/load-ts (partial wh/load-symbol :crypto); needs symbol parameter
   ;:ta/table table
-  })
+  :ta/algos algo-names
+  :ta/run-algo run-algo})
 
 

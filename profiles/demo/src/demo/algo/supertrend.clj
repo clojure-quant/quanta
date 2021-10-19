@@ -1,7 +1,7 @@
 (ns demo.algo.supertrend
   (:require
    [tech.v3.datatype.functional :as fun]
-   [tablecloth.api :as tablecloth]
+   [tablecloth.api :as tc]
    [ta.series.ta4j :as ta4j]
    [ta.helper.ago :refer [xf-ago]]))
 
@@ -59,12 +59,12 @@
         signal (into [] (map calc-supertrend-signal close upper-1 lower-1))
         ;signal  (dtype/emap calc-supertrend-signal :object close upper-1 lower-1)
         ]
-    (tablecloth/add-columns ds {:signal signal
-                                :lower lower
-                                :upper upper
+    (tc/add-columns ds {:signal signal
+                        :lower lower
+                        :upper upper
                                 ; debugging
-                                :atr atr
-                                :atr-scaled atr-scaled
-                                :lower-1 lower-1
-                                :upper-1 upper-1})))
+                        :atr atr
+                        :atr-scaled atr-scaled
+                        :lower-1 lower-1
+                        :upper-1 upper-1})))
 

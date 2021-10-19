@@ -4,8 +4,10 @@
 
 (defmethod reagent-page :user/main [{:keys [route-params query-params handler] :as route}]
   [:div
-   [:h1.text-xl.text-red-600 "trateg demo app"]
+   [:h1.text-xl.text-red-600 "trateg demo"]
+
    [link/href "/goldly/about" "goldly developer tools"]
+   [link/href "/backtest" "backtest"]
 
    [link/href "/chart" "chart"]
 

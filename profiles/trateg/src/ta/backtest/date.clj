@@ -42,18 +42,18 @@
     ;(println "year vec count: " n " v: " v)
     (dtype/clone
      (dtype/make-reader
-      :object
+      :int32
       n
-      (tick/year (v idx))))))
+      (-> (tick/year (v idx)) .getValue)))))
 
 (defn month [v]
   (let [n (count v)]
     ;(println "year vec count: " n " v: " v)
     (dtype/clone
      (dtype/make-reader
-      :object
+      :int32
       n
-      (tick/month (v idx))))))
+      (-> (tick/month (v idx)) .getValue)))))
 
 (defn add-year-and-month-date-as-instant [ds]
   (-> ds
@@ -64,3 +64,36 @@
 ; (require '[clj-time.coerce])
 ; (clj-time.coerce/to-long dt)
 
+(defn ensure-roundtrip-date-localdatetime [ds]
+  (let [t (->> ds tc/columns (map meta) (filter #(= (:name %) :date-close)) first :datatype)]
+    (if (= t :packed-instant)
+      (do (println "converting to local-datetime")
+          (-> ds
+              (dataset/column-map :date-close #(tick/date-time %) [:date-close])
+              (dataset/column-map :date-open #(tick/date-time %) [:date-open])))
+
+      (do (println "already local-date")
+          ds))))
+
+(comment
+  (-> (tick/now)
+      (tick/year)
+      .getValue
+      class)
+
+  (into [] (month [(tick/now)]))
+  (into [] (year [(tick/now)]))
+
+  (-> (tick/now)
+      (tick/date-time)
+
+      class)
+
+  (->> (tc/dataset [{:date-close (tick/now)
+                     :date-open (tick/now)}])
+       ensure-roundtrip-date-localdatetime
+       ;tc/columns
+       ;(map meta)
+       )
+; 
+  )

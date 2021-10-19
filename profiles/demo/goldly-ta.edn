@@ -26,6 +26,7 @@
           :routes {:app {"" :user/main
                          "error" :user/error
                          "chart" :user/chart
+                         "backtest" :user/backtest
                          "test/heatmap" :test/heatmap
                          "test/histogram" :test/histogram
                          "test/experiment" :test/experiment}
