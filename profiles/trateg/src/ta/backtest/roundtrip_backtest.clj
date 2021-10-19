@@ -8,9 +8,6 @@
    [ta.backtest.signal :refer [trade-signal]]
    [ta.backtest.position-pl :refer [position-pl]]))
 
-(defn win [chg-p]
-  (> chg-p 0))
-
 (defn- bar->roundtrip-partial [ds]
   (let [close (:close ds)
         close-f1  (into [] xf-future close)
@@ -30,6 +27,9 @@
                            ;:pl-prct pl-prct
                            }))))
 
+(defn win [chg-p]
+  (> chg-p 0))
+
 (defn calc-roundtrips [ds-study]
   (as-> ds-study ds
       ; (tc/select-rows (fn [{:keys [trade] :as row}]
@@ -38,31 +38,26 @@
     (tc/group-by ds :trade-no)
     (tc/aggregate ds {:position (fn [ds] (->> ds :position first))
                       :bars (fn [ds] (->> ds :index-open count))
-                             ; open
+                      ; open
                       :index-open (fn [ds] (->> ds :index-open first))
                       :date-open (fn [ds] (->> ds :date-open first))
                       :price-open (fn [ds] (->> ds :price-open first))
-                             ; close
+                      ; close
                       :index-close (fn [ds] (->> ds :index-close last))
                       :date-close (fn [ds] (->> ds :date-close last))
                       :price-close (fn [ds] (->> ds :price-close last))
-                             ; trade
+                      ; trade
                       :trade (fn [ds] (->> ds :trade first))
                       :trades (fn [ds]
                                 (->> ds
                                      :trade
                                      (remove nil?)
                                      count))
-                             ; pl
+                      ; pl
                       :pl-log (fn [ds]
                                 (->> ds
                                      :pl-log
-                                     (apply +)))
-                      ;:pl-prct (fn [ds]
-                      ;           (->> ds
-                      ;                :pl-prct
-                      ;                (apply +)))
-                      })
+                                     (apply +)))})
 
     (tc/rename-columns ds {:$group-name :rt-no})
     (tc/add-column ds :win

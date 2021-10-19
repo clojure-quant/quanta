@@ -43,10 +43,12 @@
 
 ;   
   )
+
 (defn roundtrip-pl [position chg-p]
-  (if (= position :short)
-    (- 0 chg-p)
-    chg-p))
+  (case position
+    :short (- 0 chg-p)
+    :long chg-p
+    0.0))
 
 (defn position-pl [close position]
   (let [close-f1  (into [] xf-future close)

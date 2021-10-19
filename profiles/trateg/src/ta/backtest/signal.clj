@@ -60,7 +60,7 @@
        (xf))
      	;; PROCESS
       ([result input]
-       (when (or (= input :buy) (= input :sell))
+       (when (or (= input :buy) (= input :sell) (= input :flat))
          (swap! no inc))
        (xf result @no))
       ;; TEAR-DOWN
@@ -105,9 +105,17 @@
                      :buy :buy :buy :none nil nil :buy :none :none
                      :sell :none])
 
+  (signal->position [:none
+                     :buy :buy  :none nil
+                     :flat :none
+                     :buy :none
+                     :flat :none])
+
   (signal->trade [:none
-                  :buy :buy :buy :none nil nil :buy :none :none
-                  :sell :none])
+                  :buy :buy  :none nil
+                  :flat :none
+                  :buy :none
+                  :flat :none])
 
   (-> [:none
        :buy :buy :buy :none nil nil :buy :none :none

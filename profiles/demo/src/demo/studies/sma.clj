@@ -62,7 +62,8 @@
 (-> (run-backtest buy-hold-signal options-15)
     p/print-nav)
 
-; sma strategy brings *2 the total return of buy+hold
+;; sma strategy brings *2 the total return of buy+hold
+;; RISK IS SUBSTANTIALLY LESS.
 
 (->> (run-backtest-parameter-range
       sma-signal options-15
@@ -75,4 +76,6 @@
       sma-signal options-15
       :symbol ["ETHUSD" "BTCUSD"])
      s/backtests->performance-metrics)
+
+
 
