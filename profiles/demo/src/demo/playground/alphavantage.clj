@@ -8,8 +8,10 @@
 (print-table [:symbol :type :name] (av/search "BA"))
 (print-table (av/search "Fidelity MSCI"))
 
+(av/search "gld")
+
 ;; # stock series
-(av/get-daily :compact "MSFT")
+(av/get-daily :compact "QQQ")
 (print-table (->> (av/get-daily :compact "MSFT")
                   reverse
                   (take 5)))

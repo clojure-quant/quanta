@@ -4,7 +4,7 @@
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as fun]
    [ta.warehouse :refer [load-symbol]]
-   [ta.dataset.returns :refer [log-return]]
+   [ta.helper.returns :refer [log-return]]
    [ta.series.moon :refer [inst->moon-phase-kw]]
    [ta.backtest.roundtrip-backtest :refer [run-backtest]]
    [ta.backtest.print :as p]
@@ -97,6 +97,43 @@
 ;; {:cum-pl 0.5170686780676208, :max-dd 0.3612479414113057}
 ;; end nav: 328
 (Math/pow 10 -0.361)
+
+; QQQ - NASDAQ
+(-> (run-backtest buy-hold-signal (assoc options-d :symbol "QQQ"))
+    nav/nav-metrics
+    ;p/print-nav
+    )
+; buyhold: EndNav: 284. dd: 1.05
+(-> (run-backtest moon-signal (assoc options-d :symbol "QQQ"))
+    nav/nav-metrics
+    ;p/print-nav
+    )
+; moon: EndNav: 537 dd: 0.42
+
+;; GOLD SHARES
+(-> (run-backtest moon-signal (assoc options-d :symbol "GLD"))
+    nav/nav-metrics
+    ;p/print-nav
+    )
+(-> (run-backtest buy-hold-signal (assoc options-d :symbol "GLD"))
+    nav/nav-metrics
+    ;p/print-nav
+    )
+; gold shares do not have the same moon influence.
+
+;; GOLD HAS EXTREME MOON SAISONALITY
+(-> (run-backtest moon-signal (assoc options-d :symbol "IAU"))
+    nav/nav-metrics
+    ;p/print-nav
+    )
+; {:cum-pl 0.4838585145483276, :max-dd 0.2321969274554916} EndNAV: 305
+
+(-> (run-backtest buy-hold-signal (assoc options-d :symbol "IAU"))
+    nav/nav-metrics
+    ;p/print-nav
+    )
+; {:cum-pl -0.10437480353320505, :max-dd 1.0831565191879098} EndNAV: 78s
+; bad data. split not correct.
 
 ;; move extremes
 

@@ -3,16 +3,21 @@
    [tech.v3.dataset :as tds]
    [ta.data.alphavantage :as av]
    [ta.warehouse.since-importer :as since-importer]
-   [demo.env.config :refer [log-config!]] ; side effects
-   ))
+   [demo.env.config :refer [log-config!]]))
 
 (defn alphavantage-get-since-ds [_ #_frequency _ #_since symbol]
   (-> (av/get-daily "full" symbol)
       (tds/->dataset)))
 
 (def alphavantage-symbols
-  ["SPY" "EURUSD" "MSFT" "ORCL"]
-  ;(wh/load-list w-stocks "fidelity-select")  
+  ["IAU"
+   "GLD"
+   "SPY"
+   "QQQ"
+   "EURUSD"
+   "MSFT"
+   "ORCL"]
+  ;(wh/load-list "fidelity-select")  
   )
 
 (defn init-alphavantage-daily []
