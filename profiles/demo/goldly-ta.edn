@@ -27,6 +27,8 @@
                          "error" :user/error
                          "chart" :user/chart
                          "backtest" :user/backtest
+                         "highchart" :user/highchart
+                         "highchartstudy" :user/highchartstudy
                          "test/heatmap" :test/heatmap
                          "test/histogram" :test/histogram
                          "test/experiment" :test/experiment}

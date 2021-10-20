@@ -1,13 +1,13 @@
 (ns ta.backtest.signal
   (:require
-   [tablecloth.api :as tablecloth]
+   [tablecloth.api :as tc]
    [ta.helper.ago :refer [xf-ago-pair]]))
 
 (defn running-index-vec [ds]
-  (range 0  (tablecloth/row-count ds)))
+  (range 0  (tc/row-count ds)))
 
 (defn add-running-index [ds]
-  (tablecloth/add-column ds :index (running-index-vec ds)))
+  (tc/add-column ds :index (running-index-vec ds)))
 
 ; signal :buy :sell :hold  
 ; one or more buy signals mean we do want to be long.
@@ -76,11 +76,11 @@
         trade (signal->trade signal)
         trade-no (trade->trade-no trade)
         position (signal->position signal)]
-    (tablecloth/add-columns ds {:index (running-index-vec ds)
-                                :signal signal
-                                :trade trade
-                                :trade-no trade-no
-                                :position position})))
+    (tc/add-columns ds {:index (running-index-vec ds)
+                        :signal signal
+                        :trade trade
+                        :trade-no trade-no
+                        :position position})))
 
 (comment
 

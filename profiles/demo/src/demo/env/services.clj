@@ -1,17 +1,22 @@
 (ns demo.env.services
   (:require
    [goldly.service.core :as service]
+   [tablecloth.api :as tc]
    [ta.warehouse :as wh]
    [ta.viz.table :refer [ds->table]]
-   ;[ta.backtest.chart :as c]
-   ;[demo.study.sma :refer [sma-study]]
+   [ta.viz.study-highchart :refer [study-highchart]]
    [demo.env.config] ; side-effects
-   [demo.env.algos :refer [algo-names run-algo]]))
+   [demo.env.algos :refer [algo-names run-algo chart-algo]]))
 
-(defn- study [symbol]
-  (-> (wh/load-ts :crypto symbol)
-      ;sma-study
-      ))
+(defn- study-chart [w f symbol]
+  (-> (wh/load-symbol w f symbol)
+      (tc/select-rows (range 100))
+      (study-highchart [{;:sma200 "line"
+                         ;:sma30 "line"
+                         }
+                        {:open "line"}
+                        {:volume "column"}])
+      second))
 
 ;(defn table [symbol]
 ;  (-> (study symbol)
@@ -23,13 +28,13 @@
 ;                  {:open "line"}
 ;                  {:volume "column"}])
 
-;sma-charts
-
 (service/add
- {:ta/symbols  wh/load-list
+ {:ta/symbols wh/load-list ; param: symbol-list-name 
   :ta/load-ts (partial wh/load-symbol :crypto); needs symbol parameter
+  :ta/highchart study-chart
   ;:ta/table table
   :ta/algos algo-names
-  :ta/run-algo run-algo})
+  :ta/run-algo run-algo
+  :ta/chart-algo chart-algo})
 
 

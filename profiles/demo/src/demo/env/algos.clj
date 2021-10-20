@@ -3,14 +3,18 @@
    [tech.v3.dataset :as tds]
    [tablecloth.api :as tc]
    [ta.backtest.date :refer [ensure-roundtrip-date-localdatetime]]
+   [ta.backtest.study :refer [run-study]]
    [ta.backtest.roundtrip-backtest :refer [run-backtest]]
    [ta.backtest.roundtrip-stats :refer [roundtrip-performance-metrics]]
    [ta.backtest.nav :refer [nav-metrics nav]]
    ; algos
    [ta.algo.buy-hold :refer [buy-hold-signal]]
+   [ta.series.gann :refer [algo-gann]]
    [demo.studies.moon :refer [moon-signal]]
    [demo.algo.supertrend :refer [supertrend-signal]]
-   [demo.algo.sma :refer [sma-signal]]))
+   [demo.algo.sma :refer [sma-signal]]
+   ; viz
+   [ta.viz.study-highchart :refer [study-highchart]]))
 
 (def algos
   [; buyhold
@@ -72,7 +76,29 @@
     :symbol "BTCUSD"
     :frequency "15"
     :sma-length-st 20
-    :sma-length-lt 200}])
+    :sma-length-lt 200}
+   {:name "gann BTC"
+    :comment ""
+    :algo algo-gann
+    :w :crypto
+    :symbol "BTCUSD"
+    :frequency "D"
+    :box {:ap 8000.0
+          :at 180
+          :bp 12000.0
+          :bt 225}
+    :axes-spec [{;:sma200 "line"
+                 ;:sma30 "line"
+                ; :open "line"
+                 :sr-up-0 "line"
+                 :sr-up-1 "line"
+                 :sr-down-0 "line"
+                 :sr-down-1 "line"}
+                {:qp "column"
+                 :qt "column"
+                 ;:volume "column"
+                 }
+                {:index "column"}]}])
 
 (defn algo-names []
   (map :name algos))
@@ -100,10 +126,45 @@
     (do (println "algo not found" n)
         nil)))
 
+(defn chart-algo [n]
+  (if-let [algo-options (first (filter #(= n (:name %)) algos))]
+    (let [_  (println "running algo:  " n)
+          algo (:algo algo-options)
+          comment (:comment algo-options)
+          axes-spec (:axes-spec algo-options)
+          algo-options (dissoc algo-options :algo :name :comment :axes-spec)
+          b (run-study algo algo-options)
+          ds-study (->  (:ds-study b)
+                        ; (tc/select-rows (range 1000))
+                        )
+          axes-spec (if axes-spec axes-spec
+                        [{;:sma200 "line"
+                         ;:sma30 "line"
+                          }
+                         {:open "line"}
+                         {:volume "column"}])
+          ;ds-rts (-> (:ds-roundtrips b) ensure-roundtrip-date-localdatetime)
+          ]
+      (println "axes spec: " axes-spec)
+      (println "run algo result: " (keys b))
+      {:name n
+       :options algo-options
+       :comment comment
+       :highchart (-> (study-highchart ds-study axes-spec)
+                      second)}) ;ds
+    (do (println "algo not found" n)
+        nil)))
+
 (comment
   (algo-names)
 
   (run-algo "sma trendfollow BTC")
+
+  (chart-algo "sma trendfollow BTC")
+
+  (-> (chart-algo "gann BTC")
+      keys)
+
 ;  
   )
 

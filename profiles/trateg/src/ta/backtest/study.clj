@@ -21,10 +21,16 @@
   (let [ds (wh/load-ts w (make-study-filename study-name frequency symbol))]
     ds))
 
+(defn study-ds
+  "algo has to create :position column
+   creates roundtrips based on this column"
+  [ds-bars algo algo-options]
+  (let [ds-study (-> ds-bars
+                     (algo algo-options))]
+    {:ds-study ds-study}))
+
 (defn run-study [algo {:keys [w symbol frequency] :as options}]
-  (let [ds (wh/load-symbol w frequency symbol)
-        ds-study (algo ds options)]
-    ds-study))
-
-
+  (let [algo-options (dissoc options :w :symbol :frequency)
+        ds-bars (wh/load-symbol w frequency symbol)]
+    (study-ds ds-bars algo algo-options)))
 

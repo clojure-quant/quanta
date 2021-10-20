@@ -8,6 +8,8 @@
 
    [link/href "/goldly/about" "goldly developer tools"]
    [link/href "/backtest" "backtest"]
+   [link/href "/highchart" "highchart"]
+   [link/href "/highchartstudy" "highchart-study"]
 
    [link/href "/chart" "chart"]
 

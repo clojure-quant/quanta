@@ -1,7 +1,8 @@
 (ns ta.series.gann
   (:require
    [tablecloth.api :as tc]
-   [ta.helper.ago :refer [xf-ago]]))
+   [ta.helper.ago :refer [xf-ago]]
+   [ta.backtest.signal :refer [running-index-vec]]))
 
 ;; box
 ;; a: left point of square
@@ -74,18 +75,25 @@
           up (gann-up qbox t)
           down (gann-down qbox t)
           dp (box-dp box)]
-      {:up-0 (if (> p up) up (- up dp))
+      {:qp qp
+       :qt qt
+       :up-0 (if (> p up) up (- up dp))
        :up-1 (if (< p up) up (+ up dp))
        :down-0 (if (> p down) (+ down dp) down)
        :down-1 (if (< p down) down (- down dp))})))
 
-(defn add-gann-sr [ds box]
+(defn algo-gann [ds {:keys [box]}]
+  (println "running gann on box: " box)
   (let [idx (:index ds)
+        idx (if idx idx (running-index-vec ds))
         px (:close ds)
         px-1 (into [] xf-ago px)
         bands (into [] (map (partial sr box) idx px-1))]
     (-> ds
-        (tc/add-columns {:px-1 px-1
+        (tc/add-columns {:index idx
+                         :px-1 px-1
+                         :qp (map :qp bands)
+                         :qt (map :qt bands)
                          :sr-down-0 (map :down-0 bands)
                          :sr-down-1 (map :down-1 bands)
                          :sr-up-0 (map :up-0 bands)
@@ -126,7 +134,14 @@
 
   (-> (tc/dataset {:index [-80 -40  -6    0   5  10  15  20  25  30  35  40  45  50  55  60   80]
                    :close [230 230  230 230 230 260 265 270 300 280 290 330 350 400 430 430 2455]})
-      (add-gann-sr box))
+      (algo-gann {:box box}))
+
+  (require '[ta.backtest.study :refer [run-study]])
+
+  (run-study algo-gann {:w :crypto
+                        :frequency "D"
+                        :symbol "BTCUSD"
+                        :box box})
 
 ;  
   )
