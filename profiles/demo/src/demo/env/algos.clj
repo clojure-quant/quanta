@@ -92,15 +92,17 @@
                 ; :open "line"
                  :sr-up-0 "line"
                  :sr-up-1 "line"
-                 ;:sr-down-0 "line"
-                 ;:sr-down-1 "line"
-                 }
+                 :sr-up-2 "line"
+                 :sr-down-0 {:type "line" :color "red"}
+                 :sr-down-1 {:type "line" :color "red"}
+                 :sr-down-2 {:type "line" :color "red"}}
                 {:cross-up-close "column"
                  :cross-down-close "column"}
                 {:qp "column"
-                 :qt "column"}
+                 ;:qt "column"
+                 }
                 ;{:index "column"}
-                ;{:cross-close "column"}
+               ; {:qt-jump-close "column"}
                 ]}])
 (defn algo-names []
   (map :name algos))

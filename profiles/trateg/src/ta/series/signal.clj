@@ -39,7 +39,7 @@
 (defn price-when [price signal]
   (let [n (count price)]
     (dtype/make-reader
-     :float64 n
+     :float32 n
      (if (signal idx)
        (price idx)
        0.0))))
@@ -55,6 +55,10 @@
   (prior-int px-d 1)
 
   (dfn/eq [1 2 3] [1 2 4])
+
+  (let [c [(float 1) 2 2 (float 2) 3]
+        p (prior-int c 1)]
+    (dfn/eq c p))
 
   (let [c [1 2 2 2 3]
         p (prior-int c 1)]

@@ -7,7 +7,7 @@
            :data {}
            :mode :pr-str}))
 
-(defonce ui-options [:pr-str :metrics :roundtrips :navs])
+(defonce ui-options [:pr-str :metrics :roundtrips :navs :navs-chart])
 
 (run-a backtest-state [:algos] :ta/algos)
 
@@ -77,6 +77,18 @@
                :pagination :true
                :paginationAutoPageSize true}]])])
 
+(defn navs-chart [navs]
+  (let [navs-with-index (map-indexed (fn [i v]
+                                       {:index i
+                                        :nav (:nav v)}) navs)
+        navs-with-index (into [] navs-with-index)]
+    [:div
+     [:h1 "navs " (count navs-with-index)]
+     (when (> (count navs) 0)
+       [:div ; {:style {:width "50vw"}}
+        ;(pr-str navs-with-index)
+        [vega-nav-plot navs-with-index]])]))
+
 (defn backtest-page [route]
   (let [{:keys [algos symbol symbol-loaded data mode]} @backtest-state]
     (do (run-backtest symbol symbol-loaded)
@@ -100,6 +112,7 @@
           :metrics (metrics-view (:data @backtest-state))
           :roundtrips (roundtrips-view (get-in @backtest-state [:data :roundtrips]))
           :navs (navs-view (get-in @backtest-state [:data :nav]))
+          :navs-chart (navs-chart (get-in @backtest-state [:data :nav]))
           ;:frisk [frisk data]
           ;:table [table data]
           ;:histogram [histogram data]

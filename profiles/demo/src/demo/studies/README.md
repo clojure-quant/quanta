@@ -81,5 +81,14 @@ DANIEL:
 - rolling correlation every x bars based on the PAST window.
   so say every month calculate the correlations and show them.
 
-  
+
+
+FLORIAN TODO:
+
+- https://github.com/scicloj/wadogo  for percentile calculation.
+
+- goldly: create date (js/Date. in repl)
+
+
+
   

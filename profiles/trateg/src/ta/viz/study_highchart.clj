@@ -22,19 +22,26 @@
 ;  :sma30 "line"}  
 ; {:volume "line"}]
 
-(defn add-series [ds-e grouping plot-no [col type]]
-  {:type type
-   :name (name col)
-   :data (series ds-e col)
-   :yAxis plot-no
+(defn add-series [ds-e grouping plot-no [col type-map]]
+  (let [{:keys [type color]} (if (map? type-map)
+                               type-map
+                               {:color "blue"
+                                :type type-map})]
+    {:type type
+     :name (name col)
+     :data (series ds-e col)
+     :yAxis plot-no
+     :color color
    ;:dataGrouping grouping
-   })
+     }))
+
+(def ohlc-height 800)
 
 (defn add-axis [ds-e grouping {:keys [yAxis series no]} line]
   (let [axis {:labels {:align "right" :x -3}
               ;:title {:text "Volume"}
               ;:top "65%"
-              :top (+ 400 (* no 200))
+              :top (+ ohlc-height (* no 200))
               :height 200; "35%"
               ;:offset 0
               :lineWidth 2}
@@ -50,7 +57,7 @@
                           ["month" [1, 2, 3, 4, 6]]]}
         axes [{:labels {:align "right" :x -3}
                :title {:text "OHLC"}
-               :height 400 ; "60%"
+               :height ohlc-height ; "60%"
                :lineWidth 2}]
         series [{:type "candlestick" ; :type "ohlc"
                  :name "priceseries"
