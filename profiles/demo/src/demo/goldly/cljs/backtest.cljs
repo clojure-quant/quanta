@@ -24,34 +24,34 @@
 (defn metrics-view [{:keys [rt-metrics nav-metrics options comment]}]
   [:div
    [:h1.bg-blue-300.text-xl "comment:" comment]
-    [:p "options:" (pr-str options)]
-    [:table
-     [:tr
-      [:td "cum-pl"]
-      [:td (:cum-pl nav-metrics)]]
-     [:tr
-      [:td "max-dd"]
-      [:td (:max-dd nav-metrics)]]
-     [:tr
-      [:td "# trades"]
-      [:td (:trades rt-metrics)]]]
-    [:table
-     [:tr
-      [:td {:style {:width "3cm"}} " "]
-      [:td "win"]
-      [:td "loss"]]
-     [:tr
-      [:td "%winner"]
-      [:td (:win-nr-prct rt-metrics)]
-      [:td ""]]
-     [:tr
-      [:td "avg pl"]
-      [:td (:avg-win-log rt-metrics)]
-      [:td (:avg-loss-log rt-metrics)]]
-     [:tr
-      [:td "avg bars"]
-      [:td (:avg-bars-win rt-metrics)]
-      [:td (:avg-bars-loss rt-metrics)]]]])
+   [:p "options:" (pr-str options)]
+   [:table
+    [:tr
+     [:td "cum-pl"]
+     [:td (:cum-pl nav-metrics)]]
+    [:tr
+     [:td "max-dd"]
+     [:td (:max-dd nav-metrics)]]
+    [:tr
+     [:td "# trades"]
+     [:td (:trades rt-metrics)]]]
+   [:table
+    [:tr
+     [:td {:style {:width "3cm"}} " "]
+     [:td "win"]
+     [:td "loss"]]
+    [:tr
+     [:td "%winner"]
+     [:td (:win-nr-prct rt-metrics)]
+     [:td ""]]
+    [:tr
+     [:td "avg pl"]
+     [:td (:avg-win-log rt-metrics)]
+     [:td (:avg-loss-log rt-metrics)]]
+    [:tr
+     [:td "avg bars"]
+     [:td (:avg-bars-win rt-metrics)]
+     [:td (:avg-bars-loss rt-metrics)]]]])
 
 (defn roundtrips-view [roundtrips]
   [:div
