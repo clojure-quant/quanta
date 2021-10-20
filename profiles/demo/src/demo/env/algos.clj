@@ -9,7 +9,7 @@
    [ta.backtest.nav :refer [nav-metrics nav]]
    ; algos
    [ta.algo.buy-hold :refer [buy-hold-signal]]
-   [ta.series.gann :refer [algo-gann]]
+   [ta.series.gann :refer [algo-gann algo-gann-signal]]
    [demo.studies.moon :refer [moon-signal]]
    [demo.algo.supertrend :refer [supertrend-signal]]
    [demo.algo.sma :refer [sma-signal]]
@@ -79,7 +79,7 @@
     :sma-length-lt 200}
    {:name "gann BTC"
     :comment ""
-    :algo algo-gann
+    :algo algo-gann-signal
     :w :crypto
     :symbol "BTCUSD"
     :frequency "D"
@@ -92,14 +92,16 @@
                 ; :open "line"
                  :sr-up-0 "line"
                  :sr-up-1 "line"
-                 :sr-down-0 "line"
-                 :sr-down-1 "line"}
-                {:qp "column"
-                 :qt "column"
-                 ;:volume "column"
+                 ;:sr-down-0 "line"
+                 ;:sr-down-1 "line"
                  }
-                {:index "column"}]}])
-
+                {:cross-up-close "column"
+                 :cross-down-close "column"}
+                {:qp "column"
+                 :qt "column"}
+                ;{:index "column"}
+                ;{:cross-close "column"}
+                ]}])
 (defn algo-names []
   (map :name algos))
 
@@ -163,7 +165,8 @@
   (chart-algo "sma trendfollow BTC")
 
   (-> (chart-algo "gann BTC")
-      keys)
+      ;keys
+      )
 
 ;  
   )

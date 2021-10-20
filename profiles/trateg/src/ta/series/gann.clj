@@ -1,8 +1,10 @@
 (ns ta.series.gann
   (:require
    [tablecloth.api :as tc]
+   [tech.v3.datatype.functional :as dfn]
    [ta.helper.ago :refer [xf-ago]]
-   [ta.backtest.signal :refer [running-index-vec]]))
+   [ta.backtest.signal :refer [running-index-vec]]
+   [ta.series.signal :refer [prior-int cross-up cross-down price-when]]))
 
 ;; box
 ;; a: left point of square
@@ -49,10 +51,10 @@
      :bt (+ bt d-t)}))
 
 (defn- quot-inc [a b]
-  (-> (quot a b) inc))
+  (-> (quot a b) inc int))
 
 (defn- quot-dec [a b]
-  (-> (quot a b) dec))
+  (-> (quot a b) dec int))
 
 (defn find-quadrant [{:keys [ap bp at bt] :as box} t p]
   (let [time-right-shift? (> t bt)
@@ -88,17 +90,42 @@
         idx (if idx idx (running-index-vec ds))
         px (:close ds)
         px-1 (into [] xf-ago px)
-        bands (into [] (map (partial sr box) idx px-1))]
+        bands (into [] (map (partial sr box) idx px-1))
+        sr-down-0 (map :down-0 bands)
+        sr-down-1 (map :down-1 bands)
+        sr-up-0 (map :up-0 bands)
+        sr-up-1 (map :up-1 bands)]
     (-> ds
         (tc/add-columns {:index idx
                          :px-1 px-1
                          :qp (map :qp bands)
                          :qt (map :qt bands)
-                         :sr-down-0 (map :down-0 bands)
-                         :sr-down-1 (map :down-1 bands)
-                         :sr-up-0 (map :up-0 bands)
-                         :sr-up-1 (map :up-1 bands)}))))
+                         :sr-down-0 sr-down-0
+                         :sr-down-1 sr-down-1
+                         :sr-up-0 sr-up-0
+                         :sr-up-1 sr-up-1}))))
 
+(defn algo-gann-signal [ds options]
+  (let [ds-study (algo-gann ds options)
+        ds-study (tc/select-rows ds-study (range 1 (tc/row-count ds-study)))
+        {:keys [close sr-up-0 sr-up-1 qp qt]} ds-study
+        qp-1 (prior-int qp 1)
+        same-qp (dfn/eq qp qp-1)
+        sr-cross-up-0 (dfn/and same-qp (cross-up close sr-up-0))
+        sr-cross-up-1 (dfn/and same-qp (cross-up close sr-up-1))
+        sr-cross-up (dfn/or sr-cross-up-0 sr-cross-up-1)]
+    ;(println "sr cross up 0 " sr-cross-up-0)
+    (->
+     ds-study
+     (tc/add-columns {:qp-1 qp-1
+                      :same-qp same-qp
+                      :cross-up-0 sr-cross-up-0
+                      :cross-up-1 sr-cross-up-1
+                      :cross-up sr-cross-up
+                      :cross-close (price-when close sr-cross-up)})
+
+;:cross (price-when px sr-cross)
+     )))
 (comment
 
   (def box {:ap 100.0
@@ -143,5 +170,26 @@
                         :symbol "BTCUSD"
                         :box box})
 
+  (->
+   (run-study algo-gann-signal {:w :crypto
+                                :frequency "D"
+                                :symbol "BTCUSD"
+                                :box {:ap 8000.0
+                                      :at 180
+                                      :bp 12000.0
+                                      :bt 225}})
+   :ds-study
+   (tc/select-columns [:date :close
+                       :sr-up-0 :sr-up-1
+                       ;:qp :qp-1 
+                       :same-qp
+                       :cross-up-0
+                       :cross-up-1
+                       :cross-up
+                       :cross-close
+                       ;:qt 
+                       ])
+   ;(tc/select-rows (fn [row] (:cross-up row) ))
+   )
 ;  
   )
