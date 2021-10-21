@@ -1,11 +1,12 @@
 (ns ta.backtest.date
   (:require
    [tick.alpha.api :as tick]
-   [tech.v3.dataset :as dataset]
+   [tech.v3.dataset :as tds]
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.datetime :as datetime]
    [tablecloth.api :as tc]
-   [ta.data.date :as dt]))
+   [ta.data.date :as dt]
+   [ta.helper.ds :refer [cols-of-type]]))
 
 (defn days-ago [n]
   (-> (tick/now)
@@ -17,7 +18,7 @@
       (tick/- (tick/new-duration n :days))))
 
 (defn ds-epoch [ds]
-  (dataset/column-map ds :epoch #(* 1000 (dt/->epoch %)) [:date]))
+  (tds/column-map ds :epoch #(* 1000 (dt/->epoch %)) [:date]))
 
 (defn select-rows-since [ds date]
   (-> ds
@@ -69,11 +70,20 @@
     (if (= t :packed-instant)
       (do (println "converting to local-datetime")
           (-> ds
-              (dataset/column-map :date-close #(tick/date-time %) [:date-close])
-              (dataset/column-map :date-open #(tick/date-time %) [:date-open])))
+              (tds/column-map :date-close #(tick/date-time %) [:date-close])
+              (tds/column-map :date-open #(tick/date-time %) [:date-open])))
 
       (do (println "already local-date")
           ds))))
+
+(defn convert-col-instant->localdatetime [ds col]
+  (println "converting col " col "to local-datetime")
+  (tds/column-map ds col #(tick/date-time %) [col]))
+
+(defn ds-convert-col-instant->localdatetime [ds]
+  (let [cols (cols-of-type ds :packed-instant)]
+    (println "converting cols: " cols)
+    (reduce convert-col-instant->localdatetime ds cols)))
 
 (comment
   (-> (tick/now)
@@ -95,5 +105,14 @@
        ;tc/columns
        ;(map meta)
        )
+
+  (->> (tc/dataset [{:date-close (tick/now)
+                     :date-open (tick/now)
+                     :bongo 3
+                     :signal true}])
+       ds-convert-col-instant->localdatetime
+       tc/columns
+       (map meta))
+
 ; 
   )

@@ -6,29 +6,31 @@
             :notebook  {:layout :horizontal ; :vertical
                         :view-only false}}
 
- 
+
  :timbre-loglevel
-  [[#{"pinkgorilla.nrepl.*"} :warn]
-   [#{"org.eclipse.jetty.*"} :warn]
-   [#{"webly.*"} :info]
-   [#{"*"} :info]]
+ [[#{"pinkgorilla.nrepl.*"} :warn]
+  [#{"org.eclipse.jetty.*"} :warn]
+  [#{"webly.*"} :info]
+  [#{"*"} :info]]
 
  :nrepl {:enabled true
          :bind "0.0.0.0"
          :port 9100}
 
  :goldly {:lazy true
-          :autoload-dir "src/demo/goldly/cljs"  ; to load cljs files to repl state
+          :autoload-dir  "src/demo/goldly/cljs"  ; to load cljs files to repl state
           :notebook-dir ["src/demo/warehouse"
-                         "src/demo/studies"
-                         "src/demo/backtest"
-                         "src/techml"]
+                         "src/demo/studies"]
           :routes {:app {"" :user/main
+                         ;warehouse
+                         "warehouse" :user/warehouse
+                         ;backtest
+                         "algo/backtest" :algo/backtest
+                         "algo/table" :algo/table
+                         "algo/chart" :algo/chart
+
+                         ;test
                          "error" :user/error
-                         "chart" :user/chart
-                         "backtest" :user/backtest
-                         "highchart" :user/highchart
-                         "highchartstudy" :user/highchartstudy
                          "test/heatmap" :test/heatmap
                          "test/histogram" :test/histogram
                          "test/experiment" :test/experiment}
@@ -37,5 +39,4 @@
                     demo.env.picasso ; for techml rendering (no need to require namespace)
                     ta.viz.arrow ; dataset->arrow 
                     systems.snippet-registry  ; if you want snippet browser started
-                    systems.snippet-scratchpad
-                    ]}}
+                    systems.snippet-scratchpad]}}

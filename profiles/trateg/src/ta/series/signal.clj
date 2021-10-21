@@ -1,7 +1,8 @@
 (ns ta.series.signal
   (:require
    [tech.v3.datatype :as dtype]
-   [tech.v3.datatype.functional :as dfn]))
+   [tech.v3.datatype.functional :as dfn]
+   [tablecloth.api :as tc]))
 
 (defn prior-int [price n-ago]
   (let [l (count price)]
@@ -44,6 +45,11 @@
        (price idx)
        0.0))))
 
+(defn select-signal-true [ds signal-col]
+  (tc/select-rows ds
+                  (fn [row]
+                    (signal-col row))))
+
 (comment
 
   (cross-up [1 2 3 5 6 7 8 9]
@@ -70,6 +76,12 @@
   (cross-down px-d ind)
   (->> (cross-down px-d ind)
        (price-when px-d))
+
+  (-> (tc/dataset [{:idx 1 :signal false}
+                   {:idx 2 :signal false}
+                   {:idx 3 :signal true}
+                   {:idx 4 :signal false}])
+      (select-signal-true :signal))
 
 ; 
   )

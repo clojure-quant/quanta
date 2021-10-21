@@ -1,8 +1,8 @@
 (ns demo.env.algos
   (:require
-   [tech.v3.dataset :as tds]
    [tablecloth.api :as tc]
-   [ta.backtest.date :refer [ensure-roundtrip-date-localdatetime]]
+   [ta.helper.ds :refer [ds->map]]
+   [ta.backtest.date :refer [ds-convert-col-instant->localdatetime ensure-roundtrip-date-localdatetime]]
    [ta.backtest.study :refer [run-study]]
    [ta.backtest.roundtrip-backtest :refer [run-backtest]]
    [ta.backtest.roundtrip-stats :refer [roundtrip-performance-metrics]]
@@ -10,7 +10,7 @@
    ; algos
    [ta.algo.buy-hold :refer [buy-hold-signal]]
    [ta.series.gann :refer [algo-gann algo-gann-signal]]
-   [demo.studies.moon :refer [moon-signal]]
+   [demo.algo.moon :refer [moon-signal]]
    [demo.algo.supertrend :refer [supertrend-signal]]
    [demo.algo.sma :refer [sma-signal]]
    ; viz
@@ -104,13 +104,11 @@
                 ;{:index "column"}
                ; {:qt-jump-close "column"}
                 ]}])
+
 (defn algo-names []
   (map :name algos))
 
-(defn ds->map [ds]
-  (into [] (tds/mapseq-reader ds)))
-
-(defn run-algo [n]
+(defn algo-run [n]
   (if-let [algo-options (first (filter #(= n (:name %)) algos))]
     (let [algo (:algo algo-options)
           comment (:comment algo-options)
@@ -130,7 +128,7 @@
     (do (println "algo not found" n)
         nil)))
 
-(defn chart-algo [n]
+(defn algo-chart [n]
   (if-let [algo-options (first (filter #(= n (:name %)) algos))]
     (let [_  (println "running algo:  " n)
           algo (:algo algo-options)
@@ -159,17 +157,41 @@
     (do (println "algo not found" n)
         nil)))
 
+;; table brings this error:
+;; java.lang.Exception: Not supported: class java.time.Instant
+
+(defn algo-table [n]
+  (if-let [algo-options (first (filter #(= n (:name %)) algos))]
+    (let [_  (println "running algo:  " n)
+          algo (:algo algo-options)
+          comment (:comment algo-options)
+          algo-options (dissoc algo-options :algo :name :comment :axes-spec)
+          b (run-study algo algo-options)
+          ds-study (->  (:ds-study b)
+                        ds-convert-col-instant->localdatetime
+                        (tc/select-rows (range 1000)))]
+      (println "algo-table result: " (keys b))
+      {:name n
+       :options algo-options
+       :comment comment
+       :table (ds->map ds-study)})
+    (do (println "algo not found" n)
+        nil)))
+
 (comment
   (algo-names)
 
-  (run-algo "sma trendfollow BTC")
+  (algo-run "sma trendfollow BTC")
 
-  (chart-algo "sma trendfollow BTC")
+  (algo-chart "sma trendfollow BTC")
 
-  (-> (chart-algo "gann BTC")
+  (-> (algo-chart "gann BTC")
       ;keys
       )
 
+  (-> (algo-table "gann BTC")
+      ;keys
+      )
 ;  
   )
 

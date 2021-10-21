@@ -9,6 +9,7 @@
    [ta.backtest.roundtrip-backtest :refer [run-backtest]]
    [ta.backtest.print :as p]
    [ta.backtest.nav :as nav]
+   [demo.algo.moon :refer [moon-signal]]
    [ta.algo.buy-hold :refer [buy-hold-signal]]))
 
 (defn win? [logret]
@@ -54,24 +55,6 @@
 (-> (study-moon :stocks "SPY" true) moon-mean)
 
 (-> (study-moon :stocks "EURUSD" true) moon-mean)
-
-(defn add-moon-indicator [ds-bars _]
-  (tc/add-column
-   ds-bars
-   :phase  (dtype/emap inst->moon-phase-kw :object (:date ds-bars))))
-
-(defn calc-moon-signal [phase]
-  (if phase
-    (case phase
-      :i1 :flat
-      :full :buy
-      :hold)
-    :hold))
-
-(defn moon-signal [ds-bars options]
-  (let [ds-study (add-moon-indicator ds-bars options)
-        signal (into [] (map calc-moon-signal (:phase ds-study)))]
-    (tc/add-columns ds-study {:signal signal})))
 
 (def options-d
   {:w :stocks
