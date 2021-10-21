@@ -2,7 +2,7 @@
   (r/atom {:name-loaded nil
            :data nil}))
 
-(defn load-studytable [name name-loaded]
+(defn load-studytable [name filter-signal name-loaded]
   (if name
     (when (not (= name name-loaded))
       (info (str "loading: " name))
@@ -12,9 +12,9 @@
     (do (swap! studytable-state assoc :data nil)
         nil)))
 
-(defn study-table [name]
+(defn study-table [name filter-signal]
   (let [{:keys [name-loaded data mode]} @studytable-state]
-    (do (load-studytable name name-loaded)
+    (do (load-studytable name filter-signal name-loaded)
         nil)
     (if data
       [:div
@@ -35,7 +35,7 @@
     [:div.flex.flex-row.bg-blue-500
      [link/href "/" "main"]]
      ; "main"
-    [study-table "gann BTC"] ; "buy-hold s&p"
+    [study-table "gann BTC" false] ; "buy-hold s&p"
     ]])
 
 (add-page studytable-page :algo/table)

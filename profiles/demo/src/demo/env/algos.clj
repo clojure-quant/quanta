@@ -2,6 +2,7 @@
   (:require
    [tablecloth.api :as tc]
    [ta.helper.ds :refer [ds->map]]
+   [ta.series.signal :refer [select-signal-has]]
    [ta.backtest.date :refer [ds-convert-col-instant->localdatetime ensure-roundtrip-date-localdatetime]]
    [ta.backtest.roundtrip-backtest :refer [run-backtest]]
    [ta.backtest.roundtrip-stats :refer [roundtrip-performance-metrics]]
@@ -163,18 +164,26 @@
 ;; table brings this error:
 ;; java.lang.Exception: Not supported: class java.time.Instant
 
-(defn algo-table [n]
-  (if-let [b (algo-backtest n)]
-    (let [ds-study (->  (:ds-study (:backtest b))
-                        ds-convert-col-instant->localdatetime
+(defn algo-table
+  ([n]
+   (algo-table n false))
+  ([n filter-signal]
+   (if-let [b (algo-backtest n)]
+     (let [ds-study (->  (:ds-study (:backtest b))
+                         ds-convert-col-instant->localdatetime
                         ;(tc/select-rows (range 1000))
-                        )]
-      {:name n
-       :options (:options b)
-       :comment (:comment b)
-       :table (ds->map ds-study)})
-    (do (println "algo not found" n)
-        nil)))
+                         )
+           ds-study (if filter-signal
+                      (select-signal-has ds-study :trade)
+                      ds-study)]
+       {:name n
+        :options (:options b)
+        :comment (:comment b)
+        :table (ds->map ds-study)})
+     (do (println "algo not found" n)
+         nil))))
+
+select-signal-has
 
 (comment
   (algo-names)
@@ -197,7 +206,7 @@
   (-> (algo-table "buy-hold s&p")
       keys)
 
-  
+
   ; no signal strategy
   (algo-backtest "gann BTC")
   (algo-chart "gann BTC")

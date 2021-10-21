@@ -11,7 +11,9 @@
                      :nav-table
                      :nav-chart
                      :study-chart
-                     :study-table])
+                     :study-table
+                     :study-table-tradeonly
+                     ])
 
 (run-a backtest-state [:algos] :algo/names)
 
@@ -118,7 +120,8 @@
           :nav-table (navs-view (get-in @backtest-state [:data :nav]))
           :nav-chart (navs-chart (get-in @backtest-state [:data :nav]))
           :study-chart (study-chart symbol)
-          :study-table (study-table symbol)
+          :study-table (study-table symbol false)
+          :study-table-tradeonly (study-table symbol true)
           ;:frisk [frisk data]
           ;:table [table data]
           ;:histogram [histogram data]
