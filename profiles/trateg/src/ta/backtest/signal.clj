@@ -72,15 +72,16 @@
         trade-seq))
 
 (defn trade-signal [ds]
-  (let [signal (:signal ds)
-        trade (signal->trade signal)
-        trade-no (trade->trade-no trade)
-        position (signal->position signal)]
-    (tc/add-columns ds {:index (running-index-vec ds)
-                        :signal signal
-                        :trade trade
-                        :trade-no trade-no
-                        :position position})))
+  (if-let [signal (:signal ds)]
+    (let [trade (signal->trade signal)
+          trade-no (trade->trade-no trade)
+          position (signal->position signal)]
+      (tc/add-columns ds {:index (running-index-vec ds)
+                          :signal signal
+                          :trade trade
+                          :trade-no trade-no
+                          :position position}))
+    ds))
 
 (comment
 

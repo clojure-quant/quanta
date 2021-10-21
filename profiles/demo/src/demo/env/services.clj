@@ -6,7 +6,7 @@
    [ta.warehouse :as wh]
    [ta.warehouse.overview :refer [warehouse-overview]]
    [demo.env.config] ; side-effects
-   [demo.env.algos :refer [algo-names algo-run algo-table algo-chart]]))
+   [demo.env.algos :refer [algo-names algo-metrics algo-table algo-chart]]))
 
 (defn overview-map [w f]
   (let [ds-overview (warehouse-overview w f)
@@ -26,9 +26,9 @@
 
   ; algo
   :algo/names algo-names
-  :algo/run algo-run     ; used in backtest
-  :algo/table algo-table ; used in study-table
-  :algo/chart algo-chart ; used in study-highchart
+  :algo/metrics algo-metrics  ; used in backtest
+  :algo/table algo-table      ; used in study-table
+  :algo/chart algo-chart      ; used in study-highchart
   })
 
 

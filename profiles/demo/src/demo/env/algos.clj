@@ -3,7 +3,6 @@
    [tablecloth.api :as tc]
    [ta.helper.ds :refer [ds->map]]
    [ta.backtest.date :refer [ds-convert-col-instant->localdatetime ensure-roundtrip-date-localdatetime]]
-   [ta.backtest.study :refer [run-study]]
    [ta.backtest.roundtrip-backtest :refer [run-backtest]]
    [ta.backtest.roundtrip-stats :refer [roundtrip-performance-metrics]]
    [ta.backtest.nav :refer [nav-metrics nav]]
@@ -108,37 +107,41 @@
 (defn algo-names []
   (map :name algos))
 
-(defn algo-run [n]
-  (if-let [algo-options (first (filter #(= n (:name %)) algos))]
-    (let [algo (:algo algo-options)
-          comment (:comment algo-options)
-          algo-options (dissoc algo-options :algo :name :comment)
-          b (run-backtest algo algo-options)
-          ds-rts (-> (:ds-roundtrips b) ensure-roundtrip-date-localdatetime)]
+(defn algo-backtest [n]
+  (when-let [options (first (filter #(= n (:name %)) algos))]
+    (let [algo (:algo options)
+          algo-options (dissoc options :algo :name :comment :axes-spec)
+          _  (println "running algo:  " n)
+          b (run-backtest algo algo-options)]
       (println "run algo result: " (keys b))
+      {:name n
+       :comment  (:comment options)
+       :axes-spec (:axes-spec options)
+       :options algo-options
+       :backtest b})))
+
+(defn algo-metrics [n]
+  (if-let [b (algo-backtest n)]
+    (let [backtest (:backtest b)
+          ds-rts (-> (:ds-roundtrips backtest) ensure-roundtrip-date-localdatetime)]
       (println "roundtrip cols: " (->> ds-rts
                                        tc/columns
                                        (map meta)))
-      {:options algo-options
-       :comment comment
-       :rt-metrics (-> (roundtrip-performance-metrics b) ds->map first) ; ds
-       :nav-metrics (nav-metrics b)
+      {:options (:options b)
+       :comment (:comment b)
+       :rt-metrics (-> (roundtrip-performance-metrics backtest) ds->map first) ; ds
+       :nav-metrics (nav-metrics backtest)
        :roundtrips (-> ds-rts ds->map)
-       :nav (-> (nav b) ds->map)}) ;ds
+       :nav (-> (nav backtest) ds->map)}) ;ds
     (do (println "algo not found" n)
         nil)))
 
 (defn algo-chart [n]
-  (if-let [algo-options (first (filter #(= n (:name %)) algos))]
-    (let [_  (println "running algo:  " n)
-          algo (:algo algo-options)
-          comment (:comment algo-options)
-          axes-spec (:axes-spec algo-options)
-          algo-options (dissoc algo-options :algo :name :comment :axes-spec)
-          b (run-study algo algo-options)
-          ds-study (->  (:ds-study b)
+  (if-let [b (algo-backtest n)]
+    (let [ds-study (->  (:ds-study (:backtest b))
                         ; (tc/select-rows (range 1000))
                         )
+          axes-spec (:axes-spec b)
           axes-spec (if axes-spec axes-spec
                         [{;:sma200 "line"
                          ;:sma30 "line"
@@ -150,8 +153,8 @@
       (println "axes spec: " axes-spec)
       (println "run algo result: " (keys b))
       {:name n
-       :options algo-options
-       :comment comment
+       :options (:options b)
+       :comment (:comment b)
        :highchart (-> (study-highchart ds-study axes-spec)
                       second)}) ;ds
     (do (println "algo not found" n)
@@ -161,19 +164,14 @@
 ;; java.lang.Exception: Not supported: class java.time.Instant
 
 (defn algo-table [n]
-  (if-let [algo-options (first (filter #(= n (:name %)) algos))]
-    (let [_  (println "running algo:  " n)
-          algo (:algo algo-options)
-          comment (:comment algo-options)
-          algo-options (dissoc algo-options :algo :name :comment :axes-spec)
-          b (run-study algo algo-options)
-          ds-study (->  (:ds-study b)
+  (if-let [b (algo-backtest n)]
+    (let [ds-study (->  (:ds-study (:backtest b))
                         ds-convert-col-instant->localdatetime
-                        (tc/select-rows (range 1000)))]
-      (println "algo-table result: " (keys b))
+                        ;(tc/select-rows (range 1000))
+                        )]
       {:name n
-       :options algo-options
-       :comment comment
+       :options (:options b)
+       :comment (:comment b)
        :table (ds->map ds-study)})
     (do (println "algo not found" n)
         nil)))
@@ -181,17 +179,15 @@
 (comment
   (algo-names)
 
-  (algo-run "sma trendfollow BTC")
+  (-> (algo-metrics "buy-hold s&p")
+      keys)
 
-  (algo-chart "sma trendfollow BTC")
+  (-> (algo-chart "buy-hold s&p")
+      keys)
 
-  (-> (algo-chart "gann BTC")
-      ;keys
-      )
+  (-> (algo-table "buy-hold s&p")
+      keys)
 
-  (-> (algo-table "gann BTC")
-      ;keys
-      )
 ;  
   )
 

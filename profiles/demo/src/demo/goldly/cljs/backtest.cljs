@@ -5,7 +5,13 @@
            :data {}
            :mode :metrics}))
 
-(defonce ui-options [:pr-str :metrics :roundtrips :navs :navs-chart :series-chart :study-table])
+(defonce ui-options [:pr-str
+                     :metrics
+                     :roundtrips
+                     :nav-table
+                     :nav-chart
+                     :study-chart
+                     :study-table])
 
 (run-a backtest-state [:algos] :algo/names)
 
@@ -14,7 +20,7 @@
     (when (not (=  symbol symbol-loaded))
       (info (str "loading: " symbol))
       (swap! backtest-state assoc :symbol-loaded symbol)
-      (run-a backtest-state [:data] :algo/run symbol)
+      (run-a backtest-state [:data] :algo/metrics symbol)
       nil)
     (do (swap! backtest-state assoc :data nil)
         nil)))
@@ -109,9 +115,9 @@
           :pr-str [:div.bg-red-500 (pr-str data)]
           :metrics (metrics-view (:data @backtest-state))
           :roundtrips (roundtrips-view (get-in @backtest-state [:data :roundtrips]))
-          :navs (navs-view (get-in @backtest-state [:data :nav]))
-          :navs-chart (navs-chart (get-in @backtest-state [:data :nav]))
-          :series-chart (study-chart symbol)
+          :nav-table (navs-view (get-in @backtest-state [:data :nav]))
+          :nav-chart (navs-chart (get-in @backtest-state [:data :nav]))
+          :study-chart (study-chart symbol)
           :study-table (study-table symbol)
           ;:frisk [frisk data]
           ;:table [table data]
