@@ -85,10 +85,13 @@ DANIEL:
 
 FLORIAN TODO:
 
+- print dataset into text (should work with bigger datasets than aggrid)
+
 - https://github.com/scicloj/wadogo  for percentile calculation.
 
 - goldly: create date (js/Date. in repl)
 
+- goldly: arrow endpoint (for bigger datasets) + clojurescript arrow reader.
 
 
   
