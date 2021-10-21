@@ -70,7 +70,8 @@
   (let [ds-study (-> ds-bars
                      (algo algo-options)
                      trade-signal)
-        ds-roundtrips (calc-roundtrips ds-study)]
+        ds-roundtrips (when (:signal ds-study)
+                        (calc-roundtrips ds-study))]
     {:ds-study ds-study
      :ds-roundtrips ds-roundtrips}))
 

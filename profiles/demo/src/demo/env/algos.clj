@@ -179,6 +179,7 @@
 (comment
   (algo-names)
 
+  ; test the 4 functions on a strategy that generates a signal
   (require '[ta.viz.study-highchart :refer [ds-epoch series-flags]])
   (-> (algo-backtest "buy-hold s&p")
       ;keys
@@ -196,6 +197,10 @@
   (-> (algo-table "buy-hold s&p")
       keys)
 
+  
+  ; no signal strategy
+  (algo-backtest "gann BTC")
+  (algo-chart "gann BTC")
 ;  
   )
 
