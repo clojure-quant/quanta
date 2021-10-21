@@ -143,7 +143,7 @@
                         )
           axes-spec (:axes-spec b)
           axes-spec (if axes-spec axes-spec
-                        [{;:sma200 "line"
+                        [{:trade "flags" ;:sma200 "line"
                          ;:sma30 "line"
                           }
                          {:open "line"}
@@ -178,6 +178,14 @@
 
 (comment
   (algo-names)
+
+  (require '[ta.viz.study-highchart :refer [ds-epoch series-flags]])
+  (-> (algo-backtest "buy-hold s&p")
+      ;keys
+      :backtest
+      :ds-study
+      ds-epoch
+      (series-flags :trade :buy))
 
   (-> (algo-metrics "buy-hold s&p")
       keys)

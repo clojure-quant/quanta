@@ -2,7 +2,7 @@
   (:require
    [tech.v3.dataset :as tds]
    [ta.data.date :as dt]
-   [ta.series.signal :refer [select-signal-true]]))
+   [ta.series.signal :refer [select-signal-is select-signal-has]]))
 
 (defn ds-epoch
   "add epoch column to ds"
@@ -31,11 +31,18 @@
    for signal plot
    "
   [ds-epoch col]
-  (let [ds-with-signal (select-signal-true ds-epoch col)
+  (println "Series flags col:" col)
+  (let [;ds-with-signal (select-signal-is ds-epoch col :buy)
+        ds-with-signal (select-signal-has ds-epoch col)
+
         r (tds/mapseq-reader ds-with-signal)]
-    (into [] (fn [r] {:x (:epoch r)
-                      :title "A"
-                      :text "desc"}) r)))
+    (println "rows with signal: " (tds/row-count ds-with-signal))
+    (into [] (map  (fn [row]
+               ;(println "row: " row)
+                     {:y (:close row)
+                      :x (:epoch row)
+                      :title (col row)
+                      :text "desc"})) r)))
 
 (defn add-series [ds-e grouping plot-no [col type-map]]
   (let [{:keys [type color]} (if (map? type-map)

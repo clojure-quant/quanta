@@ -45,7 +45,12 @@
        (price idx)
        0.0))))
 
-(defn select-signal-true [ds signal-col]
+(defn select-signal-is [ds signal-col v]
+  (tc/select-rows ds
+                  (fn [row]
+                    (= (signal-col row) v))))
+
+(defn select-signal-has [ds signal-col]
   (tc/select-rows ds
                   (fn [row]
                     (signal-col row))))
@@ -81,7 +86,7 @@
                    {:idx 2 :signal false}
                    {:idx 3 :signal true}
                    {:idx 4 :signal false}])
-      (select-signal-true :signal))
+      (select-signal-is :signal true))
 
 ; 
   )
