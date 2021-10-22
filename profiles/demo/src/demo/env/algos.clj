@@ -45,6 +45,12 @@
     :w :stocks
     :symbol "QQQ"
     :frequency "D"}
+   {:name "moon ETH"
+    :comment ""
+    :algo moon-signal
+    :w :crypto
+    :symbol "ETHUSD"
+    :frequency "D"}
    ; supertrend
    {:name "supertrend ETH"
     :comment "a 15min strategy should be better than daily moon"

@@ -5,7 +5,8 @@
    [taoensso.timbre :refer [debug info warnf]]
    [tech.v3.io :as io]
    ;[taoensso.nippy :as nippy]
-   [tablecloth.api :as tablecloth]))
+   [tablecloth.api :as tablecloth]
+   [ta.warehouse.split-adjust :refer [split-adjust]]))
 
 (defonce config
   (atom {}))
@@ -40,13 +41,16 @@
         ds (tablecloth/set-dataset-name ds name)]
     (debug "loaded series " name " count: " (tablecloth/row-count ds))
      ;(tablecloth/add-column ds :symbol symbol)
+
     ds))
 
 (defn make-filename [frequency symbol]
   (str symbol "-" frequency))
 
 (defn load-symbol [w frequency symbol]
-  (load-ts w (make-filename frequency symbol)))
+  (->> (make-filename frequency symbol)
+       (load-ts w)
+       split-adjust))
 
 (defn save-symbol [w ds frequency symbol]
   (let [n (make-filename frequency symbol)]

@@ -19,3 +19,21 @@
 (defn drop-instant-cols [ds]
   (tc/drop-columns ds #(= :packed-instant %) :datatype))
 
+(defn has-col [ds col]
+  (->> ds
+       tc/columns
+       (map meta)
+       (filter #(= col (:name %)))
+       empty?
+       not
+       ;(map :name)
+       ))
+(comment
+
+  (-> (tc/dataset {:close [1 2 3]
+                   :adj-close [5 7 8]})
+      (has-col :x)
+   ;   (has-col :close)
+      )
+;  
+  )

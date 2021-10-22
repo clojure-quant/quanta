@@ -10,13 +10,6 @@
             ;[trateg.ta4j :as ta4j]
             :reload-all))
 
-; show bar data
-;(def spx-bars  (load-csv-bars "trateg/spx.csv"))
-{:first-bar  (first spx-bars)
- :bar-count (count spx-bars)}
-;(def spx-bars (take 100 spx-bars))
-;(count spx-bars)
-
 (def cached-rsi (memoize ind/rsi))
 (def cached-atr (memoize ind/atr))
 
@@ -33,9 +26,6 @@
     (doall (column-map->row-maps (merge bar-cols indicators)))))
 
 (def BARS (mkbars spx-bars {:rsi-period 14 :atr-period 20}))
-
-; show bars that have been aumented with :rs and :atr
-(nth BARS 10)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;Static holding period strategy;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
