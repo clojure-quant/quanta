@@ -20,7 +20,10 @@
  :goldly {:lazy true
           :autoload-dir  "src/demo/goldly/cljs"  ; to load cljs files to repl state
           :notebook-dir ["src/demo/warehouse"
-                         "src/demo/studies"]
+                         "src/demo/studies"
+                         "src/demo/playground"
+                         
+                         ]
           :routes {:app {"" :user/main
                          ;warehouse
                          "warehouse" :user/warehouse

@@ -1,4 +1,4 @@
-(ns demo.study.bollinger
+(ns demo.studies.bollinger
   (:require
    [taoensso.timbre :refer [info]]
    [tech.v3.dataset :as tds]

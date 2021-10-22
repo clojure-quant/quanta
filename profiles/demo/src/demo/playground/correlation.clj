@@ -64,10 +64,7 @@
        (map standardize)
        stats/covariance-matrix))
 
-fun/quartile-1
-
 (fun/quartiles (range 1000))
 
 (fun/quartile-1 (range 1000))
 
-()

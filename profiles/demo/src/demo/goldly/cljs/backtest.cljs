@@ -12,8 +12,7 @@
                      :nav-chart
                      :study-chart
                      :study-table
-                     :study-table-tradeonly
-                     ])
+                     :study-table-tradeonly])
 
 (run-a backtest-state [:algos] :algo/names)
 

@@ -45,3 +45,16 @@
                   :year (map #(java.time.Year/of %) [2022 2022 2023 2023])})
     (api/pivot->wider :year [:min :max]
                       {:drop-missing? false}))
+
+(require '[tick.core :as t])
+(t/now)
+(def inst *1)
+(type inst)
+(.getLong java.time.temporal.ChronoField/CLOCK_HOUR_OF_DAY)
+(.getLong inst java.time.temporal.ChronoField/CLOCK_HOUR_OF_DAY)
+(.getLong inst java.time.temporal.ChronoField/CLOCK_HOUR_OF_DAY_AMPM)
+(.getLong inst java.time.temporal.ChronoField/CLOCK_HOUR_OF_AMPM)
+(.getLong inst java.time.temporal.ChronoField/EPOCH_DAY)
+(.getLong inst java.time.temporal.ChronoField/YEAR)
+; Instants really only get you milliseconds/nanoseconds/microseconds since epoch or something like that. 
+; IF you standardize on milliseconds since epoch you can make everything work else you have to use a different base type than an instant.

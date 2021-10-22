@@ -40,6 +40,7 @@
     (into [] (map  (fn [row]
                ;(println "row: " row)
                      {:y (:close row)
+                      ;:z 1000
                       :x (:epoch row)
                       :title (col row)
                       :text "desc"})) r)))
@@ -48,27 +49,46 @@
   (let [{:keys [type color]} (if (map? type-map)
                                type-map
                                {:color "blue"
-                                :type type-map})]
-    {:type type
-     :name (name col)
-     :data (if (= type "flags")
-             (series-flags ds-e col)
-             (series ds-e col))
-     :yAxis plot-no
-     :color color
+                                :type type-map})
+        axis {:type type
+              :name (name col)
+              :data (if (= type "flags")
+                      (series-flags ds-e col)
+                      (series ds-e col))
+              :yAxis plot-no
+              :color color
    ;:dataGrouping grouping
-     }))
+              }]
+    (if (= type "flags")
+      (assoc axis
+             :shape "squarepin"
+             :width 16
+             :onSeries "0")
+      axis)))
 
-(def ohlc-height 800)
+;; AXIS
+
+(def ohlc-height 600)
+(def other-height 200)
+
+(def default-axis
+  [{:resize {:enabled true}
+    :labels {:align "right"
+             :x -3}
+    :title {:text "OHLC"}
+    :height ohlc-height ; "60%"
+    :lineWidth 2}])
 
 (defn add-axis [ds-e grouping {:keys [yAxis series no]} line]
-  (let [axis {:labels {:align "right" :x -3}
+  (let [axis {:labels {:align "right"
+                       :x -3}
               ;:title {:text "Volume"}
               ;:top "65%"
-              :top (+ ohlc-height (* no 200))
+              :top (+ ohlc-height (* no other-height)) ; first additional axes starts at no = 0
               :height 200; "35%"
               ;:offset 0
-              :lineWidth 2}
+              :lineWidth 2
+              :resize {:enabled true}}
         plot-no (dec (count yAxis))
         new-series (map (partial add-series ds-e grouping plot-no) line)]
     {:yAxis (conj yAxis axis)
@@ -79,27 +99,28 @@
   (let [ds-e (ds-epoch ds)
         grouping {:units [["week" [1]] ; // unit name - allowed multiples
                           ["month" [1, 2, 3, 4, 6]]]}
-        axes [{:labels {:align "right" :x -3}
-               :title {:text "OHLC"}
-               :height ohlc-height ; "60%"
-               :lineWidth 2}]
         series [{:type "candlestick" ; :type "ohlc"
                  :name "priceseries"
                  :data (series-ohlc ds-e)
                  ;:dataGrouping grouping
                  :id "0"}]]
     (reduce (partial add-axis ds-e grouping)
-            {:yAxis axes :series series :no 0}
+            {:yAxis default-axis
+             :series series
+             :no 0}
             axes-spec)))
 
 (defn study-highchart [ds axes-spec]
   (let [spec-base {;:title {:text title}
                    ;:xAxis {:categories (:labels data)}
-                   ;:tooltip {:valueSuffix " %"}
                    :tooltip {:style {:width "200px"}
                              :valueDecimals 4
+                             ;:valueSuffix " %"
                              :shared true}
-                   :chart {:height (+ 400 (* 200 (count axes-spec)))}
+                   :chart {:height (+ ohlc-height
+                                      (* other-height (dec (count axes-spec)))
+                                      100 ; size of time window selector
+                                      )}
                    :rangeSelector {; timeframe selector on the top
                                    :verticalAlign "top"
                                    ;:selected 1   

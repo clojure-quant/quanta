@@ -3,18 +3,20 @@
    [tablecloth.api :as tc]
    [ta.helper.ds :refer [ds->map]]
    [ta.series.signal :refer [select-signal-has]]
+   ; backtest
    [ta.backtest.date :refer [ds-convert-col-instant->localdatetime ensure-roundtrip-date-localdatetime]]
    [ta.backtest.roundtrip-backtest :refer [run-backtest]]
    [ta.backtest.roundtrip-stats :refer [roundtrip-performance-metrics]]
    [ta.backtest.nav :refer [nav-metrics nav]]
+   ; viz
+   [ta.viz.study-highchart :refer [study-highchart]]
    ; algos
    [ta.algo.buy-hold :refer [buy-hold-signal]]
    [ta.series.gann :refer [algo-gann algo-gann-signal]]
    [demo.algo.moon :refer [moon-signal]]
    [demo.algo.supertrend :refer [supertrend-signal]]
    [demo.algo.sma :refer [sma-signal]]
-   ; viz
-   [ta.viz.study-highchart :refer [study-highchart]]))
+   [demo.algo.sma-diff :refer [sma-diff-indicator]]))
 
 (def algos
   [; buyhold
@@ -87,10 +89,7 @@
           :at 180
           :bp 12000.0
           :bt 225}
-    :axes-spec [{;:sma200 "line"
-                 ;:sma30 "line"
-                ; :open "line"
-                 :sr-up-0 "line"
+    :axes-spec [{:sr-up-0 "line"
                  :sr-up-1 "line"
                  :sr-up-2 "line"
                  :sr-down-0 {:type "line" :color "red"}
@@ -103,7 +102,19 @@
                  }
                 ;{:index "column"}
                ; {:qt-jump-close "column"}
-                ]}])
+                ]}
+   {:name "sma-diff BTC"
+    :comment "experiment"
+    :algo sma-diff-indicator
+    :w :crypto
+    :symbol "BTCUSD"
+    :frequency "D"
+    :st-mult 2.0
+    :sma-length-st 5
+    :sma-length-lt 20
+    :axes-spec [{:sma-st "line"
+                 :sma-lt "line"
+                 :sma-diff {:type "line" :color "red"}}]}])
 
 (defn algo-names []
   (map :name algos))
@@ -144,13 +155,8 @@
                         )
           axes-spec (:axes-spec b)
           axes-spec (if axes-spec axes-spec
-                        [{:trade "flags" ;:sma200 "line"
-                         ;:sma30 "line"
-                          }
-                         {:open "line"}
-                         {:volume "column"}])
-          ;ds-rts (-> (:ds-roundtrips b) ensure-roundtrip-date-localdatetime)
-          ]
+                        [{:trade "flags"}
+                         {:volume "column"}])]
       (println "axes spec: " axes-spec)
       (println "run algo result: " (keys b))
       {:name n
@@ -161,9 +167,6 @@
     (do (println "algo not found" n)
         nil)))
 
-;; table brings this error:
-;; java.lang.Exception: Not supported: class java.time.Instant
-
 (defn algo-table
   ([n]
    (algo-table n false))
@@ -171,7 +174,7 @@
    (if-let [b (algo-backtest n)]
      (let [ds-study (->  (:ds-study (:backtest b))
                          ds-convert-col-instant->localdatetime
-                        ;(tc/select-rows (range 1000))
+                         ;(tc/select-rows (range 1000))
                          )
            ds-study (if filter-signal
                       (select-signal-has ds-study :trade)
@@ -183,8 +186,6 @@
      (do (println "algo not found" n)
          nil))))
 
-select-signal-has
-
 (comment
   (algo-names)
 
@@ -195,7 +196,7 @@ select-signal-has
       :backtest
       :ds-study
       ds-epoch
-      (series-flags :trade :buy))
+      (series-flags :trade))
 
   (-> (algo-metrics "buy-hold s&p")
       keys)
@@ -206,10 +207,12 @@ select-signal-has
   (-> (algo-table "buy-hold s&p")
       keys)
 
-
-  ; no signal strategy
+; no signal strategy
   (algo-backtest "gann BTC")
   (algo-chart "gann BTC")
+
+  (algo-backtest "sma-diff BTC")
+
 ;  
   )
 

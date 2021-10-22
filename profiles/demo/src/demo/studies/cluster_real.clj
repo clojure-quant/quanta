@@ -32,6 +32,10 @@ symbol->name
 (-> concatenated-dataset
     (tc/random 10))
 
+(->> concatenated-dataset
+     tc/columns
+     (map meta))
+
 (-> concatenated-dataset
     (overview-view {:grouping-columns [:symbol :year :month]})
     (print/print-range :all))

@@ -1,4 +1,4 @@
-(ns demo.playground.indicator
+(ns demo.playground.ta4j
   (:require
    [ta.series.indicator :as ind]
    [ta.warehouse :as wh]

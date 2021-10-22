@@ -3,9 +3,7 @@
    [tablecloth.api :as tc]
    [tech.v3.dataset.print :as print]
    [ta.warehouse :as wh]
-   [ta.backtest.date :refer [add-year-and-month-date-as-instant]]
-   [demo.env.config] ; side effects
-   ))
+   [ta.backtest.date :refer [add-year-and-month-date-as-instant]]))
 
 (def ds-m-y-real
   (->

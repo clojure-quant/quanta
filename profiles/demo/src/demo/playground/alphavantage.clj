@@ -12,8 +12,20 @@
 
 ;; # stock series
 (av/get-daily :compact "QQQ")
-(print-table (->> (av/get-daily :compact "MSFT")
-                  reverse
+(print-table (->> (av/get-daily :full "MSFT")
+                  :series
+                  ;reverse
+                  (take 5)))
+
+(->
+ (av/get-daily-adjusted :compact "QQQ")
+ :series
+ ;first
+ last)
+
+(print-table (->> (av/get-daily-adjusted :full "MSFT")
+                  :series
+                  ;reverse
                   (take 5)))
 
 ;; # fx series

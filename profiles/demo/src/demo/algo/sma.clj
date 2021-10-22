@@ -1,6 +1,6 @@
 (ns demo.algo.sma
   (:require
-   [tablecloth.api :as tablecloth]
+   [tablecloth.api :as tc]
    [ta.series.ta4j :as ta4j]))
 
 (defn add-sma-indicator
@@ -15,8 +15,8 @@
         sma-lt (ta4j/ind :SMA close sma-length-lt)
         sma-lt-values  (ta4j/ind-values sma-lt)]
     (-> ds
-        (tablecloth/add-column :sma-st sma-st-values)
-        (tablecloth/add-column :sma-lt sma-lt-values))))
+        (tc/add-column :sma-st sma-st-values)
+        (tc/add-column :sma-lt sma-lt-values))))
 
 (defn calc-sma-signal [sma-st sma-lt]
   (if (and sma-st sma-lt)
@@ -31,5 +31,5 @@
         sma-st (:sma-st ds-study)
         sma-lt (:sma-lt ds-study)
         signal (into [] (map calc-sma-signal sma-st sma-lt))]
-    (tablecloth/add-columns ds-study {:signal signal})))
+    (tc/add-columns ds-study {:signal signal})))
 

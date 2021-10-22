@@ -53,12 +53,11 @@
                ; demo
                "profiles/demo/src/demo/algo"
                "profiles/demo/src/demo/env"
-               ;
-               ;
+               ; goldly
                "profiles/demo/src/demo/playground"
+               ; plot
                ;
                "profiles/demo/src/demo/studies"
-               "profiles/demo/src/demo/study"
                "profiles/demo/src/demo/warehouse"]}
 
   :cloverage

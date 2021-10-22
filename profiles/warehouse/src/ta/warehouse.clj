@@ -50,7 +50,7 @@
 
 (defn save-symbol [w ds frequency symbol]
   (let [n (make-filename frequency symbol)]
-    (info "saving: " n)
+    ;(info "saving: " n)
     (save-ts w ds n)))
 
 ; series in warehouse

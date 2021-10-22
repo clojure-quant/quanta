@@ -111,23 +111,58 @@
 
 ;; Timeseries Requests
 
-(def MetaData- (keyword "Meta Data"))
-(def TimeSeriesDaily- (keyword "Time Series (Daily)"))
-(def TimeSeriesFXDaily- (keyword "Time Series FX (Daily)"))
-(def TimeSeriesDigitalCurrencyDaily- (keyword "Time Series (Digital Currency Daily)"))
+(defn get-field [data fieldname]
+  (if data
+    (get data (keyword fieldname))
+    (do (println "cannot get field " fieldname "- data nil.")
+        nil)))
 
-(def bar-format-standard- {:open (keyword "1. open")
-                           :high (keyword "2. high")
-                           :low (keyword "3. low")
-                           :close (keyword "4. close")
-                           :volume (keyword "5. volume")})
+(defn extract-fields [data fields]
+  ;(println "extracting fields: " fields)
+  (if data (->>
+            (map (fn [[k field-name]]
+                   [k (get-field data field-name)])
+                 fields)
+            (into {}))
+      (do (println "cannot extract fields from nil: " fields)
+          nil)))
 
-(def bar-format-crypto- {:open (keyword "1a. open (USD)")
-                         :high (keyword "2a. high (USD)")
-                         :low (keyword "3a. low (USD)")
-                         :close (keyword "4a. close (USD)")
-                         :volume (keyword "5. volume")
-                         :marketcap (keyword "6. market cap (USD)")})
+(def bar-fields-standard- {:open  "1. open"
+                           :high  "2. high"
+                           :low  "3. low"
+                           :close  "4. close"
+                           :volume  "5. volume"})
+
+(def bar-fields-adjusted- {:open  "1. open"
+                           :high  "2. high"
+                           :low  "3. low"
+                           :close  "4. close"
+                           :close-adj "5. adjusted close"
+                           :volume  "6. volume"
+                           :dividend "7. dividend amount"
+                           :split-coefficient  "8. split coefficient"})
+
+(def bar-fields-crypto- {:open "1a. open (USD)"
+                         :high  "2a. high (USD)"
+                         :low  "3a. low (USD)"
+                         :close  "4a. close (USD)"
+                         :volume  "5. volume"
+                         :marketcap  "6. market cap (USD)"})
+
+;; META DATA
+
+(def meta-fields
+  {:info "1. Information"
+   :symbol "2. Symbol"
+   :last-refresh "3. Last Refreshed"
+   :size-type "4. Output Size"
+   :time-zone "5. Time Zone"})
+
+(defn extract-meta [data]
+  (let [d (get-field data "Meta Data")
+        m (extract-fields d meta-fields)]
+    ;(println "meta data: " m)
+    m))
 
 ;(def row-date-format-
 ;  (fmt/formatter "yyyy-MM-dd")) ; 2019-08-09
@@ -137,29 +172,51 @@
     nil
     (Float/parseFloat str)))
 
-(defn- convert-bar- [bar-format volume? item]
-  (let [bars (second item)
-        bar {:date (ld/parse (subs (str (first item)) 1))
-             :open (as-float ((:open bar-format) bars))
-             :high (as-float ((:high bar-format) bars))
-             :low (as-float ((:low bar-format) bars))
-             :close (as-float ((:close bar-format) bars))}]
-    (if volume?
-      (assoc bar :volume (as-float ((:volume bar-format) bars)))
-      bar)))
+(defn type-convert-bar [b series-type]
+  (let [volume? (or (= series-type :daily)
+                    (= series-type :adjusted))
+        bar {:date (ld/parse (subs (str (:date b)) 1))
+             :open (as-float (:open b))
+             :high (as-float (:high b))
+             :low (as-float (:low b))
+             :close (as-float (:close b))}
+        volume (if volume?
+                 {:volume (as-float (:volume b))}
+                 {})
+        adjusted (if (= series-type :adjusted)
+                   {:close-adj (as-float (:close-adj b))
+                    :split-coefficient (as-float (:split-coefficient b))
+                    :dividend (as-float (:dividend b))}
+                   {})]
+    (merge b bar volume adjusted)))
 
-(defn- convert-bars- [request-type response]
-  (let [bar-format (if (= request-type TimeSeriesDigitalCurrencyDaily-) bar-format-crypto- bar-format-standard-)
-        volume? (= request-type TimeSeriesDaily-)
-        ;_ (println "Bar format: " bar-format)
-        ]
-    (->> response
-         (request-type)
-         (seq)
-       ;(first)
-       ;(convert-bar)
-         (map (partial convert-bar- bar-format volume?))
-         (sort-by :date))))
+(defn- convert-bar- [bar-fields series-type item]
+  (let [d (first item)
+        bars (second item)
+        bar (extract-fields bars bar-fields)]
+    (-> bar
+        (assoc :date d)
+        (type-convert-bar series-type))))
+
+(defn- get-field-series [series-type response]
+  (let [f (case series-type
+            :daily "Time Series (Daily)"
+            :adjusted  "Time Series (Daily)"
+            :fx "Time Series FX (Daily)"
+            :crypto "Time Series (Digital Currency Daily)")]
+    (get-field response f)))
+
+(defn- convert-bars- [series-type response]
+  (let [bar-format (case series-type
+                     :crypto bar-fields-crypto-
+                     :adjusted bar-fields-adjusted-
+                     bar-fields-standard-)]
+    {:meta (extract-meta response)
+     :series (->> response
+                  (get-field-series series-type)
+                  (seq)
+                  (map (partial convert-bar- bar-format series-type))
+                  (sort-by :date))}))
 
 (defn get-daily
   "size: compact=last 100 days. full=entire history"
@@ -169,7 +226,19 @@
            :outputsize (name size)
            :datatype "json"}
           (fn [response]
-            (convert-bars- TimeSeriesDaily- response))))
+            ;(println response)
+            (convert-bars- :daily response))))
+
+(defn get-daily-adjusted
+  "size: compact=last 100 days. full=entire history"
+  [size symbol]
+  (get-av {:function "TIME_SERIES_DAILY_ADJUSTED"
+           :symbol symbol
+           :outputsize (name size)
+           :datatype "json"}
+          (fn [response]
+            ;(println "data adjusted: " (pr-str response))
+            (convert-bars- :adjusted response))))
 
 (defn get-daily-fx
   "size: compact=last 100 days. full=entire history"
@@ -180,7 +249,7 @@
            :outputsize (name size)
            :datatype "json"}
           (fn [response]
-            (convert-bars- TimeSeriesFXDaily- response))))
+            (convert-bars- :fx response))))
 
 (defn get-daily-crypto
   "size: compact=last 100 days. full=entire history"
@@ -191,7 +260,7 @@
            :outputsize (name size)
            :datatype "json"}
           (fn [response]
-            (convert-bars- TimeSeriesDigitalCurrencyDaily- response))))
+            (convert-bars- :crypto response))))
 
 (def kwCryptoRating- (keyword "Crypto Rating (FCAS)"))
 
