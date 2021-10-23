@@ -124,10 +124,14 @@
 (defn run-backtest-parameter-range
   [algo base-options
    prop-to-change prop-range]
-  (for [m prop-range]
-    (let [options (assoc base-options prop-to-change m)
-          r (run-backtest algo options)
-          r (-> r
-                (assoc :ds-roundtrips (tc/set-dataset-name (:ds-roundtrips r) m)))]
-      r)))
+  (let [{:keys [backtest-runner]
+         :or {backtest-runner run-backtest}}
+        base-options]
+    (for [m prop-range]
+      (let [options (assoc base-options prop-to-change m)
+            r (backtest-runner algo options)
+            r (-> r
+                  (assoc :ds-roundtrips (tc/set-dataset-name (:ds-roundtrips r) m)))]
+        r))))
+
 
