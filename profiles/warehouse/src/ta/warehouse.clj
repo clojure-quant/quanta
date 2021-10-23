@@ -5,7 +5,7 @@
    [taoensso.timbre :refer [debug info warnf]]
    [tech.v3.io :as io]
    ;[taoensso.nippy :as nippy]
-   [tablecloth.api :as tablecloth]
+   [tablecloth.api :as tc]
    [ta.warehouse.split-adjust :refer [split-adjust]]))
 
 (defonce config
@@ -26,31 +26,31 @@
        edn/read-string
        (map :symbol)))
 
-; on name
+; timeseries - name
 
 (defn save-ts [wkw ds name]
   (let [p (get-wh-path wkw)
         s (io/gzip-output-stream! (str p name ".nippy.gz"))]
-    (info "saving series " name " count: " (tablecloth/row-count ds))
+    (info "saving series " name " count: " (tc/row-count ds))
     (io/put-nippy! s ds)))
 
 (defn load-ts [wkw name]
   (let [p (get-wh-path wkw)
         s (io/gzip-input-stream (str p name ".nippy.gz"))
-        ds (io/get-nippy s)
-        ds (tablecloth/set-dataset-name ds name)]
-    (debug "loaded series " name " count: " (tablecloth/row-count ds))
-     ;(tablecloth/add-column ds :symbol symbol)
-
+        ds (io/get-nippy s)]
+    (debug "loaded series " name " count: " (tc/row-count ds))
     ds))
+
+; timeseries - symbol + frequency
 
 (defn make-filename [frequency symbol]
   (str symbol "-" frequency))
 
-(defn load-symbol [w frequency symbol]
-  (->> (make-filename frequency symbol)
-       (load-ts w)
-       split-adjust))
+(defn load-symbol [w frequency s]
+  (-> (load-ts w (make-filename frequency s))
+      split-adjust
+      (tc/set-dataset-name (str s))
+      (tc/add-column :symbol s)))
 
 (defn save-symbol [w ds frequency symbol]
   (let [n (make-filename frequency symbol)]

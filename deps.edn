@@ -48,7 +48,7 @@
    :main-opts ["-m" "clj-kondo.main"
                "--lint"
                ;"src"
-               "profiles/trateg/src/ta"
+               "profiles/trateg/src"
                "profiles/warehouse/src"
                "profiles/data/src"
 

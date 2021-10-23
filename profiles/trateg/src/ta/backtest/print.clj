@@ -8,18 +8,16 @@
 
 ;; ROUNDTRIPS
 
+(def cols-rt
+  [:rt-no ; :$group-name
+   :trade
+   :pl-log :win
+   :date-open :date-close :bars
+   :price-open :price-close
+   ;:index-open :index-close
+   ])
 (defn- roundtrips-view [ds-rt]
-  (tc/select-columns
-   ds-rt
-   [:rt-no ; :$group-name
-    :trade
-    :date-open :price-open
-    :date-close :price-close
-    :pl-log
-    :bars
-    :index-open :index-close
-    ;:pl-prct
-    :win]))
+  (tc/select-columns ds-rt cols-rt))
 
 (defn print-roundtrips [backtest-result]
   (-> (:ds-roundtrips backtest-result)

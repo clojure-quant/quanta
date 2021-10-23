@@ -13,7 +13,15 @@
        {:box :lg
         :data (ds->table ds)}])
 
+(defn flex-item [name ui]
+  [:div  {:style {:background-color "orange"}}
+   [:b {:style {:color "blue"}} name]]
+  [:div
+   ui])
 
+(defn flexbox [data]
+  ^:R [:div {:style {:width 500 :max-width 500 :display "inline-block"}}
+       [:div {:style {:display "flex" :flex-direction "column" :width 500}}
 
-
+        data]])
 

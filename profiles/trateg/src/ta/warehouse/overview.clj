@@ -1,9 +1,7 @@
 (ns ta.warehouse.overview
   (:require
    [tablecloth.api :as tc]
-   [ta.warehouse :as wh]
-   [demo.env.config] ; for side effects
-   ))
+   [ta.warehouse :as wh]))
 
 (defn load-datasets [w frequency symbols]
   (->> symbols

@@ -3,6 +3,7 @@
    [tick.alpha.api :as tick]
    [tech.v3.dataset :as tds]
    [tech.v3.datatype :as dtype]
+   [tech.v3.datatype.functional :as dfn]
    [tech.v3.datatype.datetime :as datetime]
    [tablecloth.api :as tc]
    [ta.data.date :as dt]
@@ -36,8 +37,20 @@
                      (datetime/long-temporal-field :years))
         :month #(->> %
                      :date
-                     (datetime/long-temporal-field :months))})))
+                     (datetime/long-temporal-field :months))})
+      (tc/add-column :year-month (fn [ds]
+                                   (-> (dfn/* (:year ds) 100)
+                                       (dfn/+ (:month ds)))))))
 
+(comment
+
+  (->  (tc/dataset {:date [(tick/new-date 2021 10 28)
+                           (tick/new-date 2021 10 29)
+                           (tick/new-date 2021 11 01)
+                           (tick/new-date 2021 11 02)]})
+       (add-year-and-month-date-as-local-date))
+;
+  )
 (defn year [v]
   (let [n (count v)]
     ;(println "year vec count: " n " v: " v)
@@ -46,6 +59,15 @@
       :int32
       n
       (-> (tick/year (v idx)) .getValue)))))
+
+(defn day-of-month [v]
+  (let [n (count v)]
+    ;(println "year vec count: " n " v: " v)
+    (dtype/clone
+     (dtype/make-reader
+      :int32
+      n
+      (tick/day-of-month (v idx))))))
 
 (defn month [v]
   (let [n (count v)]
@@ -85,6 +107,53 @@
     (println "converting cols: " cols)
     (reduce convert-col-instant->localdatetime ds cols)))
 
+(defn month-as-int [dt]
+  (-> dt tick/month .getValue))
+
+(comment
+  (-> (month-as-int (tick/now)) class)
+  ;  
+  )
+
+(defn month-begin? [date-vec]
+  (let [l (count date-vec)]
+    (dtype/make-reader :bool l
+                       (if (> idx 0)
+                         (let [m-cur (-> (date-vec idx) month-as-int)
+                               m-prior (-> (date-vec (dec idx)) month-as-int)]
+                           (not (= m-cur m-prior)))
+                         false))))
+
+(defn month-end? [date-vec]
+  (let [l (count date-vec)
+        idx-max (dec l)]
+    (dtype/make-reader :bool l
+                       (if (< idx idx-max)
+                         (let [m-cur (-> (date-vec idx) month-as-int)
+                               m-next (-> (date-vec (inc idx)) month-as-int)]
+                           (not (= m-next m-cur)))
+                         false))))
+
+(comment
+  (month-end? [(tick/now)])
+
+  (month-begin? [(tick/new-date 2021 10 28)
+                 (tick/new-date 2021 10 29)
+                 (tick/new-date 2021 11 01)
+                 (tick/new-date 2021 11 02)])
+
+  (month-end? [(tick/new-date 2021 10 28)
+               (tick/new-date 2021 10 29)
+               (tick/new-date 2021 11 01)
+               (tick/new-date 2021 11 02)])
+
+  (month-end? [(tick/new-date 2021 12 28)
+               (tick/new-date 2021 12 29)
+               (tick/new-date 2022  1 01)
+               (tick/new-date 2022  1 02)])
+
+;
+  )
 (comment
   (-> (tick/now)
       (tick/year)

@@ -1,10 +1,6 @@
 (ns ta.warehouse.random
   (:require
-   ;[tech.v3.dataset.print :as print]
-   ;[tech.v3.dataset :as dataset]
-   ;[tech.v3.datatype.datetime :as datetime]
    [tablecloth.api :as tc]
-   ;[ta.helper.print :as helper]
    [ta.backtest.date :refer [days-ago-instant]]
    [ta.helper.random :refer [random-series]]
    [ta.warehouse :as wh]

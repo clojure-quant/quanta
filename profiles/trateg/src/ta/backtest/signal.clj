@@ -83,6 +83,14 @@
                           :position position}))
     ds))
 
+(defn buy-above [p o]
+  (if (and p o)
+    (cond
+      (> p o) :buy
+      (< p o) :flat
+      :else :hold)
+    :hold))
+
 (comment
 
   (into [] xf-signal->position
@@ -103,20 +111,17 @@
          :sell :none])
 
   (signal->position [:none
-                     :buy :buy :buy :none nil nil :buy :none :none
+                     :buy :buy :buy :none :flat nil :buy :none :none
                      :sell :none])
 
-  (signal->position [:none
-                     :buy :buy  :none nil
-                     :flat :none
-                     :buy :none
-                     :flat :none])
-
-  (signal->trade [:none
-                  :buy :buy  :none nil
-                  :flat :none
-                  :buy :none
-                  :flat :none])
+  (let [s [:none
+           :buy :buy  :none nil
+           :flat :none
+           :buy :none
+           :flat :none]]
+    (tc/dataset {:signal s
+                 :position (signal->position s)
+                 :trade  (signal->trade s)}))
 
   (-> [:none
        :buy :buy :buy :none nil nil :buy :none :none

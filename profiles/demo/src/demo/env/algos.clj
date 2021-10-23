@@ -4,10 +4,10 @@
    [ta.helper.ds :refer [ds->map]]
    [ta.series.signal :refer [select-signal-has]]
    ; backtest
-   [ta.backtest.date :refer [ds-convert-col-instant->localdatetime ensure-roundtrip-date-localdatetime]]
    [ta.backtest.roundtrip-backtest :refer [run-backtest]]
    [ta.backtest.roundtrip-stats :refer [roundtrip-performance-metrics]]
    [ta.backtest.nav :refer [nav-metrics nav]]
+   [ta.backtest.date :refer [ds-convert-col-instant->localdatetime ensure-roundtrip-date-localdatetime]]
    ; viz
    [ta.viz.study-highchart :refer [study-highchart]]
    ; algos

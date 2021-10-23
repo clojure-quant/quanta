@@ -23,55 +23,94 @@
          (tc/add-columns  {:price-close close-f1
                            :date-close date-close
                            :index-close index-close
-                           :pl-log pl-log
-                           ;:pl-prct pl-prct
-                           }))))
+                           :pl-log pl-log}))))
 
 (defn win [chg-p]
-  (> chg-p 0))
+  (if chg-p
+    (> chg-p 0)
+    false))
 
-(defn calc-roundtrips [ds-study]
+(defn aggregate-bars-to-roundtrip [{:keys [entry-cols]
+                                    :or {entry-cols []}} ds]
+  ;(println "agg with rows: " (tc/row-count ds))
+  (let [rt-entry {; open
+                  :index-open  (->> ds :index-open first)
+                  :date-open  (->> ds :date-open first)
+                  :price-open  (->> ds :price-open first)
+                  ; close
+                  :index-close  (->> ds :index-close last)
+                  :date-close  (->> ds :date-close last)
+                  :price-close  (->> ds :price-close last)
+                  ; trade
+                  :position (->> ds :position first)
+                  :bars  (->> ds :index-open count)
+                  :trade  (->> ds :trade first)
+                  :trades
+                  (->> ds
+                       :trade
+                       (remove nil?)
+                       count)
+                  ;pl
+                  :pl-log
+                  (->> ds
+                       :pl-log
+                       (apply +))}]
+    (reduce (fn [rt c]
+              (assoc rt c (->> ds c first)))
+            rt-entry
+            entry-cols)))
+
+(defn calc-roundtrips [ds-study options]
   (as-> ds-study ds
       ; (tc/select-rows (fn [{:keys [trade] :as row}]
       ;                           (not (nil? trade))))
     (bar->roundtrip-partial ds)
     (tc/group-by ds :trade-no)
-    (tc/aggregate ds {:position (fn [ds] (->> ds :position first))
-                      :bars (fn [ds] (->> ds :index-open count))
-                      ; open
-                      :index-open (fn [ds] (->> ds :index-open first))
-                      :date-open (fn [ds] (->> ds :date-open first))
-                      :price-open (fn [ds] (->> ds :price-open first))
-                      ; close
-                      :index-close (fn [ds] (->> ds :index-close last))
-                      :date-close (fn [ds] (->> ds :date-close last))
-                      :price-close (fn [ds] (->> ds :price-close last))
-                      ; trade
-                      :trade (fn [ds] (->> ds :trade first))
-                      :trades (fn [ds]
-                                (->> ds
-                                     :trade
-                                     (remove nil?)
-                                     count))
-                      ; pl
-                      :pl-log (fn [ds]
-                                (->> ds
-                                     :pl-log
-                                     (apply +)))})
-
-    (tc/rename-columns ds {:$group-name :rt-no})
+    (tc/aggregate ds (partial aggregate-bars-to-roundtrip options) {:default-column-name-prefix "V2-value"})
+    (tc/rename-columns ds {:$group-name :rt-no
+                           ; below should not be here. Bug in tc
+                           :summary-bars :bars
+                           :summary-trades :trades
+                           :summary-trade :trade
+                           :summary-position :position
+                           :summary-pl-log :pl-log
+                           :summary-index-open :index-open
+                           :summary-date-open :date-open
+                           :summary-price-open :price-open
+                           :summary-index-close :index-close
+                           :summary-date-close :date-close
+                           :summary-price-close :price-close
+                           ; below is needed by extra fields in other stufies
+                           :summary-symbol :symbol
+                           :summary-sma-r :sma-r
+                           :summary-year :year
+                           :summary-month  :month
+                           :summary-year-month  :year-month})
     (tc/add-column ds :win
                    (dtype/emap win :bool (:pl-log ds)))))
+
+(comment
+  (-> (tc/dataset {:l [:x :x :y :y :y]
+                   :a [1 2 3 4 5]
+                   :b [5 5 5 5 5]})
+      (tc/group-by :l)
+      (tc/aggregate (fn [ds]
+                      {:sum-of-b (reduce + (ds :b))})
+                    {:default-column-name-prefix "xxx"}))
+
+;  
+  )
 
 (defn backtest-ds
   "algo has to create :position column
    creates roundtrips based on this column"
-  [ds-bars algo algo-options]
-  (let [ds-study (-> ds-bars
+  [ds-bars algo options]
+  (let [algo-options (dissoc options :w :symbol :frequency :entry-cols)
+        ds-study (-> ds-bars
                      (algo algo-options)
                      trade-signal)
         ds-roundtrips (when (:signal ds-study)
-                        (calc-roundtrips ds-study))]
+                        (calc-roundtrips ds-study options))]
     {:ds-study ds-study
      :ds-roundtrips ds-roundtrips}))
 
@@ -79,9 +118,8 @@
   "algo has to create :position column
    creates roundtrips based on this column"
   [algo {:keys [w symbol frequency] :as options}]
-  (let [algo-options (dissoc options :w :symbol :frequency)
-        ds-bars  (wh/load-symbol w frequency symbol)]
-    (backtest-ds ds-bars algo algo-options)))
+  (let [ds-bars  (wh/load-symbol w frequency symbol)]
+    (backtest-ds ds-bars algo options)))
 
 (defn run-backtest-parameter-range
   [algo base-options

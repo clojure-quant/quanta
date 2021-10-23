@@ -16,7 +16,7 @@
   (if (has-col ds-bars :close-adj)
     (let [{:keys [open high low close close-adj]} ds-bars
           split-factor (dfn// close-adj close)]
-      (println "split factor: " split-factor)
+      ;(println "split factor: " split-factor)
       (-> ds-bars
           (tc/drop-columns [:close-adj])
           (tc/add-columns

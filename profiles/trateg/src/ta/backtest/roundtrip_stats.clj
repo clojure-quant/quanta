@@ -64,7 +64,8 @@
      :pf (Math/pow 10 pl-log-cum)
      :avg-win-log (:pl-log-mean win)
      :avg-loss-log (:pl-log-mean loss)
-     :win-nr-prct (* 100.0 (/ (:trades win) (:trades loss)))
+     :win-nr-prct (* 100.0 (/ (:trades win)
+                              (+ (:trades loss) (:trades win))))
      :avg-bars-win  (* 1.0 (/ (:bars win) (:trades win)))
      :avg-bars-loss  (* 1.0 (/ (:bars loss) (:trades loss)))}))
 
@@ -74,6 +75,7 @@
         metrics (win-loss-performance-metrics wl-stats)
         metrics-ds (tc/dataset metrics)]
     (-> metrics-ds
+        (tc/set-dataset-name "rt-stats")
         (tc/add-column :p (tc/dataset-name ds-roundtrips)))))
 
 ; {:drop-missing? false} as an option
