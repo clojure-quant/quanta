@@ -7,3 +7,8 @@ mkdir classes
  clojure -e "(compile 'demo.aot)"
 # clojure -e "(compile 'ta.backtest.core)"
 
+
+
+
+
+

@@ -8,6 +8,10 @@
 
    [link/href "/goldly/about" "goldly developer tools"]
 
+   [:p.text-blue.text-xl "viewer"]
+   [link/href "viewer/scratchpad" "viewer scratchpad"]
+   [link/href "viewer/notebooks" "notebook viewer"]
+
    [:p.text-blue.text-xl "warehouse"]
    [link/href "/warehouse" "warehouse"]
 

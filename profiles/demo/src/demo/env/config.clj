@@ -5,7 +5,8 @@
    [taoensso.timbre :refer [warn]]
    [webly.log]
    [ta.warehouse :as wh]
-   [ta.data.alphavantage :as av]))
+   [ta.data.alphavantage :as av]
+   [ta.notebook.persist :as p]))
 
 (let [secret (-> "creds.edn" slurp edn/read-string :alphavantage)]
   (warn "alphavantage secret: " secret)
@@ -23,6 +24,8 @@
                     :stocks "../db/stocks/"
                     :random "../db/random/"
                     :shuffled  "../db/shuffled/"}})
+
+(reset! p/notebook-root-dir "../../output/")
 
 (defn log-config! []
   (webly.log/timbre-config!

@@ -1,0 +1,14 @@
+{:paths ["src"]
+ :deps
+ {scicloj/tablecloth {:mvn/version "6.023"} ; brings techml-dataset
+  techascent/tech.ml.dataset {:mvn/version "6.024"}
+  org.apache.arrow/arrow-vector {:mvn/version  "2.0.0"
+                                 :exclusions [commons-codec/commons-codec]}
+  org.apache.arrow/arrow-memory-unsafe {:mvn/version "2.0.0"}}
+
+ :aliases {:nrepl {:extra-deps {nrepl/nrepl  {:mvn/version "0.8.3"}}
+                   :main-opts  ["-m" "nrepl.cmdline"]}
+           :outdated
+           {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
+            :main-opts ["-m" "antq.core"]}}}
+

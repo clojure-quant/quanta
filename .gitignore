@@ -38,3 +38,4 @@ goldly_bindings_generated.cljs
 /profiles/db/random/*.nippy.gz
 /profiles/db/shuffled/*.nippy.gz
 /profiles/db/*.csv
+/output/

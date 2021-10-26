@@ -32,14 +32,25 @@
                          "algo/table" :algo/table
                          "algo/chart" :algo/chart
 
+                         ; notebook viewer
+                         "viewer/notebooks" :viewer/notebooks
+                         "viewer/scratchpad"  :viewer/scratchpad
+                         "viewer/test"  :viewer/notebook
+                         ["viewer/notebook/" :nbns] :viewer/notebook
+
                          ;test
                          "error" :user/error
                          "test/heatmap" :test/heatmap
                          "test/histogram" :test/histogram
                          "test/experiment" :test/experiment}
-                   :api {"arrow" :dataset/arrow}}
+                   :api {"arrow" :dataset/arrow
+                         "notebook/ns" :nb/ns
+                         "notebook/list" :nb/list
+                         "notebook/get" :nb/get
+                         }}
           :systems [demo.env.services
                     demo.env.picasso ; for techml rendering (no need to require namespace)
-                    ta.viz.arrow ; dataset->arrow 
+                    ;ta.viz.arrow ; dataset->arrow 
+                    ta.notebook.rest
                     systems.snippet-registry  ; if you want snippet browser started
                     systems.snippet-scratchpad]}}

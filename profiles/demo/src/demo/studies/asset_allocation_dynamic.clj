@@ -9,6 +9,7 @@
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as dfn]
    [ta.helper.print :refer [print-all]]
+   [ta.helper.ds :refer [ds->str ds->map]]
    ;[ta.helper.stats :refer [mean]]
    [ta.warehouse :as wh]
    ;[medley.core :as m]
@@ -24,7 +25,10 @@
    ;[ta.backtest.signal :refer [buy-above]]
    [ta.backtest.roundtrip-backtest :refer [run-backtest run-backtest-parameter-range]]
    [ta.backtest.roundtrip-stats :refer [roundtrip-performance-metrics backtests->performance-metrics]]
-   [ta.backtest.print]))
+   [ta.backtest.print]
+   [ta.notebook.repl :refer [show clear save]]))
+
+(clear)
 
 ;; column views
 
@@ -67,7 +71,9 @@
 (comment
   (-> (wh/load-symbol :stocks "D" "QQQ")
       (trade-sma-monthly {:sma-length 20})
-      (tc/select-columns col-study))
+      (tc/select-columns col-study)
+      (save "qqq-sma" :csv)
+      (save "qqq-sma" :txt))
 ;
   )
 
@@ -161,10 +167,46 @@
   (roundtrip-performance-metrics backtest-5)
   (roundtrip-performance-metrics backtest-all)
 
+  (show
+   (table [{:avg-win-log 0.01641819674252593
+            :avg-bars-win 19.92799213565987
+            :win-nr-prct 57.954707306651464
+            :pf 1.3448179108532547
+            :avg-log 0.002439722908207893
+            :pl-log-cum 17.129294538527617
+            :avg-loss-log -0.016828031167618693
+            :trades 7021
+            :p "max-pos-0"
+            :avg-bars-loss 19.97831978319783}]))
+
+  (show
+   (table (->> (roundtrip-performance-metrics backtest-all)
+               ds->map
+               first
+               (merge {}))))
+
+  (:ds-roundtrips backtest-5)
+
+  (show
+   (:div
+    (line-plot {:cols [:close]} (:ds-roundtrips backtest-5))
+    (text (ds->str (:ds-roundtrips backtest-5)))))
+
+  (show
+   (:div
+    (line-plot {:cols [:close]} (:ds-roundtrips backtest-5))
+    (text (ds->str (:ds-roundtrips backtest-5)))))
+
+  ; 1. load resources
+  ;    1-nippy
+  ;    2-text    http-get-text  /api/notebook/resource/demo.studies.asset-allocation-dynamic/2
+
   (-> backtest-5
       :ds-roundtrips
       (tc/select-columns col-rt)
-      print-all)
+      (save "top5-sma-60" :nippy)
+      ;print-all
+      )
 
   (-> (run-backtest-parameter-range
        nil o
@@ -210,7 +252,8 @@
        nil (assoc o :sma-length 90
                   :where :bottom)
        :max-pos [1 2 3 4 5 10 15 0])
-      backtests->performance-metrics)
+      backtests->performance-metrics
+      (save "metrics-middle-sma90" :text))
 
 ; | :p | :trades |        :pf | :pl-log-cum |   :avg-log | :win-nr-prct | :avg-win-log | :avg-loss-log | :avg-bars-win | :avg-bars-loss |
 ; |---:|--------:|-----------:|------------:|-----------:|-------------:|-------------:|--------------:|--------------:|---------------:|
