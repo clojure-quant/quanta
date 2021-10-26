@@ -27,6 +27,10 @@
 
 (reset! p/notebook-root-dir "../../output/")
 
+; localhost:9100
+(spit ".nrepl-port" "9100") ; todo - add this to goldly!
+(spit "../../.nrepl-port" "9100") ; github dir
+
 (defn log-config! []
   (webly.log/timbre-config!
    {:timbre-loglevel

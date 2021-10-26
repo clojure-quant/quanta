@@ -47,19 +47,31 @@
   (str @notebook-root-dir (str ns-nb) "/" name))
 
 (def formats
-  {:text {:ext "txt" :save text/save :load text/loadr}
+  {; browser can handle those:
+   :text {:ext "txt" :save text/save :load text/loadr}
    :edn {:ext "edn" :save edn/save :load edn/loadr}
-   :nippy {:ext "nippy.gz" :save tds-persist/save-nippy :loadr tds-persist/load-nippy}
-   :arrow {:ext "arrow" :save tds-persist/save-arrow :loadr tds-persist/load-arrow}
    :csv {:ext "csv" :save tds-persist/save-csv}
-   :png {:ext "png" :save image/save-png}})
+   :png {:ext "png" :save image/save-png}
+   :arrow {:ext "arrow" :save tds-persist/save-arrow :loadr tds-persist/load-arrow}
+   ; browser cannot handle this
+   :nippy {:ext "nippy.gz" :save tds-persist/save-nippy :loadr tds-persist/load-nippy}})
+
+(defn known-formats []
+  (map first formats))
+
+(comment
+  (known-formats)
+  ;
+  )
 
 (defn save [data ns-nb name format]
   (if-let [f (format formats)]
     (let [{:keys [ext save]} f
           file-name (make-filename ns-nb name ext)]
       (save file-name data))
-    (error "save with unknown format: " format "name: " name)))
+    (error "save with unknown format: " format "name: " name "known formats: " (pr-str (known-formats))))
+  data ; usable for threading macros
+  )
 
 (defn loadr [ns-nb name format]
   (if-let [f (format formats)]
@@ -72,8 +84,8 @@
     (error "load with unknown format: " format "name: " name)))
 
 (defn filename->extension [filename]
-  (let [[_ path _ ext] (re-matches #"([\w\/\.]*)\/+(\w+)\.([\w\.]+)$" filename) ; with path
-        [_ _ ext2] (re-matches #"(\w+)\.([\w\.]+)$" filename)] ; no path
+  (let [[_ path _ ext] (re-matches #"([\w\/\.]*)\/+([\w-]+)\.([\w\.]+)$" filename) ; with path
+        [_ _ ext2] (re-matches #"([\w-]+)\.([\w\.]+)$" filename)] ; no path
     (if path
       ext
       ext2)))
@@ -88,16 +100,23 @@
 
 (comment
 
+  ; just filename
   (filename->extension "bongo.txt")
   (filename->extension "bongo.csv")
+  (filename->extension "ds1.nippy.gz")
+  (filename->extension "item-plot.png")
+  ; should fail
   (filename->extension "bongo")
   (filename->extension ".bongo")
-  (filename->extension "ds1.nippy.gz")
+
+  ; filename with path
   (filename->extension "/tmp/notebooks/demo.studies.a/bongo.csv")
   (filename->extension "/tmp/notebooks/demo.studies.a/ds1.nippy.gz")
 
   (filename->format "bongo.edn")
   (filename->format "/tmp/notebooks/demo.studies.a/ds1.nippy.gz")
+  (filename->format "bongo.png")
+
 ;
   )
 (comment

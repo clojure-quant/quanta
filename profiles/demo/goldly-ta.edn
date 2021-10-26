@@ -6,7 +6,6 @@
             :notebook  {:layout :horizontal ; :vertical
                         :view-only false}}
 
-
  :timbre-loglevel
  [[#{"pinkgorilla.nrepl.*"} :warn]
   [#{"org.eclipse.jetty.*"} :warn]
@@ -18,12 +17,14 @@
          :port 9100}
 
  :goldly {:lazy true
-          :autoload-dir  "src/demo/goldly/cljs"  ; to load cljs files to repl state
+          :autoload-dir  [; to load cljs files to repl state
+                          ; order is important
+                          "src/demo/goldly/lib"
+                          "src/demo/goldly/view"
+                          "src/demo/goldly/page"]
           :notebook-dir ["src/demo/warehouse"
                          "src/demo/studies"
-                         "src/demo/playground"
-                         
-                         ]
+                         "src/demo/playground"]
           :routes {:app {"" :user/main
                          ;warehouse
                          "warehouse" :user/warehouse
@@ -44,13 +45,13 @@
                          "test/histogram" :test/histogram
                          "test/experiment" :test/experiment}
                    :api {"arrow" :dataset/arrow
-                         "notebook/ns" :nb/ns
-                         "notebook/list" :nb/list
-                         "notebook/get" :nb/get
+                         "viewer/ns" :viewer/ns
+                         "viewer/list" :viewer/list
+                         ["viewer/file/" :nbns "/" :name] :viewer/file ; http://localhost:8000/api/viewer/file/demo.playground.cljplot/vega-spec.edn
                          }}
           :systems [demo.env.services
                     demo.env.picasso ; for techml rendering (no need to require namespace)
                     ;ta.viz.arrow ; dataset->arrow 
-                    ta.notebook.rest
+                    ta.notebook.handler
                     systems.snippet-registry  ; if you want snippet browser started
                     systems.snippet-scratchpad]}}

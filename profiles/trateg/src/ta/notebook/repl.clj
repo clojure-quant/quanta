@@ -4,10 +4,7 @@
    [webly.ws.core :refer [send-all! send-response connected-uids]]
    [ta.notebook.clj :refer [walk-forms]]
    [ta.notebook.resource-mapper :refer [default-mappings]]
-   [ta.notebook.persist :as p]   
-   
-   ))
-
+   [ta.notebook.persist :as p]))
 
 (defn save [data name format]
   (p/save data *ns* name format))
@@ -24,13 +21,11 @@
   (info "sending to scratchpad: " r)
   (send-all! [:viewer/update {:ns-nb (str *ns*)
                               :op :plot
-                              :data (dissoc r :ns-nb)
-                              }])
-  r
-  )
+                              :data (dissoc r :ns-nb)}])
+  r)
 
 (defmacro show [form]
-  (send! 
+  (send!
    (walk-forms
     (eval (make-ctx))
     form)))
@@ -38,8 +33,14 @@
 (defn clear []
   (info "clearing output directory for " *ns*)
   (send-all! [:viewer/update {:ns-nb (str *ns*)
-                              :op :clear}])
-  )
+                              :op :clear}]))
+
+(defonce nb-viewer-file-root
+  (atom "http://localhost:8000/api/viewer/file"))
+
+(defn url [name]
+  (-> (str @nb-viewer-file-root "/" *ns* "/" name)
+      println))
 
 (comment
 
@@ -47,6 +48,8 @@
    (line-plot [1 2 3]))
 
   (clear)
+
+  (url "ds1.txt")
 
  ; 
   )

@@ -92,9 +92,9 @@
   (process-form ctx (list (symbol "gamma-view") (str big-text ", and kicking!")))
   (p/loadr "demo.process-form" "2" :text)
 
-  (require '[demo.playground.cljplot :refer [vega-clj]])
-  (def data-clj {:A 28 :B 55 :C 43 :D 91 :E 81 :F 53 :G 19 :H 87 :I 52})
-  (process-form ctx (list (symbol "gamma-view") (vega-clj data-clj)))
+  ;(require '[demo.playground.cljplot :refer [vega-clj]])
+  ;(def data-clj {:A 28 :B 55 :C 43 :D 91 :E 81 :F 53 :G 19 :H 87 :I 52})
+  ;(process-form ctx (list (symbol "gamma-view") (vega-clj data-clj)))
 
   (require '[tablecloth.api :as tc])
   (def ds1 (-> {:close [1 2 3 4 5]

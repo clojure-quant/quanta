@@ -1,6 +1,3 @@
-(defn link-href [href text]
-  [:a.bg-blue-300.cursor-pointer.hover:bg-red-700.m-1
-   {:href href} text])
 
 (def date-axes
   {:field "date" :type "temporal"
@@ -32,15 +29,7 @@
                        ;:color "blue"
                        }}}])
 
-(def test-data
+(def vega-nav-plot-test-data
   [{:nav 100.0 :index 1}
    {:nav 120.0 :index 2}
    {:nav 150.0 :index 3}])
-
-(defmethod reagent-page :test/experiment [{:keys [route-params query-params handler] :as route}]
-  [:div
-   [link-href "/" "main"]
-   [:div.text-green-300 "experiments..."]
-   [:p "add code here..."]
-   [vega-nav-plot test-data]
-   [:p "end of vega nav plot"]])

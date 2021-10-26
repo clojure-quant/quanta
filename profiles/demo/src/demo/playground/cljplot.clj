@@ -1,30 +1,11 @@
 (ns demo.playground.cljplot
   (:require
-   ;[clojure.string :as str]
-  ;[java-time :as dt]
-
-   [cljplot.core :refer :all]
+   [cljplot.core :as cljplotl]
    [cljplot.render :as r]
    [cljplot.build :as b]
-   [cljplot.common :refer :all]
-   ;[cljplot.scale :as s]
-
-   ;[clojure2d.color :as c]
-   ;[clojure2d.core :as c2d]
-   ;[clojure2d.pixels :as p]
-
-   ;[fastmath.core :as m]
-   ;[fastmath.random :as rnd]
-   ;[fastmath.complex :as cx]
-   ;[fastmath.fields :as f]
-   ;[fastmath.vector :as v]
-   ;[fastmath.optimization :as opt]
-   ;[fastmath.gp :as gp]
-   ;[fastmath.distance :as dist]
-   ;[fastmath.kernel :as k]
-   ;[fastmath.interpolation :as in]
-   ;[fastmath.stats :as stats]
-   ))
+   [cljplot.common :as cpc]
+   [ta.notebook.repl :refer [save show clear url]]
+   [ta.notebook.persist :as p]))
 
 (defn vega-clj [data]
   (-> (b/series
@@ -41,10 +22,42 @@
       ;(show)
       :buffer))
 
-(comment
-  (vega-clj {:A 28 :B 55 :C 43 :D 91 :E 81 :F 53 :G 19 :H 87 :I 52})
+;; generate plot-image, and show it in browser
 
-  (vega-clj (sorted-map :A 28 :B 55 :C 43 :D 91 :E 81 :F 53 :G 19 :H 87 :I 52))
-  ;
+(clear)
+
+(show
+ (text {:class "text-xl text-blue-500 text-bold"}
+       "Clojure Rocks!\nBabashka reashes!"))
+
+(show
+ (:div
+  (text {:class "text-xl text-red-500 text-bold"}
+        "I wos born with grosse ohrn!")
+  (img {:box :lg}
+       (-> {:A 10 :B 55 :C 43 :D 91 :E 81 :F 53 :G 19 :H 87 :I 52}
+           vega-clj))))
+
+(url "1.png")
+
+(comment
+
+; save plot 
+  (-> {:A 28 :B 55 :C 43 :D 91 :E 81 :F 53 :G 19 :H 87 :I 52}
+      vega-clj
+      (save "item-plot" :png))
+
+ ; show url
+  (url "item-plot.png")
+
+  ; test - can we determine the format?
+  (p/filename->extension "item-plot.png")
+  (p/filename->format "item-plot.png")
+
+  ; vega-clj works with sorted map too
+  (def data2 (sorted-map :A 28 :B 55 :C 43 :D 91 :E 81 :F 53 :G 19 :H 87 :I 52))
+  (vega-clj data2)
+
+;
   )
 

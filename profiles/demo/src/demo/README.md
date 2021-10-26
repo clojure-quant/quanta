@@ -96,5 +96,15 @@ FLORIAN TODO:
 - goldld: if nrepl .nrepl-port (in main folder)
 
 
+https://github.com/scicloj/scicloj.ml
 
-  
+
+
+  (defn ->html [df]
+    (apply vector
+           :table
+           (apply vector :tr (mapv (fn [c] [:th (str c)]) (.ordered-columns df)))
+           (mapv
+            (fn [row]
+              (apply vector :tr (mapv (fn [[_ v]] [:td (pr-str v)]) row)))
+            df)))

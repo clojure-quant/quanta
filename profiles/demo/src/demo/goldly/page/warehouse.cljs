@@ -14,12 +14,6 @@
     (do (swap! warehouse-state assoc :data nil)
         nil)))
 
-(defn table [data]
-  [aggrid {:data data
-           :box :lg
-           :pagination :false
-           :paginationAutoPageSize true}])
-
 (defn warehouse-page [route]
   (let [{:keys [w frequency data]} @warehouse-state]
     (do (load-data w frequency data)

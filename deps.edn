@@ -59,7 +59,9 @@
                ; plot
                ;
                "profiles/demo/src/demo/studies"
-               "profiles/demo/src/demo/warehouse"]}
+               "profiles/demo/src/demo/warehouse"
+               "--config" "cljkondo.edn"
+               ]}
 
   :cloverage
   {:extra-paths ["test"]
