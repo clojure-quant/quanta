@@ -1,25 +1,25 @@
-(def empty-viewer-state {:notebooks {}
-                         :scratchpad nil})
+(defonce empty-viewer-state {:notebooks {:scratchpad {:ns-nb "empty"
+                                                      :plots []}}
+                             :current :scratchpad})
 
 (defonce viewer-state
-  (atom empty-viewer-state)) ; start empty.
+  (r/atom empty-viewer-state)) ; start empty.
 
-(defn viewer-notebooks []
-  (-> @viewer-state
-      :notebooks
-      keys))
+
 
 (defn add-plot-to-notebook [state {:keys [ns-nb data] :as viewer-op}]
   (println "adding plot to notebook: " ns-nb)
   (let [nb (or (get-in state [:notebooks ns-nb])
-               [])]
-    (assoc-in state [:notebooks ns-nb] (conj nb data))))
+               {:ns ns-nb
+                :plots []})
+        nb (assoc nb :plots (conj (:plots nb) data))]
+    (assoc-in state [:notebooks ns-nb] nb)))
 
 (defn set-scratchpad-notebook [state {:keys [ns-nb data] :as viewer-op}]
-  (println "adding plot to notebook: " ns-nb)
+  (println "calculating scratchpad: " ns-nb)
   (let [nb {:ns ns-nb
             :plots [data]}]
-    (assoc state :scratchpad nb)))
+    (assoc-in state [:notebooks :scratchpad] nb)))
 
 ; {:ns-nb demo.playground.cljplot
 ;  :op :plot

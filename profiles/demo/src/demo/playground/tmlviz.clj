@@ -25,6 +25,10 @@
 (clear)
 
 (show
+ (text {:class "text-xl text-blue-500 text-bold"}
+       "Clojure Rocks!\nBabashka reashes!!"))
+
+(show
  (vega
   (stock-plot)))
 

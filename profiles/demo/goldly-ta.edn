@@ -34,10 +34,10 @@
                          "algo/chart" :algo/chart
 
                          ; notebook viewer
-                         "viewer/notebooks" :viewer/notebooks
-                         "viewer/scratchpad"  :viewer/scratchpad
-                         "viewer/test"  :viewer/notebook
-                         ["viewer/notebook/" :nbns] :viewer/notebook
+                         ;"viewer/notebooks" :viewer/notebooks
+                         "viewer"  :viewer
+                         ;"viewer/test"  :viewer/notebook
+                         ; ["viewer/notebook/" :nbns] :viewer/notebook
 
                          ;test
                          "error" :user/error

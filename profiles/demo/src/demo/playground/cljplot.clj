@@ -28,7 +28,13 @@
 
 (show
  (text {:class "text-xl text-blue-500 text-bold"}
-       "Clojure Rocks!\nBabashka reashes!"))
+       "Clojure Rocks!\nBabashka reashes!!"))
+
+(show
+  (img {:box :lg}
+       (-> {:A 10 :B 55 :C 43 :D 91 :E 81 :F 53 :G 19 :H 87 :I 52}
+           vega-clj)))
+
 
 (show
  (:div
