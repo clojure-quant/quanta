@@ -9,13 +9,14 @@
 ;; ROUNDTRIPS
 
 (def cols-rt
-  [:rt-no ; :$group-name
+  [:rt-no
    :trade
    :pl-log :win
    :date-open :date-close :bars
    :price-open :price-close
    ;:index-open :index-close
    ])
+
 (defn- roundtrips-view [ds-rt]
   (tc/select-columns ds-rt cols-rt))
 

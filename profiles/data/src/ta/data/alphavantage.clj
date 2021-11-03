@@ -1,9 +1,11 @@
 (ns ta.data.alphavantage
   (:require
+   [taoensso.timbre :refer [info warn error]]
    [clj-http.client :as client]
    [cheshire.core] ; JSON Encoding
-   [cljc.java-time.local-date :as ld]
-   [throttler.core]))
+   [throttler.core]
+   [ta.data.date :refer [parse-date]]
+   [ta.data.helper :refer [str->float]]))
 
 ;; https://www.alphavantage.co/documentation/#
 
@@ -38,7 +40,7 @@
 
 ;; AlphaVantage ApiKey Management
 
-(def api-key (atom "demo"))
+(defonce api-key (atom "demo"))
 
 (defn set-key!
   "to use alphavantage api, call at least once set-key! api-key"
@@ -80,7 +82,7 @@
       (cheshire.core/parse-string true)
       (success-if process-success)))
 
-(def get-av-throttled
+(defonce get-av-throttled
   (throttler.core/throttle-fn get-av-raw 5 :minute))
 
 (defn get-av [params process-success] ; throtteled version
@@ -88,10 +90,10 @@
    params
    (fn [result]
      (if (= result :throttled)
-       (do (println "alphavantage request was throttled, retrying..")
+       (do (warn "alphavantage request was throttled (this should NOT happen), retrying..")
            (get-av-throttled params (fn [result2]
                                       (if (= result2 :throttled)
-                                        (do (println "alphavantage request was throttled the second time.")
+                                        (do (error "alphavantage request was throttled the second time.")
                                             nil)
                                         (process-success result2)))))
        (process-success result)))))
@@ -114,7 +116,7 @@
 (defn get-field [data fieldname]
   (if data
     (get data (keyword fieldname))
-    (do (println "cannot get field " fieldname "- data nil.")
+    (do (error "cannot get field " fieldname "- data nil.")
         nil)))
 
 (defn extract-fields [data fields]
@@ -124,7 +126,7 @@
                    [k (get-field data field-name)])
                  fields)
             (into {}))
-      (do (println "cannot extract fields from nil: " fields)
+      (do (error "cannot extract fields from nil: " fields)
           nil)))
 
 (def bar-fields-standard- {:open  "1. open"
@@ -164,29 +166,21 @@
     ;(println "meta data: " m)
     m))
 
-;(def row-date-format-
-;  (fmt/formatter "yyyy-MM-dd")) ; 2019-08-09
-
-(defn- as-float [str]
-  (if (nil? str)
-    nil
-    (Float/parseFloat str)))
-
 (defn type-convert-bar [b series-type]
   (let [volume? (or (= series-type :daily)
                     (= series-type :adjusted))
-        bar {:date (ld/parse (subs (str (:date b)) 1))
-             :open (as-float (:open b))
-             :high (as-float (:high b))
-             :low (as-float (:low b))
-             :close (as-float (:close b))}
+        bar {:date (parse-date (subs (str (:date b)) 1))
+             :open (str->float (:open b))
+             :high (str->float (:high b))
+             :low (str->float (:low b))
+             :close (str->float (:close b))}
         volume (if volume?
-                 {:volume (as-float (:volume b))}
+                 {:volume (str->float (:volume b))}
                  {})
         adjusted (if (= series-type :adjusted)
-                   {:close-adj (as-float (:close-adj b))
-                    :split-coefficient (as-float (:split-coefficient b))
-                    :dividend (as-float (:dividend b))}
+                   {:close-adj (str->float (:close-adj b))
+                    :split-coefficient (str->float (:split-coefficient b))
+                    :dividend (str->float (:dividend b))}
                    {})]
     (merge b bar volume adjusted)))
 
@@ -237,8 +231,14 @@
            :outputsize (name size)
            :datatype "json"}
           (fn [response]
+            (let [{:keys [meta series] :as result} (convert-bars- :adjusted response)]
+              (when (= 0 (count series))
+                (warn "no data returned for: " symbol)
+                (warn "response: " response))
+              result)
             ;(println "data adjusted: " (pr-str response))
-            (convert-bars- :adjusted response))))
+            )))
+
 
 (defn get-daily-fx
   "size: compact=last 100 days. full=entire history"
@@ -274,4 +274,21 @@
             (-> response
                 kwCryptoRating-
                 fix-keywords-))))
+
+(comment
+
+   ; alphavantage secret has to be set first.
+  (require '[clojure.pprint])
+
+  (-> (search "MO")
+      (clojure.pprint/print-table))
+
+  (-> (get-daily-adjusted "compact" "MO")
+      :series
+      first
+      :date
+      ;(clojure.pprint/print-table)
+      )
+;  
+  )
 

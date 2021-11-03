@@ -59,7 +59,7 @@
           ;; output can be filtered and removed by regex on filename. empty options leave the output untouched.
           :include-files [] #_["^src" "^test"]
           :exclude-files [".*cljs"
-                          "src/systems.*" ; system macro.
+                          "src/demo/goldly.*" 
                              ;"^cljs/core"
                              ; "profiles/test/src/demo/cljs.*"
                           ]

@@ -23,6 +23,9 @@
   ;(run-backtest supertrend-signal (assoc options-d :w w-shuffled))
   ;(run-backtest buy-hold-signal (assoc options-d :symbol "BTCUSD"))
   )
+(-> r-d
+    :ds-roundtrips
+    (s/calc-roundtrip-stats :position))
 
 (p/print-roundtrips r-d)
 (p/print-overview-stats r-d)

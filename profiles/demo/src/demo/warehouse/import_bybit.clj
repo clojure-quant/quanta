@@ -15,9 +15,9 @@
 
 (def bybit-symbols ["BTCUSD" "ETHUSD"])
 
-(def start-date-daily (t/instant "1999-12-31T00:00:00Z"))
+(def start-date-daily (t/date-time "1999-12-31T00:00:00"))
 
-(def start-date-15 (t/instant "1999-12-31T00:00:00Z"))
+(def start-date-15 (t/date-time "1999-12-31T00:00:00"))
 
 (defn init-bybit-daily []
   (since-importer/init-symbols :crypto bybit-get-since-ds "D"
@@ -35,6 +35,8 @@
   (since-importer/append-symbols :crypto bybit-get-since-ds "15"
                                  bybit-symbols))
 
+;; tasks (for cli use)
+
 (defn task-bybit-import-initial [& _]
   (log-config!)
   (init-bybit-daily)
@@ -49,8 +51,6 @@
 (comment
 
   (init-bybit-daily)
-
-; init 15 - all
   (init-bybit-15)
 
   (append-bybit-daily)

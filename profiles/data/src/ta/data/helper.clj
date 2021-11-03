@@ -1,12 +1,11 @@
 (ns ta.data.helper
   (:require
-   [taoensso.timbre :refer [debug]]
-   ;[clj-http.client :as http]
-   ;[cheshire.core :as cheshire] ; JSON Encoding
-   [cljc.java-time.instant :as ti]
-   ;[tick.alpha.api :as t] ; tick uses cljc.java-time
-   ;[ta.data.date :as d]
-   ))
+   [taoensso.timbre :refer [debug]]))
+
+(defn str->float [str]
+  (if (nil? str)
+    nil
+    (Float/parseFloat str)))
 
 (defn remove-first-bar-if-timestamp-equals
   "helper function. 
@@ -15,6 +14,25 @@
   [series last-dt]
   (let [date-first (-> series first :date)
         eq?    (and (not (nil? last-dt))
-                    (ti/equals last-dt date-first))]
+                    (= last-dt date-first))]
     (debug "first date: " date-first "last date:" last-dt " eq:" eq?)
     (if eq? (rest series) series)))
+
+(comment
+
+  (require '[tick.alpha.api :as t])
+
+  ; does not remove
+  (remove-first-bar-if-timestamp-equals
+   [{:date (t/now)}]
+   nil)
+
+  ; removes
+  (remove-first-bar-if-timestamp-equals
+   [{:date (t/instant "1999-12-31T00:00:00Z")}
+    {:date (t/instant "2000-12-31T00:00:00Z")}]
+   (t/instant "1999-12-31T00:00:00Z"))
+
+;  
+  )
+

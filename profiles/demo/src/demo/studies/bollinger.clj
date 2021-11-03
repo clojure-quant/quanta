@@ -1,7 +1,7 @@
 (ns demo.studies.bollinger
   (:require
    [tablecloth.api :as tc]
-   [ta.backtest.backtester :refer [run-study]]
+   [ta.backtest.study :refer [run-study]]
    [ta.helper.print :as helper]
    [ta.helper.window :refer [get-forward-window]]
    [demo.strategy.sma :as sma]

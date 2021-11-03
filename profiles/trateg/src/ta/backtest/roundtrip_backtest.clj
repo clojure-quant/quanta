@@ -66,7 +66,7 @@
       ;                           (not (nil? trade))))
     (bar->roundtrip-partial ds)
     (tc/group-by ds :trade-no)
-    (tc/aggregate ds (partial aggregate-bars-to-roundtrip options) {:default-column-name-prefix "V2-value"})
+    (tc/aggregate ds (partial aggregate-bars-to-roundtrip options) {:default-column-name-prefix "summary"})
     (tc/rename-columns ds {:$group-name :rt-no
                            ; below should not be here. Bug in tc
                            :summary-bars :bars

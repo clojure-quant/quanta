@@ -61,5 +61,12 @@
 
   (wh/symbols-available :shuffled "D")
 
+  (-> ;(wh/load-symbol :crypto "D" "BTCUSD")
+   (wh/load-symbol :stocks "D" "MSFT")
+   :date
+   meta
+   :datatype)
+   ; crypto is instant
+
 ;  
   )

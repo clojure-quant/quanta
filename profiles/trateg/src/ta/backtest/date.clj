@@ -1,11 +1,11 @@
 (ns ta.backtest.date
   (:require
-   [tick.alpha.api :as tick]
    [tech.v3.dataset :as tds]
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as dfn]
    [tech.v3.datatype.datetime :as datetime]
    [tablecloth.api :as tc]
+   [tick.alpha.api :as tick]
    [ta.data.date :as dt]
    [ta.helper.ds :refer [cols-of-type]]))
 
@@ -19,7 +19,7 @@
       (tick/- (tick/new-duration n :days))))
 
 (defn ds-epoch [ds]
-  (tds/column-map ds :epoch #(* 1000 (dt/->epoch %)) [:date]))
+  (tds/column-map ds :epoch #(* 1000 (dt/->epoch-second %)) [:date]))
 
 (defn select-rows-since [ds date]
   (-> ds

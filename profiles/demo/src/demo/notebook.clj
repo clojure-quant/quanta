@@ -24,10 +24,10 @@
 
               "demo.notebook.gorillaplot-core"])
 
-(def ns-warehouse ["demo.warehouse.create-random"
+(def ns-warehouse ["demo.warehouse.overview"
+                   "demo.warehouse.create-random"
                    "demo.warehouse.import-alphavantage"
-                   "demo.warehouse.import-bybit"
-                   "demo.warehouse.overview"])
+                   "demo.warehouse.import-bybit"])
 
 (def ns-studies ["demo.studies.asset-allocation-dynamic"
                  "demo.studies.bollinger"
@@ -58,6 +58,8 @@
 (eval-notebooks ns-warehouse)
 (eval-notebooks ns-studies)
 (eval-notebooks ns-playground)
+
+(eval-notebook "demo.warehouse.overview")
 
 (-> (eval-notebook "user.notebook.hello")
     :content

@@ -7,7 +7,7 @@
 (defn ds-epoch
   "add epoch column to ds"
   [ds]
-  (tds/column-map ds :epoch #(* 1000 (dt/->epoch %)) [:date]))
+  (tds/column-map ds :epoch #(* 1000 (dt/->epoch-second %)) [:date]))
 
 (defn series-ohlc
   "extracts ohlc series
