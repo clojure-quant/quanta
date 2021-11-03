@@ -23,7 +23,7 @@
 
      ; "menu"
       [:div.flex.flex-row.bg-blue-500
-       [link/href "/" "main"]]
+       [link-href "/" "main"]]
      ; "main"
       (if data
         [:div

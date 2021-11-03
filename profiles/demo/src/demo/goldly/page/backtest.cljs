@@ -35,7 +35,7 @@
 
      ; "menu"
       [:div.flex.flex-row.bg-blue-500
-       [link/href "/" "main"]
+       [link-href "/" "main"]
        [input/select {:nav? true
                       :items (or algos [])}
         backtest-state [:symbol]]

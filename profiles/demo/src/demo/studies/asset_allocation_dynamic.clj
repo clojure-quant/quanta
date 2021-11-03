@@ -1,8 +1,3 @@
-;;; # Dynamic Asset Allocation
-;;; 
-;;; Backtest of a sector rotation strategy 
-;;; described in https://drive.google.com/open?id=1FB1IpTC6WzfQkNoScCL3mQmOUVqTSENy
-
 (ns demo.studies.asset-allocation-dynamic
   (:require
    [tablecloth.api :as tc]
@@ -26,9 +21,13 @@
    [ta.backtest.roundtrip-backtest :refer [run-backtest run-backtest-parameter-range]]
    [ta.backtest.roundtrip-stats :refer [roundtrip-performance-metrics backtests->performance-metrics]]
    [ta.backtest.print]
-   [ta.notebook.repl :refer [show clear save]]))
+   [reval.document.manager :refer [save]];  save [data ns name-no-ext format]
+   ))
 
-(clear)
+;;; # Dynamic Asset Allocation
+;;; 
+;;; Backtest of a sector rotation strategy 
+;;; described in https://drive.google.com/open?id=1FB1IpTC6WzfQkNoScCL3mQmOUVqTSENy
 
 ;; column views
 
@@ -72,8 +71,8 @@
   (-> (wh/load-symbol :stocks "D" "QQQ")
       (trade-sma-monthly {:sma-length 20})
       (tc/select-columns col-study)
-      (save "qqq-sma" :csv)
-      (save "qqq-sma" :txt))
+      (save *ns* "qqq-sma" :txt)
+      (save *ns* "qqq-sma" :edn))
 ;
   )
 
@@ -167,35 +166,35 @@
   (roundtrip-performance-metrics backtest-5)
   (roundtrip-performance-metrics backtest-all)
 
-  (show
-   (table [{:avg-win-log 0.01641819674252593
-            :avg-bars-win 19.92799213565987
-            :win-nr-prct 57.954707306651464
-            :pf 1.3448179108532547
-            :avg-log 0.002439722908207893
-            :pl-log-cum 17.129294538527617
-            :avg-loss-log -0.016828031167618693
-            :trades 7021
-            :p "max-pos-0"
-            :avg-bars-loss 19.97831978319783}]))
+  ^:R
+  [:p/table [{:avg-win-log 0.01641819674252593
+              :avg-bars-win 19.92799213565987
+              :win-nr-prct 57.954707306651464
+              :pf 1.3448179108532547
+              :avg-log 0.002439722908207893
+              :pl-log-cum 17.129294538527617
+              :avg-loss-log -0.016828031167618693
+              :trades 7021
+              :p "max-pos-0"
+              :avg-bars-loss 19.97831978319783}]]
 
-  (show
-   (table (->> (roundtrip-performance-metrics backtest-all)
-               ds->map
-               first
-               (merge {}))))
+  ^:R
+  [:p/table (->> (roundtrip-performance-metrics backtest-all)
+                 ds->map
+                 first
+                 (merge {}))]
 
   (:ds-roundtrips backtest-5)
 
-  (show
-   (:div
-    (line-plot {:cols [:close]} (:ds-roundtrips backtest-5))
-    (text (ds->str (:ds-roundtrips backtest-5)))))
+  #_(show
+     (:div
+      (line-plot {:cols [:close]} (:ds-roundtrips backtest-5))
+      (text (ds->str (:ds-roundtrips backtest-5)))))
 
-  (show
-   (:div
-    (line-plot {:cols [:close]} (:ds-roundtrips backtest-5))
-    (text (ds->str (:ds-roundtrips backtest-5)))))
+  #_(show
+     (:div
+      (line-plot {:cols [:close]} (:ds-roundtrips backtest-5))
+      (text (ds->str (:ds-roundtrips backtest-5)))))
 
   ; 1. load resources
   ;    1-nippy
@@ -204,7 +203,8 @@
   (-> backtest-5
       :ds-roundtrips
       (tc/select-columns col-rt)
-      (save "top5-sma-60" :nippy)
+      (save *ns* "top5-sma-60" :edn)
+      ;(save "top5-sma-60" :nippy)
       ;print-all
       )
 
@@ -253,7 +253,7 @@
                   :where :bottom)
        :max-pos [1 2 3 4 5 10 15 0])
       backtests->performance-metrics
-      (save "metrics-middle-sma90" :text))
+      (save *ns* "metrics-middle-sma90" :txt))
 
 ; | :p | :trades |        :pf | :pl-log-cum |   :avg-log | :win-nr-prct | :avg-win-log | :avg-loss-log | :avg-bars-win | :avg-bars-loss |
 ; |---:|--------:|-----------:|------------:|-----------:|-------------:|-------------:|--------------:|--------------:|---------------:|

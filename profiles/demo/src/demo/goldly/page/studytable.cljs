@@ -33,7 +33,7 @@
    [:div.flex.flex-col.h-full.w-full
      ; "menu"
     [:div.flex.flex-row.bg-blue-500
-     [link/href "/" "main"]]
+     [link-href "/" "main"]]
      ; "main"
     [study-table "gann BTC" false] ; "buy-hold s&p"
     ]])

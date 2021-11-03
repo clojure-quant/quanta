@@ -1,12 +1,4 @@
-{:settings {; settings can be changed by user (via dialog)
-            ; :use-localstorage is true: load settings from localstorage, and only use
-            ; config-settings to initialize the app when localstorage is empty
-            :use-localstorage  false
-
-            :notebook  {:layout :horizontal ; :vertical
-                        :view-only false}}
-
- :timbre-loglevel
+{:timbre-loglevel
  [[#{"pinkgorilla.nrepl.*"} :warn]
   [#{"org.eclipse.jetty.*"} :warn]
   [#{"webly.*"} :info]
@@ -16,15 +8,18 @@
          :bind "0.0.0.0"
          :port 9100}
 
- :goldly {:lazy true
-          :autoload-dir  [; to load cljs files to repl state
-                          ; order is important
-                          "src/demo/goldly/lib"
-                          "src/demo/goldly/view"
-                          "src/demo/goldly/page"]
-          :notebook-dir ["src/demo/warehouse"
-                         "src/demo/studies"
-                         "src/demo/playground"]
+ :goldly {:enabled true
+          :lazy true
+          :src-dir "src"
+          ; runtime
+          :autoload-clj-ns [demo.env.services
+                            demo.env.reval ; for techml rendering (no need to require namespace)
+                             ;ta.viz.arrow ; dataset->arrow 
+                            ]
+          :autoload-cljs-dir ["src/goldly/lib"
+                              "src/goldly/devtools"
+                              "src/demo/goldly/view"
+                              "src/demo/goldly/page"]
           :routes {:app {"" :user/main
                          ;warehouse
                          "warehouse" :user/warehouse
@@ -32,26 +27,30 @@
                          "algo/backtest" :algo/backtest
                          "algo/table" :algo/table
                          "algo/chart" :algo/chart
-
-                         ; notebook viewer
-                         ;"viewer/notebooks" :viewer/notebooks
-                         "viewer"  :viewer
-                         ;"viewer/test"  :viewer/notebook
-                         ; ["viewer/notebook/" :nbns] :viewer/notebook
-
                          ;test
                          "error" :user/error
                          "test/heatmap" :test/heatmap
                          "test/histogram" :test/histogram
-                         "test/experiment" :test/experiment}
+                         "test/experiment" :test/experiment
+                         ; devtools
+                         "devtools/pages" :pages
+                         "devtools/help" :devtools
+                         "devtools/scratchpad" :scratchpad
+                         "devtools/viewer" :viewer
+                         "devtools/environment" :environment}
                    :api {"arrow" :dataset/arrow
-                         "viewer/ns" :viewer/ns
-                         "viewer/list" :viewer/list
-                         ["viewer/file/" :nbns "/" :name] :viewer/file ; http://localhost:8000/api/viewer/file/demo.playground.cljplot/vega-spec.edn
-                         }}
-          :systems [demo.env.services
-                    demo.env.picasso ; for techml rendering (no need to require namespace)
-                    ;ta.viz.arrow ; dataset->arrow 
-                    ta.notebook.handler
-                    systems.snippet-registry  ; if you want snippet browser started
-                    systems.snippet-scratchpad]}}
+                         "rdocument/ns" :rdocument/ns
+                         "rdocument/files" :rdocument/files
+                         ["rdocument/file/" :ns "/" :name] :rdocument/file ; http://localhost:8000/api/viewer/file/demo.playground.cljplot/vega-spec.edn
+                         }}}
+
+ :devtools {:rdocument  {:storage-root "../../rdocument/"
+                         :url-root "/api/rdocument/file/"}
+            :collections {:warehouse [:clj "demo/warehouse/"]
+                          :studies [:clj "demo/studies/"]
+                          :playground [:clj "demo/playground/"]
+                          :demo [:clj "demo/notebook/"]}}
+
+
+;
+ }

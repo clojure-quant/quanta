@@ -5,8 +5,7 @@
    [taoensso.timbre :refer [warn]]
    [webly.log]
    [ta.warehouse :as wh]
-   [ta.data.alphavantage :as av]
-   [ta.notebook.persist :as p]))
+   [ta.data.alphavantage :as av]))
 
 (let [secret (-> "creds.edn" slurp edn/read-string :alphavantage)]
   (warn "alphavantage secret: " secret)
@@ -24,12 +23,6 @@
                     :stocks "../db/stocks/"
                     :random "../db/random/"
                     :shuffled  "../db/shuffled/"}})
-
-(reset! p/notebook-root-dir "../../output/")
-
-; localhost:9100
-(spit ".nrepl-port" "9100") ; todo - add this to goldly!
-(spit "../../.nrepl-port" "9100") ; github dir
 
 (defn log-config! []
   (webly.log/timbre-config!
