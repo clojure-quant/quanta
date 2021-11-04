@@ -1,9 +1,11 @@
 (ns demo.notebook
   (:require
-   [reval.document.notebook :refer [eval-notebook]]
+   [reval.document.notebook :refer [eval-notebook load-notebook]]
    [goldly.scratchpad :refer [show! show-as clear!]]
    ;[demo.init] ; side effects
    ))
+
+
 
 (eval-notebook "demo.warehouse.create-random")
 
@@ -40,6 +42,8 @@
                     ;task.clj
                  ])
 
+
+
 (def ns-playground ["demo.playground.alphavantage"
                     "demo.playground.cljplot"
                     "demo.playground.correlation"
@@ -60,6 +64,9 @@
 (eval-notebooks ns-playground)
 
 (eval-notebook "demo.warehouse.overview")
+
+(load-notebook "demo.studies.buyhold")
+
 
 (-> (eval-notebook "user.notebook.hello")
     :content

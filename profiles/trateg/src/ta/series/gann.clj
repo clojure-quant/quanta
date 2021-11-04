@@ -155,13 +155,20 @@
             :bp 250.0
             :bt 30})
 
+  ; BTC: 
+  ; A 18.Juli 2010  0.01
+  ; B 13. April 2014 11.00 usd
+  ; chart aktuell
+  ; B 17. april 2011 0.04
+
   (box-dt box)
   (box-dp box)
   (box-r box)
 
   (get-quadrant box 1 0)
   (get-quadrant box 0 1)
-
+  (get-quadrant box 1000 1)
+  
   ;; unit tests:
 
   (gann-up box (:at box))

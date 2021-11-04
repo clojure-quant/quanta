@@ -13,7 +13,7 @@
                                                               ]]))
 
 ; #time/date       java.time.LocalDate
-; #time/date-time  java.time.LocalDate
+; #time/date-time  java.time.LocalDateTime
 ; #time/instant    java.time.Instant (milliseconds)
 
 ; now
@@ -87,7 +87,9 @@
 
   ; now
   (now-date)
-  (now-datetime)
+  (-> (now-datetime)
+      class)
+
 
    ; parse
   (parse-date "2021-06-05")
@@ -150,6 +152,32 @@
 ; (ZonedDateTime/of (LocalDate/parse date date-fmt)
   ;   (LocalTime/parse time)
   ;                EST)
+
+
+  (-> (now-date)
+      pr-str   
+      ;(clojure.edn/read-string {:readers {'time/date t/date}})
+   
+   )
+  
+
+(clojure.edn/read-string "#inst \"1985-04-12T23:20:50.52Z\"")
+
+
+
+  java.time.LocalDate
+
+  (clojure.edn/read-string
+   "#object[java.time.LocalDateTime
+         \"0x43788de\"
+         \"2021-11-03T00:00:00.000000001\"]")
+
+;java.time.LocalDateTime
+
+
+
+
+
 
 ;
   )
