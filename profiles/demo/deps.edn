@@ -10,7 +10,7 @@
              :main-opts ["-m" "antq.core"]}
 
   :goldly-docs
-  {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.3.63"}
+  {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.3.65"}
                 org.apache.arrow/arrow-vector {:mvn/version  "2.0.0"
                                                :exclusions [commons-codec/commons-codec]}
                 org.apache.arrow/arrow-memory-unsafe {:mvn/version "2.0.0"}}
