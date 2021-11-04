@@ -1,4 +1,4 @@
-(ns demo.warehouse.overview
+(ns notebook.data.warehouse-overview
   (:require
    [ta.warehouse.overview :refer [warehouse-overview]]))
 

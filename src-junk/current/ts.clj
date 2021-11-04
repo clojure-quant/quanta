@@ -2,18 +2,18 @@
   (:require
    ;[clojure.string     :as str]
    [clojure.data.avl :as avl]
-   [tick.alpha.api :as t]
+   [tick.core :as tick]
    ;[tick.interval :as ti]
    ))
 ;; the key is that these tick.interval functions are really powerful:
 ;; https://github.com/juxt/tick/blob/master/src/tick/interval.cljc#L439-L748
 
-(def zdt t/zoned-date-time)
-(def dt t/date-time)
+(def zdt tick/zoned-date-time)
+(def dt tick/date-time)
 
-(def beg t/beginning)
-(def end t/end)
-(defn ival [beg end] (t/new-interval beg end))
+(def beg tick/beginning)
+(def end tick/end)
+(defn ival [beg end] (tick/new-interval beg end))
 
 (defn ordered-ivals [& ivals]
   (apply
@@ -24,16 +24,16 @@
   (into (ordered-ivals) ivals))
 
 (defn needed [coverage-ivals ival-wanted]
-  (not-empty (t/difference [ival-wanted] coverage-ivals)))
+  (not-empty (tick/difference [ival-wanted] coverage-ivals)))
 
 ;;ok an issue is that hte tick interval fns return a lazy seq when we want the
 ;;sorted set.
 
 (defn conj-unite [acc x]
-  (->ordered-ivals (t/unite (conj acc x))))
+  (->ordered-ivals (tick/unite (conj acc x))))
 
 (defn into-unite [to from]
-  (->ordered-ivals (t/unite (into to from))))
+  (->ordered-ivals (tick/unite (into to from))))
 
 (defn new-db [] {})
 
@@ -50,7 +50,7 @@
 ;;assumes none needed
 (defn get-slice [db series-id ival-wanted]
   (->> (get-in db [series-id :series])
-       (drop-while #(#{:precedes :meets} (t/relation % ival-wanted)))
+       (drop-while #(#{:precedes :meets} (tick/relation % ival-wanted)))
        (take-while #(#{:overlaps :starts :during :finishes :overlapped-by}
-                     (t/relation % ival-wanted)))
+                     (tick/relation % ival-wanted)))
        ->ordered-ivals))

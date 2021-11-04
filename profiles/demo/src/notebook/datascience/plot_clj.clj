@@ -1,4 +1,4 @@
-(ns demo.playground.cljplot
+(ns notebook.datascience.plot-clj
   (:require
    [cljplot.core :as cljplotl]
    [cljplot.render :as r]
@@ -27,7 +27,7 @@
 (img (-> {:A 10 :B 55 :C 43 :D 91 :E 81 :F 53 :G 19 :H 87 :I 52}
          vega-clj))
 
-(img (-> {:A 10 :B 55 :C 43 :D 91 :E 81 :F 53 :G 19 :H 87 :I 52}
+(img (-> {:A -10 :B 55 :C 43 :D 91 :E 81 :F 53 :G 19 :H 87 :I 52}
          vega-clj))
 
 (comment

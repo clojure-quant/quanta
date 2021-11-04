@@ -1,7 +1,8 @@
-(ns ta.series.gann
+(ns demo.algo.gann
   (:require
    [tablecloth.api :as tc]
    [tech.v3.datatype.functional :as dfn]
+   [ta.data.date :refer [parse-date]]
    [ta.helper.ago :refer [xf-ago]]
    [ta.backtest.signal :refer [running-index-vec]]
    [ta.series.signal :refer [prior-int cross-up cross-down price-when]]))
@@ -150,16 +151,20 @@
      )))
 (comment
 
+  
   (def box {:ap 100.0
             :at 10
             :bp 250.0
             :bt 30})
 
-  ; BTC: 
-  ; A 18.Juli 2010  0.01
-  ; B 13. April 2014 11.00 usd
-  ; chart aktuell
-  ; B 17. april 2011 0.04
+  
+  (def box-btc 
+    {:ap 0.01
+     :at (parse-date "2010-07-18")
+     :bp 11.0
+     :bt (parse-date "2014-04-13")}) ; alternative: ; B 17. april 2011 0.04
+
+  
 
   (box-dt box)
   (box-dp box)
@@ -168,7 +173,7 @@
   (get-quadrant box 1 0)
   (get-quadrant box 0 1)
   (get-quadrant box 1000 1)
-  
+
   ;; unit tests:
 
   (gann-up box (:at box))

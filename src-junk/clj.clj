@@ -74,7 +74,7 @@
             :ns-nb "demo.process-form"})
   (process-form ctx (list :p "hello world"))
 
-  (require '[tick.alpha.api :as tick])
+  (require '[tick.core :as tick])
   (process-form ctx (list :p "report created: " (tick/now)))
   (process-form ctx (list :p "report created: " (str (tick/now))))
   (process-form ctx (list (symbol "text-clj") "report created: " (str (tick/now))))
@@ -171,7 +171,7 @@
   (create-view ctx-view (text-x (str (tick/now))))
   (create-view (assoc ctx-view :make-resources false) (text-x (str (tick/now))))
 
-  (require '[tick.alpha.api :as tick])
+  (require '[tick.core :as tick])
   (require '[tablecloth.api :as tc])
   (require '[ta.helper.ds :refer [ds->str]])
   (tick/now)

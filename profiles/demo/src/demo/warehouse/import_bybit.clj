@@ -1,6 +1,6 @@
 (ns demo.warehouse.import-bybit
   (:require
-   [tick.alpha.api :as t] ; tick uses cljc.java-time
+   [tick.core :as tick] ; tick uses cljc.java-time
    [tech.v3.dataset :as tds]
    [ta.data.bybit :as bybit]
    [ta.warehouse.since-importer :as since-importer]
@@ -15,9 +15,9 @@
 
 (def bybit-symbols ["BTCUSD" "ETHUSD"])
 
-(def start-date-daily (t/date-time "1999-12-31T00:00:00"))
+(def start-date-daily (tick/date-time "1999-12-31T00:00:00"))
 
-(def start-date-15 (t/date-time "1999-12-31T00:00:00"))
+(def start-date-15 (tick/date-time "1999-12-31T00:00:00"))
 
 (defn init-bybit-daily []
   (since-importer/init-symbols :crypto bybit-get-since-ds "D"

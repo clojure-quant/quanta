@@ -5,14 +5,16 @@
    [tech.v3.datatype.functional :as dfn]
    [tech.v3.datatype.datetime :as datetime]
    [tablecloth.api :as tc]
-   [tick.alpha.api :as tick]
+   [tick.core :as tick]
    [ta.data.date :as dt]
    [ta.helper.ds :refer [cols-of-type]]))
 
 (defn days-ago [n]
   (-> (tick/now)
-      (tick/- (tick/new-duration n :days))
-      (tick/date)))
+      (tick/date-time)
+      (tick/<< (tick/new-duration n :days))
+      ))
+
 
 (defn days-ago-instant [n]
   (-> (tick/now)
@@ -111,6 +113,10 @@
   (-> dt tick/month .getValue))
 
 (comment
+  
+  (days-ago 50)
+
+
   (-> (month-as-int (tick/now)) class)
   ;  
   )

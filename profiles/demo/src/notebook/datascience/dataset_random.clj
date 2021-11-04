@@ -1,8 +1,8 @@
 
-(ns demo.playground.dataset-random
+(ns notebook.datascience.dataset-random
   (:require
    [tablecloth.api :as tc]
-   [tick.alpha.api :as tick]
+   [tick.core :as tick]
    [ta.backtest.date :refer [days-ago-instant select-rows-since]]
    [ta.warehouse.random :refer [random-dataset random-datasets]]
    ;[ta.dataset.returns :refer [forward-shift-col]]

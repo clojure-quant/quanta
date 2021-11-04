@@ -1,4 +1,4 @@
-(ns demo.playground.series
+(ns notebook.data.series
   (:require
    [tablecloth.api :as tc]
    [tech.v3.dataset.print :as print]

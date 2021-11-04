@@ -1,4 +1,4 @@
-(ns demo.playground.dataset-meta
+(ns notebook.datascience.dataset-meta
   (:require
    [tablecloth.api :as tc]
    [tech.v3.datatype.functional :as fun]
@@ -16,20 +16,9 @@ ds1
 (-> ds1
     meta)
 
-; {:name "ds1"}
-
 (->> ds1
      tc/columns
      (map meta))
-
-; # how it looks in repl: 
-; _unnamed: descriptive-stats [4 12]:
-; | :col-name | :datatype | :n-valid | :n-missing | :min | :mean | :mode | :max | :standard-deviation |          :skew | :first | :last |
-; |-----------|-----------|---------:|-----------:|-----:|------:|-------|-----:|--------------------:|---------------:|--------|-------|
-; |        :w |  :boolean |       10 |          0 |      |       | false |      |                     |                |  false |  true |
-; |        :x |    :int64 |       10 |          0 |  0.0 |   4.5 |       |  9.0 |          3.02765035 | 0.00000000E+00 |      0 |     9 |
-; |        :y |  :float64 |       10 |          0 |  0.1 |   4.6 |       |  9.1 |          3.02765035 | 1.42233056E-16 | 0.1000 | 9.100 |
-; |        :z |   :string |       10 |          0 |      |       |     9 |      |                     |                |      0 |     9 |
 
 (->> ds1
      tc/info)
@@ -38,24 +27,24 @@ ds1
 (-> ds1
     tc/shape)
 
-; {:name :x, :datatype :int64, :n-elems 10, :hidden? true}
+
 (-> ds1
     (update :x #(vary-meta % assoc :hidden? true))
     :x
     meta)
 
-; {:hidden? true}
+
 (-> [4 1 :A "v" 2]
     (with-meta {:hidden? true})
     meta)
 
-; {:hidden? true}
+
 (-> [4 1 :A "v" 2]
     (with-meta {:hidden? true})
     (conj 99)
     meta)
 
-; {:name "ds1"}
+
 (-> ds1
     meta)
 

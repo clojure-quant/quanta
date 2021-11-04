@@ -1,6 +1,6 @@
-(ns demo.playground.date
+(ns notebook.datascience.date
   (:require
-   [tick.alpha.api :as tick]
+   [tick.core :as tick]
    [tech.v3.datatype.datetime :as datetime]
    [ta.backtest.date :refer [days-ago]]
    [tablecloth.api :as api]
@@ -46,11 +46,13 @@
     (api/pivot->wider :year [:min :max]
                       {:drop-missing? false}))
 
-(require '[tick.core :as t])
-(t/now)
-(def inst *1)
+(require '[tick.core :as tick])
+
+(def inst (-> (tick/now) tick/date-time))
+
 (type inst)
-(.getLong java.time.temporal.ChronoField/CLOCK_HOUR_OF_DAY)
+
+
 (.getLong inst java.time.temporal.ChronoField/CLOCK_HOUR_OF_DAY)
 (.getLong inst java.time.temporal.ChronoField/CLOCK_HOUR_OF_DAY_AMPM)
 (.getLong inst java.time.temporal.ChronoField/CLOCK_HOUR_OF_AMPM)

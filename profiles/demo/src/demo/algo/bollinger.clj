@@ -1,4 +1,4 @@
-(ns demo.strategy.bollinger
+(ns demo.algoy.bollinger
   (:require
    [tech.v3.dataset :as tds]
    [tablecloth.api :as tc]

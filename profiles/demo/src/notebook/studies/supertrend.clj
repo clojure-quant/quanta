@@ -1,6 +1,6 @@
 (ns demo.studies.supertrend
   (:require
-   [tick.alpha.api :as tick]
+   [tick.core :as tick]
    [tech.v3.dataset :as tds]
    [tablecloth.api :as tc]
    [ta.backtest.roundtrip-backtest :refer [run-backtest run-backtest-parameter-range]]

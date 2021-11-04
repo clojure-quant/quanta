@@ -1,6 +1,6 @@
 (ns ta.series.moon
   (:require
-   [tick.alpha.api :as t]))
+   [tick.core :as tick]))
 
 (def moon-period 29.530588853)
 (def phase-length (/ moon-period 8))
@@ -28,7 +28,7 @@
       127761)))
 
 (defn moon-phase-from-instant [inst]
-  (-> inst t/date moon-phase))
+  (-> inst tick/date moon-phase))
 
 (defn emoji-int->string [emoji]
   (String. (int-array [emoji]) 0 1))
@@ -49,14 +49,14 @@
 (comment
   ; test if moon phase from localdate is the same as using an instant
   (-> (java.time.LocalDate/now) moon-phase)
-  (->  (t/now) moon-phase-from-instant)
+  (->  (tick/now) moon-phase-from-instant)
 
   (map emoji-int->string (range 127761 127769))
   (map moon-phase->kw (range 127761 127769))
 
-  (-> t/now moon-phase-from-instant emoji-int->string)
+  (-> tick/now moon-phase-from-instant emoji-int->string)
 
-  (inst->moon-phase-kw (t/now))
+  (inst->moon-phase-kw (tick/now))
 ;  
   )
 

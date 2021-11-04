@@ -1,4 +1,4 @@
-(ns demo.playground.alphavantage
+(ns notebook.data.alphavantage
   (:require
    [clojure.pprint :refer [print-table]]
    [ta.data.alphavantage :as av]))

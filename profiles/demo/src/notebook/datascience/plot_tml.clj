@@ -1,4 +1,4 @@
-(ns demo.playground.tmlviz
+(ns notebook.datascience.plot-tml
   (:require
    [tech.v3.dataset :as tds]
    [tech.v3.datatype.datetime.operations :as dtype-dt-ops]
@@ -21,8 +21,12 @@
     ))
 ;; generate plot-image, and show it in browser
 
-^{:show-as :p/vega}
-(stock-plot)
+^{:render-as :p/vega}
+
+(-> (stock-plot)
+    (with-meta {:render-as :p/vega}))
+
+
 
 (comment
 

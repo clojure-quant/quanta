@@ -1,4 +1,4 @@
-(ns demo.playground.dataset-group
+(ns notebook.datascience.dataset-group
   (:require
    [tablecloth.api :as tc]
    [tech.v3.dataset.print :as print]
@@ -10,13 +10,6 @@
       (concatenate-datasets)))
 
 concatenated-dataset
-
-(-> concatenated-dataset
-    (tc/pivot->wider :symbol :close))
-
-(-> concatenated-dataset
-    (tc/pivot->wider :symbol :close)
-    tc/last)
 
 (-> concatenated-dataset
     (tc/group-by :symbol))
@@ -72,3 +65,18 @@ concatenated-dataset
 (-> concatenated-dataset
     (overview-view {:grouping-columns [:symbol :year :month]})
     (print/print-range :all))
+
+; not working - why??
+
+(-> concatenated-dataset
+    (tc/pivot->wider :symbol :close))
+
+(-> concatenated-dataset
+    (tc/pivot->wider :symbol :close)
+    tc/last)
+
+
+
+
+
+

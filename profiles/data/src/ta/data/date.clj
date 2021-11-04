@@ -1,6 +1,6 @@
 (ns ta.data.date
   (:require
-   [tick.alpha.api :as t]
+   [tick.core :as tick]
    ;[tick.timezone]
    ;[tick.locale-en-us]
    [cljc.java-time.instant :as ti]
@@ -19,10 +19,10 @@
 ; now
 
 (defn now-datetime []
-  (-> (t/now) t/date-time))
+  (-> (tick/now) tick/date-time))
 
 (defn now-date []
-  (-> (t/now) t/date))
+  (-> (tick/now) tick/date))
 
 ;; parsing
 
@@ -30,13 +30,13 @@
 (def datetime-fmt (of-pattern "yyyy-MM-dd HH:mm:ss"))
 
 ;(def row-date-format-
-;  (fmt/formatter "yyyy-MM-dd")) ; 2019-08-09
+;  (fmtick/formatter "yyyy-MM-dd")) ; 2019-08-09
 
 (defn parse-date [s]
   (try
     (-> s
         (ld/parse date-fmt)
-        (t/at  (t/time "00:00:00")))
+        (tick/at  (tick/time "00:00:00")))
     (catch Exception _
       nil)))
 
@@ -53,10 +53,10 @@
 
 (defn date->epoch-second [dt]
   (-> dt
-      (t/at (t/time "13:00:06"))
+      (tick/at (tick/time "13:00:06"))
       datetime->epoch-second))
 
- ;(t/at (t/date "2021-06-20") (t/time "13:00:06"))
+ ;(tick/at (tick/date "2021-06-20") (tick/time "13:00:06"))
 (defn ->epoch-second [dt]
   ;(println "->epoch " dt (type dt))
   (let [t (type dt)]
@@ -73,17 +73,17 @@
 
 (defn days-ago [n]
   (-> (now-datetime)
-      (t/- (t/new-duration n :days))
-        ;(t/date)
+      (tick/- (tick/new-duration n :days))
+        ;(tick/date)
       ))
 
 ; *****************************************************************************
 (comment
 
   ; create
-  (t/instant "1999-12-31T00:00:00Z")
-  (t/date "2021-06-20")
-  (t/date-time "2021-06-20T12:00:01")
+  (tick/instant "1999-12-31T00:00:00Z")
+  (tick/date "2021-06-20")
+  (tick/date-time "2021-06-20T12:00:01")
 
   ; now
   (now-date)
@@ -107,24 +107,24 @@
   (-> (now-datetime) ->epoch-second epoch-second->datetime)
 
   (-> (now-datetime))
-  (-> (now-datetime) ->epoch-second (ldt/of-epoch-second 1 utc))
+  (-> (now-datetime) ->epoch-second (ldtick/of-epoch-second 1 utc))
 
   (days-ago 2)
 
   ;; experiment
 
   (require '[clojure.repl])
-  (clojure.repl/doc t/date-time)
+  (clojure.repl/doc tick/date-time)
 
-  (t/+ (t/date "2000-01-01")
-       (t/new-period 1 :months))
+  (tick/+ (tick/date "2000-01-01")
+       (tick/new-period 1 :months))
 
-  (t/+ (t/date-time)
-       (t/new-period 1 :months))
+  (tick/+ (tick/date-time)
+       (tick/new-period 1 :months))
 
   ; java.time.LocalDateTime  (only seconds)
-  (-> (t/date "2021-06-20")
-      (t/at  (t/time "13:30:06"))
+  (-> (tick/date "2021-06-20")
+      (tick/at  (tick/time "13:30:06"))
       ;(epoch-ldt)
       ;(->epoch-second)
       )
@@ -133,19 +133,19 @@
   (ld/is-after (ld/now)  (parse-date "2021-05-16"))
 
   ;; duration
-  (t/new-duration 80 :days)
+  (tick/new-duration 80 :days)
 
-; start (-> (* bars 15) t/minutes t/ago)
-  ; (t/- now (t/minutes (* 15 (:position %))))
-  ; (-> 2 t/hours t/ago)
-  ;(tc/to-long (-> 2 t/hours t/ago))
-  ;(-> 2 t/hours t/ago)
+; start (-> (* bars 15) tick/minutes tick/ago)
+  ; (tick/- now (tick/minutes (* 15 (:position %))))
+  ; (-> 2 tick/hours tick/ago)
+  ;(tc/to-long (-> 2 tick/hours tick/ago))
+  ;(-> 2 tick/hours tick/ago)
 
   (->
-   ;(t/instant "1999-12-31T00:59:59Z")
+   ;(tick/instant "1999-12-31T00:59:59Z")
    (now-datetime)
-   (t/in "UTC")
-   ;(t/date)
+   (tick/in "UTC")
+   ;(tick/date)
    ;class
    )
 
@@ -156,7 +156,7 @@
 
   (-> (now-date)
       pr-str   
-      ;(clojure.edn/read-string {:readers {'time/date t/date}})
+      ;(clojure.edn/read-string {:readers {'time/date tick/date}})
    
    )
   

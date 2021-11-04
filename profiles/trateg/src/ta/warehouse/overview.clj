@@ -8,10 +8,12 @@
        (map (fn [symbol]
               (-> (wh/load-symbol w frequency symbol)
                   (tc/add-column :symbol symbol)
+                  (tc/drop-columns [:volume])
                   ;add-year-and-month-date-as-instant
                   #_(tc/add-column :return #(-> %
                                                 :close
                                                 returns)))))))
+
 
 (defn concatenate-datasets [seq-ds-bar]
   (->> seq-ds-bar
@@ -54,8 +56,10 @@
 
 (comment
 
+  (wh/symbols-available :stocks "D")
   (wh/symbols-available :crypto "D")
 
+   (warehouse-overview :stocks "D")
   (warehouse-overview :crypto "D")
   (warehouse-overview :crypto "15")
 

@@ -46,9 +46,10 @@
 
  :devtools {:rdocument  {:storage-root "../../rdocument/"
                          :url-root "/api/rdocument/file/"}
-            :collections {:warehouse [:clj "demo/warehouse/"]
-                          :studies [:clj "demo/studies/"]
-                          :playground [:clj "demo/playground/"]
+            :collections {:data [:clj "notebook/data/"]
+                          :studies [:clj "notebook/studies/"]
+                          :datascience [:clj "notebook/datascience/"]
+                          :playground [:clj "notebook/playground/"]
                           :demo [:clj "demo/notebook/"]}}
 
 

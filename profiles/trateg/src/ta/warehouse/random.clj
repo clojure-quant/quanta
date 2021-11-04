@@ -1,7 +1,7 @@
 (ns ta.warehouse.random
   (:require
    [tablecloth.api :as tc]
-   [ta.backtest.date :refer [days-ago-instant]]
+   [ta.backtest.date :refer [days-ago]]
    [ta.helper.random :refer [random-series]]
    [ta.warehouse :as wh]
    [ta.warehouse.shuffle :refer [shuffle-bar-series]]))
@@ -17,10 +17,11 @@
 (defn random-dataset [n]
   (-> (tc/dataset
        {:date (->> (range n)
-                   (map days-ago-instant)
+                   (map days-ago)
                    reverse)
         :close (random-series n)})
       add-open-high-low-volume))
+
 
 (comment
   (random-dataset 10)

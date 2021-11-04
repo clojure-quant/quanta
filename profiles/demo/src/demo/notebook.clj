@@ -8,6 +8,13 @@
 
 
 (eval-notebook "demo.warehouse.create-random")
+(eval-notebook "demo.playground.dataset-group")
+
+
+(-> ;(eval-notebook "demo.playground.cljplot")
+ (eval-notebook "demo.warehouse.overview")
+ show!)
+
 
 (defn eval-notebooks [ns-list]
   (map eval-notebook ns-list))
@@ -26,10 +33,9 @@
 
               "demo.notebook.gorillaplot-core"])
 
-(def ns-warehouse ["demo.warehouse.overview"
-                   "demo.warehouse.create-random"
-                   "demo.warehouse.import-alphavantage"
-                   "demo.warehouse.import-bybit"])
+(def ns-data ["demo.warehouse.create-random"
+              "demo.warehouse.import-alphavantage"
+              "demo.warehouse.import-bybit"])
 
 (def ns-studies ["demo.studies.asset-allocation-dynamic"
                  "demo.studies.bollinger"
@@ -42,26 +48,36 @@
                     ;task.clj
                  ])
 
+(def ns-data ["notebook.data.alphavantage"
+              "notebook.data.warehouse-overview"
+              "notebook.data.series"
+              ;"demo.playground.symbollist"
+              ;"demo.playground.ta4j"
+              ;"demo.playground.throttle"
+              ;"demo.playground.tmlviz"
+              ])
 
 
-(def ns-playground ["demo.playground.alphavantage"
-                    "demo.playground.cljplot"
-                    "demo.playground.correlation"
-                    "demo.playground.dataset-group"
-                    "demo.playground.dataset-meta"
-                    "demo.playground.dataset-random"
-                    "demo.playground.date"
-                    "demo.playground.series"
-                    "demo.playground.symbollist"
-                    "demo.playground.ta4j"
-                    "demo.playground.throttle"
-                    "demo.playground.tmlviz"])
+
+
+(def ns-datascience ["notebook.datascience.plot_clj"
+                     "notebook.datascience.plot_tml"
+                     "notebook.datascience.correlation"
+                     "notebook.datascience.dataset-group"
+                     "notebook.datascience.dataset-meta"
+                     "notebook.datascience.dataset-random"
+                     "notebook.datascience.date"])
+
 
 (eval-notebooks ns-misc)
 (eval-notebooks ns-vega)
-(eval-notebooks ns-warehouse)
-(eval-notebooks ns-studies)
+
 (eval-notebooks ns-playground)
+(eval-notebooks ns-studies)
+
+(eval-notebooks ns-datascience)
+(eval-notebooks ns-data)
+
 
 (eval-notebook "demo.warehouse.overview")
 

@@ -1,7 +1,7 @@
 (ns ta.series.ta4j
   "convenience wrapper on the java library ta4j"
   (:require
-   [tick.alpha.api :as t]
+   [tick.core :as tick]
   ; [tech.v3.dataset.print :as print]
    [tech.v3.dataset :as tds]
   ; [tech.v3.datatype.datetime :as datetime]
@@ -58,7 +58,7 @@
   (let [series (org.ta4j.core.BaseBarSeries.)
         r (tds/mapseq-reader ds)]
     (doseq [{:keys [date open high low close volume]} r]
-      (let [ldt (t/in date "UTC")] ; convert time instance to (zoned)localdate
+      (let [ldt (tick/in date "UTC")] ; convert time instance to (zoned)localdate
         ;(info "adding: " date open ldt)
         (.addBar series ldt open high low close volume)))
     series))

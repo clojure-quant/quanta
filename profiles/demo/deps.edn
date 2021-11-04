@@ -4,13 +4,15 @@
         com.taoensso/timbre {:mvn/version "5.1.2"} ; clj/cljs logging
         aysylu/loom {:mvn/version "1.0.2"}
         techascent/tech.viz {:mvn/version "6.00-beta-16-2"}
-        cljplot/cljplot {:mvn/version "0.0.2a-SNAPSHOT"}}
+        cljplot/cljplot {:mvn/version "0.0.2a-SNAPSHOT"}
+        io.github.adam-james-v/svg-clj {:mvn/version "0.0.9"}
+        }
  :aliases
  {:outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
              :main-opts ["-m" "antq.core"]}
 
   :goldly-docs
-  {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.3.65"}
+  {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.3.69"}
                 org.apache.arrow/arrow-vector {:mvn/version  "2.0.0"
                                                :exclusions [commons-codec/commons-codec]}
                 org.apache.arrow/arrow-memory-unsafe {:mvn/version "2.0.0"}}

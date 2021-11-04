@@ -12,7 +12,7 @@
    [ta.viz.study-highchart :refer [study-highchart]]
    ; algos
    [ta.algo.buy-hold :refer [buy-hold-signal]]
-   [ta.series.gann :refer [algo-gann algo-gann-signal]]
+   [demo.algo.gann :refer [algo-gann algo-gann-signal]]
    [demo.algo.moon :refer [moon-signal]]
    [demo.algo.supertrend :refer [supertrend-signal]]
    [demo.algo.sma :refer [sma-signal]]

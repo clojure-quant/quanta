@@ -20,7 +20,7 @@
 
 (comment
 
-  (require '[tick.alpha.api :as t])
+  (require '[tick.core :as t])
 
   ; does not remove
   (remove-first-bar-if-timestamp-equals

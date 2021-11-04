@@ -1,6 +1,6 @@
 (ns ta.backtest.core
   (:require
-   [tick.alpha.api :as t]
+   [tick.core :as tick]
    [tech.v3.dataset :as ds]
    [net.cgrand.xforms :as x]
    [ta.data.date :refer [parse-date]]
@@ -13,7 +13,7 @@
         s (atom (rest source))
         before? (fn [dt]
                   ;(println "before: " (:date @d))
-                  (and @d (t/<= (:date @d) dt)))
+                  (and @d (tick/<= (:date @d) dt)))
         set-r (fn [& [R d]]
                 ;(println "set R: " R " d:" d)
                 (when d
@@ -46,7 +46,7 @@
                          trade-price-field :last}} symbols]
   (let [dt-start (parse-date start)
         dt-end (parse-date end)
-        p1d (t/new-period 1 :days)
+        p1d (tick/new-period 1 :days)
         data (into {} (map (fn [s]
                              [s (calc-xf pre-process algo s)]) symbols))
         p (atom (pf initial-equity))]
@@ -70,6 +70,6 @@
         (reset! p (trade @p buy getp dt))
           ; {:dir :up, :low 64.4, :high 71.5, :len 3, :last 71.3, :prct 11.0}
 
-        (when (t/< dt dt-end)
-          (recur (t/+ dt p1d)))))
+        (when (tick/< dt dt-end)
+          (recur (tick/+ dt p1d)))))
     @p))

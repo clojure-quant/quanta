@@ -5,9 +5,6 @@
    [clojure.java.io :as io]
    [clojure.string :as str]
    [clj-time.format :as fmt] ;wrapper to joda-date-time
-   ;[tick.alpha.api :as t]
-   ;[tick.timezone]
-   ;[tick.locale-en-us]
    )
   (:import
    [java.time LocalDate LocalTime ZonedDateTime ZoneId]
