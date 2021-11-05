@@ -32,8 +32,6 @@
      :stocks alphavantage-get-fx-since-ds "D"
      start-date-dummy symbols)))
 
-
-
 ;; symbol lists
 
 (def alphavantage-test-symbols
@@ -44,9 +42,9 @@
    "MSFT"
    "ORCL"])
 
-(def alphavantage-fx-symbols 
-   ["EURUSD"
-    "USDJPY"])
+(def alphavantage-fx-symbols
+  ["EURUSD"
+   "USDJPY"])
 
 (def fidelity-symbols
   (wh/load-list "fidelity-select"))

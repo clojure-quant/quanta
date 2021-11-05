@@ -1,4 +1,4 @@
-(ns demo.studies.asset-allocation-dynamic
+(ns notebook.studies.asset-allocation-dynamic
   (:require
    [tablecloth.api :as tc]
    [tech.v3.datatype :as dtype]
@@ -67,14 +67,11 @@
                          ;:signal1 (dtype/emap buy-above :object close sma-v)
                          :signal (dtype/emap long-during-month-when-above-ma :object m-b m-e close sma-v)}))))
 
-(comment
-  (-> (wh/load-symbol :stocks "D" "QQQ")
-      (trade-sma-monthly {:sma-length 20})
-      (tc/select-columns col-study)
-      (save *ns* "qqq-sma" :txt)
-      (save *ns* "qqq-sma" :edn))
-;
-  )
+(-> (wh/load-symbol :stocks "D" "QQQ")
+    (trade-sma-monthly {:sma-length 20})
+    (tc/select-columns col-study)
+    (save *ns* "qqq-sma" :txt)
+    (save *ns* "qqq-sma" :edn))
 
 (defn calc-rts-symbol [options]
   (-> (run-backtest trade-sma-monthly options)
@@ -82,15 +79,13 @@
       (tc/select-rows (fn [{:keys [trade]}]
                         (= trade :buy)))))
 
-(comment
-  (-> (calc-rts-symbol {:w :stocks
-                        :frequency "D"
-                        :symbol "QQQ"
-                        :sma-length 20
-                        :entry-cols [:symbol :sma-r :year :month]})
-      (tc/select-columns col-rt))
-;  
-  )
+(calc-rts-symbol {:w :stocks
+                  :frequency "D"
+                  :symbol "QQQ"
+                  :sma-length 20
+                  :entry-cols [:symbol :sma-r :year :month]})
+
+;(tc/select-columns col-rt)
 
 ;; roundtrips for all symbols
 
@@ -117,18 +112,13 @@
     (map #(take-max % max-pos sort-by where) x)
     (apply tc/concat x)))
 
-(comment
-  ; make sure we take the highest :sma-r
-  (-> (tc/dataset {:year-month [202001 202001 202001 202001 202001 202001 202001]
-                   :sma-r [3 4 6 2 3 4 5]})
-      (max-positions 2 [:sma-r] :middle)
+; make sure we take the highest :sma-r
+(-> (tc/dataset {:year-month [202001 202001 202001 202001 202001 202001 202001]
+                 :sma-r [3 4 6 2 3 4 5]})
+    (max-positions 2 [:sma-r] :middle)
       ;(max-positions 2 [:sma-r] :bottom)
       ;(max-positions 2 [:sma-r] :top)
-      )
-
- ; 
-  )
-
+    )
 (defn trade-sma-monthly-portfolio
   [algo {:keys [list max-pos sort-by where]
          :or {max-pos 0
@@ -147,71 +137,69 @@
         ds-rts (tc/set-dataset-name ds-rts (str "max-pos-" max-pos))]
     {:ds-roundtrips ds-rts}))
 
-(comment
+(def o {:w :stocks
+        :frequency "D"
+        :list "fidelity-select"
+        :backtest-runner trade-sma-monthly-portfolio
+        :max-pos 5
+        :sort-by [:sma-r]
+        :where :middle
+        :symbol ""
+        :sma-length 60
+        :entry-cols [:symbol :sma-r :year-month]})
 
-  (def o {:w :stocks
-          :frequency "D"
-          :list "fidelity-select"
-          :backtest-runner trade-sma-monthly-portfolio
-          :max-pos 5
-          :sort-by [:sma-r]
-          :where :middle
-          :symbol ""
-          :sma-length 60
-          :entry-cols [:symbol :sma-r :year-month]})
+(def backtest-all (trade-sma-monthly-portfolio nil (assoc o :max-pos 0)))
+(def backtest-5 (trade-sma-monthly-portfolio nil (assoc o :max-pos 5)))
 
-  (def backtest-all (trade-sma-monthly-portfolio nil (assoc o :max-pos 0)))
-  (def backtest-5 (trade-sma-monthly-portfolio nil (assoc o :max-pos 5)))
+(roundtrip-performance-metrics backtest-5)
+(roundtrip-performance-metrics backtest-all)
 
-  (roundtrip-performance-metrics backtest-5)
-  (roundtrip-performance-metrics backtest-all)
+^:R
+[:p/table [{:avg-win-log 0.01641819674252593
+            :avg-bars-win 19.92799213565987
+            :win-nr-prct 57.954707306651464
+            :pf 1.3448179108532547
+            :avg-log 0.002439722908207893
+            :pl-log-cum 17.129294538527617
+            :avg-loss-log -0.016828031167618693
+            :trades 7021
+            :p "max-pos-0"
+            :avg-bars-loss 19.97831978319783}]]
 
-  ^:R
-  [:p/table [{:avg-win-log 0.01641819674252593
-              :avg-bars-win 19.92799213565987
-              :win-nr-prct 57.954707306651464
-              :pf 1.3448179108532547
-              :avg-log 0.002439722908207893
-              :pl-log-cum 17.129294538527617
-              :avg-loss-log -0.016828031167618693
-              :trades 7021
-              :p "max-pos-0"
-              :avg-bars-loss 19.97831978319783}]]
+^:R
+[:p/table (->> (roundtrip-performance-metrics backtest-all)
+               ds->map
+               first
+               (merge {}))]
 
-  ^:R
-  [:p/table (->> (roundtrip-performance-metrics backtest-all)
-                 ds->map
-                 first
-                 (merge {}))]
+(:ds-roundtrips backtest-5)
 
-  (:ds-roundtrips backtest-5)
+^:R
+[:div
+ ['line-plot {:cols [:close]} (:ds-roundtrips backtest-5)]
+ ['text (ds->str (:ds-roundtrips backtest-5))]]
 
-  #_(show
-     (:div
-      (line-plot {:cols [:close]} (:ds-roundtrips backtest-5))
-      (text (ds->str (:ds-roundtrips backtest-5)))))
-
-  #_(show
-     (:div
-      (line-plot {:cols [:close]} (:ds-roundtrips backtest-5))
-      (text (ds->str (:ds-roundtrips backtest-5)))))
+^:R
+[:div
+ ['line-plot {:cols [:close]} (:ds-roundtrips backtest-5)]
+ ['text (ds->str (:ds-roundtrips backtest-5))]]
 
   ; 1. load resources
   ;    1-nippy
   ;    2-text    http-get-text  /api/notebook/resource/demo.studies.asset-allocation-dynamic/2
 
-  (-> backtest-5
-      :ds-roundtrips
-      (tc/select-columns col-rt)
-      (save *ns* "top5-sma-60" :edn)
+(-> backtest-5
+    :ds-roundtrips
+    (tc/select-columns col-rt)
+    (save *ns* "top5-sma-60" :edn)
       ;(save "top5-sma-60" :nippy)
       ;print-all
-      )
+    )
 
-  (-> (run-backtest-parameter-range
-       nil o
-       :max-pos [1 2 3 4 5 10 15 0])
-      backtests->performance-metrics)
+(-> (run-backtest-parameter-range
+     nil o
+     :max-pos [1 2 3 4 5 10 15 0])
+    backtests->performance-metrics)
 
   ;; result:
   ;; when taking the lowest ratios, for max-pos=1 we get the BEST result
@@ -229,11 +217,11 @@
 ; | 15 |    3431 | 1.30892157 |  8.41670162 |  0.00245313 |  57.53424658 |   0.01806592 |   -0.01869968 |   19.90121581 |    19.98284146 |
 ; |  0 |    7021 | 1.34481791 | 17.12929454 |  0.00243972 |  57.95470731 |   0.01641820 |   -0.01682803 |   19.92799214 |    19.97831978 |
 
-  (-> (run-backtest-parameter-range
-       nil (assoc o :sma-length 90
-                  :where :top)
-       :max-pos [1 2 3 4 5 10 15 0])
-      backtests->performance-metrics)
+(-> (run-backtest-parameter-range
+     nil (assoc o :sma-length 90
+                :where :top)
+     :max-pos [1 2 3 4 5 10 15 0])
+    backtests->performance-metrics)
 
  ; 90 days sma works much better.   
 
@@ -248,12 +236,12 @@
 ; | 15 |    3462 | 1.39451215 | 10.32867035 | 0.00298344 |  58.34777585 |   0.01807403 |   -0.01815594 |   19.88267327 |    20.02149792 |
 ; |  0 |    7182 | 1.39109306 | 19.27119228 | 0.00268326 |  58.31244779 |   0.01636734 |   -0.01645799 |   19.89398281 |    20.00033400 |
 
-  (-> (run-backtest-parameter-range
-       nil (assoc o :sma-length 90
-                  :where :bottom)
-       :max-pos [1 2 3 4 5 10 15 0])
-      backtests->performance-metrics
-      (save *ns* "metrics-middle-sma90" :txt))
+(-> (run-backtest-parameter-range
+     nil (assoc o :sma-length 90
+                :where :bottom)
+     :max-pos [1 2 3 4 5 10 15 0])
+    backtests->performance-metrics
+    (save *ns* "metrics-middle-sma90" :txt))
 
 ; | :p | :trades |        :pf | :pl-log-cum |   :avg-log | :win-nr-prct | :avg-win-log | :avg-loss-log | :avg-bars-win | :avg-bars-loss |
 ; |---:|--------:|-----------:|------------:|-----------:|-------------:|-------------:|--------------:|--------------:|---------------:|
@@ -270,11 +258,11 @@
 
 ;; since bot TOP and BOTTOM do not improve results, it must be that MIDDLE ratio works best !!
 
-  (-> (run-backtest-parameter-range
-       nil (assoc o :sma-length 90
-                  :where :middle)
-       :max-pos [1 2 3 4 5 10 15 0])
-      backtests->performance-metrics)
+(-> (run-backtest-parameter-range
+     nil (assoc o :sma-length 90
+                :where :middle)
+     :max-pos [1 2 3 4 5 10 15 0])
+    backtests->performance-metrics)
 
 ; | :p | :trades |        :pf | :pl-log-cum |   :avg-log | :win-nr-prct | :avg-win-log | :avg-loss-log | :avg-bars-win | :avg-bars-loss |
 ; |---:|--------:|-----------:|------------:|-----------:|-------------:|-------------:|--------------:|--------------:|---------------:|
@@ -292,7 +280,7 @@
   ;; so we need a market breath indicator!
 
 ; 
-  )
+
 ;; Use ROC instead of SMA
 ;; Exit trades also with exit-rank ?
 ;; (list-plot (:equity pf) :joined true :color "blue")

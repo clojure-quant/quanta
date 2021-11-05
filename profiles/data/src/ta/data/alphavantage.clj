@@ -238,8 +238,6 @@
               result)
             ;(println "data adjusted: " (pr-str response))
             )))
-
-
 (defn get-daily-fx
   "size: compact=last 100 days. full=entire history"
   [size symbol]

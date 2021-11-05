@@ -1,4 +1,4 @@
-(ns demo.studies.sma
+(ns notebook.studies.sma
   (:require
    [ta.backtest.study :refer [run-study]]
    [ta.backtest.roundtrip-backtest :refer [run-backtest run-backtest-parameter-range]]

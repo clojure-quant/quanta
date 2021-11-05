@@ -1,4 +1,4 @@
-(ns demo.studies.supertrend
+(ns notebook.studies.supertrend
   (:require
    [tick.core :as tick]
    [tech.v3.dataset :as tds]
@@ -8,18 +8,17 @@
    [ta.backtest.print :as p]
    [demo.algo.supertrend :refer [supertrend-signal]]))
 
-(comment
-  (-> (tds/->dataset {:date [(tick/now) (tick/now) (tick/now)]
-                      :open [1 2 3]
-                      :high [1 2 3]
-                      :low [1 2 3]
-                      :close [1 2 3]
-                      :volume [0 0 0]})
-      (supertrend-signal {:atr-length 10
-                          :atr-mult 0.5}))
+(-> (tds/->dataset {:date [(tick/date-time "2019-01-01T00:00:00")
+                           (tick/date-time "2020-01-01T00:00:00")
+                           (tick/date-time "2021-01-01T00:00:00")]
+                    :open [1 2 3]
+                    :high [1 2 3]
+                    :low [1 2 3]
+                    :close [1 2 3]
+                    :volume [0 0 0]})
+    (supertrend-signal {:atr-length 10
+                        :atr-mult 0.5}))
 
-;  
-  )
 ;; daily backtest
 
 (def options-d

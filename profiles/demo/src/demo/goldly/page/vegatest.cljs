@@ -38,8 +38,8 @@
 ;; vega misc
 
 #_(defn link-href [href text]
-  [:a.bg-blue-300.cursor-pointer.hover:bg-red-700.m-1
-   {:href href} text])
+    [:a.bg-blue-300.cursor-pointer.hover:bg-red-700.m-1
+     {:href href} text])
 
 (defn vega-page [{:keys [route-params query-params handler] :as route}]
   [:div

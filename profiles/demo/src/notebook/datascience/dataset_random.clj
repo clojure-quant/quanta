@@ -3,7 +3,7 @@
   (:require
    [tablecloth.api :as tc]
    [tick.core :as tick]
-   [ta.backtest.date :refer [days-ago-instant select-rows-since]]
+   [ta.backtest.date :refer [days-ago select-rows-since]]
    [ta.warehouse.random :refer [random-dataset random-datasets]]
    ;[ta.dataset.returns :refer [forward-shift-col]]
    ))
@@ -11,11 +11,11 @@
 (random-dataset 3)
 
 (-> (random-dataset 1000)
-    (select-rows-since (days-ago-instant 6)))
+    (select-rows-since (days-ago 6)))
 
 (def ds-1 (random-dataset 1000000))
 
-(let [date (days-ago-instant 6)]
+(let [date (days-ago 6)]
   (-> ds-1
       (tc/select-rows
        (fn [row]

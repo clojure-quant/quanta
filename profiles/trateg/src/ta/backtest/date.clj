@@ -12,9 +12,7 @@
 (defn days-ago [n]
   (-> (tick/now)
       (tick/date-time)
-      (tick/<< (tick/new-duration n :days))
-      ))
-
+      (tick/<< (tick/new-duration n :days))))
 
 (defn days-ago-instant [n]
   (-> (tick/now)
@@ -113,9 +111,8 @@
   (-> dt tick/month .getValue))
 
 (comment
-  
-  (days-ago 50)
 
+  (days-ago 50)
 
   (-> (month-as-int (tick/now)) class)
   ;  

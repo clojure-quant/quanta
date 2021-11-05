@@ -26,8 +26,6 @@
 (-> (stock-plot)
     (with-meta {:render-as :p/vega}))
 
-
-
 (comment
 
   ;(save (stock-plot) "vega-spec" :edn) ; save in :edn format creates a HUMAN READABLE edn file!

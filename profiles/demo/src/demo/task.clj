@@ -1,8 +1,6 @@
 (ns demo.task
-  (:require 
-   []
-   )
-  )
+  (:require
+   []))
 
 
 

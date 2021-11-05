@@ -23,7 +23,4 @@
    [link-href "/algo/table" "table s&p"]
 
    [:p.text-blue.text-xl "docs"]
-   [video {:url "https://www.youtube.com/watch?v=JGhOa9TZYx8"}]
-   
-   
-   ])
+   [video {:url "https://www.youtube.com/watch?v=JGhOa9TZYx8"}]])

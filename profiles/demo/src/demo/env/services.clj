@@ -5,6 +5,7 @@
    [ta.backtest.date :refer [ds-convert-col-instant->localdatetime]]
    [ta.warehouse :as wh]
    [ta.warehouse.overview :refer [warehouse-overview]]
+   [ta.data.date :refer [now-datetime]]
    [demo.env.config] ; side-effects
    [demo.env.algos :refer [algo-names algo-metrics algo-table algo-chart]]))
 
@@ -18,6 +19,8 @@
     (println "overview-map: " m)
     m))
 
+
+
 (service/add
  {; warehouse
   :ta/symbols wh/load-list ; param: symbol-list-name 
@@ -29,6 +32,7 @@
   :algo/metrics algo-metrics  ; used in backtest
   :algo/table algo-table      ; used in study-table
   :algo/chart algo-chart      ; used in study-highchart
-  })
+
+  :date now-datetime})
 
 

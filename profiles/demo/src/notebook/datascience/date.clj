@@ -52,7 +52,6 @@
 
 (type inst)
 
-
 (.getLong inst java.time.temporal.ChronoField/CLOCK_HOUR_OF_DAY)
 (.getLong inst java.time.temporal.ChronoField/CLOCK_HOUR_OF_DAY_AMPM)
 (.getLong inst java.time.temporal.ChronoField/CLOCK_HOUR_OF_AMPM)

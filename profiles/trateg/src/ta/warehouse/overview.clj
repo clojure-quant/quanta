@@ -14,7 +14,6 @@
                                                 :close
                                                 returns)))))))
 
-
 (defn concatenate-datasets [seq-ds-bar]
   (->> seq-ds-bar
        (apply tc/concat)))
@@ -59,7 +58,7 @@
   (wh/symbols-available :stocks "D")
   (wh/symbols-available :crypto "D")
 
-   (warehouse-overview :stocks "D")
+  (warehouse-overview :stocks "D")
   (warehouse-overview :crypto "D")
   (warehouse-overview :crypto "15")
 

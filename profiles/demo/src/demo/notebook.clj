@@ -4,17 +4,12 @@
    [goldly.scratchpad :refer [show! show-as clear!]]
    ;[demo.init] ; side effects
    ))
-
-
-
 (eval-notebook "demo.warehouse.create-random")
 (eval-notebook "demo.playground.dataset-group")
-
 
 (-> ;(eval-notebook "demo.playground.cljplot")
  (eval-notebook "demo.warehouse.overview")
  show!)
-
 
 (defn eval-notebooks [ns-list]
   (map eval-notebook ns-list))
@@ -26,39 +21,10 @@
               "demo.notebook.vegalite-multiline"
               "demo.notebook.vegalite-point"
               "demo.notebook.vegalite-zoom"
-
               "demo.notebook.vega-zoom"
               "demo.notebook.vega-test"
               "demo.notebook.vega-rect"
-
               "demo.notebook.gorillaplot-core"])
-
-(def ns-data ["demo.warehouse.create-random"
-              "demo.warehouse.import-alphavantage"
-              "demo.warehouse.import-bybit"])
-
-(def ns-studies ["demo.studies.asset-allocation-dynamic"
-                 "demo.studies.bollinger"
-                 "demo.studies.bollinger-forward"
-                 "demo.studies.buyhold"
-                 "demo.studies.cluster-real"
-                 "demo.studies.moon"
-                 "demo.studies.sma"
-                 "demo.studies.supertrend"
-                    ;task.clj
-                 ])
-
-(def ns-data ["notebook.data.alphavantage"
-              "notebook.data.warehouse-overview"
-              "notebook.data.series"
-              ;"demo.playground.symbollist"
-              ;"demo.playground.ta4j"
-              ;"demo.playground.throttle"
-              ;"demo.playground.tmlviz"
-              ])
-
-
-
 
 (def ns-datascience ["notebook.datascience.plot_clj"
                      "notebook.datascience.plot_tml"
@@ -68,21 +34,27 @@
                      "notebook.datascience.dataset-random"
                      "notebook.datascience.date"])
 
+(def ns-data ["notebook.data.alphavantage"
+              "notebook.data.warehouse-overview"
+              "notebook.data.series"])
 
+(def ns-studies ["notebook.studies.asset-allocation-dynamic"
+                 "notebook.studies.bollinger"
+                 "notebook.studies.bollinger-forward"
+                 "notebook.studies.buyhold"
+                 "notebook.studies.cluster-real"
+                 "notebook.studies.moon"
+                 "notebook.studies.sma"
+                 "notebook.studies.supertrend"
+                    ;task.clj
+                 ])
 (eval-notebooks ns-misc)
 (eval-notebooks ns-vega)
-
-(eval-notebooks ns-playground)
-(eval-notebooks ns-studies)
-
 (eval-notebooks ns-datascience)
+(eval-notebooks ns-playground)
+
 (eval-notebooks ns-data)
-
-
-(eval-notebook "demo.warehouse.overview")
-
-(load-notebook "demo.studies.buyhold")
-
+(eval-notebooks ns-studies)
 
 (-> (eval-notebook "user.notebook.hello")
     :content

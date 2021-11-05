@@ -36,7 +36,6 @@
        (map standardize)
        stats/covariance-matrix))
 
-
 (let [n  1000
       xs (-> (rand-numbers n)
              (fun/* 100))

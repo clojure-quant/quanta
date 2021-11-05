@@ -27,23 +27,19 @@ ds1
 (-> ds1
     tc/shape)
 
-
 (-> ds1
     (update :x #(vary-meta % assoc :hidden? true))
     :x
     meta)
 
-
 (-> [4 1 :A "v" 2]
     (with-meta {:hidden? true})
     meta)
-
 
 (-> [4 1 :A "v" 2]
     (with-meta {:hidden? true})
     (conj 99)
     meta)
-
 
 (-> ds1
     meta)

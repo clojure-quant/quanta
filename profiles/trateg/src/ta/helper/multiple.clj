@@ -13,11 +13,16 @@
 (defn dataset->symbol [ds]
   (-> ds :symbol first))
 
+
+(defn symbol-count-table [datasets]
+  (->> datasets
+       (map (fn [ds]
+              {:symbol (dataset->symbol ds)
+               :row-count (tc/row-count ds)}))))
+
+
 (defn make-full-symbols-set [datasets]
-  (let [symbol->row-count (->> datasets
-                               (map (fn [ds]
-                                      {:symbol (dataset->symbol ds)
-                                       :row-count (tc/row-count ds)})))
+  (let [symbol->row-count (symbol-count-table datasets)
         max-row-count (->> symbol->row-count
                            (map :row-count)
                            (apply max))]
@@ -26,13 +31,12 @@
          (map :symbol)
          set)))
 
-(defn make-full-symbols [full-datasets]
-  (->> full-datasets
-       (mapv dataset->symbol)))
-
 (defn make-full-datasets [datasets]
   (let [full-symbols-set (make-full-symbols-set datasets)]
     (->> datasets
          (filter #(-> % dataset->symbol full-symbols-set)))))
 
 
+(defn make-full-symbols [full-datasets]
+  (->> full-datasets
+       (mapv dataset->symbol)))

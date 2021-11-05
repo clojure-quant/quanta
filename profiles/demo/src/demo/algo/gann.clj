@@ -151,20 +151,16 @@
      )))
 (comment
 
-  
   (def box {:ap 100.0
             :at 10
             :bp 250.0
             :bt 30})
 
-  
-  (def box-btc 
+  (def box-btc
     {:ap 0.01
      :at (parse-date "2010-07-18")
      :bp 11.0
      :bt (parse-date "2014-04-13")}) ; alternative: ; B 17. april 2011 0.04
-
-  
 
   (box-dt box)
   (box-dp box)

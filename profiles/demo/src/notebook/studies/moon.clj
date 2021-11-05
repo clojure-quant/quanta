@@ -1,4 +1,4 @@
-(ns demo.studies.moon
+(ns notebook.studies.moon
   (:require
    [tablecloth.api :as tc]
    [tech.v3.datatype :as dtype]

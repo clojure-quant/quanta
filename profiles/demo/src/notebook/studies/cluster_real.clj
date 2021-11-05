@@ -1,4 +1,4 @@
-(ns demo.studies.cluster-real
+(ns notebook.studies.cluster-real
   (:require
    [tech.v3.dataset.print :as print]
    [tech.v3.datatype.functional :as fun]
@@ -11,7 +11,7 @@
    [ta.warehouse :as wh]
    [ta.warehouse.overview :refer [load-datasets concatenate-datasets overview-view]]
    [ta.helper.stats :refer [standardize]]
-   [ta.helper.multiple :refer [make-full-datasets make-full-symbols]]))
+   [ta.helper.multiple :as m :refer [make-full-datasets make-full-symbols]]))
 
 (def symbols
   (wh/load-list "fidelity-select"))
@@ -32,6 +32,7 @@ symbol->name
 (-> concatenated-dataset
     (tc/random 10))
 
+
 (->> concatenated-dataset
      tc/columns
      (map meta))
@@ -48,17 +49,32 @@ symbol->name
     (overview-view {:pivot? false})
     (print/print-range :all))
 
+
+(m/symbol-count-table concatenated-dataset)
+
+
 (def full-datasets
-  (make-full-datasets concatenated-dataset))
+  (make-full-datasets concatenated-dataset)
+  )
+
+full-datasets
+
 
 (def full-symbols
   (make-full-symbols concatenated-dataset))
+
+full-symbols
+
+
+
 
 (def corrs
   (->> full-datasets
        (map #(-> % :return standardize))
        stats/covariance-matrix
        tensor/->tensor))
+
+corrs
 
 (def clustering
   (-> full-datasets

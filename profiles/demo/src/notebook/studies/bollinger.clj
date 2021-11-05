@@ -1,11 +1,11 @@
-(ns demo.studies.bollinger
+(ns notebook.studies.bollinger
   (:require
    [tablecloth.api :as tc]
    [ta.backtest.study :refer [run-study]]
    [ta.helper.print :as helper]
    [ta.helper.window :refer [get-forward-window]]
-   [demo.strategy.sma :as sma]
-   [demo.study.bollinger :as bs]))
+   [demo.algo.sma :as sma]
+   [demo.algo.bollinger :as bs]))
 
 (def default-options
   {:w :crypto
@@ -18,8 +18,8 @@
    :forward-size 20})
 
 (def r
-  (run-study bs/bollinger-study
-             default-options))
+  (run-backtest bs/bollinger-study
+                default-options))
 
 (keys r)
 

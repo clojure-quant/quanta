@@ -1,4 +1,4 @@
-(ns demo.studies.buyhold
+(ns notebook.studies.buyhold
   (:require
    [tablecloth.api :as tc]
    [ta.warehouse :as wh]

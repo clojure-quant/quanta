@@ -5,7 +5,7 @@
 
 (defn text-render-fipp
   [o comment]
-  [:span.text-green-500 
+  [:span.text-green-500
    comment
    [:p/text
     (pprint-str o)]])

@@ -1,4 +1,4 @@
-(ns demo.studies.bollinger
+(ns notebook.studies.bollinger
   (:require
    [taoensso.timbre :refer [info]]
    [tech.v3.dataset :as tds]
@@ -7,7 +7,7 @@
    [ta.helper.print :as helper]
    [ta.warehouse :as wh]
    [ta.helper.window :refer [get-forward-window]]
-   [demo.strategy.bollinger :as bollinger]))
+   [demo.algo.bollinger :as bollinger]))
 
 ; forward statistics
 

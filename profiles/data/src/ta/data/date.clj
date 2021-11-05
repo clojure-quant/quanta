@@ -90,8 +90,7 @@
   (-> (now-datetime)
       class)
 
-
-   ; parse
+; parse
   (parse-date "2021-06-05")
   (parse-datetime "2021-06-05 11:30:01")
 
@@ -117,10 +116,10 @@
   (clojure.repl/doc tick/date-time)
 
   (tick/+ (tick/date "2000-01-01")
-       (tick/new-period 1 :months))
+          (tick/new-period 1 :months))
 
   (tick/+ (tick/date-time)
-       (tick/new-period 1 :months))
+          (tick/new-period 1 :months))
 
   ; java.time.LocalDateTime  (only seconds)
   (-> (tick/date "2021-06-20")
@@ -153,17 +152,11 @@
   ;   (LocalTime/parse time)
   ;                EST)
 
-
   (-> (now-date)
-      pr-str   
+      pr-str
       ;(clojure.edn/read-string {:readers {'time/date tick/date}})
-   
-   )
-  
-
-(clojure.edn/read-string "#inst \"1985-04-12T23:20:50.52Z\"")
-
-
+      )
+  (clojure.edn/read-string "#inst \"1985-04-12T23:20:50.52Z\"")
 
   java.time.LocalDate
 
@@ -173,11 +166,6 @@
          \"2021-11-03T00:00:00.000000001\"]")
 
 ;java.time.LocalDateTime
-
-
-
-
-
 
 ;
   )
