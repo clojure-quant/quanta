@@ -154,15 +154,10 @@
      :close-series close-series}))
 
 (defn get-boxes [opts]
-   (->> opts
+  (->> opts
        get-gann-data
        :boxes
-       (map #(dissoc % :dt))
-       )  
-  )
-
-
-
+       (map #(dissoc % :dt))))
 
 (defn get-gann-spec [opts]
   (let [{:keys [px-min px-max dt-start dt-end boxes close-series]} (get-gann-data opts)
@@ -187,6 +182,9 @@
   root
 
   (get-boxes {:symbol "BTCUSD"})
+
+  (-> (get-gann-data {:symbol "GLD" :wh :stocks})
+      (dissoc :close-series))
 
   (show!
    (get-gann-spec {:wh :crypto

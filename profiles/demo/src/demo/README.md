@@ -34,20 +34,7 @@ for cross-type-down: (-average diff%)
 
 
 
-## go to right directory
 
-`cd profiles/demo`
-
-## add credentials
-
-create this file: profiles/demo/creds.edn - then add your secret key in this format:
-{:alphavantage "YOUR-SECRET-KEY"}
-
-## bybit import
-
-- once:  `clj -X:bybit-import-initial`
-- every 15 minutes / whenever you want to update. (missing a bar cannot happen)
- `clj -X:bybit-import-append`
 
 
 ## run strategy
@@ -94,6 +81,8 @@ FLORIAN TODO:
 - goldly: arrow endpoint (for bigger datasets) + clojurescript arrow reader.
 
 - goldld: if nrepl .nrepl-port (in main folder)
+
+- https://github.com/johnmn3/injest   BETTER THREADING MACROS
 
 
 https://github.com/scicloj/scicloj.ml

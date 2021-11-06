@@ -35,9 +35,10 @@
 
 (def alphavantage-test-symbols
   ["IAU"
-   "GLD"
    "SPY"
    "QQQ"
+   "GLD"
+   "SLV"
    "MSFT"
    "ORCL"])
 

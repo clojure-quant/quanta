@@ -109,6 +109,9 @@
 (defn move-up [box]
   (get-quadrant box 0 1))
 
+(defn move-down [box]
+  (get-quadrant box 0 -1))
+
 (comment
 
   root
@@ -156,14 +159,28 @@
        (remove  #(< (:bp %) px-min))))
 
 (comment
-  (->> (move-right-in-window root (parse-date "2021-01-01") (parse-date "2021-12-31"))
+
+  (require '[demo.lib.gann-data :refer [gld-box]])
+
+  (->> (move-right-in-window gld-box (parse-date "2021-01-01") (parse-date "2021-12-31"))
       ;(clojure.pprint/print-table)
        (map :idx-t))
 
-  (-> (move-up-in-window root (Math/log10 1000) (Math/log10 70000))
+  (move-down gld-box)
+
+  gld-box
+
+  (-> (move-up-in-window gld-box 2.197252998145341 2.2621424532947794)
+      (move-up-in-window gld-box (Math/log10 1000) (Math/log10 70000))
       (clojure.pprint/print-table))
- ; 
+
+  {:px-min , :px-max ,
+   :dt-start #time/date-time "2021-01-01T00:00",
+   :dt-end #time/date-time "2021-12-31T00:00",  ()}
+
+; 
   )
+
 (defn get-boxes-in-window [box dt-start dt-end px-start px-end]
   (for [idx-t  (->> (move-right-in-window box dt-start dt-end)
                     (map :idx-t))

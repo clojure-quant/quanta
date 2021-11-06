@@ -8,9 +8,7 @@
    [:td ap]
    [:td bp]
    [:td (str at)]
-   [:td (str bt)]
-   ])
-
+   [:td (str bt)]])
 
 (defn box-table [boxes]
   (when boxes
@@ -24,7 +22,6 @@
             [:td "at"]
             [:td "bt"]]]
           (map box boxes))))
-
 
 (defn gann-page [{:keys [route-params query-params handler] :as route}]
   (let [*state (r/atom {:params {:symbol "BTCUSD"
@@ -48,14 +45,13 @@
         [:div.w-64
          [input/select
           {:nav? false
-           :items ["BTCUSD" "SPY" "GLD"]}
+           :items ["BTCUSD" "SPY" "QQQ" "GLD" "SLV"]}
           *state [:params :symbol]]]
         [input/button {:on-click get-data} "show gann"]
         [link-href "/" "main"]]
-        [box-table (:boxes @*state)]
+       [box-table (:boxes @*state)]
        (:data @*state)
        ;[:div (pr-str (:boxes @*state))]
-      
 
        [:div.bg-gray-500.mt-12 "params:" (pr-str (:params @*state))]])))
 

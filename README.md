@@ -6,26 +6,31 @@ Seeks to provide tools to run backtests on financial time series and analyze res
 
 Provides a light convenience wrapper over [ta4j](https://github.com/ta4j/ta4j) as well as a very early attempt at a pure clojure implementation of something similar. 
 
-## Demo
+## Demo - GoldlyDocs Web app
 
-See the [demo] directory for some usage examples.
+See the [profiles/demo] directory for some usage examples.
 
 TA ships a goldly web-app. 
-Clone TA and run: `cd profiles/demo && clj -X:goldlyb`
 
-TA ships some notebooks that you can edit in PinkGorilla notebook.
-Clone TA and run: `cd demo && clj -X:notebook`
+Goto demo directory: `cd profiles/demo`
 
-If you want to build the notebook from scratch, use: `cd demo && clj -X:notebook2`
+Run the demos
+ - run: `clj -X:goldly-docs`
+ - in webbrowser go to localhost:8000 
+ - nrepl server is running on port 9100  (in vscode called nrepl jack in)  
 
-** Remote REPL **
- - in terminalyou have pinkgorilla notebook running
- - in webbrowser go to :8000 and create a new notebook
- - in your ide connect nrepl to port 9100 
-   (in vscode called nrepl jack in)  
-   port can be seen in .webly/config.edn
- - all evals after evaling :gorilla/on will show up in notebook
- - :gorilla/off stops evals in sniffer
+** add datasource credentials **
+
+create this file: profiles/demo/creds.edn - then add your secret key in this format:
+{:alphavantage "YOUR-SECRET-KEY"}
+
+## bybit import
+
+Goto demo directory: `cd profiles/demo`
+
+- once:  `clj -X:bybit-import-initial`
+- every 15 minutes / whenever you want to update. (missing a bar cannot happen)
+ `clj -X:bybit-import-append`
 
 
 ## run unit tests / speed tests
