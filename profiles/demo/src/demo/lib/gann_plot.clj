@@ -3,7 +3,7 @@
    [cljc.java-time.duration :as duration]
    [tick.core :as tick :refer [>>]]
    [tick.alpha.interval :as t.i]
-   [ta.data.date :refer [parse-date now-datetime]] 
+   [ta.data.date :refer [parse-date now-datetime]]
    [ta.warehouse :refer [load-symbol]]
    [tablecloth.api :as tc]
    [tech.v3.dataset :as tds]
@@ -24,11 +24,17 @@
     (tick/<< bt d-f)))
 
 
-(defn gann-plot [opts {:keys [ap bp at bt] :as box}]
+(defn gann-plot [opts {:keys [ap bp at bt dp dt] :as box}]
   (let [line-box (fn [t0 p0 t1 p1]
                    [:line {:color "blue"} [t0 p0] [t1 p1]])
         line-fan (fn [t0 p0 t1 p1]
-                   [:line {:color "green"} [t0 p0] [t1 p1]])]
+                   [:line {:color "green"} [t0 p0] [t1 p1]])
+        circle (fn [p t f]
+                 [:ellipse {:style {:stroke "red"}
+                            :cy p
+                            :cx t
+                            :ry (/ (* dp 5.0) (float f))
+                            :rx (duration/divided-by (cljc.java-time.duration/multiplied-by dt 5.0) f)}])]
     [(line-box at ap bt ap)
      (line-box at bp bt bp)
      (line-box at ap at bp)
@@ -57,11 +63,40 @@
      (line-fan bt bp (remove-fraction box 4) ap)
      (line-fan bt bp (remove-fraction box 8) ap)
 
-       ;(line bt bp bt ap) ; c-1-1
-     ]))
+     #_[:ellipse {:style {:stroke "red"}
+                  :cy ap
+                  :cx at
+                  :ry dp
+                  :rx dt}]
+     (circle ap at 5)
+     (circle bp bt 5)
+     (circle ap bt 5)
+     (circle bp at 5)
+
+     (circle ap at 4)
+     (circle bp bt 4)
+     (circle ap bt 4)
+     (circle bp at 4)
+
+     (circle ap at 3)
+     (circle bp bt 3)
+     (circle ap bt 3)
+     (circle bp at 3)
+
+     (circle ap at 2)
+     (circle bp bt 2)
+     (circle ap bt 2)
+     (circle bp at 2)
+
+     (circle ap at 1)
+     (circle bp bt 1)
+     (circle ap bt 1)
+     (circle bp at 1)]))
+
+
 
 (comment
-  
+
 
   (gann-plot nil boxes/btc-box)
 
@@ -88,17 +123,21 @@
     {:series (mapv (juxt :date :close-log) (tds/mapseq-reader ds-log))
      :px-min (apply min (:close-log ds-log))
      :px-max (apply max (:close-log ds-log))
-     :count (count (:close-log ds-log))
-     }))
+     :count (count (:close-log ds-log))}))
 
 (comment
-  (-> (get-prices
-       :crypto
-       "BTCUSD"
-       (parse-date "2021-01-01")
-       (parse-date "2021-12-31"))
-      (dissoc :series) 
-      )
+  (-> (get-prices :crypto "BTCUSD" (parse-date "2021-01-01") (parse-date "2021-12-31"))
+      (dissoc :series))
+
+  (-> (get-prices :stocks "GLD" (parse-date "2021-01-01") (parse-date "2021-12-31"))
+      (dissoc :series))
+
+  (-> (get-boxes-in-window boxes/gld-box (parse-date "2021-01-01") (parse-date "2021-12-31")
+                           (Math/log10 2000) (Math/log10 3000))
+      (clojure.pprint/print-table))
+
+
+
 
 ;
   )
@@ -115,18 +154,18 @@
         boxes-plotted (apply concat (map #(gann-plot {} %) boxes))
         series-plotted [:series {:color "red"} close-series]]
     [:div
-    [:h1 (str "gann plot " dt-start " - " dt-end " box-count: " (count boxes))]
-    (svg-view
-     {:min-px px-min
-      :max-px px-max
-      :min-dt dt-start
-      :max-dt dt-end
-      :svg-width 1000
-      :svg-height 1000}
+     [:h1 (str "gann plot " dt-start " - " dt-end " box-count: " (count boxes))]
+     (svg-view
+      {:min-px px-min
+       :max-px px-max
+       :min-dt dt-start
+       :max-dt dt-end
+       :svg-width 1000
+       :svg-height 1000}
      ;(gann-plot {} (first boxes))
      ;(concat boxes-plotted series-plotted)
      ;boxes-plotted
-     (conj boxes-plotted series-plotted))]))
+      (conj boxes-plotted series-plotted))]))
 
 (comment
 
@@ -144,8 +183,8 @@
    (get-gann-spec
     :crypto
     "BTCUSD"
-    (zoom-in boxes/btc-box)
-    (parse-date "2020-01-01")
+    (zoom-out boxes/btc-box)
+    (parse-date "2021-01-01")
     (parse-date "2021-12-31")))
 
 
@@ -153,8 +192,8 @@
    (get-gann-spec
     :crypto
     "BTCUSD"
-    (zoom-out boxes/btc-box)
-    (parse-date "2021-01-01")
+    (zoom-in boxes/btc-box)
+    (parse-date "2018-01-01")
     (parse-date "2021-12-31")))
 
 
@@ -177,7 +216,7 @@
     (parse-date "2021-12-31")))
 
 
- 
+
 
   (show!
    (get-gann-spec
@@ -186,7 +225,7 @@
     boxes/sup-box
     (parse-date "2020-01-01")
     (parse-date "2021-12-31")))
-  
+
   (show!
    (get-gann-spec
     :stocks
@@ -194,16 +233,25 @@
     (zoom-in boxes/sup-box)
     (parse-date "2020-01-01")
     (parse-date "2021-12-31")))
-  
 
-  
+
+  (show!
+   (get-gann-spec
+    :stocks
+    "GLD"
+      ;(zoom-in (zoom-in boxes/gld-box))
+    boxes/gld-box
+    (parse-date "2010-01-01")
+    (parse-date "2021-12-31")))
+
+
 
 
 
 
   ; 
   )
- 
+
 
 
 

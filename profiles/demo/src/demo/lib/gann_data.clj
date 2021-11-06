@@ -23,9 +23,16 @@
     :bp  153.48
     :bt (parse-date "2002-10-10")})
 
+ (def gld
+   {:ap 254.0 
+    :at (parse-date "2001-02-27")
+    :bp  329.0
+    :bt (parse-date "2003-02-12")})
+
 
 (def btc-box (make-root-box btc))
 (def sup-box (make-root-box sup))
+(def gld-box (make-root-box gld))
  
 
 
