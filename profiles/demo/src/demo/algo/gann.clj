@@ -7,22 +7,7 @@
    [ta.backtest.signal :refer [running-index-vec]]
    [ta.series.signal :refer [prior-int cross-up cross-down price-when]]))
 
-;; box
-;; a: left point of square
-;; b: right point of square
-;; bt > at
-;; bp > ap
 
-(defn box-dp
-  [{:keys [ap bp]}]
-  (- bp ap))
-
-(defn box-dt
-  [{:keys [at bt]}]
-  (- bt at))
-
-(defn box-r [box]
-  (/ (box-dp box) (box-dt box)))
 
 ;; up/down gann diagonal (for base box)
 
@@ -36,40 +21,19 @@
        (* (box-r box))
        (- bp)))
 
-;; quadrant
-;; q-t and q-p are positive/negative integers. 
-;; 0 returns base box
-;; quadrant means base box is shifted:
-;; right/left (* q-t box-dt) 
-;; up/down (* q-p box-dp) 
 
-(defn get-quadrant [{:keys [ap bp at bt] :as box} qt qp]
-  (let [d-p (* qp (box-dp box))
-        d-t (* qt (box-dt box))]
-    {:ap (+ ap d-p)
-     :bp (+ bp d-p)
-     :at (+ at d-t)
-     :bt (+ bt d-t)}))
+(comment
+  (gann-up box (:at box))
+  (gann-up box (:bt box))
 
-(defn- quot-inc [a b]
-  (-> (quot a b) inc int))
+  (gann-down box (:at box))
+  (gann-down box (:bt box))
 
-(defn- quot-dec [a b]
-  (-> (quot a b) dec int))
 
-(defn find-quadrant [{:keys [ap bp at bt] :as box} t p]
-  (let [time-right-shift? (> t bt)
-        time-left-shift? (< t at)
-        price-up-shift? (> p bp)
-        price-down-shift? (< p ap)]
-    {:qt (cond
-           time-right-shift? (quot-inc (- t bt) (box-dt box))
-           time-left-shift? (quot-dec (- t at) (box-dt box))
-           :else 0)
-     :qp (cond
-           price-up-shift? (quot-inc (- p bp) (box-dp box))
-           price-down-shift? (quot-dec (- p ap) (box-dp box))
-           :else 0)}))
+ ; 
+  )
+
+
 
 (defn sr [box t p]
   (when p
@@ -151,38 +115,7 @@
      )))
 (comment
 
-  (def box {:ap 100.0
-            :at 10
-            :bp 250.0
-            :bt 30})
 
-  (def box-btc
-    {:ap 0.01
-     :at (parse-date "2010-07-18")
-     :bp 11.0
-     :bt (parse-date "2014-04-13")}) ; alternative: ; B 17. april 2011 0.04
-
-  (box-dt box)
-  (box-dp box)
-  (box-r box)
-
-  (get-quadrant box 1 0)
-  (get-quadrant box 0 1)
-  (get-quadrant box 1000 1)
-
-  ;; unit tests:
-
-  (gann-up box (:at box))
-  (gann-up box (:bt box))
-
-  (gann-down box (:at box))
-  (gann-down box (:bt box))
-
-  (find-quadrant box 40 240)
-  (find-quadrant box 80 240)
-  (find-quadrant box 20 340)
-  (find-quadrant box 20 440)
-  (find-quadrant box 80 440)
 
   (sr box 29 240)
   (sr box 20 200)

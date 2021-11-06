@@ -3,7 +3,7 @@
    [clojure.pprint]
    [clojure.edn :as edn]
    [taoensso.timbre :refer [warn]]
-   [webly.log]
+  
    [ta.warehouse :as wh]
    [ta.data.alphavantage :as av]))
 
@@ -24,10 +24,4 @@
                     :random "../db/random/"
                     :shuffled  "../db/shuffled/"}})
 
-(defn log-config! []
-  (webly.log/timbre-config!
-   {:timbre-loglevel
-    [[#{"pinkgorilla.nrepl.client.connection"} :info]
-     [#{"org.eclipse.jetty.*"} :info]
-     [#{"webly.*"} :info]
-     [#{"*"} :info]]}))
+

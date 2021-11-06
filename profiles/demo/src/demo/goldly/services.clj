@@ -1,4 +1,4 @@
-(ns demo.env.services
+(ns demo.goldly.services
   (:require
    [goldly.service.core :as service]
    [ta.helper.ds :refer [ds->map show-meta cols-of-type]]

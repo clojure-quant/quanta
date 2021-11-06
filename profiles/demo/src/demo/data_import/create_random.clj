@@ -2,8 +2,7 @@
   (:require
    [tablecloth.api :as tablecloth]
    [ta.warehouse.random :as r]
-   [ta.warehouse :as wh]
-   [demo.env.config :refer [log-config!]]))
+   [ta.warehouse :as wh]))
 
 (def bybit-symbols ["BTCUSD" "ETHUSD"])
 
@@ -15,9 +14,7 @@
   (r/create-shuffled-datasets :crypto :shuffled bybit-symbols "D")
   (r/create-shuffled-datasets :crypto :shuffled bybit-symbols "15"))
 
-(defn task-create-random [& _]
-  (log-config!)
-  (create-crypto-random))
+
 
 (comment
   (create-crypto-random)

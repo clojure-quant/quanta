@@ -7,20 +7,9 @@
             [svg-clj.parametric :as p]
             [svg-clj.layout :as lo]
             [svg-clj.tools :as tools]
+            [ta.data.date :refer [parse-date]]
             [goldly.scratchpad :refer [show! show-as clear!]]))
 
-(show!
- [:svg {:class "bg-blue-200"
-        :width 500
-        :height 500
-        :xmlns "http://www.w3.org/2000/svg"}
-  ;[:path {:d "M 200 200" :stroke "green" :stroke-width 5}]
-  [:path {:d "M 50 50 H 290 V 90 H 50 L 50 50"
-          :stroke-width 5
-          :stroke "white"
-          :fill "none"}]
-   ;[:circle {:cx "0" :cy "0" :r 150 :fill "red"}]
-  ])
 
 (def basic-group
   (el/g
@@ -157,10 +146,11 @@ basic-group
 
         (gann "blue" (* gw 2) (* gh 2) 0 0)
 
-        (gann "green" gw gh 0 0)
-        (gann "green" gw gh 1 0)
-        (gann "green" gw gh 1 1)
-        (gann "green" gw gh 0 1))))
+        ;(gann "green" gw gh 0 0)
+        ;(gann "green" gw gh 1 0)
+        ;(gann "green" gw gh 1 1)
+        ;(gann "green" gw gh 0 1)
+        )))
 
 (-> (gann-box gw gh)
     (tf/translate [gw 0]))
@@ -168,6 +158,20 @@ basic-group
     (tf/translate [0  gh]))
 (-> (gann-box gw gh)
     (tf/translate [gw gh]))
+
+
+
+
+; svg: x-px  y-px
+; close prices seq of (dt px)
+; gann boxes  dt-start dt-end px-start px-end
+; (scale dt -> px)
+; (scale px -> px)
+; dt-start => 0
+; dt-end => svg-width
+; min-price =>  svg-height
+; max-price => 0
+
 
 (show!
  (into [:svg  {:width gw

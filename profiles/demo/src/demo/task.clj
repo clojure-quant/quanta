@@ -1,7 +1,0 @@
-(ns demo.task
-  (:require
-   []))
-
-
-
-

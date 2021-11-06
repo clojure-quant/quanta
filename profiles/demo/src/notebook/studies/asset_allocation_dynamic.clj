@@ -67,11 +67,13 @@
                          ;:signal1 (dtype/emap buy-above :object close sma-v)
                          :signal (dtype/emap long-during-month-when-above-ma :object m-b m-e close sma-v)}))))
 
+
 (-> (wh/load-symbol :stocks "D" "QQQ")
     (trade-sma-monthly {:sma-length 20})
     (tc/select-columns col-study)
     (save *ns* "qqq-sma" :txt)
     (save *ns* "qqq-sma" :edn))
+
 
 (defn calc-rts-symbol [options]
   (-> (run-backtest trade-sma-monthly options)
@@ -112,6 +114,7 @@
     (map #(take-max % max-pos sort-by where) x)
     (apply tc/concat x)))
 
+
 ; make sure we take the highest :sma-r
 (-> (tc/dataset {:year-month [202001 202001 202001 202001 202001 202001 202001]
                  :sma-r [3 4 6 2 3 4 5]})
@@ -119,6 +122,8 @@
       ;(max-positions 2 [:sma-r] :bottom)
       ;(max-positions 2 [:sma-r] :top)
     )
+
+
 (defn trade-sma-monthly-portfolio
   [algo {:keys [list max-pos sort-by where]
          :or {max-pos 0
@@ -137,6 +142,7 @@
         ds-rts (tc/set-dataset-name ds-rts (str "max-pos-" max-pos))]
     {:ds-roundtrips ds-rts}))
 
+
 (def o {:w :stocks
         :frequency "D"
         :list "fidelity-select"
@@ -148,8 +154,10 @@
         :sma-length 60
         :entry-cols [:symbol :sma-r :year-month]})
 
+
 (def backtest-all (trade-sma-monthly-portfolio nil (assoc o :max-pos 0)))
 (def backtest-5 (trade-sma-monthly-portfolio nil (assoc o :max-pos 5)))
+
 
 (roundtrip-performance-metrics backtest-5)
 (roundtrip-performance-metrics backtest-all)

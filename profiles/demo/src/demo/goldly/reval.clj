@@ -1,4 +1,4 @@
-(ns demo.env.reval
+(ns demo.goldly.reval
   (:require
    [reval.persist.edn :refer [pprint-str]]
    [reval.type.protocol :refer [hiccup-convertable to-hiccup]]))

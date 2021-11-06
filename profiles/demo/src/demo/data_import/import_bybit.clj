@@ -3,9 +3,7 @@
    [tick.core :as tick] ; tick uses cljc.java-time
    [tech.v3.dataset :as tds]
    [ta.data.bybit :as bybit]
-   [ta.warehouse.since-importer :as since-importer]
-   [demo.env.config :refer [log-config!]] ; side effects
-   ))
+   [ta.warehouse.since-importer :as since-importer]))
 
 (defn bybit-get-since-ds [frequency since symbol]
   (-> (bybit/get-history frequency since symbol)
@@ -35,17 +33,7 @@
   (since-importer/append-symbols :crypto bybit-get-since-ds "15"
                                  bybit-symbols))
 
-;; tasks (for cli use)
 
-(defn task-bybit-import-initial [& _]
-  (log-config!)
-  (init-bybit-daily)
-  (init-bybit-15))
-
-(defn task-bybit-import-append [& _]
-  (log-config!)
-  (append-bybit-daily)
-  (append-bybit-15))
 
 ; ********************************************************************************************+
 (comment

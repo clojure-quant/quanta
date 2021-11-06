@@ -3,8 +3,7 @@
    [tech.v3.dataset :as tds]
    [ta.warehouse :as wh]
    [ta.warehouse.since-importer :as since-importer]
-   [ta.data.alphavantage :as av]
-   [demo.env.config :refer [log-config!]]))
+   [ta.data.alphavantage :as av]))
 
 ; stocks
 
@@ -49,12 +48,8 @@
 (def fidelity-symbols
   (wh/load-list "fidelity-select"))
 
-;; takss
 
-(defn task-alphavantage-import-initial [& _]
-  (log-config!)
-  (get-alphavantage-daily alphavantage-test-symbols)
-  (get-alphavantage-daily fidelity-symbols))
+
 
 ; ********************************************************************************************+
 (comment

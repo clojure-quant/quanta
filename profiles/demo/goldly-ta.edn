@@ -12,8 +12,8 @@
           :lazy true
           :src-dir "src"
           ; runtime
-          :autoload-clj-ns [demo.env.services
-                            demo.env.reval ; for techml rendering (no need to require namespace)
+          :autoload-clj-ns [demo.goldly.services
+                            demo.goldly.reval ; for techml rendering (no need to require namespace)
                              ;ta.viz.arrow ; dataset->arrow 
                             ]
           :autoload-cljs-dir ["src/goldly/lib"

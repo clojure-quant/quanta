@@ -6,7 +6,7 @@
         techascent/tech.viz {:mvn/version "6.00-beta-16-2"}
         cljplot/cljplot {:mvn/version "0.0.2a-SNAPSHOT"}
         io.github.adam-james-v/svg-clj {:mvn/version "0.0.9"}
-        }
+        org.scicloj/wadogo {:mvn/version "0.1.0-SNAPSHOT"}}
  :aliases
  {:outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
              :main-opts ["-m" "antq.core"]}
