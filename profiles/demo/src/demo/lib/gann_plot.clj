@@ -4,6 +4,10 @@
    [tick.core :as tick :refer [>>]]
    [tick.alpha.interval :as t.i]
    [ta.data.date :refer [parse-date now-datetime]]
+   [ta.warehouse :refer [load-symbol]]
+   [tablecloth.api :as tc]
+   [tech.v3.dataset :as tds]
+   [tech.v3.datatype.functional :as dfn]
    [demo.lib.svg :refer [svg-view]]
    [demo.lib.gann :refer [get-boxes-in-window root]]
    [goldly.scratchpad :refer [show! show-as clear!]]))
@@ -52,8 +56,6 @@
      (line-fan bt bp (remove-fraction box 4) ap)
      (line-fan bt bp (remove-fraction box 8) ap)
 
-
-
        ;(line bt bp bt ap) ; c-1-1
      ]))
 
@@ -63,16 +65,35 @@
 ;
   )
 
+;; get stock prices
 
-(defn get-close-prices [symbol dt-start dt-end]
+(defn get-close-prices-test [symbol dt-start dt-end]
   [[(parse-date "2021-03-01") (Math/log10 50000)]
    [(parse-date "2021-07-01") (Math/log10 40000)]
    [(parse-date "2021-08-01") (Math/log10 60000)]])
 
+(defn row-in-range [dt-start dt-end {:keys [date] :as row}]
+  (and (tick/>= date dt-start)
+       (tick/<= date dt-end)))
+
+(defn get-close-prices [symbol dt-start dt-end]
+  (let [ds (-> (load-symbol :crypto "D" symbol)
+               (tc/select-rows
+                (partial row-in-range dt-start dt-end))
+               (tc/select-columns [:date :close]))
+        ds-log (tc/add-columns ds {:close-log (dfn/log10 (:close ds))})]
+    (mapv (juxt :date :close-log) (tds/mapseq-reader ds-log))))
+
+(get-close-prices
+ "BTCUSD"
+ (parse-date "2020-01-01")
+ (parse-date "2021-12-31"))
+
+
 (defn get-gann-spec [symbol dt-start dt-end]
   (let [close-series (get-close-prices symbol dt-start dt-end)  ; vec of float
         px-max (Math/log10 70000) ; (apply max close-series)
-        px-min (Math/log10 100) ; (apply min close-series)
+        px-min (Math/log10 1000) ; (apply min close-series)
         boxes (get-boxes-in-window
                root dt-start dt-end
                px-min px-max)
@@ -94,7 +115,7 @@
   (show!
    (get-gann-spec
     "BTCUSD"
-    (parse-date "2010-01-01")
+    (parse-date "2020-01-01")
     (parse-date "2021-12-31")))
 
 
