@@ -16,7 +16,6 @@
    :bp 0.04
    :bt (parse-date "2011-04-17")})
 
-
  (def sup
    {:ap 77.24 ; a and b price are actually changed. 
     :at (parse-date "2000-08-18")
@@ -33,7 +32,24 @@
 (def btc-box (make-root-box btc))
 (def sup-box (make-root-box sup))
 (def gld-box (make-root-box gld))
+
  
+ (def root-dict {"BTCUSD" (make-root-box btc)
+                 "SPY" (make-root-box sup)
+                 "GLD" (make-root-box gld)})
+
+
+ (defn load-root-box [symbol]
+   (get root-dict symbol))
+
+ 
+ (comment
+   (load-root-box "BTCUSD")
+   (load-root-box "GLD")
+   (load-root-box "BAD")
+
+  ;
+   )
 
 
 
