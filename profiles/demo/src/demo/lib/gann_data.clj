@@ -39,6 +39,13 @@
    :bp  110.92
    :bt (parse-date "2013-11-01")})
 
+(def eurusd
+  {:ap 0.8485
+   :at (parse-date "2001-08-01")
+   :bp  1.591
+   :bt (parse-date "2010-12-01")})
+
+
 (def btc-box (make-root-box btc))
 (def sup-box (make-root-box sup))
 (def gld-box (move-down (move-down (make-root-box gld))))
@@ -47,7 +54,9 @@
                 "SPY" (make-root-box sup)
                 "QQQ" (zoom-in  (make-root-box qqq))
                 "GLD" (move-down (move-down (make-root-box gld)))
-                "SLV" (zoom-in (zoom-in (make-root-box slv)))})
+                "SLV" (zoom-in (zoom-in (make-root-box slv)))
+                "EURUSD" (zoom-in (zoom-in (zoom-in (make-root-box eurusd))))
+                })
 
 (defn load-root-box [symbol]
   (get root-dict symbol))

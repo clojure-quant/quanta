@@ -45,7 +45,7 @@
         [:div.w-64
          [input/select
           {:nav? false
-           :items ["BTCUSD" "SPY" "QQQ" "GLD" "SLV"]}
+           :items ["BTCUSD" "SPY" "QQQ" "GLD" "SLV" "EURUSD"]}
           *state [:params :symbol]]]
         [input/button {:on-click get-data} "show gann"]
         [link-href "/" "main"]]
