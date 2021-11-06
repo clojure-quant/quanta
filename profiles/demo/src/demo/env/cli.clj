@@ -35,7 +35,6 @@
   (log-config!)
   (create-crypto-random))
 
-
 (defn -main
   ([]
    (println "printing default list: currency")

@@ -27,6 +27,8 @@
                          "algo/backtest" :algo/backtest
                          "algo/table" :algo/table
                          "algo/chart" :algo/chart
+                         ; gann
+                         "gann" :gann
                          ;test
                          "error" :user/error
                          "test/heatmap" :test/heatmap

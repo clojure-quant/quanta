@@ -14,8 +14,6 @@
   (r/create-shuffled-datasets :crypto :shuffled bybit-symbols "D")
   (r/create-shuffled-datasets :crypto :shuffled bybit-symbols "15"))
 
-
-
 (comment
   (create-crypto-random)
   (create-crypto-shuffled)

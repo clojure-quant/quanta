@@ -22,5 +22,8 @@
    [link-href "/algo/chart" "highchart gann"]
    [link-href "/algo/table" "table s&p"]
 
+   [:p.text-blue.text-xl "gann chart"]
+   [link-href "/gann" "gann"]
+
    [:p.text-blue.text-xl "docs"]
    [video {:url "https://www.youtube.com/watch?v=JGhOa9TZYx8"}]])

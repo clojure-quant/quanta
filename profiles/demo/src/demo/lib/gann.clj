@@ -13,7 +13,6 @@
    :bp 11.0
    :bt (parse-date "2014-04-13")})
 
-
 ;; box
 ;; a: left point of square
 ;; b: right point of square
@@ -64,7 +63,6 @@
      :dt dt-2
      :bp (+ ap dp-2) ; b gets moved by current deltas
      :bt (tick/>> at dt-2)}))
-
 
 (defn zoom-level [{:keys [ap bp at bt dp dt] :as root-box} zoom]
   (loop [i 1
@@ -145,8 +143,6 @@
 
  ; 
   )
-
-
 (defn move-right-in-window [box dt-start dt-end]
   (->> box
        (iterate move-right)
@@ -168,8 +164,6 @@
       (clojure.pprint/print-table))
  ; 
   )
-
-
 (defn get-boxes-in-window [box dt-start dt-end px-start px-end]
   (for [idx-t  (->> (move-right-in-window box dt-start dt-end)
                     (map :idx-t))
@@ -177,17 +171,12 @@
                     (map :idx-p))]
     (get-quadrant box idx-t idx-p)))
 
-
 (comment
   (-> (get-boxes-in-window root (parse-date "2021-01-01") (parse-date "2021-12-31")
                            (Math/log10 1000) (Math/log10 70000))
       (clojure.pprint/print-table))
  ; 
   )
-
-
-
-
 ;; finder
 
 (defn- quot-inc [a b]
@@ -218,8 +207,6 @@
   (find-quadrant box 80 440)
 ;  
   )
-
-
 (comment
 
   ; time experiments
@@ -243,8 +230,7 @@
   (cljc.java-time.duration/divided-by (tick/new-duration 100 :days) 2)
   (cljc.java-time.duration/multiplied-by (tick/new-duration 100 :days) 2)
 
-
-  ;(t.i/scale (tick/new-period 2 :days) 3)
+;(t.i/scale (tick/new-period 2 :days) 3)
 
   (tick/>> (now-datetime) (:dt root))
  ; 

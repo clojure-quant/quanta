@@ -7,7 +7,8 @@
    [ta.warehouse.overview :refer [warehouse-overview]]
    [ta.data.date :refer [now-datetime]]
    [demo.env.config] ; side-effects
-   [demo.env.algos :refer [algo-names algo-metrics algo-table algo-chart]]))
+   [demo.env.algos :refer [algo-names algo-metrics algo-table algo-chart]]
+   [demo.lib.gann-plot :refer [get-gann-spec]]))
 
 (defn overview-map [w f]
   (let [ds-overview (warehouse-overview w f)
@@ -18,8 +19,6 @@
     (println "overview type packet-instant" (cols-of-type ds-overview :packed-instant))
     (println "overview-map: " m)
     m))
-
-
 
 (service/add
  {; warehouse
@@ -33,6 +32,10 @@
   :algo/table algo-table      ; used in study-table
   :algo/chart algo-chart      ; used in study-highchart
 
+  ; gann
+  :gann/chart get-gann-spec
+
+  ; testing
   :date now-datetime})
 
 

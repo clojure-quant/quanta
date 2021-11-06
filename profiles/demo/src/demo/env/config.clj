@@ -3,7 +3,7 @@
    [clojure.pprint]
    [clojure.edn :as edn]
    [taoensso.timbre :refer [warn]]
-  
+
    [ta.warehouse :as wh]
    [ta.data.alphavantage :as av]))
 

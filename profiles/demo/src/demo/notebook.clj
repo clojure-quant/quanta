@@ -8,7 +8,6 @@
 (defn eval-notebooks [ns-list]
   (map eval-notebook ns-list))
 
-
 (def ns-misc ["demo.notebook.reval-image"])
 
 (def ns-vega ["demo.notebook.vegalite-arrow"
@@ -43,19 +42,13 @@
                  "notebook.studies.supertrend"
                     ;task.clj
                  ])
-
-
 (load-notebook "notebook.studies.asset-allocation-dynamic")
 
 (eval-notebook "demo.playground.dataset-group")
 
-
-
 (-> ;(eval-notebook "demo.playground.cljplot")
  (eval-notebook "demo.warehouse.overview")
  show!)
-
-
 
 (eval-notebooks ns-misc)
 (eval-notebooks ns-vega)

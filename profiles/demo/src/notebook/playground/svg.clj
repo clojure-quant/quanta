@@ -10,7 +10,6 @@
             [ta.data.date :refer [parse-date]]
             [goldly.scratchpad :refer [show! show-as clear!]]))
 
-
 (def basic-group
   (el/g
    (el/rect 20 20)
@@ -159,9 +158,6 @@ basic-group
 (-> (gann-box gw gh)
     (tf/translate [gw gh]))
 
-
-
-
 ; svg: x-px  y-px
 ; close prices seq of (dt px)
 ; gann boxes  dt-start dt-end px-start px-end
@@ -171,7 +167,6 @@ basic-group
 ; dt-end => svg-width
 ; min-price =>  svg-height
 ; max-price => 0
-
 
 (show!
  (into [:svg  {:width gw

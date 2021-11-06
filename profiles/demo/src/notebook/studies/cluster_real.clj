@@ -32,7 +32,6 @@ symbol->name
 (-> concatenated-dataset
     (tc/random 10))
 
-
 (->> concatenated-dataset
      tc/columns
      (map meta))
@@ -49,24 +48,17 @@ symbol->name
     (overview-view {:pivot? false})
     (print/print-range :all))
 
-
 (m/symbol-count-table concatenated-dataset)
 
-
 (def full-datasets
-  (make-full-datasets concatenated-dataset)
-  )
+  (make-full-datasets concatenated-dataset))
 
 full-datasets
-
 
 (def full-symbols
   (make-full-symbols concatenated-dataset))
 
 full-symbols
-
-
-
 
 (def corrs
   (->> full-datasets

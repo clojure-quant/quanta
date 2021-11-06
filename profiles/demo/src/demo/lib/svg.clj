@@ -17,7 +17,6 @@
 ;; SVG is XML based, which means that every element is available within the SVG DOM. 
 ;; You can attach JavaScript event handlers for an element.
 
-
 (defn svg! [width height & body]
   (into
    [:svg {:class "bg-blue-200"
@@ -47,8 +46,6 @@
                         :stroke-width "2px"
                         :fill "none"} style))))
 
-
-
 (defn series [{:keys [color]
                :or {color "blue"}
                :as opts} series]
@@ -75,9 +72,6 @@
 
 ;
   )
-
-
-
 (comment
   ; scale test
   (let [min-px 500
@@ -92,7 +86,6 @@
   ;(px-scale 400)
     (time-scale (parse-date "2021-07-01"))))
 
-
 ;; SCALING VERSIONS
 
 (defn scale-point [{:keys [px-scale time-scale] :as plot-ctx}
@@ -103,7 +96,7 @@
 
 (defn scale-line [{:keys [px-scale time-scale] :as plot-ctx}
                   [opts [dt-a px-a] [dt-b px-b]]]
-  (println "add line for: " dt-a dt-b)
+  ;(println "scale-line for: " dt-a dt-b)
   (line
    opts
    [(time-scale dt-a) (px-scale px-a)]
@@ -115,18 +108,17 @@
         y* (px-scale (+ ry cy))
         cy (px-scale cy)
         ;ry 70
-        ry (- cy y* ) ; y is an inverse scale.
+        ry (- cy y*) ; y is an inverse scale.
         ; time
         x* (time-scale (tick/>> cx rx))
         cx (time-scale cx)
         ;rx 70 ; (time-scale rx)
         rx (- x* cx) ; x is NOT an inverse scale
         ]
-    (println "cy (scaled): " cy "y* (scaled): " y*  "ry (scaled): " ry)
-    (println "cx (scaled): " cx "x* (scaled): " x*  "rx (scaled): " rx)
+    ;(println "cy (scaled): " cy "y* (scaled): " y*  "ry (scaled): " ry)
+    ;(println "cx (scaled): " cx "x* (scaled): " x*  "rx (scaled): " rx)
     (ellipse
      (merge opts {:rx rx :ry ry :cx cx :cy cy}))))
-
 
 (defn scale-series [{:keys [px-scale time-scale] :as plot-ctx}
                     [opts series-vec]]
@@ -138,14 +130,12 @@
 
 (defn plot-item [ctx spec]
   (let [[kw & args] spec]
-    (println "processing: " kw)
+    ;(println "processing: " kw)
     (case kw
       :point (scale-point ctx args)
       :line (scale-line ctx args)
       :ellipse (scale-ellipse ctx args)
       :series (scale-series ctx args))))
-
-
 
 (defn svg-view [{:keys [svg-width svg-height min-px max-px min-dt max-dt]} plots]
   (let [px-scale (scale :linear {:domain [min-px max-px] :range [svg-height 0]})
@@ -159,10 +149,7 @@
             :xmlns "http://www.w3.org/2000/svg"}]
      (map #(plot-item ctx %) plots))))
 
-
-
 (comment
-
 
   (show!
    (svg-view {:min-px 500
@@ -196,8 +183,6 @@
                          :cx (parse-date "2021-05-01")
                          :ry 250
                          :rx (tick/new-duration 100 :days)}]]))
-
-
 
 ;  
   )

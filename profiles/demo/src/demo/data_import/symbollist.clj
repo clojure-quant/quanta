@@ -1,7 +1,6 @@
 (ns demo.playground.symbollist
   (:require
-   [ta.warehouse :as wh])
-  )
+   [ta.warehouse :as wh]))
 
 (defn print-symbol-list
   [list-name]
@@ -11,8 +10,6 @@
 (defn fn-print-symbol-list
   [list-map]
   (print-symbol-list (:name list-map)))
-
-
 
 (comment
 

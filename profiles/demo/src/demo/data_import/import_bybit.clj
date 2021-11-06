@@ -33,8 +33,6 @@
   (since-importer/append-symbols :crypto bybit-get-since-ds "15"
                                  bybit-symbols))
 
-
-
 ; ********************************************************************************************+
 (comment
 
