@@ -3,13 +3,14 @@
    [cljc.java-time.duration :as duration]
    [tick.core :as tick :refer [>>]]
    [tick.alpha.interval :as t.i]
-   [ta.data.date :refer [parse-date now-datetime]]
+   [ta.data.date :refer [parse-date now-datetime]] 
    [ta.warehouse :refer [load-symbol]]
    [tablecloth.api :as tc]
    [tech.v3.dataset :as tds]
    [tech.v3.datatype.functional :as dfn]
    [demo.lib.svg :refer [svg-view]]
-   [demo.lib.gann :refer [get-boxes-in-window root zoom-out zoom-in]]
+   [demo.lib.gann :refer [get-boxes-in-window make-root-box zoom-out zoom-in]]
+   [demo.lib.gann-data :as boxes]
    [goldly.scratchpad :refer [show! show-as clear!]]))
 
 ;; Gann Box (Box + Fan)
@@ -60,7 +61,9 @@
      ]))
 
 (comment
-  (gann-plot nil root)
+  
+
+  (gann-plot nil boxes/btc-box)
 
 ;
   )
@@ -82,7 +85,6 @@
                 (partial row-in-range dt-start dt-end))
                (tc/select-columns [:date :close]))
         ds-log (tc/add-columns ds {:close-log (dfn/log10 (:close ds))})]
-
     {:series (mapv (juxt :date :close-log) (tds/mapseq-reader ds-log))
      :px-min (apply min (:close-log ds-log))
      :px-max (apply max (:close-log ds-log))
@@ -127,72 +129,81 @@
      (conj boxes-plotted series-plotted))]))
 
 (comment
-  
-   root
-  
+
+  root
+
   (show!
    (get-gann-spec
     :crypto
     "BTCUSD"
-    root
+    boxes/btc-box
     (parse-date "2021-01-01")
     (parse-date "2021-12-31")))
-  
-(show!
- (get-gann-spec
-  :crypto
-  "BTCUSD"
-  (zoom-in root)
-  (parse-date "2020-01-01")
-  (parse-date "2020-12-31")))
 
-   
   (show!
    (get-gann-spec
     :crypto
     "BTCUSD"
-    (zoom-out root)
+    (zoom-in boxes/btc-box)
+    (parse-date "2020-01-01")
+    (parse-date "2021-12-31")))
+
+
+  (show!
+   (get-gann-spec
+    :crypto
+    "BTCUSD"
+    (zoom-out boxes/btc-box)
     (parse-date "2021-01-01")
     (parse-date "2021-12-31")))
 
 
-   (show!
-    (get-gann-spec
-     :crypto
-     "BTCUSD"
-     (zoom-in root)
-     (parse-date "2021-01-01")
-     (parse-date "2021-12-31")))
+  (show!
+   (get-gann-spec
+    :crypto
+    "BTCUSD"
+    (zoom-in boxes/btc-box)
+    (parse-date "2021-01-01")
+    (parse-date "2021-12-31")))
 
   (show!
    (get-gann-spec
     :crypto
     "BTCUSD"
     ;(zoom-in (zoom-in 
-              (zoom-in (zoom-in (zoom-in (zoom-in root))))
+    (zoom-in (zoom-in (zoom-in (zoom-in boxes/btc-box))))
      ;         ))
     (parse-date "2021-01-01")
     (parse-date "2021-12-31")))
 
 
-  ; 
-   )
  
- 
- 
- 
- 
- 
- 
- 
- 
- 
+
+  (show!
+   (get-gann-spec
+    :stocks
+    "SPY"
+    boxes/sup-box
+    (parse-date "2020-01-01")
+    (parse-date "2021-12-31")))
+  
+  (show!
+   (get-gann-spec
+    :stocks
+    "SPY"
+    (zoom-in boxes/sup-box)
+    (parse-date "2020-01-01")
+    (parse-date "2021-12-31")))
+  
 
   
 
 
- ; 
+
+
+  ; 
   )
+ 
 
 
 

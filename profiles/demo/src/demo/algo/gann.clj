@@ -5,11 +5,19 @@
    [ta.data.date :refer [parse-date]]
    [ta.helper.ago :refer [xf-ago]]
    [ta.backtest.signal :refer [running-index-vec]]
-   [ta.series.signal :refer [prior-int cross-up cross-down price-when]]))
+   [ta.series.signal :refer [prior-int cross-up cross-down price-when]]
+   [demo.lib.gann :refer [find-quadrant get-quadrant]]
+   ))
 
 
 
 ;; up/down gann diagonal (for base box)
+
+(defn box-r [box]
+  nil
+  )
+
+
 
 (defn gann-up [{:keys [at ap] :as box}  t]
   (->> (- t at)
@@ -41,7 +49,7 @@
           qbox   (get-quadrant box qt qp)
           up (float (gann-up qbox t))
           down (float (gann-down qbox t))
-          dp (float (box-dp box))]
+          dp (float (:dp box))]
       {:qp qp
        :qt qt
 

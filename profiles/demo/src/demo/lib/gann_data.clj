@@ -1,0 +1,32 @@
+(ns demo.lib.gann-data
+   (:require 
+    [ta.data.date :refer [parse-date now-datetime]]
+    [demo.lib.gann :refer [make-root-box zoom-out zoom-in]]))
+
+
+(def btc
+  {:ap 0.01
+   :at (parse-date "2010-07-18")
+   :bp 11.0
+   :bt (parse-date "2014-04-13")})
+
+(def btc-option2
+  {:ap 0.01
+   :at (parse-date "2010-07-18")
+   :bp 0.04
+   :bt (parse-date "2011-04-17")})
+
+
+ (def sup
+   {:ap 77.24 ; a and b price are actually changed. 
+    :at (parse-date "2000-08-18")
+    :bp  153.48
+    :bt (parse-date "2002-10-10")})
+
+
+(def btc-box (make-root-box btc))
+(def sup-box (make-root-box sup))
+ 
+
+
+

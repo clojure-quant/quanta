@@ -13,11 +13,6 @@
    :bp 11.0
    :bt (parse-date "2014-04-13")})
 
-(def btc-option2
-  {:ap 0.01
-   :at (parse-date "2010-07-18")
-   :bp 0.04
-   :bt (parse-date "2011-04-17")})
 
 ;; box
 ;; a: left point of square
@@ -207,12 +202,12 @@
         price-up-shift? (> p bp)
         price-down-shift? (< p ap)]
     {:qt (cond
-           time-right-shift? (quot-inc (- t bt) (box-dt box))
-           time-left-shift? (quot-dec (- t at) (box-dt box))
+           time-right-shift? (quot-inc (- t bt) (:dt box))
+           time-left-shift? (quot-dec (- t at) (:dt box))
            :else 0)
      :qp (cond
-           price-up-shift? (quot-inc (- p bp) (box-dp box))
-           price-down-shift? (quot-dec (- p ap) (box-dp box))
+           price-up-shift? (quot-inc (- p bp) (:dp box))
+           price-down-shift? (quot-dec (- p ap) (:dp box))
            :else 0)}))
 
 (comment
