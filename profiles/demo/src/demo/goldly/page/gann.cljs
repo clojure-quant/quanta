@@ -1,9 +1,29 @@
 
 
+(defn box [{:keys [at bt zoom dp ap bp idx-p idx-t]}]
+  [:tr
+   [:td zoom]
+   [:td idx-p]
+   [:td idx-t]
+   [:td ap]
+   [:td bp]
+   [:td (str at)]
+   [:td (str bt)]
+   ])
 
 
-
-
+(defn box-table [boxes]
+  (when boxes
+    (into [:table
+           [:tr
+            [:td "zoom"]
+            [:td "idx-p"]
+            [:td "idx-t"]
+            [:td "ap"]
+            [:td "bp"]
+            [:td "at"]
+            [:td "bt"]]]
+          (map box boxes))))
 
 
 (defn gann-page [{:keys [route-params query-params handler] :as route}]
@@ -19,7 +39,8 @@
                                       (if (= "BTCUSD" (get-in @*state [:params :symbol]))
                                         :crypto
                                         :stocks)))]
-                     (run-a *state [:data] :gann/chart p)))]
+                     (run-a *state [:data] :gann/chart p)
+                     (run-a *state [:boxes] :gann/boxes p)))]
     (fn [{:keys [route-params query-params handler] :as route}]
       [:div
        [:div.flex.flex-cols
@@ -31,7 +52,11 @@
           *state [:params :symbol]]]
         [input/button {:on-click get-data} "show gann"]
         [link-href "/" "main"]]
+        [box-table (:boxes @*state)]
        (:data @*state)
+       ;[:div (pr-str (:boxes @*state))]
+      
+
        [:div.bg-gray-500.mt-12 "params:" (pr-str (:params @*state))]])))
 
 (add-page gann-page :gann)

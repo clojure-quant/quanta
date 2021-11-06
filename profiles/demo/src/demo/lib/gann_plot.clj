@@ -131,10 +131,10 @@
   (-> (get-boxes-in-window boxes/gld-box (parse-date "2021-01-01") (parse-date "2021-12-31")
                            (Math/log10 2000) (Math/log10 3000))
       (clojure.pprint/print-table))
-
 ;
   )
-(defn get-gann-spec [{:keys [wh symbol dt-start dt-end root-box]
+
+(defn get-gann-data [{:keys [wh symbol dt-start dt-end root-box]
                       :or {root-box (load-root-box symbol)
                            wh :crypto
                            dt-start (parse-date "2021-01-01")
@@ -145,7 +145,27 @@
         close-series (:series data)
         boxes (if root-box
                 (get-boxes-in-window root-box dt-start dt-end px-min px-max)
-                [])
+                [])]
+    {:px-min px-min
+     :px-max px-max
+     :dt-start dt-start
+     :dt-end dt-end
+     :boxes boxes
+     :close-series close-series}))
+
+(defn get-boxes [opts]
+   (->> opts
+       get-gann-data
+       :boxes
+       (map #(dissoc % :dt))
+       )  
+  )
+
+
+
+
+(defn get-gann-spec [opts]
+  (let [{:keys [px-min px-max dt-start dt-end boxes close-series]} (get-gann-data opts)
         boxes-plotted (apply concat (map #(gann-plot {} %) boxes))
         series-plotted [:series {:color "red"} close-series]]
     [:div
@@ -165,6 +185,8 @@
 (comment
 
   root
+
+  (get-boxes {:symbol "BTCUSD"})
 
   (show!
    (get-gann-spec {:wh :crypto

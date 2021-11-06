@@ -8,7 +8,7 @@
    [ta.data.date :refer [now-datetime]]
    [demo.env.config] ; side-effects
    [demo.env.algos :refer [algo-names algo-metrics algo-table algo-chart]]
-   [demo.lib.gann-plot :refer [get-gann-spec]]))
+   [demo.lib.gann-plot :refer [get-gann-spec get-boxes]]))
 
 (defn overview-map [w f]
   (let [ds-overview (warehouse-overview w f)
@@ -34,6 +34,7 @@
 
   ; gann
   :gann/chart get-gann-spec
+  :gann/boxes get-boxes
 
   ; testing
   :date now-datetime})
