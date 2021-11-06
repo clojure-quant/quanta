@@ -178,9 +178,9 @@
 (defn get-boxes-in-window [box dt-start dt-end px-start px-end]
   (for [idx-t  (->> (move-right-in-window box dt-start dt-end)
                     (map :idx-t))
-        idx-p  (->> (move-up-in-window root px-start px-end)
+        idx-p  (->> (move-up-in-window box px-start px-end)
                     (map :idx-p))]
-    (get-quadrant root idx-t idx-p)))
+    (get-quadrant box idx-t idx-p)))
 
 
 (comment

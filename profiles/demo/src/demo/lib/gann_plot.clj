@@ -9,7 +9,7 @@
    [tech.v3.dataset :as tds]
    [tech.v3.datatype.functional :as dfn]
    [demo.lib.svg :refer [svg-view]]
-   [demo.lib.gann :refer [get-boxes-in-window root zoom-out zoom-root]]
+   [demo.lib.gann :refer [get-boxes-in-window root zoom-out zoom-in]]
    [goldly.scratchpad :refer [show! show-as clear!]]))
 
 ;; Gann Box (Box + Fan)
@@ -112,6 +112,8 @@
                px-min px-max)
         boxes-plotted (apply concat (map #(gann-plot {} %) boxes))
         series-plotted [:series {:color "red"} close-series]]
+    [:div
+    [:h1 (str "gann plot " dt-start " - " dt-end " box-count: " (count boxes))]
     (svg-view
      {:min-px px-min
       :max-px px-max
@@ -122,13 +124,12 @@
      ;(gann-plot {} (first boxes))
      ;(concat boxes-plotted series-plotted)
      ;boxes-plotted
-     (conj boxes-plotted series-plotted))))
+     (conj boxes-plotted series-plotted))]))
 
 (comment
   
    root
-  (zoom-out root)
-
+  
   (show!
    (get-gann-spec
     :crypto
@@ -137,19 +138,53 @@
     (parse-date "2021-01-01")
     (parse-date "2021-12-31")))
   
+(show!
+ (get-gann-spec
+  :crypto
+  "BTCUSD"
+  (zoom-in root)
+  (parse-date "2020-01-01")
+  (parse-date "2020-12-31")))
 
- (def r2 (zoom-out root))
- (def r2 (zoom-root root))
-  r2
-
-  (show! 
+   
+  (show!
    (get-gann-spec
     :crypto
     "BTCUSD"
-    r2
-    (parse-date "2020-01-01")
-    (parse-date "2021-12-31"))
+    (zoom-out root)
+    (parse-date "2021-01-01")
+    (parse-date "2021-12-31")))
+
+
+   (show!
+    (get-gann-spec
+     :crypto
+     "BTCUSD"
+     (zoom-in root)
+     (parse-date "2021-01-01")
+     (parse-date "2021-12-31")))
+
+  (show!
+   (get-gann-spec
+    :crypto
+    "BTCUSD"
+    ;(zoom-in (zoom-in 
+              (zoom-in (zoom-in (zoom-in (zoom-in root))))
+     ;         ))
+    (parse-date "2021-01-01")
+    (parse-date "2021-12-31")))
+
+
+  ; 
    )
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  
 
