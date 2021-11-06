@@ -9,7 +9,7 @@
    [tech.v3.dataset :as tds]
    [tech.v3.datatype.functional :as dfn]
    [demo.lib.svg :refer [svg-view]]
-   [demo.lib.gann :refer [get-boxes-in-window root]]
+   [demo.lib.gann :refer [get-boxes-in-window root zoom-out zoom-root]]
    [goldly.scratchpad :refer [show! show-as clear!]]))
 
 ;; Gann Box (Box + Fan)
@@ -76,26 +76,39 @@
   (and (tick/>= date dt-start)
        (tick/<= date dt-end)))
 
-(defn get-close-prices [symbol dt-start dt-end]
-  (let [ds (-> (load-symbol :crypto "D" symbol)
+(defn get-prices [wh symbol dt-start dt-end]
+  (let [ds (-> (load-symbol wh "D" symbol)
                (tc/select-rows
                 (partial row-in-range dt-start dt-end))
                (tc/select-columns [:date :close]))
         ds-log (tc/add-columns ds {:close-log (dfn/log10 (:close ds))})]
-    (mapv (juxt :date :close-log) (tds/mapseq-reader ds-log))))
 
-(get-close-prices
- "BTCUSD"
- (parse-date "2020-01-01")
- (parse-date "2021-12-31"))
+    {:series (mapv (juxt :date :close-log) (tds/mapseq-reader ds-log))
+     :px-min (apply min (:close-log ds-log))
+     :px-max (apply max (:close-log ds-log))
+     :count (count (:close-log ds-log))
+     }))
+
+(comment
+  (-> (get-prices
+       :crypto
+       "BTCUSD"
+       (parse-date "2021-01-01")
+       (parse-date "2021-12-31"))
+      (dissoc :series) 
+      )
+
+;
+  )
 
 
-(defn get-gann-spec [symbol dt-start dt-end]
-  (let [close-series (get-close-prices symbol dt-start dt-end)  ; vec of float
-        px-max (Math/log10 70000) ; (apply max close-series)
-        px-min (Math/log10 1000) ; (apply min close-series)
+(defn get-gann-spec [wh symbol root-box dt-start dt-end]
+  (let [data (get-prices wh symbol dt-start dt-end)  ; vec of float
+        px-min (:px-min data)  ;(Math/log10 3000) 
+        px-max (:px-max data) ; (Math/log10 70000) ; ; 
+        close-series (:series data)
         boxes (get-boxes-in-window
-               root dt-start dt-end
+               root-box dt-start dt-end
                px-min px-max)
         boxes-plotted (apply concat (map #(gann-plot {} %) boxes))
         series-plotted [:series {:color "red"} close-series]]
@@ -112,11 +125,35 @@
      (conj boxes-plotted series-plotted))))
 
 (comment
+  
+   root
+  (zoom-out root)
+
   (show!
    (get-gann-spec
+    :crypto
     "BTCUSD"
-    (parse-date "2020-01-01")
+    root
+    (parse-date "2021-01-01")
     (parse-date "2021-12-31")))
+  
+
+ (def r2 (zoom-out root))
+ (def r2 (zoom-root root))
+  r2
+
+  (show! 
+   (get-gann-spec
+    :crypto
+    "BTCUSD"
+    r2
+    (parse-date "2020-01-01")
+    (parse-date "2021-12-31"))
+   )
+ 
+ 
+
+  
 
 
  ; 

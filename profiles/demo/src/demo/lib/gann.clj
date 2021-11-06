@@ -44,8 +44,8 @@
 ;
   )
 
-(defn zoom-root [{:keys [ap bp at bt dp dt zoom] :as box}]
-  (let [dp-2 (* dp 2)
+(defn zoom-out [{:keys [ap bp at bt dp dt zoom] :as box}]
+  (let [dp-2 (* dp 2.0)
         dt-2 (duration/multiplied-by dt 2)]
     {:zoom (inc zoom)
      :idx-p 0
@@ -54,15 +54,29 @@
      :at at
      :dp dp-2 ; delta is double
      :dt dt-2
-     :bp (+ bp dp-2) ; b gets moved by current deltas
+     :bp (+ ap dp-2) ; b gets moved by current deltas
      :bt (tick/>> at dt-2)}))
+
+(defn zoom-in [{:keys [ap bp at bt dp dt zoom] :as box}]
+  (let [dp-2 (/ dp 2.0)
+        dt-2 (duration/divided-by dt 2)]
+    {:zoom (dec zoom)
+     :idx-p 0
+     :idx-t 0
+     :ap ap ; a stays the same
+     :at at
+     :dp dp-2 ; delta is half
+     :dt dt-2
+     :bp (+ ap dp-2) ; b gets moved by current deltas
+     :bt (tick/>> at dt-2)}))
+
 
 (defn zoom-level [{:keys [ap bp at bt dp dt] :as root-box} zoom]
   (loop [i 1
          box root-box]
     (if (> i zoom)
       box
-      (recur (inc i) (zoom-root box)))))
+      (recur (inc i) (zoom-out box)))))
 
 (comment
   (zoom-root root)
