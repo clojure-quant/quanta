@@ -45,7 +45,7 @@
 
 (def root-dict {"BTCUSD" (make-root-box btc)
                 "SPY" (make-root-box sup)
-                "QQQ" (make-root-box qqq)
+                "QQQ" (zoom-in  (make-root-box qqq))
                 "GLD" (move-down (move-down (make-root-box gld)))
                 "SLV" (zoom-in (zoom-in (make-root-box slv)))})
 
