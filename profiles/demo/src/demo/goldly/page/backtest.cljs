@@ -61,3 +61,4 @@
         [:div "no data "])]]))
 
 (add-page backtest-page :algo/backtest)
+
