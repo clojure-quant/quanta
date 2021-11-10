@@ -6,6 +6,7 @@
   tick/tick                     {:mvn/version "0.4.31-alpha"} ; replacement for clj-time
   ; cljc.java-time/cljc.java-time {:mvn/version "0.1.16"} ; brought by tick
   prismatic/schema {:mvn/version "1.2.0"}
+  nano-id/nano-id {:mvn/version "1.0.0"}
   org.pinkgorilla/reval {:mvn/version "0.0.25"} ; persistence
   }
  :aliases
