@@ -40,3 +40,4 @@ goldly_bindings_generated.cljs
 /profiles/db/*.csv
 /output/
 rdocument/
+tvdb/

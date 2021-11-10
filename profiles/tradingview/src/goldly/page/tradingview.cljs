@@ -1,10 +1,17 @@
 
+
+
 (def config-tradingview-demo {:feed-url "https://demo_feed.tradingview.com"
                               :storage-url "https://saveload.tradingview.com"})
 
 (def datafeed-urls
   {:demo "https://demo_feed.tradingview.com"
-   :trateg ""})
+   :trateg "/api/tv"})
+
+(def storage-urls
+  {:demo "https://saveload.tradingview.com"
+   :trateg "/api/tv/storage"})
+
 
 (defn get-tradingview-datafeed [kw]
   (let [url (kw datafeed-urls)]
@@ -14,7 +21,7 @@
 (def tv-options {:debug true ; false
                  :symbol "AMZN" ; DAX Index"
                  :interval "D"
-                 ;:container_id "" ; id ;  ID of the surrounding div
+                 ;:container_id "" ; id of the surrounding div (will be set below)
                  :library_path "/r/tradingview/charting_library/"
                  :locale "en" ;
                  :disabled_features [] ;  ['use_localstorage_for_settings']
@@ -42,9 +49,11 @@
                  })
 
 (defn show-tradingview-widget [feed-kw id]
-  (let [datafeed (get-tradingview-datafeed feed-kw)
+  (let [datafeed (get-tradingview-datafeed :demo) ; feed-kw
         tv-options (assoc tv-options :datafeed datafeed
-                                     :container_id id)
+                                     :container_id id
+                                     :charts_storage_url (feed-kw storage-urls)
+                          )
         tv-options (clj->js tv-options {:keyword-fn name})]
     ; new TradingView.widget ({});
     (js/TradingView.widget. tv-options)))
@@ -61,8 +70,8 @@
       ;
      )])
 
-
-
+; in scratchpad enter:
+; (show-tradingview-widget :trateg "scratchadtest")
 
 
 

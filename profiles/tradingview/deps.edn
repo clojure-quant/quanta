@@ -6,7 +6,7 @@
   cljc.java-time/cljc.java-time {:mvn/version "0.1.16"}
   tick/tick                     {:mvn/version "0.4.31-alpha"} ; replacement for clj-time
   com.taoensso/timbre {:mvn/version "5.1.2"} ; clj/cljs logging
-  }
+  prismatic/schema {:mvn/version "1.2.0"}}
  :aliases
  {:outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
              :main-opts ["-m" "antq.core"]}
@@ -30,6 +30,7 @@
                                  :src-dir "src"
                                  ; runtime
                                  :autoload-cljs-dir ["src/goldly/page"]
+                                 :autoload-clj-ns [ta.tradingview.server]
                                  :routes {:app {"" :pages
                                                 ; devtools
                                                 "devtools/pages" :pages
@@ -40,7 +41,20 @@
                                           :api {"rdocument/ns" :rdocument/ns
                                                 "rdocument/files" :rdocument/files
                                                 ["rdocument/file/" :ns "/" :name] :rdocument/file ; http://localhost:8000/api/viewer/file/demo.playground.cljplot/vega-spec.edn
-                                                }}}
+
+                                                "tv/" {:get  {"config" :tv/config
+                                                              "time" :tv/time
+                                                              "search" :tv/search
+                                                              "symbols" :tv/symbols
+                                                              "history" :tv/history}
+                                                       "storage/1.1/" {"charts" {:get  :tv-db/load-chart
+                                                                                 :post :tv-db/save-chart
+                                                                                 :put  :tv-db/modify-chart
+                                                                                 :delete  :tv-db/delete-chart}
+                                                                       "study_templates" {:get :tv-db/load-template
+                                                                                          :post :tv-db/save-template
+                                                                                      ;:put :tv-db/modify-template
+                                                                                          :delete :tv-db/delete-template}}}}}}
 
                         :devtools {:rdocument  {:storage-root "../../rdocument/"
                                                 :url-root "/api/rdocument/file/"}
