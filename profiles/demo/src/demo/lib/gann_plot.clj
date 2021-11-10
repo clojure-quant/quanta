@@ -191,14 +191,12 @@
                    :symbol "BTCUSD"
                    :dt-start (parse-date "2021-01-01")
                    :dt-end (parse-date "2021-12-31")}))
-  
 
   (show!
    (get-gann-spec {;:wh :crypto
                    :symbol "BTCUSD"
-                  :dt-start (parse-date "2018-01-01")
-                  :dt-end (parse-date "2021-12-31")
-                   }))
+                   :dt-start (parse-date "2018-01-01")
+                   :dt-end (parse-date "2021-12-31")}))
 
   (show!
    (get-gann-spec {:wh :crypto
@@ -241,9 +239,6 @@
                    :dt-end (parse-date "2021-12-31")
                    ;:root-box (zoom-in (zoom-in boxes/gld-box))
                    }))
-
-
-
 ; 
   )
 
