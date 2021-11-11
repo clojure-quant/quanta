@@ -46,8 +46,6 @@
     (api/pivot->wider :year [:min :max]
                       {:drop-missing? false}))
 
-(require '[tick.core :as tick])
-
 (def inst (-> (tick/now) tick/date-time))
 
 (type inst)

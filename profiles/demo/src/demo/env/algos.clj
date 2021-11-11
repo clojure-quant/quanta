@@ -9,7 +9,7 @@
    [ta.backtest.nav :refer [nav-metrics nav]]
    [ta.backtest.date :refer [ds-convert-col-instant->localdatetime ensure-roundtrip-date-localdatetime]]
    ; viz
-   [ta.viz.study-highchart :refer [study-highchart]]
+   [ta.viz.study-highchart :refer [study-highchart] :as hc]
    ; algos
    [ta.algo.buy-hold :refer [buy-hold-signal]]
    [demo.algo.gann :refer [algo-gann algo-gann-signal]]
@@ -196,13 +196,13 @@
   (algo-names)
 
   ; test the 4 functions on a strategy that generates a signal
-  (require '[ta.viz.study-highchart :refer [ds-epoch series-flags]])
+ ; (require '[ta.viz.study-highchart :refer [ds-epoch series-flags]])
   (-> (algo-backtest "buy-hold s&p")
       ;keys
       :backtest
       :ds-study
-      ds-epoch
-      (series-flags :trade))
+      hc/ds-epoch
+      (hc/series-flags :trade))
 
   (-> (algo-metrics "buy-hold s&p")
       keys)

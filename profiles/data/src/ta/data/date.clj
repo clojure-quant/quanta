@@ -1,5 +1,6 @@
 (ns ta.data.date
   (:require
+   [clojure.edn]
    [tick.core :as tick]
    ;[tick.timezone]
    ;[tick.locale-en-us]
@@ -48,7 +49,7 @@
 
 ;; epoch conversion
 
-(defn- datetime->epoch-second [dt]
+(defn datetime->epoch-second [dt]
   (ldt/to-epoch-second dt utc))
 
 (defn date->epoch-second [dt]
@@ -80,6 +81,12 @@
 ; *****************************************************************************
 (comment
 
+  (-> (tick/now)
+      (tick/in "UTC")
+      ;(tick/date)
+      )
+  (tick/date-time)
+
   ; create
   (tick/instant "1999-12-31T00:00:00Z")
   (tick/date "2021-06-20")
@@ -106,7 +113,7 @@
   (-> (now-datetime) ->epoch-second epoch-second->datetime)
 
   (-> (now-datetime))
-  (-> (now-datetime) ->epoch-second (ldtick/of-epoch-second 1 utc))
+  (-> (now-datetime) ->epoch-second (ldt/of-epoch-second 1 utc))
 
   (days-ago 2)
 

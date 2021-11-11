@@ -39,8 +39,8 @@
        (into [])
        (make-chart 111  "AMZN" "amazon gann 2005"))
 
-{:bt #time/date-time "2017-07-05T00:00", :zoom 1,
- :dt #time/duration "PT44136H", :at #time/date-time "2012-06-22T00:00",
+{:bt #time/date-time "2017-07-05T00:00", :zoom 1
+ :dt #time/duration "PT44136H", :at #time/date-time "2012-06-22T00:00"
  :dp 1.3810653117644456, :ap 1.4848690327204024, :bp 2.865934344484848, :idx-p 1, :idx-t 3}
 
 Math/exp

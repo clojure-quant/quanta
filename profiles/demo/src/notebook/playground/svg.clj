@@ -1,14 +1,15 @@
 (ns notebook.playground.svg
-  (:require [svg-clj.utils :as utils]
-            [svg-clj.elements :as el]
-            [svg-clj.transforms :as tf]
-            [svg-clj.composites :as comp :refer [svg]]
-            [svg-clj.path :as path]
-            [svg-clj.parametric :as p]
-            [svg-clj.layout :as lo]
-            [svg-clj.tools :as tools]
-            [ta.data.date :refer [parse-date]]
-            [goldly.scratchpad :refer [show! show-as clear!]]))
+  (:require
+   [svg-clj.utils :as utils]
+   [svg-clj.elements :as el]
+   [svg-clj.transforms :as tf]
+   [svg-clj.composites :as comp :refer [svg]]
+   [svg-clj.path :as path]
+   [svg-clj.parametric :as p]
+   [svg-clj.layout :as lo]
+   [svg-clj.tools :as tools]
+   [ta.data.date :refer [parse-date]]
+   [goldly.scratchpad :refer [show! show-as clear!]]))
 
 (def basic-group
   (el/g

@@ -1,8 +1,9 @@
 (ns ta.warehouse
   (:require
+   [clojure.string :refer [includes? lower-case]]
    [clojure.java.io :as java-io]
    [clojure.edn :as edn]
-   [taoensso.timbre :refer [debug info warnf]]
+   [taoensso.timbre :refer [debug info warnf error]]
    [tech.v3.io :as io]
    ;[taoensso.nippy :as nippy]
    [tablecloth.api :as tc]
@@ -19,12 +20,76 @@
   (reset! config settings)
   settings)
 
+;; lists
+
 (defn load-list [name]
   (println "loading list: " name)
   (->> (str (:list @config) name ".edn")
        slurp
        edn/read-string
        (map :symbol)))
+
+(defn load-list-full [name]
+  (try
+    (->> (str (:list @config) name ".edn")
+         slurp
+         edn/read-string)
+    (catch Exception _
+      (error "Error loading List: " name)
+      [])))
+
+(defn load-lists-full [names]
+  (->> (map load-list-full names)
+       (apply concat)
+       (into [])))
+
+(defn symbollist->dict [l]
+  (let [s-name (juxt :symbol :name)
+        dict (into {} (map s-name l))]
+    dict))
+
+(defn init-lookup [names]
+  (let [l (load-lists-full names)
+        d (symbollist->dict l)]
+    {:lookup (fn [s]
+               (if-let [n (get d s)]
+                 n
+                 (str "Unknown-" s)))
+     :search (fn [q]
+               (let [q (lower-case q)]
+                 (filter (fn [{:keys [name symbol]}]
+                           (includes? (lower-case name) q))
+
+                         l)))}))
+
+(comment
+  (load-list-full "fidelity-select")
+
+  ((juxt :symbol :name) {:symbol "s" :name "n"})
+
+  (-> (load-list-full "bonds")
+      (map (juxt :symbol :name)))
+
+  (load-lists-full ["fidelity-select"
+                    "bonds"
+                    "commodity-industry"
+                    "commodity-sector"
+                    "currency"
+                    "equity-region"
+                    "equity-region-country"
+                    "equity-sector-industry"
+                    "equity-style"
+                    "test"])
+
+  (->  (load-lists-full ["fidelity-select" "bonds"])
+       (symbollist->dict))
+
+  (let [{:keys [lookup search]} (init-lookup ["fidelity-select" "bonds" "test"])]
+    [(lookup "MSFT")
+     (search "PH")])
+
+; 
+  )
 
 ; timeseries - name
 

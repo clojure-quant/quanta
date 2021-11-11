@@ -4,7 +4,6 @@
    [taoensso.timbre :refer [trace debug info warnf error]]
    [schema.core :as s]
    [ring.util.response :as res]
-   ;[ring.util.http-response :refer [ok]]
    [webly.web.middleware :refer [wrap-api-handler]]
    [webly.web.handler :refer [add-ring-handler]]
    [ta.tradingview.config :refer [tv-config]]

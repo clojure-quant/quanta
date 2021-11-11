@@ -6,11 +6,11 @@
 
 (def datafeed-urls
   {:demo "https://demo_feed.tradingview.com"
-   :trateg "/api/tv"})
+   :ta "/api/tv"})
 
 (def storage-urls
   {:demo "https://saveload.tradingview.com"
-   :trateg "/api/tv/storage"})
+   :ta "/api/tv/storage"})
 
 
 (defn get-tradingview-datafeed [kw]
@@ -19,14 +19,12 @@
     (js/Datafeeds.UDFCompatibleDatafeed. url)))
 
 (def tv-options {:debug true ; false
-                 :symbol "AMZN" ; DAX Index"
+                 :symbol "BTCUSD" ; DAX Index"
                  :interval "D"
-                 ;:container_id "" ; id of the surrounding div (will be set below)
                  :library_path "/r/tradingview/charting_library/"
                  :locale "en" ;
                  :disabled_features [] ;  ['use_localstorage_for_settings']
                  :enabled_features ['study_templates']
-                 :charts_storage_url "https://saveload.tradingview.com"
                  :charts_storage_api_version "1.1"
                  :client_id 77 ; "tradingview.com"
                  :user_id 77 ; "public_user_id"
@@ -49,7 +47,7 @@
                  })
 
 (defn show-tradingview-widget [feed-kw id]
-  (let [datafeed (get-tradingview-datafeed :demo) ; feed-kw
+  (let [datafeed (get-tradingview-datafeed feed-kw) ; :demo
         tv-options (assoc tv-options :datafeed datafeed
                                      :container_id id
                                      :charts_storage_url (feed-kw storage-urls)
@@ -71,7 +69,7 @@
      )])
 
 ; in scratchpad enter:
-; (show-tradingview-widget :trateg "scratchadtest")
+; (show-tradingview-widget :ta "scratchadtest")
 
 
 

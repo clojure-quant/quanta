@@ -10,7 +10,7 @@
  {:sector :consumer-goods :name "Food and Beverage" :symbol "PBJ"}
 
 ; Consumer Discretionary
-  {:sector :consumer-services :name "Consumer Discretionary" :symbol "VCR" :also ["XLY"]}
+ {:sector :consumer-services :name "Consumer Discretionary" :symbol "VCR" :also ["XLY"]}
 ;Consumer Discretionary Select Sector SPDR                XLY    0.26     yes         1369
 ;IShares DJ US Consumer Cyclical Sector                     IYC     0.48     yes             98
 ;Retail HOLDRS                                                           RTH     0*        yes         3388
@@ -23,7 +23,7 @@
 ;Market Vector Environmental Services                         EVX    0.55     yes               5
 ;Rydex Equal Weight Consumer Discretionary                RCD    0.50     no              13
 
- 
+
 
 
  {:sector :consumer-services :name "Leisure and Entertainment" :symbol "PEJ"}
@@ -47,28 +47,28 @@
  {:sector :healthcare :name "Medical Devices" :symbol " IHI"}
  {:sector :healthcare :name "Health Care Providers" :symbol "IHF"}
 
- 
+
  {:sector :industrial :name "Aerospace & Defense" :symbol "ITA" :also ["PPA"]}
 
- Industrials
-Industrial Select Sector SPDR                                      XLI      0.26     yes         2498
-IShares DJ Transportation Average                               IYT      0.48     yes           735
-IShares DJ US Industrial Sector                                    IYJ       0.48     yes             32
-Vanguard Industrials VIPERs                                        VIS      0.28     yes             15
-Dynamic Building and Construction                               PKB    0.60     yes             20
-iShares Home Construction                                           ITB      0.48     no            136
-Homebuilder SPDRs                                                    XHB    0.35     yes         2474
-Dynamic Aerospace and Defense                                  PPA     0.60     yes           129
-iShares Aerospace and Defence                                    IHE      0.48     no              21
-FTSE RAFI Industrials                                                 PRFN  0.60     no                3
-Dynamic Industrials                                                       PRN    0.60     yes             16
-Market Vector Steel                                                     SLX     0.55     yes             26
-PowerShares Aerospace and Defense                           PPA     0.60     yes            129
-Rydex Equal Weight Industrials                                     RGI      0.50     no                2
-First Trust Industrials/Producer Durables AlphaDEXFXR          0.70     no           N/A
+; Industrials
+;Industrial Select Sector SPDR        XLI      0.26     yes         2498
+;IShares DJ Transportation Average      IYT      0.48     yes           735
+;IShares DJ US Industrial Sector          IYJ       0.48     yes             32
+;Vanguard Industrials VIPERs       VIS      0.28     yes             15
+;Dynamic Building and Construction        PKB    0.60     yes             20
+;iShares Home Construction            ITB      0.48     no            136
+;Homebuilder SPDRs                    XHB    0.35     yes         2474
+;Dynamic Aerospace and Defense           PPA     0.60     yes           129
+;iShares Aerospace and Defence         IHE      0.48     no              21
+;FTSE RAFI Industrials             PRFN  0.60     no                3
+;Dynamic Industrials                   PRN    0.60     yes             16
+;Market Vector Steel                 SLX     0.55     yes             26
+;PowerShares Aerospace and Defense     PPA     0.60     yes            129
+;Rydex Equal Weight Industrials           RGI      0.50     no                2
+;First Trust Industrials/Producer Durables AlphaDEXFXR     0.70     no           N/A
 
- 
- 
+
+
  {:sector :technology :name "Computer Hardware" :symbol "PHW" :also ["IAH"]}
  {:sector :technology :name "Internet - diversified" :symbol "HHH" :also ["IIH" "BHH" "FDN"]}
  {:sector :technology :name "Software" :symbol "IGV" :also ["PSJ" "SWH"]}
@@ -79,7 +79,8 @@ First Trust Industrials/Producer Durables AlphaDEXFXR          0.70     no      
 
  {:sector :telecom :name "Wireless (including telcos)" :symbol "PXN" :also ["PTE" "WMH"]}
 
- 
+ ;
+ ]
 
- 
+
 

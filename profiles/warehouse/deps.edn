@@ -2,14 +2,11 @@
  :deps
  {org.clojure/clojure    {:mvn/version "1.10.3"}
   ;org.clojure/core.async {:mvn/version "1.3.618"}
-  ;clj-time/clj-time      {:mvn/version "0.15.2"} ; joda-time wrapper for clj (needed by bybit)
-  techascent/tech.ml.dataset {:mvn/version "6.001"}
-  techascent/tech.io {:mvn/version "4.07"}
-  com.taoensso/nippy {:mvn/version "2.14.0"}
-  cljc.java-time/cljc.java-time {:mvn/version "0.1.16"}
-  tick/tick                     {:mvn/version "0.4.31-alpha"} ; replacement for clj-time
   com.taoensso/timbre {:mvn/version "5.1.2"} ; clj/cljs logging
-  }
+  tick/tick {:mvn/version "0.5.0-RC5"}
+  com.taoensso/nippy {:mvn/version "2.14.0"}
+  techascent/tech.ml.dataset {:mvn/version "6.001"}
+  techascent/tech.io {:mvn/version "4.07"}}
  :aliases
  {:outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
              :main-opts ["-m" "antq.core"]}
@@ -33,8 +30,5 @@
 
   :victor-print {:extra-paths ["test"]
                  :exec-fn repl.experiment/fn-print-symbol-list
-                 :exec-args {:name "equity-region"}}
-  
-  
-  }}
+                 :exec-args {:name "equity-region"}}}}
 

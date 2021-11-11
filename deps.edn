@@ -54,12 +54,11 @@
                ; demo
                "profiles/demo/src/demo/algo"
                "profiles/demo/src/demo/env"
-               ; goldly
-               "profiles/demo/src/demo/playground"
-               ; plot
-               ;
-               "profiles/demo/src/demo/studies"
-               "profiles/demo/src/demo/warehouse"
+               ; notebooks
+                "profiles/demo/src/notebook"
+               ;"profiles/demo/src/notebook/playground"
+               ;"profiles/demo/src/notebook/studies"
+               ;"profiles/demo/src/notebook/warehouse"
                "--config" "cljkondo.edn"]}
 
   :cloverage
