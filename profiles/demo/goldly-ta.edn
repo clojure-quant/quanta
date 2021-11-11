@@ -15,7 +15,9 @@
           :autoload-clj-ns [demo.goldly.services
                             demo.goldly.reval ; for techml rendering (no need to require namespace)
                              ;ta.viz.arrow ; dataset->arrow 
+                            ta.tradingview.server
                             ]
+
           :autoload-cljs-dir ["src/demo/goldly/view"
                               "src/demo/goldly/page"]
           :routes {:app {"" :user/main
@@ -43,6 +45,19 @@
                          "rdocument/ns" :rdocument/ns
                          "rdocument/files" :rdocument/files
                          ["rdocument/file/" :ns "/" :name] :rdocument/file ; http://localhost:8000/api/viewer/file/demo.playground.cljplot/vega-spec.edn
+                         "tv/" {:get  {"config" :tv/config
+                                       "time" :tv/time
+                                       "search" :tv/search
+                                       "symbols" :tv/symbols
+                                       "history" :tv/history}
+                                "storage/1.1/" {"charts" {:get  :tv-db/load-chart
+                                                          :post :tv-db/save-chart
+                                                          :put  :tv-db/modify-chart
+                                                          :delete  :tv-db/delete-chart}
+                                                "study_templates" {:get :tv-db/load-template
+                                                                   :post :tv-db/save-template
+                                                                                      ;:put :tv-db/modify-template
+                                                                   :delete :tv-db/delete-template}}}
                          }}}
 
  :devtools {:rdocument  {:storage-root "../../rdocument/"

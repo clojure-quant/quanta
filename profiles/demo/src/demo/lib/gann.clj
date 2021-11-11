@@ -173,11 +173,6 @@
   (-> (move-up-in-window gld-box 2.197252998145341 2.2621424532947794)
       (move-up-in-window gld-box (Math/log10 1000) (Math/log10 70000))
       (clojure.pprint/print-table))
-
-  {:px-min , :px-max ,
-   :dt-start #time/date-time "2021-01-01T00:00",
-   :dt-end #time/date-time "2021-12-31T00:00",  ()}
-
 ; 
   )
 

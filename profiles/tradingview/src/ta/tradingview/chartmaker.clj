@@ -464,6 +464,10 @@
             :b-p (+ p-0 (* (inc i) d-p))  :b-t b-t}))))
 
 
+
+(comment
+
+
 (gann-vertical 1000.0 200.0 5 1511879400 1515076200)
 
 
@@ -482,26 +486,12 @@
                :b-p 1517.0  :b-t 1515076200})])
 
 (make-chart 555  "AMZN" "vert ganns"
-  (let [a-t 1511879400
-        d-t 3196800
-        ]         
-  (concat (gann-vertical 1000.0 200.0 20 a-t (+ a-t d-t))
-          (gann-vertical 1000.0 400.0 10 a-t (+ a-t (* 2 d-t)))
-   )
-            
-            ))
+            (let [a-t 1511879400
+                  d-t 3196800]
+              (concat (gann-vertical 1000.0 200.0 20 a-t (+ a-t d-t))
+                      (gann-vertical 1000.0 400.0 10 a-t (+ a-t (* 2 d-t))))))
 
-
-
-
-(- 1515076200 1511879400 )
-
-
-
-
-
-
-(comment
+  
 
 
   (->> (assoc empty-meta

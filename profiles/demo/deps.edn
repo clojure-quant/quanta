@@ -1,6 +1,7 @@
 {:paths ["src" "classes"]
  :deps {ta/trateg {:local/root "../.." :deps/manifest :deps}
         ta/data {:local/root "../data" :deps/manifest :deps}
+        ta/tradingview {:local/root "../tradingview" :deps/manifest :deps}
         com.taoensso/timbre {:mvn/version "5.1.2"} ; clj/cljs logging
         aysylu/loom {:mvn/version "1.0.2"}
         techascent/tech.viz {:mvn/version "6.00-beta-16-2"}
