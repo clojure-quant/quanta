@@ -1,4 +1,4 @@
-(ns ta.tradingview.db
+(ns ta.tradingview.db-ts
   (:require
    [clojure.set :refer [rename-keys]]
    [clojure.walk]

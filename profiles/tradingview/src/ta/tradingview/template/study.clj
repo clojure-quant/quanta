@@ -1,9 +1,10 @@
-(ns ta.tradingview.template.study)
+(ns ta.tradingview.template.study
+   (:require
+    [nano-id.core :refer [nano-id]]))
 
 
-(def study
+(def template-study 
   {:type "Study"
-   :id "rN3cUr"
    :zorder 3
    :state {:name "Volume@tv-basicstudies"
            :id "Volume@tv-basicstudies"

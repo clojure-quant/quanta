@@ -3,7 +3,7 @@
    [taoensso.timbre :refer [info warn error]]
    [clj-http.client :as client]
    [cheshire.core] ; JSON Encoding
-   [ta.tradingview.db :refer [save-chart-boxed delete-chart load-chart-boxed chart-list now-epoch chart-box chart-unbox]]))
+   [ta.tradingview.db-ts :refer [save-chart-boxed delete-chart load-chart-boxed chart-list now-epoch chart-box chart-unbox]]))
 
 
 (def roots {:demo "https://saveload.tradingview.com/1.1/charts"

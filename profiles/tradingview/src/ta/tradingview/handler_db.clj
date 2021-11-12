@@ -7,7 +7,7 @@
    [webly.web.middleware :refer [wrap-api-handler]]
    [webly.web.handler :refer [add-ring-handler]]
    [ta.tradingview.config :refer [tv-config]]
-   [ta.tradingview.db :refer [save-chart-boxed delete-chart load-chart-boxed chart-list now-epoch]]))
+   [ta.tradingview.db-ts :refer [save-chart-boxed delete-chart load-chart-boxed chart-list now-epoch]]))
 
 
 ;; chart handler

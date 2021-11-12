@@ -1,8 +1,7 @@
 (ns ta.tradingview.template.sessions)
 
-(def sessions
+(def template-sessions
   {:type "study_Sessions"
-   :id "BlBo4C"
    :state {:zorder 1
            :name "Sessions@tv-basicstudies"
            :description "Sessions"

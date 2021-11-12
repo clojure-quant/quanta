@@ -57,7 +57,9 @@
 (defn gann [{:keys [symbol a-p b-p a-t b-t]}]
   {:type "LineToolGannComplex"
    :id (nano-id 6) ; "Ix5dtc"
-   :state {:intervalsVisibilities {:minutesFrom 1 :daysTo 366  :secondsTo 59  :hoursTo 24  :months true  :days true  :seconds true  :daysFrom 1  :secondsFrom 1
+   :state {:symbol symbol
+           :interval "D"
+           :intervalsVisibilities {:minutesFrom 1 :daysTo 366  :secondsTo 59  :hoursTo 24  :months true  :days true  :seconds true  :daysFrom 1  :secondsFrom 1
                                    :hours true :ranges true  :hoursFrom 1  :minutes true  :minutesTo 59  :weeks true}
            :labelsStyle {:font "Verdana"
                          :fontSize 12
@@ -78,7 +80,7 @@
                       :5 {:color "rgba( 0, 155, 0, 1)" :visible true :width 1 :x 1 :y 1}
                       :3 {:color "rgba( 160, 107, 0, 1)" :visible false  :width 1  :x 3 :y 1}
                       :6 {:color "rgba( 0, 153, 101, 1)" :visible true  :width 1  :x 1  :y 2}}
-           :symbol symbol
+          
            :showLabels true
            :arcs {:10 {:color "rgba( 0, 0, 153, 1)" :visible true :width 1 :x 5 :y 1}
                   :0 {:color "rgba( 160, 107, 0, 1)" :visible true  :width 1  :x 1  :y 0}
@@ -100,7 +102,7 @@
                     :5 [1 "rgba( 128, 128, 128, 1)" true]}
            :scaleRatio 737.9710852623244
            :lastUpdateTime 1636584460200
-           :interval "D"
+           
            :visible true
            :frozen false
            :reverse false}

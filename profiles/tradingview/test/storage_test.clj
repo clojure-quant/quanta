@@ -1,7 +1,7 @@
 (ns storage-test
   (:require
    [clojure.test :refer :all]
-   [ta.tradingview.db :refer [save-chart delete-chart load-chart chart-list now-epoch chart-unbox save-chart-boxed load-chart-boxed]]
+   [ta.tradingview.db-ts :refer [save-chart delete-chart load-chart chart-list now-epoch chart-unbox save-chart-boxed load-chart-boxed]]
    [reval.persist.edn] ; side effects
    [reval.persist.json] ; side effects
     [reval.persist.protocol :refer [save loadr]]

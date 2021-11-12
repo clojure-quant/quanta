@@ -10,6 +10,7 @@
   ta/data {:local/root "../data" :deps/manifest :deps}
   ta/warehouse {:local/root "../warehouse" :deps/manifest :deps}
   org.pinkgorilla/reval {:mvn/version "0.0.25"} ; persistence
+  differ/differ {:mvn/version "0.3.3"}
   }
  :aliases
  {:outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
