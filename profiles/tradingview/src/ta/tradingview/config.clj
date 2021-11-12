@@ -1,7 +1,19 @@
 (ns ta.tradingview.config)
 
 
-(def tv-config {:db-path "tvdb/"})
+(def tv-config {:db-path "tvdb/"
+                :lists  ["crypto"
+                         "fidelity-select"
+                         "bonds"
+                         "commodity-industry"
+                         "commodity-sector"
+                         "currency"
+                         "equity-region"
+                         "equity-region-country"
+                         "equity-sector-industry"
+                         "equity-style"
+                         "test"]})
+
 
 
 

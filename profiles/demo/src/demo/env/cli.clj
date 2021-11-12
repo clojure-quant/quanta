@@ -1,10 +1,10 @@
 (ns demo.env.cli
   (:require
    [webly.log]
-   [demo.warehouse.import-alphavantage :as av]
-   [demo.warehouse.import-bybit :as bybit]
-   [demo.warehouse.create-random :as rr]
-   [demo.playground.symbollist :refer [print-symbol-list]])
+   [demo.env.config] ; side-effects
+   [demo.data-import.import-alphavantage :as av]
+   [demo.data-import.import-bybit :as bybit]
+   [demo.data-import.create-random :as rr])
   (:gen-class))
 
 (defn log-config! []
@@ -19,8 +19,9 @@
 
 (defn run-alphavantage-import-initial [& _]
   (log-config!)
-  (av/get-alphavantage-daily av/alphavantage-test-symbols)
-  (av/get-alphavantage-daily av/fidelity-symbols))
+  ;(av/get-alphavantage-daily av/alphavantage-test-symbols)
+  ;(av/get-alphavantage-daily av/fidelity-symbols)
+  (av/get-alphavantage-daily av/tradingview-symbols))
 
 (defn run-bybit-import-initial [& _]
   (log-config!)
@@ -38,11 +39,7 @@
 
 (defn -main
   ([]
-   (println "printing default list: currency")
-   (print-symbol-list "currency"))
-  ([list-name]
-   (println "printing user defined list: " list-name)
-   (print-symbol-list list-name)))
+   (println "printing default list: currency")))
 
 ;  (-main "currency")
 

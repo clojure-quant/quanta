@@ -1,8 +1,8 @@
-[{:name "Rydex Euro" :symbol "FXE"}
- {:name "Rydex Mexican Peso" :symbol "FXM"}
- {:name "Rydex Swedish Krona" :symbol "FXS "}
- {:name "Rydex Australian Dollar" :symbol "FXA"}
- {:name "Rydex British Pound" :symbol "FXB"}
- {:name "Rydex Canadian Dollar" :symbol "FXC"}
- {:name "Rydex Swiss Franc" :symbol "FXF"}
- {:name "Rydex Japanese Yen" :symbol "FXJ"}]
+[{:name "Rydex Euro" :symbol "FXE" :category :etf}
+ {:name "Rydex Mexican Peso" :symbol "FXM" :category :etf}
+ {:name "Rydex Swedish Krona" :symbol "FXS " :category :etf}
+ {:name "Rydex Australian Dollar" :symbol "FXA" :category :etf}
+ {:name "Rydex British Pound" :symbol "FXB" :category :etf}
+ {:name "Rydex Canadian Dollar" :symbol "FXC" :category :etf}
+ {:name "Rydex Swiss Franc" :symbol "FXF" :category :etf}
+ {:name "Rydex Japanese Yen" :symbol "FXJ" :category :etf}]

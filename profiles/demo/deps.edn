@@ -25,37 +25,24 @@
 
   ;; data import
 
-  :create-random-data {:extra-deps {org.pinkgorilla/webly {:mvn/version "0.3.50"}} ; log config
-                       :exec-fn  demo.warehouse.create-random/task-create-random}
-
   :alphavantage-import {:extra-deps {org.pinkgorilla/webly {:mvn/version "0.3.50"}} ; log config
-                        :exec-fn demo.warehouse.import-alphavantage/task-alphavantage-import-initial
+                        :exec-fn demo.env.cli/run-alphavantage-import-initial
                         ;:exec-args {:symbol-list "test" ; "fidelity-select"
                         ;            }
                         }
 
+  :create-random-data {:extra-deps {org.pinkgorilla/webly {:mvn/version "0.3.50"}} ; log config
+                       :exec-fn  demo.env.cli/task-create-random}
+
   :bybit-import-initial {:extra-deps {org.pinkgorilla/webly {:mvn/version "0.3.50"}} ; log config
-                         :exec-fn  demo.warehouse.import-bybit/task-bybit-import-initial}
+                         :exec-fn  demo.env.cli/task-bybit-import-initial}
 
   :bybit-import-append {:extra-deps {org.pinkgorilla/webly {:mvn/version "0.3.50"}} ; log config
-                        :exec-fn  demo.warehouse.import-bybit/task-bybit-import-append}
-
-
-  ;; warehouse status
-
-  :show {:exec-fn demo.data.import/show-ts
-         :exec-args {:symbol-list "test" ; "fidelity-select"
-                     }}
+                        :exec-fn  demo.env.cli/run-bybit-import-append}
 
 
   ;; strategies
 
-  :calc {:exec-fn demo.swinger/calc
-         :exec-args {}}
-
-  :demo {;:exec-fn demo.swinger/calc
-          ;:exec-args {}
-         }
 
   :bollinger-strategy {:extra-deps {org.pinkgorilla/webly {:mvn/version "0.3.50"}} ; log config
                        :exec-fn demo.viktor.task/task-bollinger-study}

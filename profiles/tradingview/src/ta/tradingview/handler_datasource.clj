@@ -1,5 +1,6 @@
 (ns ta.tradingview.handler-datasource
   (:require
+   [clojure.string :as str]
    [clojure.walk]
    [taoensso.timbre :refer [trace debug info warnf error]]
    [schema.core :as s]
@@ -34,6 +35,8 @@
    :symbols_types [{:value "" :name "All"}
                    {:value "Crypto" :name "Crypto"}
                    {:value "Equity" :name "Equities"}
+                   {:value "Mutualfund" :name "Mutualfund"}
+                   {:value "ETF" :name "ETF"}
                    ;{:value "Corp" :name "Bonds"}
                    ;{:value "Index" :name "Indices"}
                    ;{:value "Curncy" :name "Currencies"}
@@ -55,17 +58,7 @@
 
 ;; available symbols
 
-(def list-names ["crypto"
-                 "fidelity-select"
-                 "bonds"
-                 "commodity-industry"
-                 "commodity-sector"
-                 "currency"
-                 "equity-region"
-                 "equity-region-country"
-                 "equity-sector-industry"
-                 "equity-style"
-                 "test"])
+
 
 (comment
   (symbols-available :crypto "D")
@@ -78,11 +71,62 @@
 ;
   )
 
-(def lookup (init-lookup list-names))
+(let [{:keys [instrument name search]} (init-lookup (:lists tv-config))]
+  (def search search)
+  (def instrument instrument))
 
-(defn crypto? [s]
-  (or (= s "ETHUSD")
-      (= s "BTCUSD")))
+(comment
+  (instrument "SPY")
+  (search "GOLD")
+  (search "BT")
+  (search "Bit")
+
+  ;
+  )
+
+(def categories
+  {:crypto "Crypto"
+   :etf "ETF"
+   :mutualfund "MutualFund"
+   :equity "Equity"})
+
+(def category-names
+  {"Crypto" :crypto
+   "ETF" :etf
+   "MutualFund" :mutualfund
+   "Equity" :equity})
+
+(defn inst-type [i]
+  ; this dict has to match above the server-config list of supported categories
+  (let [c (:category i)]
+    (or (get categories c) "Equity")))
+
+(defn inst-crypto? [i]
+  (= (:category i) :crypto))
+
+(defn inst-exchange [i]
+  (if (inst-crypto? i) "BB" "SG"))
+
+(defn inst-name [s i]
+  (or (:name i) (str "Unknown:" s)))
+
+(defn category-name->category [c]
+  (or (get category-names c) :equity))
+
+
+
+(comment
+  (inst-type {:category :etf})
+  (inst-type nil)
+  (inst-crypto? {:category :etf})
+  (inst-crypto? {:category :crypto})
+  (inst-exchange {:category :etf})
+  (inst-exchange {:category :crypto})
+  (category-name->category "Equity")
+  (category-name->category nil)
+
+ ;
+  )
 
 ;; symbol lookup
 
@@ -90,13 +134,13 @@
   "Converts instrument [from db] to tradingview symbol-information
    Used in symbol and search"
   [s]
-  (let [lookup (:lookup lookup)
-        name (lookup s)]
-    {:ticker s  ; OUR SYMBOL FORMAT
-     :name  name
-     :exchange-listed (if (crypto? s) "BB" "SG")
-     :description name
-     :type (if (crypto? s) "Crypto" "Equity")
+  (let [i (instrument s)]
+    {:ticker s  ; OUR SYMBOL FORMAT. TV uses exchange:symbol
+     :name  s ; for tv this is only the symbol
+     :description (inst-name s i)
+     :exchange (inst-exchange i)
+     :exchange-listed (inst-exchange i)
+     :type (inst-type i)
      :supported_resolutions ["15" "D"]
      :has_no_volume false
      ; FORMATTING OF DIGITS
@@ -108,7 +152,7 @@
      :pointvalue 1
      ; session
      :has_intraday true
-     :timezone "America/New_York"
+     :timezone "Etc/UTC" ; "America/New_York"
      :session "0900-1600"  ;"0900-1630|0900-1400:2",
                            ;:session-regular "0900-1600"
 
@@ -135,27 +179,50 @@
 ;[{"symbol":"BLK","full_name":"BLK","description":"BlackRock, Inc.","exchange":"NYSE","type":"stock"},
 ;  {"symbol":"BA","full_name":"BA","description":"The Boeing Company","exchange":"NYSE","type":"stock"}]
 
+
+(defn filter-exchange [exchange list]
+  (if (str/blank? exchange)
+    list
+    (filter #(= exchange (inst-exchange %)) list)))
+
+(defn filter-category [type list]
+  (if (str/blank? type)
+    list
+    (let [ c (category-name->category type)]
+    (filter #(= c (:category %)) list)  
+      )
+    ))
+
+
 (defn search-handler [{:keys [query-params] :as req}]
   (info "tv/search: " query-params)
   (let [{:keys [query type exchange limit]} (clojure.walk/keywordize-keys query-params)
         limit (Integer/parseInt limit)
-        search (:search lookup)
-        sr (search query)
+        sr (->> (search query)
+                (filter-exchange exchange)
+                (filter-category type))
         sr-limit (take limit sr)
-        sr-tv (map (fn [{:keys [symbol name]}]
-                     {:symbol symbol
+        sr-tv (map (fn [{:keys [symbol name] :as i}]
+                     {:ticker symbol
+                      :symbol symbol ; OUR SYMBOL FORMAT. TV uses exchange:symbol
                       :full_name symbol
-                      :description name
-                      :exchange (if (crypto? symbol) "BB" "SG")
-                      :type (if (crypto? symbol) "Crypto" "Equity")}) sr-limit)]
+                      :description  (inst-name symbol i)
+                      :exchange (inst-exchange i)
+                      :type (inst-type i)}) sr-limit)]
     (res/response sr-tv)))
 
 
+
 (comment
-  (search-handler {:query-params {:query "E"
-                                  :type "Crypto"
-                                  :exchange "GC"
-                                  :limit "10"}})
+  (-> (search-handler {:query-params {:query "E"
+                                      :type ""
+                                      :exchange "BB"
+                                      :limit "10"}})
+      :body
+      ;count
+      )
+
+
 
 
 
@@ -187,7 +254,8 @@
 
 
 (defn load-series [s resolution from to]
-  (let [w (if (crypto? s) :crypto :stocks)
+  (let [i (instrument s)
+        w (if (inst-crypto? i) :crypto :stocks)
         frequency (case resolution
                     "1D" "D"  ; tradingview sometimes queries daily as 1D
                     resolution)
@@ -229,29 +297,19 @@
     (res/response series)))
 
 (comment
-
+  (datetime->epoch-second (tick/date-time "1980-04-01T00:00:00"))
+  (datetime->epoch-second (tick/date-time "1980-05-01T00:00:00"))
   (datetime->epoch-second (tick/date-time "2019-04-01T00:00:00")) ; 1617235200
   (datetime->epoch-second (tick/date-time "2019-05-01T00:00:00")) ; 1619827200
   (datetime->epoch-second (tick/date-time "2020-05-01T00:00:00"))
   (datetime->epoch-second (tick/date-time "2021-05-01T00:00:00"))
 
-  (datetime->epoch-second (tick/date-time "1980-04-01T00:00:00"))
-  (datetime->epoch-second (tick/date-time "1980-05-01T00:00:00"))
 
-  (let [resolution "15"]
-    (case resolution
-      "1D" "D"
-      resolution))
-
-
-
-
-  (-> (load-symbol "ETHUSD" "D")
+  (-> (load-symbol :crypto "ETHUSD" "D")
       (filter-date-range
        (tick/date-time "2019-04-01T00:00:00")
 
        (tick/date-time "2021-05-01T00:00:00")))
-
 
   (load-series "ETHUSD" "D" 1617235200 1619827200)
 
@@ -270,8 +328,6 @@
 
   ;  https://demo_feed.tradingview.com/history?symbol=AAPL&resolution=D&from=323395200&to=325987200
   ; {"t":[],"o":[],"h":[],"l":[],"c":[],"v":[],"s":"no_data"}
-
-  (Integer/parseInt "1617235200")
 
   ; test load known symbol
   (history-handler {:query-params {:symbol "ETHUSD"
@@ -294,12 +350,6 @@
                                      "resolution" "D"
                                      "from" "1299075015"
                                      "to" "1303308614"}})
-
-
-
-
-
-
 ;  
   )
 

@@ -1,37 +1,37 @@
 [
  
 ;Europe - Country
- {:region :europe :name "IShares MSCI Austria" :symbol "EWO"}
- {:region :europe :name "IShares MSCI Belgium" :symbol "EWK"}
- {:region :europe :name "IShares MSCI France" :symbol "EWQ"}
- {:region :europe :name "IShares MSCI Germany" :symbol "EWG"}
- {:region :europe :name "IShares MSCI Italy" :symbol "EWI"}
- {:region :europe :name "IShares MSCI Netherlands" :symbol "EWN"}
- {:region :europe :name "IShares MSCI Spain" :symbol "EWP"}
- {:region :europe :name "IShares MSCI Sweden" :symbol "EWD"}
- {:region :europe :name "IShares MSCI Switzerland" :symbol "EWL"}
- {:region :europe :name "IShares MSCI United Kingdom" :symbol "EWU"}
- {:region :europe :name "Van Eck Russia" :symbol "RSX"}
- {:region :europe :name "IShares MSCI South Africa" :symbol "EZA"}
+ {:region :europe :name "IShares MSCI Austria" :symbol "EWO" :category :etf}
+ {:region :europe :name "IShares MSCI Belgium" :symbol "EWK" :category :etf}
+ {:region :europe :name "IShares MSCI France" :symbol "EWQ" :category :etf}
+ {:region :europe :name "IShares MSCI Germany" :symbol "EWG" :category :etf}
+ {:region :europe :name "IShares MSCI Italy" :symbol "EWI" :category :etf}
+ {:region :europe :name "IShares MSCI Netherlands" :symbol "EWN" :category :etf}
+ {:region :europe :name "IShares MSCI Spain" :symbol "EWP" :category :etf}
+ {:region :europe :name "IShares MSCI Sweden" :symbol "EWD" :category :etf}
+ {:region :europe :name "IShares MSCI Switzerland" :symbol "EWL" :category :etf}
+ {:region :europe :name "IShares MSCI United Kingdom" :symbol "EWU" :category :etf}
+ {:region :europe :name "Van Eck Russia" :symbol "RSX" :category :etf}
+ {:region :europe :name "IShares MSCI South Africa" :symbol "EZA" :category :etf}
 
 ; Americas -Country
- {:region :americas :name "IShares MSCI Brazil" :symbol "EWZ"}
- {:region :americas :name "IShares MSCI Canada" :symbol "EWC"}
- {:region :americas :name "IShares MSCI Mexico" :symbol "EWW"}
+ {:region :americas :name "IShares MSCI Brazil" :symbol "EWZ" :category :etf}
+ {:region :americas :name "IShares MSCI Canada" :symbol "EWC" :category :etf}
+ {:region :americas :name "IShares MSCI Mexico" :symbol "EWW" :category :etf}
 
 ; Asia - Country
- {:region :asia :name "IShares MSCI Australia" :symbol "EEWA"}
- {:region :asia :name "IShares MSCI Hong Kong" :symbol "EEWH"}
- {:region :asia :name "IShares MSCI Japan" :symbol "EEWJ"}
+ {:region :asia :name "IShares MSCI Australia" :symbol "EEWA" :category :etf}
+ {:region :asia :name "IShares MSCI Hong Kong" :symbol "EEWH" :category :etf}
+ {:region :asia :name "IShares MSCI Japan" :symbol "EEWJ" :category :etf}
 ;  {:region :asia :name "Streettracks Russell/Nomura Japan Prime" :symbol "EJPP"}
 ;{:region :asia :name "Streettracks Russell/Nomura Japan Small Cap" :symbol "EJSC"}
- {:region :asia :name "IShares MSCI Malaysia (Free)" :symbol "EEWM"}
- {:region :asia :name "IShares MSCI Singapore" :symbol "EEWS"}
- {:region :asia :name "IShares MSCI South Korea" :symbol "EEWY"}
- {:region :asia :name "IShares MSCI Taiwan" :symbol "EEWT"}
+ {:region :asia :name "IShares MSCI Malaysia (Free)" :symbol "EEWM" :category :etf}
+ {:region :asia :name "IShares MSCI Singapore" :symbol "EEWS" :category :etf}
+ {:region :asia :name "IShares MSCI South Korea" :symbol "EEWY" :category :etf}
+ {:region :asia :name "IShares MSCI Taiwan" :symbol "EEWT" :category :etf}
  ;{:region :asia :name "IShares FTSE/Xinhuu China 25" :symbol "EFXI"}
- {:region :asia :name "SPDR S&P China" :symbol "GXC"}
- {:region :asia :name "PowerShares Golden Dragon USX China Portfolio" :symbol "EPGJ"}
+ {:region :asia :name "SPDR S&P China" :symbol "GXC" :category :etf}
+ {:region :asia :name "PowerShares Golden Dragon USX China Portfolio" :symbol "EPGJ" :category :etf}
 
 
  ]

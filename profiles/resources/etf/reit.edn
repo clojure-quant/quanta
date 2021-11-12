@@ -1,3 +1,3 @@
-[{:name "REIT" :symbol "IYR"}
- {:name "REIT INTL" :symbol "RWX"}
- {:name "Infrastructure" :symbol "MGU"}]
+[{:name "REIT" :symbol "IYR" :category :etf}
+ {:name "REIT INTL" :symbol "RWX" :category :etf}
+ {:name "Infrastructure" :symbol "MGU" :category :etf}]

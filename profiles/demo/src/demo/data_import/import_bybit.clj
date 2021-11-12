@@ -1,4 +1,4 @@
-(ns demo.warehouse.import-bybit
+(ns demo.data-import.import-bybit
   (:require
    [tick.core :as tick] ; tick uses cljc.java-time
    [tech.v3.dataset :as tds]

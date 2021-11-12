@@ -1,16 +1,16 @@
 
-[{:sector :materials :name "Basic Materials" :symbol "IYM"   :also ["VAW" "XLB"]}
- {:sector :materials :name "Gold Mining" :symbol "GDX"}
- {:sector :materials :name "Metals and Mining" :symbol "XME"}
- {:sector :materials :name "Nat. Resources Natural Resources" :symbol "IGE"}
+[{:sector :materials :name "Basic Materials" :symbol "IYM" :category :etf :also ["VAW" "XLB"]}
+ {:sector :materials :name "Gold Mining" :symbol "GDX" :category :etf}
+ {:sector :materials :name "Metals and Mining" :symbol "XME" :category :etf}
+ {:sector :materials :name "Nat. Resources Natural Resources" :symbol "IGE" :category :etf}
 
- {:sector :consumer-goods :name "Home Construction" :symbol "ITB" :also ["XHB"]}
- {:sector :consumer-goods :name "Building and Construction" :symbol "PKB"}
+ {:sector :consumer-goods :name "Home Construction" :symbol "ITB" :also ["XHB"] :category :etf}
+ {:sector :consumer-goods :name "Building and Construction" :symbol "PKB" :category :etf}
 
- {:sector :consumer-goods :name "Food and Beverage" :symbol "PBJ"}
+ {:sector :consumer-goods :name "Food and Beverage" :symbol "PBJ" :category :etf}
 
 ; Consumer Discretionary
- {:sector :consumer-services :name "Consumer Discretionary" :symbol "VCR" :also ["XLY"]}
+ {:sector :consumer-services :name "Consumer Discretionary" :symbol "VCR" :also ["XLY"] :category :etf}
 ;Consumer Discretionary Select Sector SPDR                XLY    0.26     yes         1369
 ;IShares DJ US Consumer Cyclical Sector                     IYC     0.48     yes             98
 ;Retail HOLDRS                                                           RTH     0*        yes         3388
@@ -26,29 +26,29 @@
 
 
 
- {:sector :consumer-services :name "Leisure and Entertainment" :symbol "PEJ"}
- {:sector :consumer-services :name "Media" :symbol "PBS"}
+ {:sector :consumer-services :name "Leisure and Entertainment" :symbol "PEJ" :category :etf}
+ {:sector :consumer-services :name "Media" :symbol "PBS" :category :etf}
 
 
- {:sector :energy :name "Oil Services" :symbol "IEZ" :also ["PXJ" "OIH" "XES"]}
- {:sector :energy :name "Oil & Gas Exploration and Production" :symbol "IEO" :also ["PXE" "XOP"]}
- {:sector :energy :name "WilderHill Clean Energy" :symbol "PBW"}
+ {:sector :energy :name "Oil Services" :symbol "IEZ" :also ["PXJ" "OIH" "XES"] :category :etf}
+ {:sector :energy :name "Oil & Gas Exploration and Production" :symbol "IEO" :also ["PXE" "XOP"] :category :etf}
+ {:sector :energy :name "WilderHill Clean Energy" :symbol "PBW" :category :etf}
 
- {:sector :financial :name "Regional Banks" :symbol "IAT" :also ["RKH" "KRE"]}
- {:sector :financial :name "Insurance" :symbol "IAK" :also ["PIC" "KIE"]}
-
-
- {:sector :financial :name "Broker-Dealers" :symbol "IAI" :also ["KCE"]}
+ {:sector :financial :name "Regional Banks" :symbol "IAT" :also ["RKH" "KRE"] :category :etf}
+ {:sector :financial :name "Insurance" :symbol "IAK" :also ["PIC" "KIE"] :category :etf}
 
 
-
- {:sector :healthcare :name "Biotech" :symbol "IBB" :also ["PBE" "BBH" "XBI" "FBT"]}
- {:sector :healthcare :name "Pharmaceuticals" :symbol "IHE" :also ["PJP" "PPH" "XPH"]}
- {:sector :healthcare :name "Medical Devices" :symbol " IHI"}
- {:sector :healthcare :name "Health Care Providers" :symbol "IHF"}
+ {:sector :financial :name "Broker-Dealers" :symbol "IAI" :also ["KCE"] :category :etf}
 
 
- {:sector :industrial :name "Aerospace & Defense" :symbol "ITA" :also ["PPA"]}
+
+ {:sector :healthcare :name "Biotech" :symbol "IBB" :also ["PBE" "BBH" "XBI" "FBT"] :category :etf}
+ {:sector :healthcare :name "Pharmaceuticals" :symbol "IHE" :also ["PJP" "PPH" "XPH"] :category :etf}
+ {:sector :healthcare :name "Medical Devices" :symbol " IHI" :category :etf}
+ {:sector :healthcare :name "Health Care Providers" :symbol "IHF" :category :etf}
+
+
+ {:sector :industrial :name "Aerospace & Defense" :symbol "ITA" :also ["PPA"] :category :etf}
 
 ; Industrials
 ;Industrial Select Sector SPDR        XLI      0.26     yes         2498
@@ -69,15 +69,15 @@
 
 
 
- {:sector :technology :name "Computer Hardware" :symbol "PHW" :also ["IAH"]}
- {:sector :technology :name "Internet - diversified" :symbol "HHH" :also ["IIH" "BHH" "FDN"]}
- {:sector :technology :name "Software" :symbol "IGV" :also ["PSJ" "SWH"]}
- {:sector :technology :name "Semiconductor" :symbol "IGW" :also ["PSI" "SMH" "XSD"]}
- {:sector :technology :name "Networking" :symbol "IGN" :also ["PXQ" "BDH"]}
- {:sector :technology :name "Nanotech Lux Nanotech" :symbol "PXN"}
+ {:sector :technology :name "Computer Hardware" :symbol "PHW" :also ["IAH"] :category :etf}
+ {:sector :technology :name "Internet - diversified" :symbol "HHH" :also ["IIH" "BHH" "FDN"] :category :etf}
+ {:sector :technology :name "Software" :symbol "IGV" :also ["PSJ" "SWH"] :category :etf}
+ {:sector :technology :name "Semiconductor" :symbol "IGW" :also ["PSI" "SMH" "XSD"] :category :etf}
+ {:sector :technology :name "Networking" :symbol "IGN" :also ["PXQ" "BDH"] :category :etf}
+ {:sector :technology :name "Nanotech Lux Nanotech" :symbol "PXN" :category :etf}
 
 
- {:sector :telecom :name "Wireless (including telcos)" :symbol "PXN" :also ["PTE" "WMH"]}
+ {:sector :telecom :name "Wireless (including telcos)" :symbol "PXN" :also ["PTE" "WMH"] :category :etf}
 
  ;
  ]

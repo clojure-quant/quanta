@@ -50,6 +50,7 @@
                "profiles/trateg/src"
                "profiles/warehouse/src"
                "profiles/data/src"
+               "profiles/tradingview/src"
 
                ; demo
                "profiles/demo/src/demo/algo"

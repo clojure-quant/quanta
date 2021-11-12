@@ -1,4 +1,4 @@
-[{:name "Bitcoin" :symbol "BTCUSD"}
- {:name "Etherium" :symbol "ETHUSD"}
+[{:name "Bitcoin" :symbol "BTCUSD" :category :crypto}
+ {:name "Etherium" :symbol "ETHUSD" :category :crypto}
  
  ]

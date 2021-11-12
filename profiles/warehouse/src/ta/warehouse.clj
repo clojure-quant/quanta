@@ -44,21 +44,24 @@
        (into [])))
 
 (defn symbollist->dict [l]
-  (let [s-name (juxt :symbol :name)
+  (let [s-name (juxt :symbol identity)
         dict (into {} (map s-name l))]
     dict))
 
 (defn init-lookup [names]
   (let [l (load-lists-full names)
         d (symbollist->dict l)]
-    {:lookup (fn [s]
-               (if-let [n (get d s)]
-                 n
-                 (str "Unknown-" s)))
+    {:instrument (fn [s]
+                   (get d s))
+     :name (fn [s]
+             (if-let [n (get d s)]
+               n
+               (str "Unknown-" s)))
      :search (fn [q]
                (let [q (lower-case q)]
                  (filter (fn [{:keys [name symbol]}]
-                           (includes? (lower-case name) q))
+                           (or (includes? (lower-case name) q)
+                               (includes? (lower-case symbol) q)))
 
                          l)))}))
 
@@ -70,7 +73,8 @@
   (-> (load-list-full "bonds")
       (map (juxt :symbol :name)))
 
-  (load-lists-full ["fidelity-select"
+  (load-lists-full ["crypto"
+                    "fidelity-select"
                     "bonds"
                     "commodity-industry"
                     "commodity-sector"
@@ -84,9 +88,12 @@
   (->  (load-lists-full ["fidelity-select" "bonds"])
        (symbollist->dict))
 
-  (let [{:keys [lookup search]} (init-lookup ["fidelity-select" "bonds" "test"])]
-    [(lookup "MSFT")
-     (search "PH")])
+  (let [{:keys [instrument name search]} (init-lookup ["crypto" "fidelity-select" "bonds" "test"])]
+    [(name "MSFT")
+     (instrument "MSFT")
+     ;(search "P")
+     (search "Bitc")
+     (search "BT")])
 
 ; 
   )

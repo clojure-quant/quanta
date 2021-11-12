@@ -1,3 +1,3 @@
-[{:symbol "MSFT" :name "Microsoft"}
- {:symbol "XOM" :name "Exxon Mobile"}
- {:symbol "SPY" :name "S&P 500"}]
+[{:symbol "MSFT" :name "Microsoft" :category :equity}
+ {:symbol "XOM" :name "Exxon Mobile" :category :equity}
+ {:symbol "SPY" :name "S&P 500" :category :etf}]

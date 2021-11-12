@@ -1,4 +1,4 @@
-(ns demo.warehouse.create-random
+(ns demo.data-import.create-random
   (:require
    [tablecloth.api :as tablecloth]
    [ta.warehouse.random :as r]

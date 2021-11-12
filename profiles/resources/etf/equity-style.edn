@@ -1,7 +1,7 @@
 [; Broad Market All
 ; {:cap :broad :style :all :name "IShares DJ US Total Market " :symbol "IYY"}
 ; {:cap :broad :style :all :name "Total Stock Market VIPERs" :symbol "VTI"}
- {:cap :broad :style :all :name "IShares Russell 3000" :symbol "IWV"}
+ {:cap :broad :style :all :name "IShares Russell 3000" :symbol "IWV" :category :etf}
 ; {:cap :broad :style :all :name "IShares S&P 1500" :symbol "ISI"}
 ; {:cap :broad :style :all :name "Fidelity NASDAQ Composite Tracking Stock" :symbol "NEQ"}
 ; {:cap :broad :style :all :name "Extended Market VIPERs" :symbol "VXF"}
@@ -10,12 +10,12 @@
 ; {:cap :broad :style :all :name "Dynamic MagniQuant" :symbol "PIQ"}
 
 ; Broad Market Growth
- {:cap :broad :style :growth :name "IShares Russell 3000 Growth" :symbol "IWZ"}
+ {:cap :broad :style :growth :name "IShares Russell 3000 Growth" :symbol "IWZ" :category :etf}
  ;{:cap :broad :style :growth :name "First Trust Growth" :symbol "FPX"}
  ;{:cap :broad :style :growth :name "First Trust Multi Cap Growth AlphaDEX" :symbol "FAD"}
  
 ; Broad Market Value
- {:cap :broad :style :value :name "IShares Russell 3000 Value" :symbol "IWW"}
+ {:cap :broad :style :value :name "IShares Russell 3000 Value" :symbol "IWW" :category :etf}
  ;{:cap :broad :style :value :name "First Trust Equity Income" :symbol "FDL"}
  ;{:cap :broad :style :value :name "First Trust Multi Cap Value AlphaDEX" :symbol "FAB"}
  
@@ -23,7 +23,7 @@
  ;{:cap :large :style :all :name "Diamond Trust Series 1" :symbol "DIA"}
  ;{:cap :large :style :all :name "NASDAQ 100 Index Tracking Stock" :symbol "QQQ"}
  ;{:cap :large :style :all :name "IShares S&P 100" :symbol "OEF"}
- {:cap :large :style :all :name "IShares S&P 500" :symbol "IVV"}
+ {:cap :large :style :all :name "IShares S&P 500" :symbol "IVV" :category :etf}
  ;{:cap :large :style :all :name "IShares NYSE 100" :symbol "NY"}
  ;{:cap :large :style :all :name "IShares NYSE Composite" :symbol "NYC"}
  ;{:cap :large :style :all :name "Standard and Poors Depository Receipts" :symbol "SPY"}
@@ -38,7 +38,7 @@
  ;{:cap :large :style :all :name "First Trust Large Cap Core AlphaDEX" :symbol "FEX"}
  
 ; Large-Cap Growth
- {:cap :large :style :growth :name "IShares S&P 500/Barra Growth" :symbol "IVW"}
+ {:cap :large :style :growth :name "IShares S&P 500/Barra Growth" :symbol "IVW" :category :etf}
  ;{:cap :large :style :growth :name "IShares Russell 1000 Growth" :symbol "IWD"}
  ;{:cap :large :style :growth :name "StreetTRACKS DJ Wilshire Large Cap Growth" :symbol "ELG"}
  ;{:cap :large :style :growth :name "Growth VIPERS" :symbol "VUG"}
@@ -48,7 +48,7 @@
 ; {:cap :large :style :growth :name "First Trust Large Cap Growth AlphaDEX" :symbol "FTC"}
 
 ; Large-Cap Value
- {:cap :large :style :value :name "IShares S&P 500/Barra Value" :symbol "IVE"}
+ {:cap :large :style :value :name "IShares S&P 500/Barra Value" :symbol "IVE" :category :etf}
  ;{:cap :large :style :value :name "IShares Russell 1000 Value" :symbol "IWD"}
  ;{:cap :large :style :value :name "StreetTRACKS DJ Wilshire Large Cap Value" :symbol "ELV"}
  ;{:cap :large :style :value :name "Value VIPERS" :symbol "VTV"}
@@ -59,7 +59,7 @@
  ;{:cap :large :style :value :name "First Trust Large Cap Value AlphaDEX" :symbol "FTA"}
 
  ; Mid Cap All
- {:cap :mid :style :all :name "IShares S&P MidCap 400" :symbol "IJH"}
+ {:cap :mid :style :all :name "IShares S&P MidCap 400" :symbol "IJH" :category :etf}
 ; {:cap :mid :style :all :name "S&P Midcap 400 Depository Receipts" :symbol "MDY"}
 ; {:cap :mid :style :all :name "IShares Russell Midcap" :symbol "IWR"}
 ; {:cap :mid :style :all :name "Mid-Cap VIPERS" :symbol "VO"}
@@ -69,7 +69,7 @@
 ; {:cap :mid :style :all :name "First Trust Mid Cap Core AlphaDEX" :symbol "FNX"}
 
 ; Mid-Cap Growth
- {:cap :mid :style :growth :name "IShares S&P MidCap 400/Barra Growth" :symbol "IJK"}
+ {:cap :mid :style :growth :name "IShares S&P MidCap 400/Barra Growth" :symbol "IJK" :category :etf}
 ; {:cap :mid :style :growth :name "IShares Russell MidCap Growth" :symbol "IWP"}
 ; {:cap :mid :style :growth :name "Morningstar Mid Growth" :symbol "JKH"}
 ; {:cap :mid :style :growth :name "Dynamic Mid Growth " :symbol "PWJ"}
@@ -77,7 +77,7 @@
 ; {:cap :mid :style :growth :name "Rydex Midcap 400 Growth" :symbol "RFG"}
 
 ; Mid-Cap Value
- {:cap :mid :style :value :name "IShares S&P MidCap 400/Barra Value" :symbol "IJJ"}
+ {:cap :mid :style :value :name "IShares S&P MidCap 400/Barra Value" :symbol "IJJ" :category :etf}
 ; {:cap :mid :style :value :name "IShares Russell MidCap Value" :symbol "IWS"}
 ; {:cap :mid :style :value :name "Morningstar Mid Value" :symbol "JKI"}
 ; {:cap :mid :style :value :name "Dynamic Mid Value" :symbol "PWP"}
@@ -85,7 +85,7 @@
 ; {:cap :mid :style :value :name "Rydex Midcap 400 Value" :symbol "RFV"}
 
  ; Small-Cap All
- {:cap :small :style :all :name "IShares S&P Small Cap 600" :symbol "IJR"}
+ {:cap :small :style :all :name "IShares S&P Small Cap 600" :symbol "IJR" :category :etf}
  ;{:cap :small :style :all :name "IShares Russell 2000" :symbol "IWM"}
  ;{:cap :small :style :all :name "Small-cap VIPERS" :symbol "VB"}
  ;{:cap :small :style :all :name "Morningstar SmallCore" :symbol "JKJ"}
@@ -96,7 +96,7 @@
  ;{:cap :small :style :all :name "First Trust Small Cap Core AlphaDEX" :symbol "FYX"}
 
 ; Small-Cap Growth
- {:cap :small :style :growth :name "IShares S&P SmallCap 600/Barra Growth" :symbol "IJT"}
+ {:cap :small :style :growth :name "IShares S&P SmallCap 600/Barra Growth" :symbol "IJT" :category :etf}
  ;{:cap :small :style :growth :name "IShares Russell 2000 Growth" :symbol "IWO"}
  ;{:cap :small :style :growth :name "StreetTRACKS DJ SmallCap Growth" :symbol "DSG "}
  ;{:cap :small :style :growth :name "Small-Cap Growth VIPERS" :symbol "VBK"}
@@ -105,7 +105,7 @@
  ;{:cap :small :style :growth :name "Rydex Small Cap Growth" :symbol "RZG"}
 
 ; Small-Cap Value
- {:cap :small :style :value :name "IShares S&P SmallCap 600/Barra Value" :symbol "IJS"}
+ {:cap :small :style :value :name "IShares S&P SmallCap 600/Barra Value" :symbol "IJS" :category :etf}
  ;{:cap :small :style :value :name "IShares Russell 2000 Value" :symbol "IWN"}
  ;{:cap :small :style :value :name "StreetTRACKS DJ SmallCap Value" :symbol "DSV"}
  ;{:cap :small :style :value :name "Small-Cap Value VIPERS" :symbol "VBR"}
@@ -116,9 +116,9 @@
 ; Micro-Cap All
 ; {:cap :micro :style :all :name "First Trust MicroCap" :symbol "FDM"}
 ; {:cap :micro :style :all :name "Zacks Micro Cap" :symbol "PZI"}
- {:cap :micro :style :all :name "iShares Microcap" :symbol "IWC"}
+ {:cap :micro :style :all :name "iShares Microcap" :symbol "IWC" :category :etf}
 ; {:cap :micro :style :all :name "FT Dow Jones Select Microcap" :symbol "FDM"}
 
 ; Style/International
- {:cap :europe :style :value :name "IShares MSCI EAFE Value" :symbol "EFV"}
- {:cap :europe :style :value :name "IShares MSCI EAFE Growth" :symbol "EFG"}]
+ {:cap :europe :style :value :name "IShares MSCI EAFE Value" :symbol "EFV" :category :etf}
+ {:cap :europe :style :value :name "IShares MSCI EAFE Growth" :symbol "EFG" :category :etf}]

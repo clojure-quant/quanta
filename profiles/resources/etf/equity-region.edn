@@ -1,8 +1,8 @@
 [; Broad Based – International
 
- {:name "Vanguard FTSE All-World Ex U.S." :symbol "VEU"}
+ {:name "Vanguard FTSE All-World Ex U.S." :symbol "VEU" :category :etf}
 
- {:name "SPDR S&P Emerging Markets" :symbol "GMM"}
+ {:name "SPDR S&P Emerging Markets" :symbol "GMM" :category :etf}
 ;{:name "BLDRS Development Markets 100 ADR" :symbol "ADRD"}
 ;{:name "IShares MSCI Emerging Markets Free" :symbol "EEM"}
 ;{:name "BLDRS Emerging Markets 50 ADR" :symbol "ADRE"}
@@ -19,7 +19,7 @@
 
 
 ;Europe - Country
- {:name "IShares S&P Europe 350" :symbol "IEV"}
+ {:name "IShares S&P Europe 350" :symbol "IEV" :category :etf}
 ; {:name "resco Dow Jones Euro STOXX 50" :symbol "FEZ"}
 ; {:name "Fresco Dow Jones STOXX 50" :symbol "FEU"}
 ; {:region :europe :name "EMU" :symbol "EZU"}
@@ -29,18 +29,18 @@
 ; {:name "IShares MSCI EMU" :symbol "EZU"}
 ; {:name "Vanguard European VIPERS" :symbol "VGK"}
 
- {:name "SPDR Emerging Europe" :symbol "GUR"}
+ {:name "SPDR Emerging Europe" :symbol "GUR" :category :etf}
 ; {:name "SPDR Emerging Middle East and Africa" :symbol "GAF"}
 ; {:name "Dynamic Europe " :symbol "PEH"}
 
 
 ; Americas -Country
- {:name "SPDR Emerging Latin America" :symbol "GML"}
+ {:name "SPDR Emerging Latin America" :symbol "GML" :category :etf}
  ;{:name "IShares S&P Latin America 40" :symbol "ILF"}
 
 ; Asia - Country
  ;{:name "SPDR S&P Emerging Asia Pacific" :symbol "GMF"}
- {:name "IShares MSCI Pacific ex-Japan" :symbol "EPP"}
+ {:name "IShares MSCI Pacific ex-Japan" :symbol "EPP" :category :etf}
  ;{:name "BLDRS Asia 50 ADR" :symbol "ADRA"}
  ;{:region :asia :name "Vanguard Pacific VIPERS" :symbol "EVPL"}
  ;{:region :asia :name "First Trust Chindia" :symbol "EFCI"}

@@ -1,4 +1,4 @@
-(ns demo.warehouse.import-alphavantage
+(ns demo.data-import.import-alphavantage
   (:require
    [tech.v3.dataset :as tds]
    [ta.warehouse :as wh]
@@ -48,6 +48,20 @@
 
 (def fidelity-symbols
   (wh/load-list "fidelity-select"))
+
+(def tradingview-symbols
+
+  (->> (wh/load-lists-full ["fidelity-select"
+                            "bonds"
+                            "commodity-industry"
+                            "commodity-sector"
+                            "currency"
+                            "equity-region"
+                            "equity-region-country"
+                            "equity-sector-industry"
+                            "equity-style"
+                            "test"])
+       (map :symbol)))
 
 ; ********************************************************************************************+
 (comment

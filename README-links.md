@@ -1,9 +1,5 @@
 
-dataset
-https://techascent.github.io/tech.ml.dataset/walkthrough.html
 
-tablecloth
-https://scicloj.github.io/tablecloth/index.html#Strategies
 
 https://quantocracy.com/
 https://www.quantconnect.com/market/alpha/e219bc8c86278eb3d2d0d8ab6/v1.1
@@ -129,3 +125,6 @@ https://github.com/joshuaulrich/quantmod
 
 hurst index
 https://r-forge.r-project.org/scm/viewvc.php/pkg/PerformanceAnalytics/R/HurstIndex.R?view=markup&root=returnanalytics
+
+
+https://github.com/cgrand/xforms

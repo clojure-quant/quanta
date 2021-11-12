@@ -1,19 +1,19 @@
-[{:name "IShares Lehman 1-3 Year Treasury" :symbol "SHY"}
- {:name "IShares Lehman 7-10 Year Treasury" :symbol "IEF"}
- {:name "IShares Lehman 20+ Year Treasury" :symbol "TLT"}
+[{:name "IShares Lehman 1-3 Year Treasury" :symbol "SHY" :category :etf}
+ {:name "IShares Lehman 7-10 Year Treasury" :symbol "IEF" :category :etf}
+ {:name "IShares Lehman 20+ Year Treasury" :symbol "TLT" :category :etf}
  
- {:name "Ishares Lehman Aggregate" :symbol "AGG"}
- {:name "IShares Lehman TIPS" :symbol "TIP"}
+ {:name "Ishares Lehman Aggregate" :symbol "AGG" :category :etf}
+ {:name "IShares Lehman TIPS" :symbol "TIP" :category :etf}
  
 ; {:name "Municipials" :symbol "MUB"}
 ; {:name "Mortgage" :symbol "MBB"}
  
  ; Corporate
- {:name "IShares GS InvesTop Corporate" :symbol "LQD"}
- {:name "IShares iBoxx High Yield Corporate Bond" :symbol "HYG"}
+ {:name "IShares GS InvesTop Corporate" :symbol "LQD" :category :etf}
+ {:name "IShares iBoxx High Yield Corporate Bond" :symbol "HYG" :category :etf}
 
 ; International
- {:name "Emerging Market Bonds" :symbol "ESD"}
+ {:name "Emerging Market Bonds" :symbol "ESD" :category :etf}
  
 
  ;{:name "iShares Lehman Short Term Treasury Bond" :symbol "SHV"}
