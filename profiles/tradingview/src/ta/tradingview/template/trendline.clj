@@ -1,10 +1,7 @@
-(ns ta.tradingview.template.trendline
-  (:require
-   [nano-id.core :refer [nano-id]]))
+(ns ta.tradingview.template.trendline)
 
-(defn trendline [{:keys [symbol a-p b-p a-t b-t]}]
+(def trendline 
   {:type "LineToolTrendLine"
-   :id (nano-id 6)
    :ownerSource "pOQ6pA"
    :linkKey "IPJgHK9obb7d"
    :zorder 2
@@ -40,5 +37,5 @@
            :extendLeft false
            :fixedSize false
            }
-   :points [{:time_t a-t, :offset 0, :price a-p}
-            {:time_t b-t, :offset 0, :price b-p}]})
+   :points [{:time_t 0, :offset 0, :price 0}
+            {:time_t 0, :offset 0, :price 0}]})

@@ -10,10 +10,8 @@
    [ta.tradingview.template.mainseries :refer [template-mainseries]]
    [ta.tradingview.template.study :refer [template-study]]
    [ta.tradingview.template.sessions :refer [template-sessions]]
-   [ta.tradingview.template.chart :refer [pane-template chart-template]]
-   [ta.tradingview.template.trendline :as tl]
-   [ta.tradingview.template.pitchfork :as pf]
-   [ta.tradingview.template.gann :as g]))
+   [ta.tradingview.template.chart :refer [chart-template]]
+   [ta.tradingview.template.pane :refer [pane-template]]))
 
 (defn create [template]
   (assoc template
@@ -25,6 +23,11 @@
       create
       (assoc-in [:state :shortName] symbol)
       (assoc-in [:state :symbol] symbol)))
+
+(defn create-study [template symbol points]
+  (-> (create-symbol template symbol)
+      (assoc :points points)
+      ))
 
 (defn make-pane [source-main source-study #_source-sessions source-drawings]
   (let [id-main (:id source-main)
@@ -70,16 +73,8 @@
     (->> (chart-file client-id user-id symbol name pane)
          (save-chart client-id user-id chart-id))))
 
-;; add templates to ns
-
-(def trendline tl/trendline)
-(def pitchfork pf/pitchfork)
-(def gann g/gann)
-(def gann-vertical g/gann-vertical)
-
 (defn dt [s]
   (-> s tick/date-time datetime->epoch-second))
-
 
 ;; debugging
 
@@ -113,93 +108,12 @@
      :r (differ/diff c g)}))
 
 
-
-
-
 (comment
   (create template-study)
   (create template-sessions)
   (create-symbol template-mainseries "MSFT")
 
   (make-chart 77 77 123 "MSFT" "test-empty-MSFT" [])
-
-  (def id-generated 123)
-
-  (make-chart 77 77 id-generated "MSFT" "test-empty-MSFT"
-              [(trendline {:symbol "MSFT"
-                           :a-p 300.0
-                           :b-p 330.0
-                           :a-t (dt "2021-08-04T00:00:00")
-                           :b-t (dt "2021-11-04T00:00:00")})])
-
-  (def id-compare 1636726545)
-
-  ; test: chart-meta-data
-  (-> [(-> (load-chart 77 77 id-generated)  (dissoc :charts :timeScale :legs))
-       (-> (load-chart 77 77 id-compare)  (dissoc :charts :timeScale :legs))]
-      print-table)
-
-  ; test: sources list
-  (-> (load-chart 77 77 id-generated) sources-summary)
-  (-> (load-chart 77 77 id-compare)   sources-summary)
-
-  ; test: mainseries keys
-  (-> (load-chart 77 77 id-generated)       (filter-type "MainSeries") keys-sorted)
-  (-> (load-chart 77 77 id-compare)  (filter-type "MainSeries") keys-sorted)
-
-   ; test: mainseries state
-  (-> (load-chart 77 77 id-generated)       (filter-type "MainSeries") source-state-summary)
-  (-> (load-chart 77 77 id-compare)  (filter-type "MainSeries") source-state-summary)
-
-
-  ; test mainseries differences (in both ways)
-  (differ/diff
-   (-> (load-chart 77 77 id-generated) (filter-type "MainSeries"))
-   (-> (load-chart 77 77 id-compare)  (filter-type "MainSeries")))
-
-  (differ/diff
-   (-> (load-chart 77 77 id-compare)  (filter-type "MainSeries"))
-   (-> (load-chart 77 77 id-generated) (filter-type "MainSeries")))
-
-
-  ; test study differences (in both ways)
-  (differ/diff
-   (-> (load-chart 77 77 id-generated) (filter-type "Study"))
-   (-> (load-chart 77 77 id-compare)  (filter-type "Study")))
-
-  (differ/diff
-   (-> (load-chart 77 77 id-compare)  (filter-type "Study"))
-   (-> (load-chart 77 77 id-generated) (filter-type "Study")))
-
-    ; test study differences (in both ways)
-  (diff-summary
-   #(dissoc % :id :charts :symbol_type :exchange :timestamp :symbol :name :short_name :publish_request_id :legs)
-   id-generated id-compare)
-
-   ;; no differences in mainseries
-  (diff-summary
-   #(filter-type % "MainSeries")
-   id-generated id-compare)
-
-   ;; no differences in study (except for ids)
-  (diff-summary
-   #(filter-type % "Study")
-   id-generated id-compare)
-
-   ;; no differences in except ids of sources
-  (diff-summary
-   #(-> (get-pane %) (dissoc :sources))
-   id-generated id-compare)
-
-  (diff-summary
-   #(dissoc % :symbol :name :short_name :publish_request_id :legs :id :exchange :timestamp :symbol_type)
-         ;identity
-   id-generated id-compare)
-
-
-  (gann-vertical 1000.0 200.0 5 1511879400 1515076200)
-
-
 
 
   (-> (load-chart 77 77 1636558275) ; AMZN: Pitchfork   MSFT: LineTrend

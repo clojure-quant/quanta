@@ -36,7 +36,15 @@ In `profiles/demo`
 
 ## Tradingview Chart Study maker
 
-`clj -X:make-charts`
+Goto tradingview directory: `cd profiles/tradingview`
+
+`clj -X:make-demo-charts`
+
+Charts are in profiles/tradingview/tvdb
+
+To see demo charts start `clj -X:goldly-docs` (in tradingview directory).
+Charts are in developer tools / pages / tradingview
+
 
 
 ## Develop with goldly docs

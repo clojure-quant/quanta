@@ -66,8 +66,8 @@
                                                 :url-root "/api/rdocument/file/"}
                                    :collections {:demo [:clj "demo/notebook/"]}}}}}
 
-  :make-charts {:extra-deps {org.pinkgorilla/webly {:mvn/version "0.3.50"}} ; log config
-                :exec-fn  demo.chartmaker/make-ganns}
+  :make-demo-charts {:extra-deps {org.pinkgorilla/webly {:mvn/version "0.3.50"}} ; log config
+                :exec-fn  demo.chartmaker/make-demo-charts}
 
 ;
   }}

@@ -1,6 +1,4 @@
-(ns ta.tradingview.template.study
-   (:require
-    [nano-id.core :refer [nano-id]]))
+(ns ta.tradingview.template.study)
 
 
 (def template-study 

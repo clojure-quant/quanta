@@ -1,15 +1,13 @@
-(ns ta.tradingview.template.pitchfork
-   (:require
-    [nano-id.core :refer [nano-id]]))
+(ns ta.tradingview.template.pitchfork)
 
 
-(defn pitchfork [s]
+(def pitchfork 
   {:type "LineToolPitchfork"
-   :id (nano-id 6) ;  "xy6qRv"
+   :id "xy6qRv"
    :linkKey "IaufLUGXhE6H"
    :ownerSource "pOQ6pA"
    :zorder -1
-   :state {:symbol s ; "NasdaqNM:AMZN"
+   :state {:symbol "NasdaqNM:AMZN"
            :lastUpdateTime 1636558442000
            :clonable true
            :frozen false
