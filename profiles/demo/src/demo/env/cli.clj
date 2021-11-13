@@ -52,4 +52,10 @@
 
 (comment
   (run {:task :alphavantage-import
-        :list "test"}))
+        :list "test"})
+
+  (run {:task :alphavantage-import
+        :list "currency-spot"})
+
+;  
+  )

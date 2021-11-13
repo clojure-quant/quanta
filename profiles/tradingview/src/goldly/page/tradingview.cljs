@@ -18,7 +18,7 @@
     ; new Datafeeds.UDFCompatibleDatafeed ()
     (js/Datafeeds.UDFCompatibleDatafeed. url)))
 
-(def tv-options {:debug true ; false
+(def tv-options-default {:debug true ; false
                  :symbol "BTCUSD" ; DAX Index"
                  :interval "D"
                  :library_path "/r/tradingview/charting_library/"
@@ -46,23 +46,27 @@
 		            ; 	}
                  })
 
-(defn show-tradingview-widget [id feed-kw]
-  (let [datafeed (get-tradingview-datafeed feed-kw) ; :demo
-        tv-options (assoc tv-options 
-                          :datafeed datafeed
+(defn show-tradingview-widget [id {:keys [feed options]
+                                   :or {options {}}}]
+  (let [datafeed (get-tradingview-datafeed feed) ; :demo
+        tv-options-data  {:datafeed datafeed
                           :container_id id
-                          :charts_storage_url (feed-kw storage-urls))
+                          :charts_storage_url (feed storage-urls)}
+        tv-options (merge tv-options-default options tv-options-data)
         tv-options (clj->js tv-options {:keyword-fn name})]
     ; new TradingView.widget ({});
     (js/TradingView.widget. tv-options)))
 
-(defn tradingview-chart [feed-config-kw]
+(defn tradingview-chart [options]
   [with-js
    {(browser-defined? "TradingView") "/r/tradingview/charting_library.min.js" ; js/TradingView
     (browser-defined? "Datafeeds")   "/r/tradingview/UDF/bundle.js"} ; js/Datafeeds
      ;[:h1 "tv loaded!"]
-     [component {:start show-tradingview-widget
-                 :config feed-config-kw}]
+     [component {:style {:height "100%"
+                         :width "100%"
+                         }
+                 :start show-tradingview-widget
+                 :config options}]
      
       ;
      ])
@@ -73,6 +77,9 @@
 
 
 (defn tradingview-page [route]
-  [tradingview-chart :ta])
+  [:div.w-screen.h-screen.m-0.p-5
+  [tradingview-chart {:feed :ta 
+                      :options {:autosize true}
+                      }]])
 
 (add-page tradingview-page :tradingview)

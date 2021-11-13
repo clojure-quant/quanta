@@ -28,6 +28,7 @@
                          "algo/table" :algo/table
                          "algo/chart" :algo/chart
                          ; gann
+                         "tradingview" :tradingview
                          "gann" :gann
                          ;test
                          "error" :user/error

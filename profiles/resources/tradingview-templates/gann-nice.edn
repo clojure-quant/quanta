@@ -147,7 +147,7 @@
          :lastUpdateTime 1636805120900,
          :interval "D",
          :visible true,
-         :frozen false,
+         :frozen true,
          :reverse false},
  :points [{:time_t 1622019600,
            :offset 0,

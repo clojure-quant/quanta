@@ -1,0 +1,12 @@
+[{:name "EURUSD" :symbol "EURUSD" :category :fx}
+ {:name "USDJPY" :symbol "USDJPY" :category :fx}
+ {:name "EURJPY" :symbol "EURJPY" :category :fx}
+ {:name "GBPUSD" :symbol "GBPUSD" :category :fx}
+ {:name "GBPJPY" :symbol "GBPJPY" :category :fx}
+
+ {:name "AUDUSD" :symbol "AUDUSD" :category :fx}
+ {:name "NZDUSD" :symbol "NZDUSD" :category :fx}
+
+]
+
+

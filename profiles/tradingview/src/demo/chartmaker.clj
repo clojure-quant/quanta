@@ -43,19 +43,6 @@
                    :bp 330.0 :bt (dt "2021-11-04T00:00:00")})])))
 
 
-
-(defn make-gann-vert []
-  (let [s "MSFT"
-        chart-name (str "auto-test-gann-vert " s)
-        client-id 77
-        user-id 77
-        chart-id 102]
-    (make-chart client-id user-id chart-id s chart-name
-                (let [a-t (dt "2021-08-04T00:00:00")
-                      d-t 3196800]
-                  (concat (gann-vertical s 250.0 200.0 20 a-t (+ a-t d-t))
-                          (gann-vertical s 250.0 400.0 10 a-t (+ a-t (* 2 d-t))))))))
-
 (defn make-pitchfork []
   (let [s "MSFT"
         chart-name (str "auto-test-pitchfork " s)
@@ -69,14 +56,25 @@
                    :bp 330.0  :bt (dt "2021-11-04T00:00:00")
                    :cp 250.0  :ct (dt "2021-09-04T00:00:00")})])))
 
+(defn make-gann-vert []
+  (let [s "MSFT"
+        chart-name (str "auto-test-gann-vert " s)
+        client-id 77
+        user-id 77
+        chart-id 102]
+    (make-chart client-id user-id chart-id s chart-name
+                (let [a-t (dt "2021-08-04T00:00:00")
+                      d-t 3196800]
+                  (concat (gann-vertical s 250.0 200.0 20 a-t (+ a-t d-t))
+                          (gann-vertical s 250.0 400.0 10 a-t (+ a-t (* 2 d-t))))))))
 
 
 (defn make-demo-charts [& _]
   (make-trendline)
   (make-gann)
+  (make-pitchfork)
   (make-gann-vert)
-  (make-pitchfork))
-
+  )
 
 
 (comment

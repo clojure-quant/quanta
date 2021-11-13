@@ -7,17 +7,16 @@
    [ta.gann.gann :refer [gann-symbols print-boxes]]
    [ta.gann.window :refer [get-gann-boxes]]))
 
-(defn gann-box->tradingview-gann-spec [{:keys [symbol ap bp at bt]}]
-  {:symbol symbol
-   :ap (Math/pow 10 ap)
-   :bp (Math/pow 10 bp)
-   :at (->epoch-second at)
-   :bt (->epoch-second bt)})
-
-(defn gann-box->tradingview-study [box]
-  (->  box
-       gann-box->tradingview-gann-spec
-       gann))
+(defn gann-box->tradingview-study [{:keys [symbol ap bp at bt]}]
+  (let [ap (Math/pow 10 ap)
+        bp (Math/pow 10 bp)
+        at (->epoch-second at)
+        bt (->epoch-second bt)
+        boxes [{:symbol symbol :ap ap :bp bp :at at :bt bt}
+               {:symbol symbol :ap bp :bp ap :at at :bt bt}
+               {:symbol symbol :ap ap :bp bp :at bt :bt at}
+               {:symbol symbol :ap bp :bp ap :at bt :bt at}]]
+    (map gann boxes)))
 
 (defn determine-wh [s]
   (case s
@@ -41,13 +40,14 @@
     (->>
      boxes
      (map gann-box->tradingview-study)
+     (apply concat)
      (into [])
      (make-chart client-id user-id chart-id s chart-name))))
 
 (comment
 
   ; create one boxes for one symbol
-  (make-boxes-symbol "BTCUSD" "2005-01-01" "2021-12-31")
+  (make-boxes-symbol "BTCUSD" "2005-01-01" "2022-06-30")
 
 ;
   )
@@ -55,7 +55,7 @@
   (let [client-id 77
         user-id 77
         chart-id 202
-        chart-name "autogen gann-all-symbols"
+        chart-name (str "autogen gann " (count symbols) " symbols")
         boxes-for-symbol (fn [s]
                            (get-gann-boxes {:symbol s
                                             :wh (determine-wh s)
@@ -65,6 +65,7 @@
          (map boxes-for-symbol)
          (apply concat)
          (map gann-box->tradingview-study)
+         (apply concat)
          (into [])
          (make-chart client-id user-id chart-id (first symbols) chart-name))))
 
@@ -76,7 +77,7 @@
   (make-boxes-symbols  "2005-01-01" "2022-03-31"
                        ["BTCUSD"])
 
-  (make-boxes-all  "2005-01-01" "2022-01-01")
+  (make-boxes-all  "2005-01-01" "2022-04-01")
 
  ; 
   )
