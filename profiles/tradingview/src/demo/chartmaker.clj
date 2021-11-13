@@ -1,9 +1,20 @@
 (ns demo.chartmaker
   (:require
-   [demo.env.config] ; side effects
-   [reval.persist.edn] ; side-effects
-   [ta.tradingview.chartmaker :refer [make-chart dt]]
-   [ta.tradingview.template :refer [trendline pitchfork gann gann-vertical]]))
+   [modular.persist.edn] ; side-effects
+   [modular.config :as config]
+   [ta.tradingview.chart.maker :refer [make-chart]]
+   [ta.tradingview.chart.template :refer [dt trendline pitchfork gann gann-vertical]]))
+
+
+(config/set!
+ :ta
+ {:warehouse {:list "../resources/symbollist/"
+              :series  {:crypto "../db/crypto/"
+                        :stocks "../db/stocks/"
+                        :random "../db/random/"
+                        :shuffled  "../db/shuffled/"}}
+  :tradingview {:charts-path "../resources/tradingview-charts/"
+                :template-path "src/ta/tradingview/chart/template/"}})
 
 
 (defn make-trendline []
@@ -70,7 +81,7 @@
 
 (comment
 
-  (cm/make-chart 77 77 123 "AMZN" "test - empty chart" [])
+  (make-chart 77 77 123 "AMZN" "test - empty chart" [])
 
   (make-trendline)
   (make-gann)

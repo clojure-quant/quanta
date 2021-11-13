@@ -13,41 +13,31 @@
              :main-opts ["-m" "antq.core"]}
 
   :goldly-docs
-  {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.3.76"}
+  {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.3.82"}
                 org.apache.arrow/arrow-vector {:mvn/version  "2.0.0"
                                                :exclusions [commons-codec/commons-codec]}
                 org.apache.arrow/arrow-memory-unsafe {:mvn/version "2.0.0"}}
    :exec-fn goldly.app/goldly-server-run!
    :exec-args {:profile "jetty"
-               :config "goldly-ta.edn"}}
+               :config "ta-config.edn"}}
 
 
 
   ;; data import
 
-  :alphavantage-import {:extra-deps {org.pinkgorilla/webly {:mvn/version "0.3.50"}} ; log config
-                        :exec-fn demo.env.cli/run-alphavantage-import-initial
-                        ;:exec-args {:symbol-list "test" ; "fidelity-select"
-                        ;            }
-                        }
-
-  :create-random-data {:extra-deps {org.pinkgorilla/webly {:mvn/version "0.3.50"}} ; log config
-                       :exec-fn  demo.env.cli/task-create-random}
-
-  :bybit-import-initial {:extra-deps {org.pinkgorilla/webly {:mvn/version "0.3.50"}} ; log config
-                         :exec-fn  demo.env.cli/task-bybit-import-initial}
-
-  :bybit-import-append {:extra-deps {org.pinkgorilla/webly {:mvn/version "0.3.50"}} ; log config
-                        :exec-fn  demo.env.cli/run-bybit-import-append}
+  :run {:exec-fn demo.env.cli/run
+        :exec-args {:task :bybit-import
+                    :symbol-list "test" ; "fidelity-select"
+                    }}
 
 
   ;; strategies
 
 
-  :bollinger-strategy {:extra-deps {org.pinkgorilla/webly {:mvn/version "0.3.50"}} ; log config
+  :bollinger-strategy {:extra-deps {org.pinkgorilla/modular {:mvn/version "0.0.4"}} ; log config
                        :exec-fn demo.viktor.task/task-bollinger-study}
 
-  :bollinger-optimizer {:extra-deps {org.pinkgorilla/webly {:mvn/version "0.3.50"}} ; log config
+  :bollinger-optimizer {:extra-deps {org.pinkgorilla/modular {:mvn/version "0.0.4"}} ; log config
                         :exec-fn demo.viktor.task/task-bollinger-optimizer}
 
 ;

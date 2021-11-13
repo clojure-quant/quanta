@@ -1,0 +1,16 @@
+
+  {:minutesFrom 1
+   :daysTo 366
+   :secondsTo 59
+   :hoursTo 24
+   :months true
+   :days true
+   :seconds true
+   :daysFrom 1
+   :secondsFrom 1
+   :hours true
+   :ranges true
+   :hoursFrom 1
+   :minutes true
+   :minutesTo 59
+   :weeks true}

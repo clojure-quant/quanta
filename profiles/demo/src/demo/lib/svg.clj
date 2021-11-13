@@ -1,18 +1,19 @@
 (ns demo.lib.svg
-  (:require [svg-clj.utils :as utils]
-            [svg-clj.elements :as el]
-            [svg-clj.transforms :as tf]
-            [svg-clj.composites :as comp :refer [svg]]
-            [svg-clj.path :as path]
-            [svg-clj.parametric :as p]
-            [svg-clj.layout :as lo]
-            [svg-clj.tools :as tools]
-            [ta.data.date :refer [parse-date]]
-            [cljc.java-time.duration :as duration]
-            [tick.core :as tick :refer [>>]]
-            [tick.alpha.interval :as t.i]
-            [goldly.scratchpad :refer [show! show-as clear!]]
-            [wadogo.scale :refer [scale]]))
+  (:require
+   [svg-clj.utils :as utils]
+   [svg-clj.elements :as el]
+   [svg-clj.transforms :as tf]
+   [svg-clj.composites :as comp :refer [svg]]
+   [svg-clj.path :as path]
+   [svg-clj.parametric :as p]
+   [svg-clj.layout :as lo]
+   [svg-clj.tools :as tools]
+   [ta.helper.date :refer [parse-date]]
+   [cljc.java-time.duration :as duration]
+   [tick.core :as tick :refer [>>]]
+   [tick.alpha.interval :as t.i]
+   [goldly.scratchpad :refer [show! show-as clear!]]
+   [wadogo.scale :refer [scale]]))
 
 ;; SVG is XML based, which means that every element is available within the SVG DOM. 
 ;; You can attach JavaScript event handlers for an element.

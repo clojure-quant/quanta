@@ -1,6 +1,8 @@
 (ns demo.env.cli
   (:require
-   [webly.log]
+   [modular.log :refer [timbre-config!]]
+   [taoensso.timbre :refer [trace debug info warnf error]]
+   [ta.warehouse :refer [load-list]]
    [demo.env.config] ; side-effects
    [demo.data-import.import-alphavantage :as av]
    [demo.data-import.import-bybit :as bybit]
@@ -8,7 +10,7 @@
   (:gen-class))
 
 (defn log-config! []
-  (webly.log/timbre-config!
+  (timbre-config!
    {:timbre-loglevel
     [[#{"pinkgorilla.nrepl.client.connection"} :info]
      [#{"org.eclipse.jetty.*"} :info]
@@ -17,25 +19,28 @@
 
 ;; tasks (for cli use)
 
-(defn run-alphavantage-import-initial [& _]
+(defn run  [{:keys [task list] :as config}]
   (log-config!)
-  ;(av/get-alphavantage-daily av/alphavantage-test-symbols)
-  ;(av/get-alphavantage-daily av/fidelity-symbols)
-  (av/get-alphavantage-daily av/tradingview-symbols))
 
-(defn run-bybit-import-initial [& _]
-  (log-config!)
-  (bybit/init-bybit-daily)
-  (bybit/init-bybit-15))
+  (case task
+    :bybit-initial (do (bybit/init-bybit-daily)
+                       (bybit/init-bybit-15))
 
-(defn run-bybit-import-append [& _]
-  (log-config!)
-  (bybit/append-bybit-daily)
-  (bybit/append-bybit-15))
+    :bybit-append (do (bybit/append-bybit-daily)
+                      (bybit/append-bybit-15))
 
-(defn run-create-random [& _]
-  (log-config!)
-  (rr/create-crypto-shuffled))
+    :alphavantage-import
+    (if list
+      (let [_ (info "alphavantage-import list: " list)
+            symbols (load-list list)]
+        (av/get-alphavantage-daily symbols))
+      (av/get-alphavantage-daily av/tradingview-symbols)
+          ;(av/get-alphavantage-daily av/alphavantage-test-symbols)
+          ;(av/get-alphavantage-daily av/fidelity-symbols)
+      )
+    :shuffle  (rr/create-crypto-shuffled)
+
+    (error "task not found: " task)))
 
 (defn -main
   ([]
@@ -44,3 +49,7 @@
 ;  (-main "currency")
 
 ;  (-main "fidelity-select")
+
+(comment
+  (run {:task :alphavantage-import
+        :list "test"}))

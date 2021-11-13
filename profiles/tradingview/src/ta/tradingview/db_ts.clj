@@ -8,9 +8,9 @@
    [tick.core :as tick]
    [cljc.java-time.instant :as ti]
    [clojure.java.io :as io]
-   [reval.persist.protocol :refer [save loadr]]
-   [reval.helper.id :refer [guuid-str]]
-   [ta.tradingview.config :refer [tv-config]]))
+   [modular.persist.protocol :refer [save loadr]]
+   [modular.helper.id :refer [guuid-str]]
+   [modular.config :refer [get-in-config]]))
 
 
 (defn now-epoch []
@@ -54,7 +54,7 @@
 ;; chart
 
 (defn filename-chart  [client-id user-id chart-id]
-  (str (:db-path tv-config) "chart_" client-id "_" user-id "_" chart-id ".edn"))
+  (str (get-in-config [:ta :tradingview :charts-path]) "chart_" client-id "_" user-id "_" chart-id ".edn"))
 
 (defn save-chart
   [client-id user-id chart-id data]
@@ -67,7 +67,7 @@
     (info "saved chart id: " chart-id)))
 
 (defn filename-chart-unboxed  [client-id user-id chart-id]
-  (str (:db-path tv-config) "boxed_chart_" client-id "_" user-id "_" chart-id ".edn"))
+  (str (get-in-config [:ta :tradingview :charts-path]) "boxed_chart_" client-id "_" user-id "_" chart-id ".edn"))
 
 (def debug? false)
 
@@ -146,7 +146,7 @@
   (let [client-id (if (string? client-id)  (Integer/parseInt client-id) client-id)
         user-id (if (string? user-id)  (Integer/parseInt user-id) user-id)]
     (info "chart list for: client: " client-id " user: " user-id)
-    (->> (explore-dir (:db-path tv-config))
+    (->> (explore-dir (get-in-config [:ta :tradingview :charts-path]))
          (filter (user-files "chart" client-id user-id))
          (map chart-summary)
          (into []))))

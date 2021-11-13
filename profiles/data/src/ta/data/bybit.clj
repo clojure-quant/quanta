@@ -3,8 +3,8 @@
    [taoensso.timbre :refer [info]]
    [clj-http.client :as http]
    [cheshire.core :as cheshire] ; JSON Encoding
-   [ta.data.helper :refer [str->float remove-first-bar-if-timestamp-equals]]
-   [ta.data.date :refer [epoch-second->datetime ->epoch-second]]))
+   [ta.helper.date :refer [epoch-second->datetime ->epoch-second]]
+   [ta.data.helper :refer [str->float remove-first-bar-if-timestamp-equals]]))
 
 ;; # Bybit api
 ;; The query api does NOT need credentials. The trading api does.
@@ -74,7 +74,7 @@
 
 (comment
 
-  (get-history-page "D" (ta.data.date/days-ago 10) 3 "ETHUSD")
+  (get-history-page "D" (ta.helper.date/days-ago 10) 3 "ETHUSD")
 
   (require '[clojure.pprint])
   (-> (get-history-page "D" (ta.data.date/days-ago 10) 3 "ETHUSD")

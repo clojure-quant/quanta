@@ -3,7 +3,7 @@
    [tech.v3.dataset :as ds]
    [ta.warehouse :as wh]
    [tech.v3.io :as io]
-   [ta.config :refer [w]]
+   [ta.config] ; side effects
    ))
 
 
@@ -15,8 +15,8 @@
 
 (let [ds (ds/->dataset "https://github.com/techascent/tech.ml.dataset/raw/master/test/data/stocks.csv")]
     ds
-    (wh/save-ts w ds "bongo")
-    (wh/load-ts w "bongo"))
+    (wh/save-ts :test-wh ds "bongo")
+    (wh/load-ts :test-wh "bongo"))
 
 (comment
 

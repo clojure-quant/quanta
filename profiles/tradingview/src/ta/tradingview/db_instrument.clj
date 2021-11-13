@@ -1,30 +1,18 @@
 (ns ta.tradingview.db-instrument
   (:require
    [taoensso.timbre :refer [trace debug info warnf error]]
-   [ta.warehouse :refer [symbols-available init-lookup load-symbol]]
-   [ta.tradingview.config :refer [tv-config]]))
+   [modular.config :refer [get-in-config]]
+   [ta.warehouse :refer [symbols-available load-symbol search]]))
 
 
 (comment
   (symbols-available :crypto "D")
-
   (symbols-available :stocks "D")
 
-  (let [{:keys [lookup search]} (init-lookup ["fidelity-select" "bonds" "test"])]
-    [(lookup "MSFT")
-     (search "PH")])
-;
-  )
-
-(let [{:keys [instrument name search]} (init-lookup (:lists tv-config))]
-  (def search search)
-  (def instrument instrument))
-
-(comment
-  (instrument "SPY")
-  (search "GOLD")
+   (search "GOLD")
   (search "BT")
   (search "Bit")
+
 
   ;
   )

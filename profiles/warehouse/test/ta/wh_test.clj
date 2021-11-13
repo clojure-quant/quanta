@@ -1,22 +1,22 @@
 (ns ta.wh-test
   (:require
    [clojure.test :refer :all]
-   [ta.random :refer [random-ts]]
+   [ta.warehouse.random :refer [random-dataset]]
    [ta.warehouse :as wh]
-   [ta.config :refer [w]]))
+   [ta.config]))
 
 (deftest test-symbollist
   (let [symbol "fidelity-select"
-        l (wh/load-list w symbol)]
+        l (wh/load-list symbol)]
     (is (= (count l) 41))))
 
 
 (defn series-generate-save-reload 
   [size name]
-    (let [ts-original (random-ts size) 
+    (let [ts-original (random-dataset size) 
           symbol (str "_test_" name "_")
-          _ (wh/save-ts w ts-original symbol)
-          ts-reloaded (wh/load-ts w symbol)]
+          _ (wh/save-ts :test-wh ts-original symbol)
+          ts-reloaded (wh/load-ts :test-wh symbol)]
        (is (= (count ts-original) (count ts-reloaded)))
    (is (= ts-original ts-reloaded))  
   ))

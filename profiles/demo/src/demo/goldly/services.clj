@@ -2,13 +2,13 @@
   (:require
    [goldly.service.core :as service]
    [ta.helper.ds :refer [ds->map show-meta cols-of-type]]
-   [ta.backtest.date :refer [ds-convert-col-instant->localdatetime]]
+   [ta.helper.date :refer [now-datetime]]
+   [ta.helper.date-ds :refer [ds-convert-col-instant->localdatetime]]
    [ta.warehouse :as wh]
    [ta.warehouse.overview :refer [warehouse-overview]]
-   [ta.data.date :refer [now-datetime]]
    [demo.env.config] ; side-effects
    [demo.env.algos :refer [algo-names algo-metrics algo-table algo-chart]]
-   [demo.lib.gann-plot :refer [get-gann-spec get-boxes]]))
+   [ta.gann.svg-plot :refer [get-gann-spec get-boxes]]))
 
 (defn overview-map [w f]
   (let [ds-overview (warehouse-overview w f)

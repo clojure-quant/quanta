@@ -1,7 +1,7 @@
 (ns ta.viz.study-highchart
   (:require
    [tech.v3.dataset :as tds]
-   [ta.data.date :as dt]
+   [ta.helper.date :as dt]
    [ta.series.signal :refer [select-signal-is select-signal-has]]))
 
 (defn ds-epoch

@@ -10,13 +10,13 @@
    [tablecloth.api :as tc]
    [webly.web.middleware :refer [wrap-api-handler]]
    [webly.web.handler :refer [add-ring-handler]]
-   [ta.data.date :refer [now-datetime datetime->epoch-second epoch-second->datetime]]
-   [ta.warehouse :refer [symbols-available init-lookup load-symbol]]
+   [ta.helper.date :refer [now-datetime datetime->epoch-second epoch-second->datetime]]
+   [ta.warehouse :refer [symbols-available load-symbol search instrument-details]]
    [ta.warehouse.tml :refer [filter-date-range]]
    [ta.tradingview.db-ts :refer [save-chart-boxed delete-chart load-chart-boxed chart-list now-epoch]]
-   [ta.tradingview.db-instrument :refer [search instrument inst-type inst-exchange inst-name category-name->category inst-crypto?]]
-   [ta.tradingview.config :refer [tv-config]]))
-
+   [ta.tradingview.db-instrument :refer [inst-type inst-exchange inst-name 
+                                         category-name->category inst-crypto?]]
+   ))
 
 
 (defn time-handler [_]
@@ -64,7 +64,7 @@
   "Converts instrument [from db] to tradingview symbol-information
    Used in symbol and search"
   [s]
-  (let [i (instrument s)]
+  (let [i (instrument-details s)]
     {:ticker s  ; OUR SYMBOL FORMAT. TV uses exchange:symbol
      :name  s ; for tv this is only the symbol
      :description (inst-name s i)
@@ -151,10 +151,6 @@
       ;count
       )
 
-
-
-
-
  ; 
   )
 
@@ -183,7 +179,7 @@
 
 
 (defn load-series [s resolution from to]
-  (let [i (instrument s)
+  (let [i (instrument-details s)
         w (if (inst-crypto? i) :crypto :stocks)
         frequency (case resolution
                     "1D" "D"  ; tradingview sometimes queries daily as 1D

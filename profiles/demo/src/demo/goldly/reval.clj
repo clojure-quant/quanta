@@ -1,6 +1,6 @@
 (ns demo.goldly.reval
   (:require
-   [reval.persist.edn :refer [pprint-str]]
+   [modular.persist.edn :refer [pprint-str]]
    [reval.type.protocol :refer [hiccup-convertable to-hiccup]]))
 
 (defn text-render-fipp

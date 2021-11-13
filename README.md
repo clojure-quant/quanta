@@ -1,10 +1,20 @@
 # ta [![GitHub Actions status |pink-gorilla/trateg](https://github.com/pink-gorilla/trateg/workflows/CI/badge.svg)](https://github.com/pink-gorilla/trateg/actions?workflow=CI)[![Clojars Project](https://img.shields.io/clojars/v/org.pinkgorilla/ta.svg)](https://clojars.org/org.pinkgorilla/ta)
 
-Trateg is a technical analysis platform written in Clojure.
-You can see charts with indicators and run backtests.
-You can also do complex datamining with the timeseries.
+## What is TA?
 
-Trateg relies on techml dataset and goldly-docs.
+TA is a technical analysis datascience platform written in Clojure.
+
+- Ease of Use: TA tries to get out of your way so that you can focus on algorithm development. See below for a code example.
+
+- "Batteries Included": many common statistics like moving average and linear regression can be readily accessed from within a user-written algorithm.
+
+- TechML Dataset Integration: Input of historical data and output of performance statistics are based on TechML DataSet.
+
+- Statistics and Machine Learning Libraries: 
+You can use libraries like matplotlib, scipy, statsmodels, and sklearn to support development, analysis, and visualization of state-of-the-art trading systems.
+
+- Extensible: UI is based on [goldy-docs](https://github.com/pink-gorilla/goldly) , so you can create websites / dashboards / notebooks quickly.
+
 
 ## bybit data import
 
@@ -36,38 +46,27 @@ In `profiles/demo`
 
 ## Tradingview Chart Study maker
 
-Goto tradingview directory: `cd profiles/tradingview`
+`cd profiles/tradingview && clj -X:make-demo-charts`
 
-`clj -X:make-demo-charts`
-
-Charts are in profiles/tradingview/tvdb
-
-To see demo charts start `clj -X:goldly-docs` (in tradingview directory).
-Charts are in developer tools / pages / tradingview
-
-
+Generated charts are stored in profiles/resources/tradingview-charts
+and can be seen in goldlydocs web app in developer tools / pages / tradingview
 
 ## Develop with goldly docs
 
 When you start goldly-docs it starts an nrepl server on port 9100.
 You could jack in, and start developing.
 
-Have a look at 
+Have a look at [demo-goldy](https://github.com/pink-gorilla/demo-goldly) 
  
 
 
 ## run unit tests / speed tests
 
-```
-clojure -M:test
-lein speed
-```
+*unit tests* `./script/unit_test.sh`
+
+*speed test* `./script/performance_test.sh`
 
 
 
 
-clj -X:test
-
-
-clj -X:performance-test
 

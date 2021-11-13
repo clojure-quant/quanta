@@ -1,15 +1,14 @@
 (ns ta.config
   (:require
-   [ta.warehouse :as wh]))
+   [modular.config :as config]))
 
 
-(def w (wh/init {:series "/tmp/"
-                 :list "../resources/etf/"}))
+(def test-ta-config
+  {:warehouse {:series  {:test-wh "/tmp/"}
+               :list "../resources/symbollist/"}})
 
 
-(def w2 (ta.warehouse/init
-         {:series "/tmp/"
-          :list "../resources/etf/"}))
+(config/set! :ta test-ta-config)
 
 
 

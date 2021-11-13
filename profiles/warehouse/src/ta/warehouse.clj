@@ -7,31 +7,21 @@
    [tech.v3.io :as io]
    ;[taoensso.nippy :as nippy]
    [tablecloth.api :as tc]
+   [modular.config :refer [get-in-config] :as config]
    [ta.warehouse.split-adjust :refer [split-adjust]]))
-
-(defonce config
-  (atom {}))
-
-(defn get-wh-path [kw]
-  (get-in @config [:series kw]))
-
-(defn init [settings]
-  (info "wh init: " settings)
-  (reset! config settings)
-  settings)
 
 ;; lists
 
 (defn load-list [name]
   (println "loading list: " name)
-  (->> (str (:list @config) name ".edn")
+  (->> (str (get-in-config [:ta :warehouse :list]) name ".edn")
        slurp
        edn/read-string
        (map :symbol)))
 
 (defn load-list-full [name]
   (try
-    (->> (str (:list @config) name ".edn")
+    (->> (str (get-in-config [:ta :warehouse :list]) name ".edn")
          slurp
          edn/read-string)
     (catch Exception _
@@ -48,27 +38,30 @@
         dict (into {} (map s-name l))]
     dict))
 
-(defn init-lookup [names]
+(defn get-dict [names]
   (let [l (load-lists-full names)
         d (symbollist->dict l)]
-    {:instrument (fn [s]
-                   (get d s))
-     :name (fn [s]
-             (if-let [n (get d s)]
-               n
-               (str "Unknown-" s)))
-     :search (fn [q]
-               (let [q (lower-case q)]
-                 (filter (fn [{:keys [name symbol]}]
-                           (or (includes? (lower-case name) q)
-                               (includes? (lower-case symbol) q)))
+    d))
 
-                         l)))}))
+(defn search [q]
+  (let [l (load-lists-full (get-in-config [:ta :warehouse :lists]))
+        q (lower-case q)]
+    (filter (fn [{:keys [name symbol]}]
+              (or (includes? (lower-case name) q)
+                  (includes? (lower-case symbol) q)))
+
+            l)))
+
+(defn instrument-details [s]
+  (let [d (get-dict (get-in-config [:ta :warehouse :lists]))]
+    (get d s)))
 
 (comment
   (load-list-full "fidelity-select")
 
   ((juxt :symbol :name) {:symbol "s" :name "n"})
+
+  (instrument-details "BTCUSD")
 
   (-> (load-list-full "bonds")
       (map (juxt :symbol :name)))
@@ -88,26 +81,22 @@
   (->  (load-lists-full ["fidelity-select" "bonds"])
        (symbollist->dict))
 
-  (let [{:keys [instrument name search]} (init-lookup ["crypto" "fidelity-select" "bonds" "test"])]
-    [(name "MSFT")
-     (instrument "MSFT")
      ;(search "P")
-     (search "Bitc")
-     (search "BT")])
-
+  (search "Bitc")
+  (search "BT")
 ; 
   )
 
 ; timeseries - name
 
 (defn save-ts [wkw ds name]
-  (let [p (get-wh-path wkw)
+  (let [p (get-in-config [:ta :warehouse :series wkw])
         s (io/gzip-output-stream! (str p name ".nippy.gz"))]
     (info "saving series " name " count: " (tc/row-count ds))
     (io/put-nippy! s ds)))
 
 (defn load-ts [wkw name]
-  (let [p (get-wh-path wkw)
+  (let [p (get-in-config [:ta :warehouse :series wkw])
         s (io/gzip-input-stream (str p name ".nippy.gz"))
         ds (io/get-nippy s)]
     (debug "loaded series " name " count: " (tc/row-count ds))
@@ -146,7 +135,7 @@
   (-> (java-io/file filename) .isDirectory))
 
 (defn symbols-available [w frequency]
-  (let [dir (java-io/file (get-wh-path w))
+  (let [dir (java-io/file (get-in-config [:ta :warehouse :series w]))
         files (if (.exists dir)
                 (into [] (->> (.list dir)
                               (remove dir?)
@@ -163,14 +152,11 @@
 
 (comment
 
-  (init {:list "../resources/etf/"
-         :series  {:crypto "../db/crypto/"
-                   :stocks "../db/stocks/"
-                   :random "../db/random/"
-                   :shuffled  "../db/shuffled/"}})
-
-  @config
-  (get-wh-path :crypto)
+  (config/set! :ta {:warehouse {:list "../resources/etf/"
+                                :series  {:crypto "../db/crypto/"
+                                          :stocks "../db/stocks/"
+                                          :random "../db/random/"
+                                          :shuffled  "../db/shuffled/"}}})
 
   (symbols-available :crypto "D")
   (load-symbol :crypto "D" "ETHUSD")

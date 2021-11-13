@@ -2,17 +2,17 @@
   (:require
    [tablecloth.api :as tc]
    [ta.helper.ds :refer [ds->map]]
+   [ta.helper.date-ds :refer [ds-convert-col-instant->localdatetime ensure-roundtrip-date-localdatetime]]
    [ta.series.signal :refer [select-signal-has]]
    ; backtest
    [ta.backtest.roundtrip-backtest :refer [run-backtest]]
    [ta.backtest.roundtrip-stats :refer [roundtrip-performance-metrics]]
    [ta.backtest.nav :refer [nav-metrics nav]]
-   [ta.backtest.date :refer [ds-convert-col-instant->localdatetime ensure-roundtrip-date-localdatetime]]
    ; viz
    [ta.viz.study-highchart :refer [study-highchart] :as hc]
    ; algos
    [ta.algo.buy-hold :refer [buy-hold-signal]]
-   [demo.algo.gann :refer [algo-gann algo-gann-signal]]
+   [ta.gann.algo :refer [algo-gann algo-gann-signal]]
    [demo.algo.moon :refer [moon-signal]]
    [demo.algo.supertrend :refer [supertrend-signal]]
    [demo.algo.sma :refer [sma-signal]]

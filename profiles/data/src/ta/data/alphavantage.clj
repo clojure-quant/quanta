@@ -4,7 +4,7 @@
    [clj-http.client :as client]
    [cheshire.core] ; JSON Encoding
    [throttler.core]
-   [ta.data.date :refer [parse-date]]
+   [ta.helper.date :refer [parse-date]]
    [ta.data.helper :refer [str->float]]))
 
 ;; https://www.alphavantage.co/documentation/#
