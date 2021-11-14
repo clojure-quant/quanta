@@ -4,16 +4,13 @@
    [reagent.core :as r]
    [cljs-uuid-utils.core :as uuid]
    ["tradingview-lib" :as tv]
-   ["tradingview-udf" :refer [UDFCompatibleDatafeed]]
-   ))
-
+   ["tradingview-udf" :refer [UDFCompatibleDatafeed]]))
 
 (defn create-feed! [feed-url]
   (println "Creating UDF Feed: " feed-url)
   (when (nil? UDFCompatibleDatafeed)
     (println "Error: UDF function is nil."))
   (UDFCompatibleDatafeed. feed-url))
-
 
 (defn init-tradingview! [id {:keys [feed-url storage-url]}]
   (let [data-feed (create-feed! feed-url)
@@ -51,30 +48,23 @@
         _ (.log js/console options-js)]
     (tv/widget. options-js)))
 
-
 (defn shutdown-tradingview! [tv]
   (println "shutting down tradingview ..")
   (if (nil? tv)
     (println "tv is nil. Not calling shutdown.")
     (.remove tv)))
 
-
-
-
 (defn symbol->tradingview [str]
   (if (nil? str) str
       (clojure.string/replace str " " "_")))
-
 
 (defn set-symbol! [tv]
   (println "TradingViewChart.ChangeSymbol: " symbol)
   (.setSymbol tv (symbol->tradingview symbol) "D"))
 
-
 (defn change-feed-config [id config tv]
   (shutdown-tradingview! tv)
   (init-tradingview! id config))
-
 
 (defn tradingview-chart [config]
   (let [id  (uuid/uuid-string (uuid/make-random-uuid))
@@ -105,7 +95,6 @@
                                 (println "TradingViewChart.ComponentDidUpdate " new-config)
                                 ;(if (not (=
                                 (reset! tv (change-feed-config id new-config @tv))))})))
-
 
 #_(defn tradingview-chart []
     [comp.loader/js-loader

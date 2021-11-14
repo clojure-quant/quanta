@@ -27,10 +27,10 @@
 (defn make-boxes-symbol [s dt-start dt-end]
   (let [client-id 77
         user-id 77
-        chart-id 201
+        chart-id 204
         chart-name (str "autogen gann-" s)
         boxes  (get-gann-boxes {:symbol s
-                                :wh :crypto
+                                :wh (determine-wh s)
                                 :dt-start (parse-date dt-start)
                                 :dt-end (parse-date dt-end)
                                 ;:px-min (Math/log10 284) 
@@ -48,6 +48,7 @@
 
   ; create one boxes for one symbol
   (make-boxes-symbol "BTCUSD" "2005-01-01" "2022-06-30")
+  (make-boxes-symbol "GLD" "2005-01-01" "2022-06-30")
 
 ;
   )
@@ -75,7 +76,8 @@
 (comment
 
   (make-boxes-symbols  "2005-01-01" "2022-03-31"
-                       ["BTCUSD"])
+                       ["BTCUSD"
+                        "QQQ"])
 
   (make-boxes-all  "2005-01-01" "2022-04-01")
 

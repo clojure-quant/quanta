@@ -1,4 +1,5 @@
-[{:symbol "MSFT" :name "Microsoft" :category :equity}
+[{:symbol "QQQ" :name "nasdaq" :category :etf}
+ {:symbol "MSFT" :name "Microsoft" :category :equity}
  {:symbol "XOM" :name "Exxon Mobile" :category :equity}
  {:symbol "AMZN" :name "Amazon" :category :equity}
  {:symbol "GOOG" :name "Google" :category :equity}

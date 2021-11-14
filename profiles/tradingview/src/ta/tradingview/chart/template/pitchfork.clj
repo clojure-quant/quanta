@@ -1,7 +1,6 @@
 (ns ta.tradingview.chart.template.pitchfork)
 
-
-(def pitchfork 
+(def pitchfork
   {:type "LineToolPitchfork"
    :id "xy6qRv"
    :linkKey "IaufLUGXhE6H"

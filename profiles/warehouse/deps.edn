@@ -3,14 +3,15 @@
  {org.clojure/clojure    {:mvn/version "1.10.3"}
   com.taoensso/nippy {:mvn/version "2.14.0"}
   techascent/tech.io {:mvn/version "4.07"}
-  org.pinkgorilla/modular {:mvn/version "0.0.5"}
+  org.pinkgorilla/modular {:mvn/version "0.0.7"}
   ta/helper {:local/root "../helper" :deps/manifest :deps}}
  :aliases
- {:outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
+ {:outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}
+                          org.slf4j/slf4j-nop {:mvn/version "1.7.32"}}
              :main-opts ["-m" "antq.core"]}
 
   :nrepl {:extra-deps {nrepl/nrepl  {:mvn/version "0.8.3"}
-                       cider/cider-nrepl {:mvn/version,"0.26.0"}}
+                       cider/cider-nrepl {:mvn/version,"0.27.2"}}
           :main-opts  ["-m" "nrepl.cmdline"]}
 
   :test {:extra-paths ["test"]

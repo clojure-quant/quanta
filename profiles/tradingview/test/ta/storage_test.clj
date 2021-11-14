@@ -9,7 +9,6 @@
    [ta.config] ; side effects
    [differ.core :as differ]))
 
-
 (def demochart  {:symbol "QQQ"
                  :resolution "D"
                  :name "WILLY"
@@ -23,7 +22,6 @@
         chart (load-chart  10 10 chart-id)]
     (is (=  demochart (dissoc chart :id :timestamp)))))
 
-
 (deftest chart-box-test
   (let [chart-boxed (loadr :edn "test/data/boxed_chart_77_77_1636530570.edn")
         chart-unboxed (-> (chart-unbox chart-boxed)
@@ -33,9 +31,6 @@
         chart-loaded (load-chart 77 77 1636530570)]
     (info "differences: " (differ/diff chart-unboxed chart-loaded))
     (is (= chart-unboxed (dissoc chart-loaded :timestamp)))))
-
-
-
 
 #_(deftest storage2-test
     (let [chart2 (-> (loadr :json "test/data/chart.json")
@@ -48,12 +43,6 @@
       (is (=  (:name chart) (:name chart)))
     ;(is (=  {} (dissoc chart :id :timestamp)))
       ))
-
-
-
-
-
-
 (def demo-template {:name "demo-mania"
                     :content "mega"})
 

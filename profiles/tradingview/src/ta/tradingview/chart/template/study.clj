@@ -1,7 +1,6 @@
 (ns ta.tradingview.chart.template.study)
 
-
-(def template-study 
+(def template-study
   {:type "Study"
    :zorder 3
    :state {:name "Volume@tv-basicstudies"
@@ -61,4 +60,3 @@
                       {:id "vol_ma", :type "line"}]
               :version "1",  :_metainfoVersion 15, :transparency 65}})
 
- 

@@ -19,7 +19,7 @@
   ;; prescious metals
   {:symbol "GLD" :ap 254.0 :at  "2001-02-27"  :bp  329.0  :bt  "2003-02-12"}
   ;{:symbol "Gold" :ap 184.84 :at "1975-01-01" :bp 15.73 :bt "1977-11-14" }
-  {:symbol "SLV" :ap 1.281 :at "1971-12-01" :bp 28.945 :bt "1986-12-01"}
+  ;{:symbol "SLV" :ap 1.281 :at "1971-12-01" :bp 28.945 :bt "1986-12-01"}
   {:symbol "SLV" :ap 1.381 :at "1969-10-01" :bp 7.362 :bt "1978-09-05" }
 
  ; stocks

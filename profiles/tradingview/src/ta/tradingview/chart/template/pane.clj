@@ -1,6 +1,5 @@
 (ns ta.tradingview.chart.template.pane)
 
-
 (def pane-template
   {:leftAxisState {:m_topMargin 0.05
                    :m_isLog false
@@ -30,7 +29,6 @@
                                  :m_bottomMargin 0
                                  :m_isAutoScale true
                                  :m_isLockScale false}}
-
 
    :stretchFactor 2000
    :mainSourceId nil ;id-main ; "pOQ6pA"

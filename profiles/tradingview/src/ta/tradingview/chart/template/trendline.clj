@@ -1,6 +1,6 @@
 (ns ta.tradingview.chart.template.trendline)
 
-(def trendline 
+(def trendline
   {:type "LineToolTrendLine"
    :ownerSource "pOQ6pA"
    :linkKey "IPJgHK9obb7d"
@@ -15,27 +15,26 @@
            ; specific to trendline
            :linewidth 1
            :intervalsVisibilities {:minutesFrom 1, :daysTo 366, :secondsTo 59, :hoursTo 24, :months true, :days true, :seconds true, :daysFrom 1, :secondsFrom 1, :hours true, :ranges true, :hoursFrom 1, :minutes true, :minutesTo 59, :weeks true}
-           :bold false, 
+           :bold false,
            :linecolor "rgba( 21, 153, 128, 1)"
-           :showMiddlePoint false, 
-           :leftEnd 0, 
+           :showMiddlePoint false,
+           :leftEnd 0,
            :extendRight false
            :rightEnd 0
            :showPriceRange false
-           :alwaysShowStats false, 
+           :alwaysShowStats false,
            :snapTo45Degrees true
            :showBarsRange false
-           :font "Verdana", 
+           :font "Verdana",
            :textcolor "rgba( 21, 119, 96, 1)"
-           :linestyle 0, 
-           :showDistance false, 
+           :linestyle 0,
+           :showDistance false,
            :showAngle false
-           :fontsize 12,  
+           :fontsize 12,
            :statsPosition 2
            :italic false
-           :showDateTimeRange false, 
+           :showDateTimeRange false,
            :extendLeft false
-           :fixedSize false
-           }
+           :fixedSize false}
    :points [{:time_t 0, :offset 0, :price 0}
             {:time_t 0, :offset 0, :price 0}]})

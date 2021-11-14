@@ -11,36 +11,36 @@
 
 ;; BYBIT UNIVERSE
 
-(def bybit-symbols ["BTCUSD" "ETHUSD"])
+(def start-date-daily (tick/date-time "2018-11-01T00:00:00"))
 
-(def start-date-daily (tick/date-time "1999-12-31T00:00:00"))
+(def start-date-15 (tick/date-time "2018-11-01T00:00:00"))
 
-(def start-date-15 (tick/date-time "1999-12-31T00:00:00"))
-
-(defn init-bybit-daily []
+(defn init-bybit-daily [symbols]
   (since-importer/init-symbols :crypto bybit-get-since-ds "D"
-                               start-date-daily bybit-symbols))
+                               start-date-daily symbols))
 
-(defn init-bybit-15 []
+(defn init-bybit-15 [symbols]
   (since-importer/init-symbols :crypto bybit-get-since-ds "15"
-                               start-date-15 bybit-symbols))
+                               start-date-15 symbols))
 
-(defn append-bybit-daily []
+(defn append-bybit-daily [symbols]
   (since-importer/append-symbols :crypto bybit-get-since-ds "D"
-                                 bybit-symbols))
+                                 symbols))
 
-(defn append-bybit-15 []
+(defn append-bybit-15 [symbols]
   (since-importer/append-symbols :crypto bybit-get-since-ds "15"
-                                 bybit-symbols))
+                                 symbols))
 
 ; ********************************************************************************************+
 (comment
 
-  (init-bybit-daily)
-  (init-bybit-15)
+  (def symbols ["BTCUSD" "ETHUSD"])
 
-  (append-bybit-daily)
-  (append-bybit-15)
+  (init-bybit-daily symbols)
+  (init-bybit-15 symbols)
+
+  (append-bybit-daily symbols)
+  (append-bybit-15 symbols)
 ;
   )
 

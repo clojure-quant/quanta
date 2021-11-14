@@ -8,7 +8,6 @@
    [webly.web.handler :refer [add-ring-handler]]
    [ta.tradingview.db-ts :refer [save-chart-boxed delete-chart load-chart-boxed chart-list now-epoch]]))
 
-
 ;; chart handler
 
 (defn save-chart-handler [{:keys [query-params params] :as req}]
@@ -34,7 +33,6 @@
     (delete-chart client user chart)
     (res/response {:status "ok"})))
 
-
 (defn load-chart-handler
   "returns eithe chart-summary-list or chart-file"
   [{:keys [query-params]}]
@@ -58,9 +56,6 @@
             "timestamp" 1636565215}]}
   ;
   )
-
-
-
 ;; template
 
 #_(defn load-template
@@ -73,9 +68,7 @@
                          {:client_id client-id :user_id user-id :_id chart-id}
                          {:_id 0 :name 1 :content 1})))
 
-
 ; POST REQUEST: charts_storage_url/charts_storage_api_version/charts?client=client_id&user=user_id&chart=chart_id
-
 
 #_(defn save-template
     [db client_id user_id data]
@@ -95,8 +88,6 @@
     [db client_id user_id name]
     (mc/remove db "tvtemplate"
                {:client_id client_id :user_id user_id :name name}))
-
-
 
 (add-ring-handler :tv-db/save-chart (wrap-api-handler save-chart-handler))
 (add-ring-handler :tv-db/modify-chart (wrap-api-handler modify-chart-handler))

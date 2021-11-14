@@ -1,6 +1,6 @@
 (ns ta.performance
   (:require
-   [ta.wh-test :refer[series-generate-save-reload]]
+   [ta.wh-test :refer [series-generate-save-reload]]
    [ta.config] ; side-effects
    ))
 
@@ -11,9 +11,8 @@
   (time (series-generate-save-reload 200000 "huge"))
   (time (series-generate-save-reload 2000000 "gigantic")))
 
-
 (comment
   (performance-test)
 ;   
-)
+  )
 

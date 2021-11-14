@@ -1,4 +1,6 @@
 [{:name "Bitcoin" :symbol "BTCUSD" :category :crypto}
  {:name "Etherium" :symbol "ETHUSD" :category :crypto}
+ {:name "Litecoin" :symbol "LTCUSD" :category :crypto}
+
  
  ]

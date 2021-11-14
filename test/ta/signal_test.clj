@@ -3,7 +3,6 @@
    [clojure.test :refer :all]
    [ta.backtest.signal :refer [signal->position signal->trade]]))
 
-
 (def s [:none
         :buy :buy :buy
         :flat nil nil

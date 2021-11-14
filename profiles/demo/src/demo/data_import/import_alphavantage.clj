@@ -31,47 +31,15 @@
      :stocks alphavantage-get-fx-since-ds "D"
      start-date-dummy symbols)))
 
-;; symbol lists
-
-(def alphavantage-test-symbols
-  ["IAU"
-   "SPY"
-   "QQQ"
-   "GLD"
-   "SLV"
-   "MSFT"
-   "ORCL"])
-
-(def alphavantage-fx-symbols
-  ["EURUSD"
-   "USDJPY"])
-
-(def fidelity-symbols
-  (wh/load-list "fidelity-select"))
-
-(def tradingview-symbols
-
-  (->> (wh/load-lists-full ["fidelity-select"
-                            "bonds"
-                            "commodity-industry"
-                            "commodity-sector"
-                            "currency"
-                            "equity-region"
-                            "equity-region-country"
-                            "equity-sector-industry"
-                            "equity-style"
-                            "test"])
-       (map :symbol)))
-
 ; ********************************************************************************************+
 (comment
 
   (av/get-daily-adjusted "compact" "MSFT")
   (av/get-daily-adjusted "full" "MSFT")
 
-  (get-alphavantage-daily alphavantage-test-symbols)
-  (get-alphavantage-daily fidelity-symbols)
+  (def symbols (wh/load-list "test"))
 
-  (get-alphavantage-fx-daily alphavantage-fx-symbols)
+  (get-alphavantage-daily symbols)
+  (get-alphavantage-fx-daily symbols)
 ;
   )

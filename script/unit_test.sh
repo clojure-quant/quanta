@@ -1,8 +1,10 @@
 #!/bin/sh
 
-cd profiles/warehouse && clj -M:test
+echo "unit test ta/warehouse"
+cd profiles/warehouse && clj -M:test && cd ../..
 
-# echo "PWD: " $PWD
-cd ../..
+echo "unit test ta/tradingview"
+cd profiles/tradingview && clj -M:test && cd ../..
 
-cd profiles/tradingview && clj -M:test
+echo "unit test ta/backtest"
+clj -M:test

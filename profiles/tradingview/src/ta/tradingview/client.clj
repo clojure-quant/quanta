@@ -5,10 +5,8 @@
    [cheshire.core] ; JSON Encoding
    [ta.tradingview.db-ts :refer [save-chart-boxed delete-chart load-chart-boxed chart-list now-epoch chart-box chart-unbox]]))
 
-
 (def roots {:demo "https://saveload.tradingview.com/1.1/charts"
             :ta "http://localhost:8000/api/tv/storage/1.1/charts"})
-
 
 (defn get-raw [k chart-id process-fn]
   (let [qp {:client 77
@@ -66,7 +64,6 @@
 (->> (get-chart :demo 722072 identity)
      (save-chart-boxed 77 77 722072))
 
-
 (get-chart :demo 722072 print-legs)
 
 (get-chart :demo 722072 print-keys-1)
@@ -74,7 +71,6 @@
 
 (get-chart :demo 722072 print-chart)
 (get-chart :ta 1636578239 print-chart)
-
 
 ;; how the load request compares
 (-> (load-chart-boxed 77 77 1636578239)

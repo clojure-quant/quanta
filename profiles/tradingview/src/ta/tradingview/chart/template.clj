@@ -48,6 +48,12 @@
                 [{:time_t at, :offset 0, :price ap}
                  {:time_t bt, :offset 0, :price bp}]))
 
+(defn fib-circle [{:keys [symbol template ap bp at bt]
+                   :or {;template g/gann
+                        template (load-template "fib-circle")}}]
+  (create-study template symbol
+                [{:time_t at, :offset 0, :price ap}
+                 {:time_t bt, :offset 0, :price bp}]))
 
 (defn gann-vertical [symbol p-0 d-p n a-t b-t]
   (into []
@@ -57,10 +63,9 @@
             :ap (+ p-0 (* i d-p))  :at a-t
             :bp (+ p-0 (* (inc i) d-p)) :bt b-t}))))
 
-
 (comment
 
-  (def id-generated 123)
+  (def id-generated 1512)
 
   (make-chart 77 77 id-generated "MSFT" "test-empty-MSFT"
               [(trendline {:symbol "MSFT"
@@ -69,6 +74,12 @@
                            :a-t (dt "2021-08-04T00:00:00")
                            :b-t (dt "2021-11-04T00:00:00")})])
 
+  (make-chart 77 77 id-generated "AMZN" "AMZN fibcircle"
+              [(fib-circle {:symbol "AMZN"
+                            :a-p 3200.0
+                            :b-p 3320.0
+                            :a-t (dt "2021-08-04T00:00:00")
+                            :b-t (dt "2021-11-04T00:00:00")})])
 
   (gann-vertical "BTCUSD" 1000.0 200.0 5 1511879400 1515076200)
 

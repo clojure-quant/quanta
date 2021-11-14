@@ -12,7 +12,6 @@
    [modular.helper.id :refer [guuid-str]]
    [modular.config :refer [get-in-config]]))
 
-
 (defn now-epoch []
   (-> (tick/now)
       (ti/get-epoch-second)))
@@ -36,7 +35,6 @@
            {:legs legs-unboxed}
            content-unboxed)))
 
-
 (defn chart-box [{:keys [id name timestamp layout charts legs] :as data}]
   (let [chart {:layout layout
                :charts charts}
@@ -49,7 +47,6 @@
      :name name
      :timestamp (float timestamp)
      :content (generate-string overview)}))
-
 
 ;; chart
 
@@ -85,13 +82,10 @@
 (defn load-chart-boxed [client-id user-id chart-id]
   (let [data (load-chart client-id user-id chart-id)
         data-boxed (chart-box data)]
-    (dissoc data-boxed :client :user )))
-
+    (dissoc data-boxed :client :user)))
 
 (defn delete-chart [client-id user-id chart-id]
   (info "deleting: " (filename-chart client-id user-id chart-id)))
-
-
 
 ;; explore
 
@@ -130,9 +124,8 @@
          (= client-id (:client-id i))
          (= user-id (:user-id i)))))
 
-(defn timestamp-as-float [{:keys [timestamp] :as data} ]
-  (assoc data :timestamp (float timestamp))
-  )
+(defn timestamp-as-float [{:keys [timestamp] :as data}]
+  (assoc data :timestamp (float timestamp)))
 
 (defn chart-summary [{:keys [client-id user-id chart-id]}]
   (let [chart (load-chart client-id user-id chart-id)]
@@ -140,8 +133,6 @@
           timestamp-as-float
           ;(rename-keys  {:chart :id})
           )))
-
-
 (defn chart-list [client-id user-id]
   (let [client-id (if (string? client-id)  (Integer/parseInt client-id) client-id)
         user-id (if (string? user-id)  (Integer/parseInt user-id) user-id)]

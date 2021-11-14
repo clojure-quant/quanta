@@ -36,19 +36,17 @@
     {:l (differ/diff g c)
      :r (differ/diff c g)}))
 
-
 (defn extract-study [user-id client-id chart-id type name]
   (let [save #(save-template name %)]
     (-> (load-chart user-id client-id chart-id)
         (filter-type type)
         (save))))
 
-
-
 (comment
 
   (extract-study 77 77 1636805136 "LineToolGannComplex" "gann-nice")
 
+  (extract-study 77 77 1636839899 "LineToolFibCircles" "fib-circle")
 
   (def id-generated 123)
   (def id-compare 1636726545)
@@ -70,10 +68,7 @@
   (-> (load-chart 77 77 id-generated)       (filter-type "MainSeries") source-state-summary)
   (-> (load-chart 77 77 id-compare)  (filter-type "MainSeries") source-state-summary)
 
-
-
-
-  ; test mainseries differences (in both ways)
+; test mainseries differences (in both ways)
   (differ/diff
    (-> (load-chart 77 77 id-generated) (filter-type "MainSeries"))
    (-> (load-chart 77 77 id-compare)  (filter-type "MainSeries")))
@@ -82,8 +77,7 @@
    (-> (load-chart 77 77 id-compare)  (filter-type "MainSeries"))
    (-> (load-chart 77 77 id-generated) (filter-type "MainSeries")))
 
-
-  ; test study differences (in both ways)
+; test study differences (in both ways)
   (differ/diff
    (-> (load-chart 77 77 id-generated) (filter-type "Study"))
    (-> (load-chart 77 77 id-compare)  (filter-type "Study")))

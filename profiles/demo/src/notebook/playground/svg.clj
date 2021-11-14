@@ -8,7 +8,7 @@
    [svg-clj.parametric :as p]
    [svg-clj.layout :as lo]
    [svg-clj.tools :as tools]
-   [ta.data.date :refer [parse-date]]
+   [ta.helper.date :refer [parse-date]]
    [goldly.scratchpad :refer [show! show-as clear!]]))
 
 (def basic-group
@@ -152,11 +152,11 @@ basic-group
         ;(gann "green" gw gh 0 1)
         )))
 
-(-> (gann-box gw gh)
+(-> (gann-box "blue" gw gh)
     (tf/translate [gw 0]))
-(-> (gann-box gw gh)
+(-> (gann-box "blue" gw gh)
     (tf/translate [0  gh]))
-(-> (gann-box gw gh)
+(-> (gann-box "blue" gw gh)
     (tf/translate [gw gh]))
 
 ; svg: x-px  y-px

@@ -27,16 +27,17 @@
   ; https://github.com/weavejester/cljfmt
   :cljfmt
   {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
-   :main-opts ["-m" "cljfmt.main" "check" "--indents" "cljfmt.edn"]}
+   :main-opts ["-m" "cljfmt.main" "check"
+               "profiles"
+               "test"
+               "src-junk"
+               "--indents" "cljfmt.edn"]}
   :cljfmt-fix
   {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
    :main-opts ["-m" "cljfmt.main" "fix"
+               "profiles"
+               "test"
                "src-junk"
-               "profiles/data/src"
-               "profiles/demo/src"
-               "profiles/trateg/src"
-               "profiles/warehouse/src"
-               "profiles/smile/src"
                "--indents" "cljfmt.edn"]}
 
  ; https://github.com/clj-kondo/clj-kondo/blob/master/doc/jvm.md
@@ -71,7 +72,8 @@
                  :test-ns-path ["test"]}}
 
   :outdated
-  {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
+  {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}
+                org.slf4j/slf4j-nop {:mvn/version "1.7.32"}}
    :main-opts ["-m" "antq.core"]}
 
   :check

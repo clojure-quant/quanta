@@ -76,6 +76,5 @@
 
   (make-chart 77 77 123 "MSFT" "test-empty-MSFT" [])
 
-
 ;
   )

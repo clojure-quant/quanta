@@ -19,6 +19,10 @@
        edn/read-string
        (map :symbol)))
 
+(defn load-lists [names]
+  (->> (map load-list names)
+       (apply concat)))
+
 (defn load-list-full [name]
   (try
     (->> (str (get-in-config [:ta :warehouse :list]) name ".edn")

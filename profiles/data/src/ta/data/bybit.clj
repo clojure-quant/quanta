@@ -77,10 +77,10 @@
   (get-history-page "D" (ta.helper.date/days-ago 10) 3 "ETHUSD")
 
   (require '[clojure.pprint])
-  (-> (get-history-page "D" (ta.data.date/days-ago 10) 3 "ETHUSD")
+  (-> (get-history-page "D" (ta.helper.date/days-ago 10) 3 "ETHUSD")
       (clojure.pprint/print-table))
 
-  (-> (get-history "D" (ta.data.date/days-ago 20) "ETHUSD")
+  (-> (get-history "D" (ta.helper.date/days-ago 20) "ETHUSD")
       (clojure.pprint/print-table))
 
 ;

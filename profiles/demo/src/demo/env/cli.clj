@@ -1,44 +1,61 @@
 (ns demo.env.cli
   (:require
    [modular.log :refer [timbre-config!]]
+   [modular.config :refer [load-config!]]
    [taoensso.timbre :refer [trace debug info warnf error]]
+   [ta.helper.print :refer [print-all]]
    [ta.warehouse :refer [load-list]]
+   [ta.warehouse.overview :refer [warehouse-overview]]
    [demo.env.config] ; side-effects
    [demo.data-import.import-alphavantage :as av]
    [demo.data-import.import-bybit :as bybit]
    [demo.data-import.create-random :as rr])
   (:gen-class))
 
-(defn log-config! []
-  (timbre-config!
-   {:timbre-loglevel
-    [[#{"pinkgorilla.nrepl.client.connection"} :info]
-     [#{"org.eclipse.jetty.*"} :info]
-     [#{"webly.*"} :info]
-     [#{"*"} :info]]}))
-
 ;; tasks (for cli use)
 
-(defn run  [{:keys [task list] :as config}]
-  (log-config!)
-
+(defn run  [{:keys [config task symbol] :as config}]
+  (timbre-config!
+   {:timbre-loglevel
+    [[#{"*"} :info]]})
+  (info "loading config: " config)
+  (load-config! config)
+  (timbre-config!
+   {:timbre-loglevel
+    [[#{"*"} :info]]})
   (case task
-    :bybit-initial (do (bybit/init-bybit-daily)
-                       (bybit/init-bybit-15))
-
-    :bybit-append (do (bybit/append-bybit-daily)
-                      (bybit/append-bybit-15))
 
     :alphavantage-import
-    (if list
-      (let [_ (info "alphavantage-import list: " list)
-            symbols (load-list list)]
-        (av/get-alphavantage-daily symbols))
-      (av/get-alphavantage-daily av/tradingview-symbols)
-          ;(av/get-alphavantage-daily av/alphavantage-test-symbols)
-          ;(av/get-alphavantage-daily av/fidelity-symbols)
-      )
-    :shuffle  (rr/create-crypto-shuffled)
+    (let [symbol (or symbol "fidelity-select")
+          _ (info "alphavantage-import list: " symbol)
+          symbols (load-list symbol)
+          _ (info "alphavantage-import list: " symbol "nr symbols: " (count symbols))]
+      (av/get-alphavantage-daily symbols))
+
+    :bybit-import
+    (let [symbol (or symbol "crypto")
+          _ (info "bybit-import list: " symbol)
+          symbols (load-list symbol)
+          _ (info "bybit-import list: " symbol "nr symbols: " (count symbols))]
+      (bybit/init-bybit-daily symbols)
+      (bybit/init-bybit-15 symbols))
+
+    :bybit-append
+    (let [symbol (or symbol "crypto")
+          _ (info "bybit-append list: " symbol)
+          symbols (load-list symbol)
+          _ (info "bybit-append list: " symbol "nr symbols: " (count symbols))]
+      (bybit/append-bybit-daily symbols)
+      (bybit/append-bybit-15 symbols))
+
+    :warehouse
+    (do (info "warehouse summary:")
+        (-> (warehouse-overview :stocks "D") print-all info)
+        (->  (warehouse-overview :crypto "D") print-all info)
+        (-> (warehouse-overview :crypto "15") print-all info))
+
+    :shuffle
+    (rr/create-crypto-shuffled)
 
     (error "task not found: " task)))
 
@@ -52,10 +69,10 @@
 
 (comment
   (run {:task :alphavantage-import
-        :list "test"})
+        :symbol "test"})
 
   (run {:task :alphavantage-import
-        :list "currency-spot"})
+        :symbol "currency-spot"})
 
 ;  
   )

@@ -4,17 +4,15 @@
    [modular.config :refer [get-in-config]]
    [ta.warehouse :refer [symbols-available load-symbol search]]))
 
-
 (comment
   (symbols-available :crypto "D")
   (symbols-available :stocks "D")
 
-   (search "GOLD")
+  (search "GOLD")
   (search "BT")
   (search "Bit")
 
-
-  ;
+;
   )
 
 (def categories
@@ -45,8 +43,6 @@
 
 (defn category-name->category [c]
   (or (get category-names c) :equity))
-
-
 
 (comment
   (inst-type {:category :etf})

@@ -67,6 +67,13 @@
        ))
 (comment
 
+  (get-gann-boxes {:symbol "BTCUSD"})
+
+  (get-gann-boxes {:symbol "GLD"
+                   :wh :stocks
+                   :dt-start (parse-date "2005-01-01")
+                   :dt-end (parse-date "2022-03-31")})
+
   (-> (get-gann-data {:symbol "GLD"
                       :wh :stocks
                       :dt-start (parse-date "2021-01-01")

@@ -1,6 +1,5 @@
 (ns ta.tradingview.chart.template.mainseries)
 
-
 (def template-mainseries
   {:type "MainSeries"
    :id ""

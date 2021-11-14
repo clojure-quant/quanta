@@ -14,16 +14,13 @@
    [ta.warehouse :refer [symbols-available load-symbol search instrument-details]]
    [ta.warehouse.tml :refer [filter-date-range]]
    [ta.tradingview.db-ts :refer [save-chart-boxed delete-chart load-chart-boxed chart-list now-epoch]]
-   [ta.tradingview.db-instrument :refer [inst-type inst-exchange inst-name 
-                                         category-name->category inst-crypto?]]
-   ))
-
+   [ta.tradingview.db-instrument :refer [inst-type inst-exchange inst-name
+                                         category-name->category inst-crypto?]]))
 
 (defn time-handler [_]
   (info "tv/time")
   (let [now-epoch (-> (now-datetime) datetime->epoch-second)]
     (res/response now-epoch)))
-
 
 ;; CONFIG - Tell TradingView which featurs are supported by server.
 
@@ -52,8 +49,6 @@
                ;{:value "AV" :name "Austria" :desc ""}
                ;{:value "LN" :name "London" :desc ""}
                ]})
-
-
 (defn config-handler [_]
   (info "tv/config")
   (res/response server-config))
@@ -89,8 +84,6 @@
      ; :expired true ; whether this symbol is an expired futures contract or not.
      ; :expiration_date  (to-epoch-no-ms- (-> 1 t/hours t/ago))
      }))
-
-
 (comment
   ; stocks should have :exchange SG :type Stocks
   ; crypto should have :exchange BB :type Crypto
@@ -109,7 +102,6 @@
 ;[{"symbol":"BLK","full_name":"BLK","description":"BlackRock, Inc.","exchange":"NYSE","type":"stock"},
 ;  {"symbol":"BA","full_name":"BA","description":"The Boeing Company","exchange":"NYSE","type":"stock"}]
 
-
 (defn filter-exchange [exchange list]
   (if (str/blank? exchange)
     list
@@ -118,10 +110,8 @@
 (defn filter-category [type list]
   (if (str/blank? type)
     list
-    (let [ c (category-name->category type)]
-    (filter #(= c (:category %)) list)  
-      )
-    ))
+    (let [c (category-name->category type)]
+      (filter #(= c (:category %)) list))))
 
 (defn search-handler [{:keys [query-params] :as req}]
   (info "tv/search: " query-params)
@@ -140,8 +130,6 @@
                       :type (inst-type i)}) sr-limit)]
     (res/response sr-tv)))
 
-
-
 (comment
   (-> (search-handler {:query-params {:query "E"
                                       :type ""
@@ -153,8 +141,6 @@
 
  ; 
   )
-
-
 ;; series
 
 ; https://demo_feed.tradingview.com/history?symbol=AAPL&resolution=D&from=1567457308&to=1568321308
@@ -176,7 +162,6 @@
   "add epoch column to ds"
   [ds]
   (tds/column-map ds :epoch datetime->epoch-second [:date]))
-
 
 (defn load-series [s resolution from to]
   (let [i (instrument-details s)
@@ -229,7 +214,6 @@
   (datetime->epoch-second (tick/date-time "2020-05-01T00:00:00"))
   (datetime->epoch-second (tick/date-time "2021-05-01T00:00:00"))
 
-
   (-> (load-symbol :crypto "ETHUSD" "D")
       (filter-date-range
        (tick/date-time "2019-04-01T00:00:00")
@@ -238,8 +222,7 @@
 
   (load-series "ETHUSD" "D" 1617235200 1619827200)
 
-
-   ; https://demo_feed.tradingview.com/history?symbol=AAPL&resolution=D&from=1487289600&to=1488499199
+; https://demo_feed.tradingview.com/history?symbol=AAPL&resolution=D&from=1487289600&to=1488499199
    ; demo has data for 2017
   (epoch-second->datetime 1487289600)
   (epoch-second->datetime 1488499199)
@@ -277,8 +260,6 @@
                                      "to" "1303308614"}})
 ;  
   )
-
-
 (add-ring-handler :tv/time (wrap-api-handler time-handler))
 (add-ring-handler :tv/config (wrap-api-handler config-handler))
 (add-ring-handler :tv/symbols (wrap-api-handler symbols-handler))

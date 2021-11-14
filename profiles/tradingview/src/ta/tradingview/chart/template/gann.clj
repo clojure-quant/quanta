@@ -1,6 +1,6 @@
 (ns ta.tradingview.chart.template.gann)
 
-(def gann 
+(def gann
   {:type "LineToolGannComplex"
    :id  "Ix5dtc"
    :state {:symbol "symbol"
@@ -26,7 +26,7 @@
                       :5 {:color "rgba( 0, 155, 0, 1)" :visible true :width 1 :x 1 :y 1}
                       :3 {:color "rgba( 160, 107, 0, 1)" :visible false  :width 1  :x 3 :y 1}
                       :6 {:color "rgba( 0, 153, 101, 1)" :visible true  :width 1  :x 1  :y 2}}
-          
+
            :showLabels true
            :arcs {:10 {:color "rgba( 0, 0, 153, 1)" :visible true :width 1 :x 5 :y 1}
                   :0 {:color "rgba( 160, 107, 0, 1)" :visible true  :width 1  :x 1  :y 0}
