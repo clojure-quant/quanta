@@ -9,7 +9,9 @@
    [demo.env.config] ; side-effects
    [demo.data-import.import-alphavantage :as av]
    [demo.data-import.import-bybit :as bybit]
-   [demo.data-import.create-random :as rr])
+   [demo.data-import.create-random :as rr]
+   [ta.gann.gann :refer [gann-symbols]]
+   [ta.gann.tradingview :refer [make-boxes-all-individual]])  
   (:gen-class))
 
 ;; tasks (for cli use)
@@ -56,6 +58,14 @@
 
     :shuffle
     (rr/create-crypto-shuffled)
+
+    :gann
+    (let [dt-start "2000-01-01"
+          dt-end "2022-04-01"
+          s (gann-symbols)
+          ]
+      (info "making gann boxes from " dt-start " to " dt-end " for: " (pr-str s))
+      (make-boxes-all-individual dt-start dt-end))
 
     (error "task not found: " task)))
 

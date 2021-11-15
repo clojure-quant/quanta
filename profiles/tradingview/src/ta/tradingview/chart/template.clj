@@ -3,6 +3,7 @@
    [tick.core :as tick]
    [modular.config :refer [get-in-config]]
    [modular.persist.protocol :refer [save loadr]]
+   [modular.persist.edn] ; side effects
    [ta.helper.date :refer [now-datetime datetime->epoch-second epoch-second->datetime]]
    [ta.tradingview.chart.maker :refer [create-study make-chart]]
    [ta.tradingview.chart.template.trendline :as tl]

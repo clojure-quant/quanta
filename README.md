@@ -16,7 +16,7 @@ You can use libraries similar to matplotlib, scipy, statsmodels, and sklearn to 
 - Extensible: UI is based on [goldy-docs](https://github.com/pink-gorilla/goldly) , so you can create websites / dashboards / notebooks quickly.
 
 
-##  data import
+##  data import 
 
 First, lets get some data. Goto demo directory: `cd profiles/demo`
 
@@ -46,8 +46,13 @@ warehouses. Bybit goes to :crypto. Alphavantage goes to :stocks.
 
 *warehouse summary* `clj -X:run :task :warehouse`
 
-*shuffle warehouse `clj -X:run :task :shuffle` 
+*shuffle warehouse* `clj -X:run :task :shuffle` 
 This reads the :crypto warehouse, shuffles the returns and creates the :random warehouse.
+
+*gann maker** `clj -X:run :task :gann` 
+This reads profiles/resources/gann.edn and creates tradingview charts for each symbol in it.
+The charts can be loaded via the tradingview page.
+
 
 
 ## GoldlyDocs Web app

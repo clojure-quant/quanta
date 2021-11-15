@@ -53,6 +53,76 @@
   root
 ;
   )
+;; quadrant
+;; q-t and q-p are positive/negative integers. 
+;; 0 returns base box
+;; quadrant means base box is shifted:
+;; right/left (* q-t box-dt) 
+;; up/down (* q-p box-dp) 
+
+(defn get-quadrant [{:keys [ap bp at bt dp dt idx-p idx-t] :as box} d-idx-t d-idx-p]
+  (let [dp-q (* dp d-idx-p)
+        dt-q (duration/multiplied-by dt d-idx-t)]
+    (assoc box
+           :idx-p (+ idx-p d-idx-p)
+           :ap (+ ap dp-q)
+           :bp (+ bp dp-q)
+           :idx-t (+ idx-t d-idx-t)
+           :at (tick/>> at dt-q)
+           :bt (tick/>> bt dt-q))))
+
+(defn move-right [box]
+  (get-quadrant box 1 0))
+
+(defn move-up [box]
+  (get-quadrant box 0 1))
+
+(defn move-down [box]
+  (get-quadrant box 0 -1))
+
+(defn move-left [box]
+  (get-quadrant box -1 0))
+
+(comment
+
+  root
+  (get-quadrant root 0 0)
+  (get-quadrant root 1 0)
+  (get-quadrant root 2 0)
+  (get-quadrant root 3 0)
+
+  (get-quadrant root 0 1)
+  (get-quadrant root 0 2)
+
+  (get-quadrant box 1 0)
+  (get-quadrant box 0 1)
+  (get-quadrant box 1000 1)
+
+  (move-right root)
+  (move-up root)
+  (move-left root)
+  (move-down root)
+
+  (-> root move-left move-left)
+  (-> root move-down move-down)
+
+  (->> 5
+       (iterate inc)
+       (take 4))
+
+  (->> root
+       (iterate move-right)
+       (take-while #(tick/< (:at %) (now-datetime)))
+       (clojure.pprint/print-table))
+
+  (->> root
+       (iterate zoom-root)
+       (take 4)
+       (clojure.pprint/print-table))
+
+ ; 
+  )
+;; zoom
 
 (defn zoom-out [{:keys [ap bp at bt dp dt zoom] :as box}]
   (let [dp-2 (* dp 2.0)
@@ -101,67 +171,8 @@
 ;  
   )
 
-;; quadrant
-;; q-t and q-p are positive/negative integers. 
-;; 0 returns base box
-;; quadrant means base box is shifted:
-;; right/left (* q-t box-dt) 
-;; up/down (* q-p box-dp) 
+;; boxes in window
 
-(defn get-quadrant [{:keys [ap bp at bt dp dt] :as box} d-idx-t d-idx-p]
-  (let [dp-q (* dp d-idx-p)
-        dt-q (duration/multiplied-by dt d-idx-t)]
-    (assoc box
-           :idx-p (+ (:idx-p box) d-idx-p)
-           :ap (+ ap dp-q)
-           :bp (+ bp dp-q)
-           :idx-t (+ (:idx-t box) d-idx-t)
-           :at (tick/>> at dt-q)
-           :bt (tick/>> bt dt-q))))
-
-(defn move-right [box]
-  (get-quadrant box 1 0))
-
-(defn move-up [box]
-  (get-quadrant box 0 1))
-
-(defn move-down [box]
-  (get-quadrant box 0 -1))
-
-(comment
-
-  root
-  (get-quadrant root 0 0)
-  (get-quadrant root 1 0)
-  (get-quadrant root 2 0)
-  (get-quadrant root 3 0)
-
-  (get-quadrant root 0 1)
-  (get-quadrant root 0 2)
-
-  (get-quadrant box 1 0)
-  (get-quadrant box 0 1)
-  (get-quadrant box 1000 1)
-
-  (move-right root)
-  (move-up root)
-
-  (->> 5
-       (iterate inc)
-       (take 4))
-
-  (->> root
-       (iterate move-right)
-       (take-while #(tick/< (:at %) (now-datetime)))
-       (clojure.pprint/print-table))
-
-  (->> root
-       (iterate zoom-root)
-       (take 4)
-       (clojure.pprint/print-table))
-
- ; 
-  )
 (defn move-right-in-window [box dt-start dt-end]
   (->> box
        (iterate move-right)
@@ -174,35 +185,82 @@
        (take-while #(< (:ap %) px-max))
        (remove  #(< (:bp %) px-min))))
 
+(defn left-window-box [box dt-start]
+  (->> box
+       (iterate move-left)
+       (take-while #(tick/> (:bt %) dt-start))
+       last))
+
+(defn bottom-window-box [box px-min]
+  (->> box
+       (iterate move-down)
+       (take-while #(> (:bp %) px-min))
+       last))
+
+(defn root-box-bottom-left [box dt-start px-min]
+  (let [left (left-window-box box dt-start)
+        bottom (bottom-window-box box px-min)
+        adjust-left (fn [b]
+                      (if left
+                        (assoc b :at (:at left)
+                               :bt (:bt left))
+                        b))
+        adjust-bottom (fn [b]
+                        (if bottom
+                          (assoc b :ap (:ap bottom)
+                                 :bp (:bp bottom))
+                          b))]
+    (-> box
+        adjust-left
+        adjust-bottom)))
+
+(defn get-boxes-in-window [box dt-start dt-end px-min px-max]
+  (let [box (root-box-bottom-left box dt-start px-min)]
+    (for [idx-t  (->> (move-right-in-window box dt-start dt-end)
+                      (map :idx-t))
+          idx-p  (->> (move-up-in-window box px-min px-max)
+                      (map :idx-p))]
+      (get-quadrant box idx-t idx-p))))
+
 (comment
+  root
 
-  (require '[demo.lib.gann-data :refer [gld-box]])
+  (->> (iterate move-left root)
+       (take 5)
+       last)
 
-  (->> (move-right-in-window gld-box (parse-date "2021-01-01") (parse-date "2021-12-31"))
+  (->> (iterate move-down root)
+       (take 5)
+       last)
+
+  (->> (iterate move-down root)
+       (take-while #(> (:bp %) -50))
+       last)
+
+  (left-window-box root (parse-date "2020-01-01")) ; nil -> no adjustment
+  (left-window-box root (parse-date "1980-01-01")) ; moved root box
+
+  (bottom-window-box root 50.0)
+  (bottom-window-box root -10)
+
+  (root-box-bottom-left root (parse-date "1980-01-01") -10)
+
+  (->> (move-right-in-window root (parse-date "2021-01-01") (parse-date "2021-12-31"))
       ;(clojure.pprint/print-table)
        (map :idx-t))
 
-  (move-down gld-box)
-
-  gld-box
-
-  (-> (move-up-in-window gld-box 2.197252998145341 2.2621424532947794)
-      (move-up-in-window gld-box (Math/log10 1000) (Math/log10 70000))
+  (-> (move-up-in-window root 2.197252998145341 2.2621424532947794)
+      (move-up-in-window root (Math/log10 1000) (Math/log10 70000))
       (clojure.pprint/print-table))
-; 
-  )
 
-(defn get-boxes-in-window [box dt-start dt-end px-start px-end]
-  (for [idx-t  (->> (move-right-in-window box dt-start dt-end)
-                    (map :idx-t))
-        idx-p  (->> (move-up-in-window box px-start px-end)
-                    (map :idx-p))]
-    (get-quadrant box idx-t idx-p)))
-
-(comment
   (-> (get-boxes-in-window root (parse-date "2021-01-01") (parse-date "2021-12-31")
                            (Math/log10 1000) (Math/log10 70000))
       (clojure.pprint/print-table))
+
+  (-> (get-boxes-in-window root (parse-date "1990-01-01") (parse-date "2021-12-31")
+                           (Math/log10 0.00001) (Math/log10 70000))
+      (clojure.pprint/print-table))
+
  ; 
   )
 ;; finder
@@ -304,8 +362,6 @@
        (clojure.pprint/print-table)))
 
 (comment
-  (get-in-config [:demo])
-
   (get-in-config [:demo :gann-data-file])
   (gann-symbols)
 

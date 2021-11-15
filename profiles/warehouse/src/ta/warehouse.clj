@@ -61,15 +61,13 @@
     (get d s)))
 
 (comment
-  (load-list-full "fidelity-select")
 
-  ((juxt :symbol :name) {:symbol "s" :name "n"})
-
+   ;(search "P")
+  (search "Bitc")
+  (search "BT")
   (instrument-details "BTCUSD")
 
-  (-> (load-list-full "bonds")
-      (map (juxt :symbol :name)))
-
+  (load-list-full "fidelity-select")
   (load-lists-full ["crypto"
                     "fidelity-select"
                     "bonds"
@@ -81,13 +79,9 @@
                     "equity-sector-industry"
                     "equity-style"
                     "test"])
-
   (->  (load-lists-full ["fidelity-select" "bonds"])
        (symbollist->dict))
 
-     ;(search "P")
-  (search "Bitc")
-  (search "BT")
 ; 
   )
 

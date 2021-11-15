@@ -1,6 +1,7 @@
 (ns ta.gann.tradingview
   (:require
    [clojure.pprint]
+   [taoensso.timbre :refer [trace debug info warnf error]]
    [ta.helper.date :refer [parse-date now-datetime epoch-second->datetime ->epoch-second]]
    [ta.tradingview.chart.maker :refer [make-chart]]
    [ta.tradingview.chart.template :as t :refer [dt gann]]
@@ -18,37 +19,29 @@
                {:symbol symbol :ap bp :bp ap :at bt :bt at}]]
     (map gann boxes)))
 
-(defn determine-wh [s]
-  (case s
-    "ETHUSD" :crypto
-    "BTCUSD" :crypto
-    :stocks))
-
-(defn make-boxes-symbol [s dt-start dt-end]
+(defn make-boxes-symbol [s id dt-start dt-end]
+  (info "making gann chart for " s  " id: " id)
   (let [client-id 77
         user-id 77
-        chart-id 204
+        chart-id id
         chart-name (str "autogen gann-" s)
-        boxes  (get-gann-boxes {:symbol s
-                                :wh (determine-wh s)
-                                :dt-start (parse-date dt-start)
-                                :dt-end (parse-date dt-end)
-                                ;:px-min (Math/log10 284) 
-                                ;:px-max (Math/log10 3482)
-                                })]
-    (print-boxes boxes)
+        boxes (get-gann-boxes {:s s
+                               :dt-start dt-start
+                               :dt-end dt-end})]
     (->>
      boxes
      (map gann-box->tradingview-study)
      (apply concat)
      (into [])
-     (make-chart client-id user-id chart-id s chart-name))))
+     (make-chart client-id user-id chart-id s chart-name))
+    (print-boxes boxes)
+    boxes))
 
 (comment
 
   ; create one boxes for one symbol
-  (make-boxes-symbol "BTCUSD" "2005-01-01" "2022-06-30")
-  (make-boxes-symbol "GLD" "2005-01-01" "2022-06-30")
+  (make-boxes-symbol "BTCUSD" 200 "2005-01-01" "2022-06-30")
+  (make-boxes-symbol "GLD" 201 "2005-01-01" "2022-06-30")
 
 ;
   )
@@ -58,10 +51,9 @@
         chart-id 202
         chart-name (str "autogen gann " (count symbols) " symbols")
         boxes-for-symbol (fn [s]
-                           (get-gann-boxes {:symbol s
-                                            :wh (determine-wh s)
-                                            :dt-start (parse-date dt-start)
-                                            :dt-end (parse-date dt-end)}))]
+                           (get-gann-boxes {:s s
+                                            :dt-start dt-start
+                                            :dt-end dt-end}))]
     (->> symbols
          (map boxes-for-symbol)
          (apply concat)
@@ -73,6 +65,12 @@
 (defn make-boxes-all [dt-start dt-end]
   (make-boxes-symbols dt-start dt-end (gann-symbols)))
 
+(defn make-boxes-all-individual [dt-start dt-end]
+  (doall
+   (map-indexed
+    #(make-boxes-symbol %2 (+ 300 %1)  dt-start dt-end)
+    (gann-symbols))))
+
 (comment
 
   (make-boxes-symbols  "2005-01-01" "2022-03-31"
@@ -81,5 +79,7 @@
 
   (make-boxes-all  "2005-01-01" "2022-04-01")
 
- ; 
+  (make-boxes-all-individual  "2000-01-01" "2022-04-01")
+
+; 
   )

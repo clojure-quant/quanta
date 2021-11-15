@@ -1,5 +1,6 @@
 (ns ta.gann.window
   (:require
+   [taoensso.timbre :refer [trace debug info warnf error]]
    [cljc.java-time.duration :as duration]
    [tick.core :as tick :refer [>>]]
    [tick.alpha.interval :as t.i]
@@ -10,7 +11,7 @@
    [tech.v3.datatype.functional :as dfn]
    [ta.gann.gann :refer [get-boxes-in-window make-root-box zoom-out zoom-in get-root-box]]))
 
-;; get stock prices
+;; get prices
 
 (defn row-in-range [dt-start dt-end {:keys [date] :as row}]
   (and (tick/>= date dt-start)
@@ -34,18 +35,38 @@
   (-> (get-prices :stocks "GLD" (parse-date "2021-01-01") (parse-date "2021-12-31"))
       (dissoc :series))
 
-  (-> (get-boxes-in-window boxes/gld-box (parse-date "2021-01-01") (parse-date "2021-12-31")
+  (-> (get-boxes-in-window (get-root-box "GLD") (parse-date "2004-01-01") (parse-date "2021-12-31")
                            (Math/log10 2000) (Math/log10 3000))
       (clojure.pprint/print-table))
+
 ;
   )
 
-(defn get-gann-data [{:keys [wh symbol dt-start dt-end root-box]
-                      :or {root-box (get-root-box symbol)
-                           wh :crypto
+(defn determine-wh [s]
+  (info "determining wh for: " s)
+  (case s
+    "ETHUSD" :crypto
+    "BTCUSD" :crypto
+    :stocks))
+
+(comment  ; in case you dont want to load instrument data below:
+
+  (defn get-close-prices-test [symbol dt-start dt-end]
+    [[(parse-date "2021-03-01") (Math/log10 50000)]
+     [(parse-date "2021-07-01") (Math/log10 40000)]
+     [(parse-date "2021-08-01") (Math/log10 60000)]])
+ ; 
+  )
+
+(defn get-gann-data [{:keys [s wh dt-start dt-end root-box]
+                      :or {root-box (get-root-box s)
+                           wh (determine-wh s)
                            dt-start (parse-date "2021-01-01")
                            dt-end (parse-date "2021-12-31")}}]
-  (let [data (get-prices wh symbol dt-start dt-end)  ; vec of float
+  (info "get-gann-data symbol: " s "wh: " wh)
+  (let [dt-start (if (string? dt-start) (parse-date dt-start) dt-start)
+        dt-end (if (string? dt-end) (parse-date dt-end) dt-end)
+        data (get-prices wh s dt-start dt-end)  ; vec of float
         px-min (:px-min data)  ;(Math/log10 3000) 
         px-max (:px-max data) ; (Math/log10 70000) ; ; 
         close-series (:series data)
@@ -65,27 +86,29 @@
        :boxes
        ;(map #(dissoc % :dt))
        ))
+
 (comment
 
-  (get-gann-boxes {:symbol "BTCUSD"})
+  (determine-wh "ETHUSD")
+  (determine-wh "QQQ")
 
-  (get-gann-boxes {:symbol "GLD"
-                   :wh :stocks
-                   :dt-start (parse-date "2005-01-01")
-                   :dt-end (parse-date "2022-03-31")})
+  (-> (get-gann-data {:s "BTCUSD"})
+      (dissoc :close-series))
 
-  (-> (get-gann-data {:symbol "GLD"
+  (-> (get-gann-data {:s "GLD"
                       :wh :stocks
                       :dt-start (parse-date "2021-01-01")
                       :dt-end (parse-date "2021-12-31")})
       (dissoc :close-series))
 
-  (get-gann-boxes {:symbol "BTCUSD"})
+  (get-gann-boxes {:s "BTCUSD"})
+  (get-gann-data {:s "GLD"})
+
+  (-> (get-gann-boxes {:s "GLD"
+                       :wh :stocks
+                       :dt-start  "1990-01-01"
+                       :dt-end "2022-03-31"})
+      (clojure.pprint/print-table))
 
 ;  
   )
-
-(defn get-close-prices-test [symbol dt-start dt-end]
-  [[(parse-date "2021-03-01") (Math/log10 50000)]
-   [(parse-date "2021-07-01") (Math/log10 40000)]
-   [(parse-date "2021-08-01") (Math/log10 60000)]])
