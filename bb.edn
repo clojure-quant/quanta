@@ -1,0 +1,169 @@
+{:paths ["script"]
+ :deps {babashka/fs {:mvn/version "0.1.1"}
+        ;borkdude/gh-release-artifact
+       ; {:git/url "https://github.com/borkdude/gh-release-artifact"
+       ;  :sha "2f8898d84126a4e922c490f8614211a8b0cf67cd"}
+       ; com.github.liquidz/antq {:mvn/version "RELEASE"}
+       ; 
+        }
+
+ :tasks {:requires [webly
+                    [clojure.edn :as edn]
+                    [babashka.fs :as fs]]
+         ; dev tools
+         lint (webly/clojure "app/demo" "-M:lint"
+                             "." ; "../goldly-test"
+                             ;"src"
+                             "../trateg/src"
+                             "../warehouse/src"
+                             "../data/src"
+                             "../tradingview/src"
+                             ; demo
+                             "../demo/src/demo/algo"
+                             "../demo/src/demo/env"
+                             ; notebooks
+                             "../demo/src/notebook"
+                             ;"profiles/demo/src/notebook/playground"
+                             ;"profiles/demo/src/notebook/studies"
+                             ;"profiles/demo/src/notebook/warehouse"
+)  ; "../goldly-docs" nothing to lint in goldly-docs
+         cljfmt-check (webly/clojure "lib/trateg" "-M:cljfmt" "check"
+                                     "."
+                                     "../../lib/data"
+                                     "../../lib/trateg"
+                                     "../../lib/helper"
+                                     "../../lib/tradingview"
+                                     "../../lib/warehouse/src")
+         cljfmt-fix (webly/clojure "app/demo" "-M:cljfmt" "fix"
+                                   "."
+                                   "../data"
+                                   "../demo"
+                                   "../helper"
+                                   "../tradingview"
+                                   "../warehouse/src")
+         deps-tree (webly/clojure "app/demo" "-X:deps" "tree")
+         outdated (webly/clojure "app/demo" "-M:outdated")
+
+         ; build
+         clean (do (webly/clean-project "./lib/data")
+                   (webly/clean-project "./lib/helper")
+                   (webly/clean-project "./lib/tradingview")
+                   (webly/clean-project "./lib/trateg")
+                   (webly/clean-project "./lib/warehouse")
+                   (webly/clean-project "./app/arrow")
+                   (webly/clean-project "./app/demo")
+                   (webly/clean-project "./app/smile"))
+         npm-install (webly/run "goldly-docs" "goldly" "npm-install")
+         build-ci (webly/run "goldly-docs" "goldly" "ci")
+         build-ci-adv (webly/run "goldly-docs" "goldly" "release-adv")
+
+         ;copy-resources (shell {:dir "goldly-docs"} "../script/copy_res.sh")
+         ;get-fonts  (shell {:dir "goldly-docs"} "../script/get-fonts.sh")
+
+         build {:depends [npm-install
+                          build-ci
+                          ;tailwind-girouette-webly
+                          ;copy-resources
+                          ;get-fonts
+                          ]
+                :task (shell "echo" "cljs bundle has been built!")}
+
+         ; tests
+         test-clj (webly/clojure "goldly" "-M:test-clj")
+         ;test-cljs (shell {:dir "goldly-docs"} "npm" "test")
+
+         ;; CI
+         ci-check {:depends [cljfmt-check
+                             build
+                             test-clj
+                             ;test-cljs
+                             ]
+                   :task (shell "echo" "ci checks are ok!")}
+
+         commit-check {:doc "if this succeeds, then the github ci pipeline will work too."
+                       :depends [clean
+                                 cljfmt-fix
+                                 ci-check]
+                       :task (shell "echo" "all good - you can push to github")}
+
+         ; DOCS BUILD
+
+         copy-static {:doc "Prepares the static page"
+                      :task (do (fs/delete-tree "docs")
+                                ;(fs/create-dirs "docs/r/webly")
+                                (fs/create-dirs "docs/r")
+                                (fs/copy-tree "goldly-docs/target/webly/public" "docs" {:replace-existing true})
+                                ;(fs/copy-tree "goldly-docs/target/node_modules/public" "docs/r" {:replace-existing true})
+                                ;(fs/copy-tree "goldly-docs/target/res/public" "docs/r" {:replace-existing true})
+                                )}
+
+         jar {:doc "Builds the jar"
+              :task (webly/clojure "goldly-docs" "-T:build" "jar")}
+
+         goldly-docs-build {:doc "Build goldly-docs, but don't deploy"
+                            :depends [clean
+                                      npm-install
+                                      build-ci-adv
+                                      jar
+                                      copy-static]
+                            :task (shell "echo" "cljs bundle has been built!")}
+
+
+         clojars {:doc "Deploys the jar to clojars"
+                  :task (webly/clojure "goldly-docs" "-T:build" "deploy")}
+
+         tag {:doc "Tags release and pushes tag to Github."
+              :task (let [version (-> (slurp "goldly-docs/resources/META-INF/pink-gorilla/goldly-docs/meta.edn")
+                                      edn/read-string
+                                      :version)
+                          tag (str "v" version)]
+                      (shell "git tag" tag)
+                      (shell "git push origin" tag))}
+
+         ci-goldly-docs-deploy {:doc "Deploys goldly-docs to clojars"
+                 ;; ensure sequential order becauce tag reads from info.edn made
+                 ;; by build.clj
+                                :task (do (run 'goldly-docs-build)
+                                          (run 'clojars)
+                                          (run 'tag))}
+
+         goldly-jar {:doc "Builds the jar"
+                     :task (webly/clojure "goldly" "-T:build" "jar")}
+
+         ci-goldly-deploy {:doc "Deploys goldly to clojars"
+                           :task  (do (run 'goldly-jar)
+                                      (webly/clojure "goldly" "-T:build" "deploy"))}
+
+
+         jar-extract {:doc "Extracts generated jar (for debugging)"
+                      :task (shell {:dir "goldly-docs/target"} "fastjar" "xf" "webly-0.4.516.jar")}
+
+         ;; devtest
+
+        ; devtest-webserver-https (webly/clojure "webserver" "-X:webserver")
+
+         ;; goldly-test
+         goldly-test {:doc "goldly-test with shadow-cljs watch"
+                      :task (do  ;(run 'tailwind-girouette-webly)
+                              (webly/run "goldly-test" "goldly" "watch2"))}
+
+
+         ;; demo
+
+         alphavantage-import {:doc "import alphavantage data"
+                              :task (webly/clojure "app/demo" "-X:run" ":task" ":alphavantage-import" ":symbol" "test")}
+
+         bybit-import {:doc "import bybit data"
+                       :task (webly/clojure "app/demo" "-X:run" ":task" ":bybit-import")} ;":symbol" "test"
+
+         warehouse-summary  {:doc "warehouse-summary"
+                             :task (webly/clojure "app/demo" "-X:run" ":task" ":warehouse")}
+
+         notebook-eval  {:doc "evaluates notebook collections"
+                         :task (webly/clojure "app/demo" "-X:run" ":task" ":nbeval")}
+
+         goldly-docs {:doc "goldly docs ui"
+                      :task (webly/clojure "app/demo" "X:goldly-docs")}
+
+ ;        
+         }}
