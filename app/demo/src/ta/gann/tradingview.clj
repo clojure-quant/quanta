@@ -68,7 +68,8 @@
 (defn make-boxes-all-individual [dt-start dt-end]
   (doall
    (map-indexed
-    #(make-boxes-symbol %2 (+ 300 %1)  dt-start dt-end)
+    #(do (make-boxes-symbol %2 (+ 300 %1)  dt-start dt-end)
+         nil) ; nil, so we dont accumulate memory.
     (gann-symbols))))
 
 (comment
