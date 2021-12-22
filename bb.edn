@@ -168,7 +168,7 @@
                          :task (webly/clojure "app/demo" "-X:run" ":task" ":nbeval")}
 
          goldly-docs {:doc "goldly docs ui"
-                      :task (webly/clojure "app/demo" "X:goldly-docs")}
+                      :task (webly/clojure "app/demo" "-X:goldly-docs")}
 
  ;        
          }}

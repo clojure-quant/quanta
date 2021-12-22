@@ -25,12 +25,12 @@
   (-> (create-symbol template symbol)
       (assoc :points points)))
 
-(defn make-pane [source-main source-study #_source-sessions source-drawings]
+(defn make-pane [source-main #_source-study #_source-sessions source-drawings]
   (let [id-main (:id source-main)
         source-drawings (map #(assoc % :ownerSource id-main) source-drawings)
         ids-drawings (map :id source-drawings)
         sources (into [] (concat [source-main
-                                  source-study
+                                  #_source-study
                                   #_source-sessions]
                                  source-drawings))]
     (assoc pane-template
@@ -63,9 +63,9 @@
 
 (defn make-chart [client-id user-id chart-id symbol name source-drawings]
   (let [source-main (create-symbol template-mainseries symbol)
-        source-study (create template-study)
+        ;source-study (create template-study)
         ;source-sessions (create template-sessions)
-        pane (make-pane source-main source-study #_source-sessions source-drawings)]
+        pane (make-pane source-main #_source-study #_source-sessions source-drawings)]
     (->> (chart-file client-id user-id symbol name pane)
          (save-chart client-id user-id chart-id))))
 
