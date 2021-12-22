@@ -25,7 +25,10 @@
   ; see README.md for available tasks
   :run {:extra-paths ["cli"]
         :exec-fn demo.env.cli/run
-        :exec-args {:config "ta-config.edn"}}
+        :exec-args {:config "ta-config.edn"}
+        :jvm-opts ["-Xmx1G"] ;; or more
+        }
+
 
   :goldly-docs {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.475"}}
                 :exec-fn goldly.app/goldly-server-run!
