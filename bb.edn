@@ -150,14 +150,19 @@
 
          ;; demo
 
-         alphavantage-import {:doc "import alphavantage data"
-                              :task (webly/clojure "app/demo" "-X:run" ":task" ":alphavantage-import" ":symbol" "test")}
+         alphavantage-import {:doc "import alphavantage data (parameter: symbol-list name, bb aslphavantage-import test"
+                              :task (let [ [symbol-list] *command-line-args* ]
+                                      (println "symbol-list: " symbol-list )
+                                      (webly/clojure "app/demo" "-X:run" ":task" ":alphavantage-import" ":symbol" symbol-list))}
 
          bybit-import {:doc "import bybit data"
                        :task (webly/clojure "app/demo" "-X:run" ":task" ":bybit-import")} ;":symbol" "test"
 
          warehouse-summary  {:doc "warehouse-summary"
                              :task (webly/clojure "app/demo" "-X:run" ":task" ":warehouse")}
+
+         gann-tvcharts  {:doc "create gann tradingview-charts"
+                       :task (webly/clojure "app/demo" "-X:run" ":task" ":gann")}
 
          notebook-eval  {:doc "evaluates notebook collections"
                          :task (webly/clojure "app/demo" "-X:run" ":task" ":nbeval")}

@@ -80,7 +80,7 @@ FLORIAN TODO:
 
 - goldly: arrow endpoint (for bigger datasets) + clojurescript arrow reader.
 
-- goldld: if nrepl .nrepl-port (in main folder)
+- goldly: if nrepl .nrepl-port (in main folder)
 
 - https://github.com/johnmn3/injest   BETTER THREADING MACROS
 

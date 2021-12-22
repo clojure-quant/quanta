@@ -8,7 +8,7 @@
 ; stocks
 
 (defn alphavantage-get-since-ds [_ #_frequency _ #_since symbol]
-  (-> (av/get-daily-adjusted "full" symbol)
+  (-> (av/get-daily "full" symbol) ; (av/get-daily-adjusted "full" symbol)
       :series
       (tds/->dataset)))
 

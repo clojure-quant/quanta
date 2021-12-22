@@ -6,7 +6,7 @@
         cljplot/cljplot {:mvn/version "0.0.2a-SNAPSHOT"}
         io.github.adam-james-v/svg-clj {:mvn/version "0.0.9"}
         org.scicloj/wadogo {:mvn/version "0.1.0-SNAPSHOT"}
-
+      ;  com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.1.0"}
         com.taoensso/timbre {:mvn/version "5.1.2"} ; clj/cljs logging
         org.slf4j/slf4j-nop {:mvn/version "1.7.32"}
 
@@ -27,7 +27,7 @@
         :exec-fn demo.env.cli/run
         :exec-args {:config "ta-config.edn"}}
 
-  :goldly-docs {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.459"}}
+  :goldly-docs {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.475"}}
                 :exec-fn goldly.app/goldly-server-run!
                 :exec-args {:profile "jetty"
                             :config "ta-config.edn"}}

@@ -14,11 +14,8 @@
           ; runtime
           :autoload-clj-ns [demo.goldly.services
                             demo.goldly.reval ; for techml rendering (no need to require namespace)
-                             ;ta.viz.arrow ; dataset->arrow 
                             ta.tradingview.server
-                            goldly.devtools
-                            
-                            ]
+                            goldly.devtools]
 
           :autoload-cljs-dir ["goldly/lib"
                               "goldly/devtools"
@@ -90,7 +87,7 @@
                           "equity-sector-industry"
                           "equity-style"
                           "test"]}
-      :tradingview {:charts-path   "../resources/tradingview-charts/"
+      :tradingview {:charts-path   "../../target/tradingview-charts/"
                     :template-path "../resources/tradingview-templates/"}}
 
 

@@ -12,7 +12,9 @@
    [demo.env.config] ; side-effects
    [demo.data-import.import-alphavantage :as av]
    [demo.data-import.import-bybit :as bybit]
-   [demo.data-import.create-random :as rr])
+   [demo.data-import.create-random :as rr]
+   [demo.goldly.reval] ; side-effects
+   )
   (:gen-class))
 
 ;; tasks (for cli use)
