@@ -8,6 +8,15 @@
          :bind "0.0.0.0"
          :port 9100}
 
+ 
+ :webly/web-server {:port 8080
+                    :host "0.0.0.0"
+                    :ssl-port 8443
+                    :keystore "./certs/keystore.p12"
+                    :key-password "password"; Password you gave when creating the keystore
+                    :jetty-ws {"/api/chsk" :ws/chsk-get}}
+
+
  :goldly {:enabled true
           :lazy true
           :src-dir "src"

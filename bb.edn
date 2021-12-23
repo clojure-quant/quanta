@@ -150,7 +150,7 @@
 
          ;; demo
 
-         alphavantage-import {:doc "import alphavantage data (parameter: symbol-list name, bb aslphavantage-import test"
+         alphavantage-import {:doc "symbollist. example: bb alphavantage-import test"
                               :task (let [[symbol-list] *command-line-args*]
                                       (println "symbol-list: " symbol-list)
                                       (webly/clojure "app/demo" "-X:run" ":task" ":alphavantage-import" ":symbol" symbol-list))}
