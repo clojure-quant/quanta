@@ -179,7 +179,21 @@
                                        "--logs-dir" "/tmp"
                                        "--config-dir" "./certs"
                                        "--work-dir" "./certs"
-                                       "--standalone"))}
+                                       "--standalone")
+                                (shell {:dir "app/demo/certs/live/quant.hoertlehner.com"}
+                                      "openssl" "pkcs12" 
+                                      "-export" 
+                                      "-CAfile" "chain.pem"
+                                      "-caname" "root" 
+                                      "-in" "fullchain.pem" 
+                                      "-inkey" "privkey.pem"
+                                      "-out" "../../keystore.p12"
+                                      "-passout" "pass:password" 
+                                      "-name" "quant")
+                                (shell {:dir "app/demo/certs"}
+                                       "chmod" "a+r" "./keystore.p12")
+                                
+                                )}
 
  ;        
          }}
