@@ -32,11 +32,6 @@ target funktion
 for cross-type-up: average diff% 
 for cross-type-down: (-average diff%)
 
-
-
-
-
-
 ## run strategy
 
 `clj -X:bollinger-strategy`

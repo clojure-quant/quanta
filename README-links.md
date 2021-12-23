@@ -128,3 +128,8 @@ https://r-forge.r-project.org/scm/viewvc.php/pkg/PerformanceAnalytics/R/HurstInd
 
 
 https://github.com/cgrand/xforms
+
+
+
+TASK PIPELINE: 
+https://github.com/sunng87/papaline
