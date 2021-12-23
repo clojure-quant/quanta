@@ -41,3 +41,4 @@ goldly_bindings_generated.cljs
 /output/
 rdocument/
 tvdb/
+app/demo/certs
