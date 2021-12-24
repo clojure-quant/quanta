@@ -10,20 +10,7 @@
    [modular.config :refer [get-in-config] :as config]
    [ta.warehouse.split-adjust :refer [split-adjust]]))
 
-;; lists
-
-(defn load-list [name]
-  (println "loading list: " name)
-  (->> (str (get-in-config [:ta :warehouse :list]) name ".edn")
-       slurp
-       edn/read-string
-       (map :symbol)))
-
-(defn load-lists [names]
-  (->> (map load-list names)
-       (apply concat)))
-
-(defn load-list-full [name]
+(defn load-list-raw [name]
   (try
     (->> (str (get-in-config [:ta :warehouse :list]) name ".edn")
          slurp
@@ -32,10 +19,33 @@
       (error "Error loading List: " name)
       [])))
 
+(defn process-item [symbols {:keys [list] :as item}]
+  (if list 
+    (concat symbols (load-list-raw list))
+    (concat symbols item)))
+            
+
+;; lists
+(defn load-list-full [name]
+  (let [items (load-list-raw name)]
+    (reduce process-item [] items)
+      ))
+
 (defn load-lists-full [names]
   (->> (map load-list-full names)
        (apply concat)
        (into [])))
+
+
+(defn load-list [name]
+  (->> (load-list-full name)
+       (map :symbol)))
+
+(defn load-lists [names]
+  (->> (map load-list names)
+       (apply concat)))
+
+
 
 (defn symbollist->dict [l]
   (let [s-name (juxt :symbol identity)
