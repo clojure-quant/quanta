@@ -1,5 +1,7 @@
 [
  
+;; https://www.ishares.com/us/products/etf-investments
+
 ;Europe - Country
  {:region :europe :name "IShares MSCI Austria" :symbol "EWO" :category :etf}
  {:region :europe :name "IShares MSCI Belgium" :symbol "EWK" :category :etf}
@@ -20,18 +22,28 @@
  {:region :americas :name "IShares MSCI Mexico" :symbol "EWW" :category :etf}
 
 ; Asia - Country
- {:region :asia :name "IShares MSCI Australia" :symbol "EEWA" :category :etf}
- {:region :asia :name "IShares MSCI Hong Kong" :symbol "EEWH" :category :etf}
- {:region :asia :name "IShares MSCI Japan" :symbol "EEWJ" :category :etf}
-;  {:region :asia :name "Streettracks Russell/Nomura Japan Prime" :symbol "EJPP"}
-;{:region :asia :name "Streettracks Russell/Nomura Japan Small Cap" :symbol "EJSC"}
- {:region :asia :name "IShares MSCI Malaysia (Free)" :symbol "EEWM" :category :etf}
- {:region :asia :name "IShares MSCI Singapore" :symbol "EEWS" :category :etf}
- {:region :asia :name "IShares MSCI South Korea" :symbol "EEWY" :category :etf}
- {:region :asia :name "IShares MSCI Taiwan" :symbol "EEWT" :category :etf}
+ {:region :asia :name "IShares MSCI Japan" :symbol "EWJ" :category :etf}
+ ;  {:region :asia :name "Streettracks Russell/Nomura Japan Prime" :symbol "EJPP"}
+ ;{:region :asia :name "Streettracks Russell/Nomura Japan Small Cap" :symbol "EJSC"}
+
+  {:region :asia :name "IShares MSCI China" :symbol "MCHI"}
+  {:region :asia :name "IShares China LargeCap" :symbol "FXI"}
  ;{:region :asia :name "IShares FTSE/Xinhuu China 25" :symbol "EFXI"}
- {:region :asia :name "SPDR S&P China" :symbol "GXC" :category :etf}
- {:region :asia :name "PowerShares Golden Dragon USX China Portfolio" :symbol "EPGJ" :category :etf}
+ ;{:region :asia :name "SPDR S&P China" :symbol "GXC" :category :etf}
+;{:region :asia :name "PowerShares Golden Dragon USX China Portfolio" :symbol "EPGJ" :category :etf}
+  {:region :asia :name "IShares MSCI Taiwan" :symbol "EWT" :category :etf}
+  {:region :asia :name "IShares MSCI Hong Kong" :symbol "EWH" :category :etf}
+
+ {:region :asia :name "IShares MSCI India" :symbol "INDA"}
+  {:region :asia :name "IShares MSCI India 50" :symbol "INDY"}
+
+
+ {:region :asia :name "IShares MSCI Australia" :symbol "EWA" :category :etf}
+ {:region :asia :name "IShares MSCI Malaysia (Free)" :symbol "EWM" :category :etf}
+ {:region :asia :name "IShares MSCI Singapore" :symbol "EWS" :category :etf}
+ {:region :asia :name "IShares MSCI South Korea" :symbol "EWY" :category :etf}
+ {:region :asia :name "IShares MSCI Thailand" :symbol "THD" :category :etf}
+ {:region :asia :name "IShares MSCI Indonesia" :symbol "EIDO" :category :etf}
 
 
  ]
