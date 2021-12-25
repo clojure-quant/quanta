@@ -31,7 +31,8 @@
    [:div.bg-blue-300.m-5
     [:p.text-blue.text-xl "trateg docs"]
     [:p "with luck, some docs might be added soon"]
-    [video {:url "https://www.youtube.com/watch?v=JGhOa9TZYx8"}]]
+    ;[video {:url "https://www.youtube.com/watch?v=JGhOa9TZYx8"}]
+    ]
 
    ; goldly developer tools
    [:div.bg-blue-300.m-5
