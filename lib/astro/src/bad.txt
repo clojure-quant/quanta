@@ -1,0 +1,66 @@
+
+
+
+(defn dist->angle2 [loca locb]
+  (let [lon-a (:lon loca)
+        lat-a (:lat loca)
+        lon-b (:lon locb)
+        lat-b (:lat locb)
+        d-lon (- lon-b lon-a) ;double dlon = LongB - LongA;
+        d-lat (- lat-b lat-a) ;double dlat = LatB - LatA;
+        d-lon (deg->rad d-lon)
+        d-lat (deg->rad d-lat)
+        angle-rad (Math/atan2 d-lon d-lat)]
+        ; p1 = {x: lat1, y: lon1
+        ; angleRadians = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+        ; angleDeg = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
+   (rad->deg angle-rad)))
+
+    
+
+    
+    
+
+
+
+(defn dist->angle [loca locb]
+  (let [lon-a (:lon loca)
+        lat-a (:lat loca)
+        lon-b (:lon locb)
+        lat-b (:lat locb)
+        d-lon (- lon-b lon-a) ;double dlon = LongB - LongA;
+        d-lat (- lat-b lat-a) ;double dlat = LatB - LatA;
+        ; Haversine formula
+        ; http://www.movable-type.co.uk/scripts/GIS-FAQ-5.1.html
+        ; R.W. Sinnott, Virtues of the Haversine, Sky and Telescope, vol. 68, no. 2, 1984, p. 159
+         sindlat2 (Math/sin (/ d-lat 2.0)) ; double sindlat2 = sin(dlat / 2);
+         sindlon2 (Math/sin (/ d-lon 2.0)) ; double sindlon2 = sin(dlon / 2);
+         corde (* sindlat2 sindlat2 (Math/cos lat-a) (Math/cos lat-b) sindlon2 sindlon2)
+         ;  double corde = sindlat2 * sindlat2 + cos(LatA) * cos(LatB) * sindlon2 *sindlon2;
+         corde (if (> corde 1.0) 1.0 corde)] ; if (corde > 1) corde = 1;
+    (* 2.0 (Math/asin (Math/sqrt corde))) ;   return 2 * asin(sqrt(corde));
+  ))
+
+
+
+
+(defn coords->angle [loc1 loc2]
+  (let [lon-1 (:lon loc1)
+        lat-1 (:lat loc1)
+        lon-2 (:lon loc2)
+        lat-2 (:lat loc2)
+        ;_ (info "1 lat: " lat-1 "lng: " lon-1)
+        _ (info "2 lat: " lat-2 "lng: " lon-2)
+        d-lon (- lon-2 lon-1)
+        y (* (Math/sin d-lon) (Math/cos lat-2))
+        ; double x = Math.cos(lat1) * Math.sin(lat2) 
+        ;     - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+        x (- (* (Math/cos lat-1) (Math/sin lat-2))
+             (* (Math/sin lat-1) (Math/cos lat-2) (Math/cos d-lon)) )
+        brng (Math/atan2 y x)
+        brng (Math/toDegrees brng)
+        brng (rem (+ brng 360.0) 360.0)
+        brng (- 360.0 brng) ; count degrees counter-clockwise - remove to make clockwise
+  ]
+   brng
+  ))
