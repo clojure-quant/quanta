@@ -5,6 +5,8 @@
     [clojure.pprint :refer [print-table]]
     ))
 
+; https://github.com/astrolin/ephemeris/blob/develop/src/clj/ephemeris/points.clj
+
 (def sign-dict
 {0 {:sign :aries :dstart 0 :sun-time "MAR 21 - APR 19"}
  1 {:sign :taurus :dstart 30 :sun-time "APR 20 - MAY 20"}
@@ -26,6 +28,34 @@
     (get sign-dict q)))
 
 
+(defn aspect [angel]
+  (let [angel (Math/abs angel)]
+    (cond
+      (and (< angel 3)  (> angel -1)) :conjunction
+      (and (< angel 32) (> angel 28)) :thirty
+      (and (< angel 62) (> angel 58)) :sextile
+      (and (< angel 92) (> angel 88)) :square
+      (and (< angel 122) (> angel 118)) :trine
+      (and (< angel 182) (> angel 178)) :opposition
+      )))
+
+(defn find-aspects [res]
+  (let [points (:points res)
+        planets (keys points)]
+    (for [a planets
+          b planets]
+      (when-not (= a b)
+        (let [adeg (get-in points [a :lon])
+              bdeg (get-in points [b :lon])
+              angel (- adeg bdeg)
+              c (aspect angel)]
+          (when c
+            {:type c :a a :b b}))))))
+
+(defn find-current-aspects [res]
+  (->> (find-aspects res) 
+       (remove nil? )))
+
 (defn deg->rad [d]
   ; Degrees x (π/180) = Radians
   (* d (/ Math/PI 180.0)))
@@ -35,7 +65,7 @@
   (* r (/ 180.0 Math/PI)))
 
 
-(def geo-req {:utc "2022-03-14T21:43:00Z"
+(def geo-req {:utc "2022-03-15T00:13:00Z"
                    ;"2009-02-03T21:43:00Z"
               :geo {:lat 40.58 :lon -74.48}
               :angles [:Asc :MC :Angle]
@@ -67,6 +97,9 @@
    ]
      (info "astro res: " res)
      (print-table (point-table res))
+
+     (print-table (find-current-aspects  res))
+
 
 
 ))
