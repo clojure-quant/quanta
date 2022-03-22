@@ -39,7 +39,16 @@
       (and (< angel 182) (> angel 178)) :opposition
       )))
 
-(defn find-aspects [res]
+(defn subsets [n items]
+  (cond
+    (= n 0) '(())
+    (empty? items) '()
+    :else (concat (map
+                    #(cons (first items) %)
+                    (subsets (dec n) (rest items)))
+                    (subsets n (rest items)))))
+
+#_(defn find-aspects-duplicates [res]
   (let [points (:points res)
         planets (keys points)]
     (for [a planets
@@ -51,6 +60,25 @@
               c (aspect angel)]
           (when c
             {:type c :a a :b b}))))))
+
+
+(defn aspect-for [points]
+ (fn [[a b]]
+   (let [adeg (get-in points [a :lon])
+         bdeg (get-in points [b :lon])
+         angel (- adeg bdeg)
+         c (aspect angel)]
+     (when c
+       {:type c :a a :b b}))))
+
+
+(defn find-aspects [res]
+  (let [points (:points res)
+        planets (keys points)
+        combinations (subsets 2 planets)
+        calc-aspect (aspect-for points)]
+    (map calc-aspect combinations)))
+
 
 (defn find-current-aspects [res]
   (->> (find-aspects res) 
@@ -91,14 +119,17 @@
   )
 )
 
+
+
+
 (defn astro-test [& _]
-   (let [res (calc geo-req)
-         moon (get-in res [:points :Moon])
-   ]
+   (let [res (calc geo-req)]
      (info "astro res: " res)
      (print-table (point-table res))
 
      (print-table (find-current-aspects  res))
+
+     (println "subsets: " (subsets 2 [:a :b :c :d]))
 
 
 
