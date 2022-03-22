@@ -1,9 +1,10 @@
 (ns astro
   (:require 
+    [clojure.data :refer [diff]]
     [taoensso.timbre :refer [debug info warnf error]]
     [ephemeris.core :refer [calc]]
     [clojure.pprint :refer [print-table]]
-    ))
+    [tick.core :as t]))
 
 ; https://github.com/astrolin/ephemeris/blob/develop/src/clj/ephemeris/points.clj
 
@@ -106,6 +107,18 @@
               })
 
 
+(defn calc-date [sdt]
+  (calc (assoc geo-req :utc sdt)))
+
+(defn aspects-for-date [sdt]
+  (->> (calc-date sdt) 
+      find-current-aspects
+      (assoc {:date sdt} :aspects)
+      ))
+
+(defn print-aspects [{:keys [date aspects]}]
+  (print "\r\nAspects @ " date)
+  (print-table aspects))
 
 
 (defn point-table [res]
@@ -119,18 +132,148 @@
   )
 )
 
+; (diff (set [1 2 3]) (set [5 9 3 2 3 7]))
+
+(defn add-aspect [date new-aspect]
+  [new-aspect {:start date :end date}])
+
+(defn update-aspect [date existing-aspect]
+  [existing-aspect {:end date}])
+
+
+(defn map->vec [old-map]
+  ;(println "old-map: " old-map)
+  (map (fn [[k v]]
+         ; (println "processing: k: " k " v: " v)
+         (merge k v)) 
+        old-map))
+
+(defn deep-merge [a & maps]
+  (if (map? a)
+    (apply merge-with deep-merge a maps)
+    (apply merge-with deep-merge maps)))
+
+(defn add-date [v-aspect-durations {:keys [date aspects]}]
+  (let [aspect-duration-map-old @v-aspect-durations
+        ;_ (println "aspect-duration-map-old: " aspect-duration-map-old)
+        aspect-duration-keys (keys aspect-duration-map-old)
+        aspect-duration-keys (if aspect-duration-keys aspect-duration-keys '())
+        ;_ (println "aspect-old: " aspect-duration-keys)
+        ;_ (println "aspect-new: " aspects)
+        [old new same] (diff (into #{} aspect-duration-keys) (into #{} aspects))   
+        ;; NEW         
+        ;_ (println "new: " new)
+        new-data (if new 
+                   (into {} (map (partial add-aspect date) new))
+                   {})
+        ;_ (println "new data: " new-data)
+        ; SAME
+        ;_ (println "same: " same)
+        same-old (select-keys aspect-duration-map-old same)
+        ;_ (println "same-old: " same-old)
+        same-data (if same 
+                     (into {} (map (partial update-aspect date) same))
+                     {})           
+        ;_ (println "same data: " same-data)
+        aspect-duration-map (merge new-data (deep-merge same-old same-data))
+        ;_  (println "current aspect duration map: " aspect-duration-map)
+        ; OLD 
+        ;_ (println "old: " old)
+        old-map (select-keys aspect-duration-map-old old)
+        old-vec (map->vec old-map)
+        ;_ (println "old vec: " old-vec)
+        ]
+    ; old -> add event
+    ; new -> add to accumulator with start date
+    ; same -> add end date
+    (vreset! v-aspect-durations aspect-duration-map)
+    old-vec
+    
+    
+    ))
+
+
+(defn xf-aspect-duration []
+  (fn [xf]
+    (let [v-aspect-durations (volatile! {})]
+      (fn
+        ([] (xf))
+        ([result] 
+          (println "finished result: " @v-aspect-durations)
+          (xf result))
+        ([result {:keys [date aspects] :as input}]
+          (let [finished-aspects (add-date v-aspect-durations input)]
+            ;(println "finished aspects: " finished-aspects)
+            (xf result finished-aspects)
+            #_(doall 
+              (for [a finished-aspects]
+              (do
+                ;(println "finished aspect: " a "result: " result)
+                (xf result a))))))))))
+
+
+(defn calc-aspect-durations [dates]
+  (flatten (transduce (xf-aspect-duration) conj (map aspects-for-date dates))
+
+))
+
+
+(defn decrement [] 
+  (loop [y 20] (when (> y 0)
+(println y)
+(recur (- y 1)))))
+
+(defn dt-format [dt]
+  (let [dtz (t/zoned-date-time dt)]
+    (t/format (t/formatter :iso-instant) dtz))) ; :iso-date
+
+(defn date-range [date-begin date-end]
+  (let [date-begin (t/inst date-begin)
+        date-end (t/inst date-end)
+        d (t/new-duration 1 :hours)]
+    (loop [dt date-begin
+           r [(dt-format dt)]]
+      (let [dt-next (t/>> dt d)]
+        (if (t/< dt-next date-end)
+          (recur dt-next (conj r (dt-format dt-next)))
+          r)))))
+      
 
 
 
 (defn astro-test [& _]
+   ;(println "subsets: " (subsets 2 [:a :b :c :d]))
+   (println "diffs: " 
+      (diff (set [1 2 3]) (set [5 9 3 2 3 7])))
+      ;[#{1} #{7 9 5} #{3 2}]
    (let [res (calc geo-req)]
      (info "astro res: " res)
      (print-table (point-table res))
 
      (print-table (find-current-aspects  res))
 
-     (println "subsets: " (subsets 2 [:a :b :c :d]))
+     (print-aspects (aspects-for-date "2022-02-15T00:13:00Z"))
+     (print-aspects (aspects-for-date "2022-03-15T00:13:00Z"))
+     (print-aspects (aspects-for-date "2022-04-15T00:13:00Z"))
+  
+     (println "durations: " (print-table  (calc-aspect-durations ["2022-02-15T00:13:00Z" 
+                                      "2022-02-16T00:13:00Z"
+                                      "2022-02-17T00:13:00Z"
+                                      "2022-02-18T00:13:00Z"
+                                      "2022-02-19T00:13:00Z"
+                                      "2022-02-20T00:13:00Z"
+                                      "2022-02-21T00:13:00Z"
+                                      ])))
+     
+     #_(println "date range: " (date-range "2022-02-15T00:13:00Z" 
+                                      "2022-03-15T00:13:00Z"))
 
+     (println "durations: " 
+       (print-table  
+         [:type :a :b :start :end]
+         (calc-aspect-durations 
+           (date-range "2022-01-01T00:00:00Z" 
+                       "2023-01-01T00:00:00Z"))))
 
 
 ))
