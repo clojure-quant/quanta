@@ -188,10 +188,7 @@
     ; same -> add end date
     (vreset! v-aspect-durations aspect-duration-map)
     old-vec
-    
-    
-    ))
-
+  ))
 
 (defn xf-aspect-duration []
   (fn [xf]
@@ -214,14 +211,8 @@
 
 (defn calc-aspect-durations [dates]
   (flatten (transduce (xf-aspect-duration) conj (map aspects-for-date dates))
+  ))
 
-))
-
-
-(defn decrement [] 
-  (loop [y 20] (when (> y 0)
-(println y)
-(recur (- y 1)))))
 
 (defn dt-format [dt]
   (let [dtz (t/zoned-date-time dt)]
