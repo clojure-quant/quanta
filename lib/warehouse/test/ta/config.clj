@@ -4,7 +4,9 @@
 
 (def test-ta-config
   {:warehouse {:series  {:test-wh "/tmp/"}
-               :list "../resources/symbollist/"}})
+               :list "../../app/resources/symbollist/"}})
+
+(println "loading test config..")
 
 (config/set! :ta test-ta-config)
 

@@ -18,7 +18,7 @@ You can use libraries similar to matplotlib, scipy, statsmodels, and sklearn to 
 
 ##  data import 
 
-First, lets get some data. Goto demo directory: `cd profiles/demo`
+First, lets get some data. Goto demo directory: `cd app/demo`
 
 *Bybit Feed*
 Bybit feed does not need credentials. It has data since 2018-11 for BTC and ETH.
@@ -30,7 +30,7 @@ The creds file in `profiles/demo/creds.edn` has to contain your alphavantage api
 Alphavantage can download 5 symbols a minute. We have 40 demo symbols, so this will take a while.
 
 *symbol lists*
-`profile/resources/symbollist`contains edn files that contain symbols.
+`app/resources/symbollist`contains edn files that contain symbols.
 The name (without .edn) can be specified in the commandline.
 
 Timeseries data is stored as gzipped nippy files in db directory. The path is

@@ -22,13 +22,14 @@
 (defn process-item [symbols {:keys [list] :as item}]
   (if list 
     (concat symbols (load-list-raw list))
-    (concat symbols item)))
+    (conj symbols item)))
             
 
 ;; lists
 (defn load-list-full [name]
   (let [items (load-list-raw name)]
     (reduce process-item [] items)
+    ;items
       ))
 
 (defn load-lists-full [names]

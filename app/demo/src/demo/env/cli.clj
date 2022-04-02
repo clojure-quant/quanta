@@ -14,6 +14,7 @@
    [demo.data-import.import-bybit :as bybit]
    [demo.data-import.create-random :as rr]
    [demo.goldly.reval] ; side-effects
+   [demo.data-import.demo-bybit]
    )
   (:gen-class))
 
@@ -30,10 +31,14 @@
     [[#{"*"} :info]]})
   (case task
 
+    :bybit-test
+    (demo.data-import.demo-bybit/demo-bybit)
+
     :alphavantage-import
     (let [symbol (or symbol "fidelity-select")
           _ (info "alphavantage-import list: " symbol)
           symbols (load-list symbol)
+          _ (info "symbols: " (pr-str symbols))
           _ (info "alphavantage-import list: " symbol "nr symbols: " (count symbols))]
       (av/get-alphavantage-daily symbols))
 
@@ -41,6 +46,7 @@
     (let [symbol (or symbol "crypto")
           _ (info "bybit-import list: " symbol)
           symbols (load-list symbol)
+           _ (info "symbols: " (pr-str symbols))
           _ (info "bybit-import list: " symbol "nr symbols: " (count symbols))]
       (bybit/init-bybit-daily symbols)
       (bybit/init-bybit-15 symbols))

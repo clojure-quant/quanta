@@ -1,7 +1,7 @@
 (ns ta.helper.date
   (:require
    [clojure.edn]
-   [tick.core :as tick]
+   [tick.core :as t]
    ;[tick.timezone]
    ;[tick.locale-en-us]
    [cljc.java-time.instant :as ti]
@@ -19,11 +19,14 @@
 
 ; now
 
+(defn now []
+  (t/inst))
+
 (defn now-datetime []
-  (-> (tick/now) tick/date-time))
+  (-> (t/now) t/date-time))
 
 (defn now-date []
-  (-> (tick/now) tick/date))
+  (-> (t/now) t/date))
 
 ;; parsing
 
@@ -37,7 +40,7 @@
   (try
     (-> s
         (ld/parse date-fmt)
-        (tick/at  (tick/time "00:00:00")))
+        (t/at  (t/time "00:00:00")))
     (catch Exception _
       nil)))
 
@@ -54,7 +57,7 @@
 
 (defn date->epoch-second [dt]
   (-> dt
-      (tick/at (tick/time "13:00:06"))
+      (t/at (t/time "13:00:06"))
       datetime->epoch-second))
 
  ;(tick/at (tick/date "2021-06-20") (tick/time "13:00:06"))
@@ -72,25 +75,42 @@
 
 ;; ago
 
+
+(defn add-days [dt-inst days]
+  ; (t/+ due (t/new-period 1 :months)) this does not work
+  ; https://github.com/juxt/tick/issues/65
+  (-> (t/>> dt-inst (t/new-duration days :days))  
+      t/inst) ; casting to int is required, otherwise it returns an instance.
+  )
+
+(defn subtract-days [dt-inst days]
+  ; (t/+ due (t/new-period 1 :months)) this does not work
+  ; https://github.com/juxt/tick/issues/65
+  (-> (t/<< dt-inst (t/new-duration days :days))  
+      t/inst) ; casting to int is required, otherwise it returns an instance.
+  )
+
+
+
 (defn days-ago [n]
   (-> (now-datetime)
-      (tick/- (tick/new-duration n :days))
-        ;(tick/date)
+      (subtract-days n)
+      ;(t/date)
       ))
 
 ; *****************************************************************************
 (comment
 
-  (-> (tick/now)
-      (tick/in "UTC")
+  (-> (t/now)
+      (t/in "UTC")
       ;(tick/date)
       )
-  (tick/date-time)
+  (t/date-time)
 
   ; create
-  (tick/instant "1999-12-31T00:00:00Z")
-  (tick/date "2021-06-20")
-  (tick/date-time "2021-06-20T12:00:01")
+  (t/instant "1999-12-31T00:00:00Z")
+  (t/date "2021-06-20")
+  (t/date-time "2021-06-20T12:00:01")
 
   ; now
   (now-date)
@@ -120,17 +140,17 @@
   ;; experiment
 
   (require '[clojure.repl])
-  (clojure.repl/doc tick/date-time)
+  (clojure.repl/doc t/date-time)
 
-  (tick/+ (tick/date "2000-01-01")
-          (tick/new-period 1 :months))
+  (t/+ (t/date "2000-01-01")
+          (t/new-period 1 :months))
 
-  (tick/+ (tick/date-time)
-          (tick/new-period 1 :months))
+  (t/+ (t/date-time)
+       (t/new-period 1 :months))
 
   ; java.time.LocalDateTime  (only seconds)
-  (-> (tick/date "2021-06-20")
-      (tick/at  (tick/time "13:30:06"))
+  (-> (t/date "2021-06-20")
+      (t/at  (t/time "13:30:06"))
       ;(epoch-ldt)
       ;(->epoch-second)
       )
@@ -150,7 +170,7 @@
   (->
    ;(tick/instant "1999-12-31T00:59:59Z")
    (now-datetime)
-   (tick/in "UTC")
+   (t/in "UTC")
    ;(tick/date)
    ;class
    )

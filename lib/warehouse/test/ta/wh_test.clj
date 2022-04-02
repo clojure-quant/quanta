@@ -5,11 +5,6 @@
    [ta.warehouse :as wh]
    [ta.config]))
 
-(deftest test-symbollist
-  (let [symbol "fidelity-select"
-        l (wh/load-list symbol)]
-    (is (= (count l) 41))))
-
 (defn series-generate-save-reload
   [size name]
   (let [ts-original (random-dataset size)
