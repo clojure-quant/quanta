@@ -25,12 +25,12 @@
 ;; CONFIG - Tell TradingView which featurs are supported by server.
 
 (def server-config
-  {:supported_resolutions ["15" "D"] ; ["1" "5" "15" "30" "60" "1D" "1W" "1M"]
+  {:supports_time true  ; we send our server-time
    :supports_search true ;search and individual symbol resolve logic.
-   :supports_group_request false
    :supports_marks false
    :supports_timescale_marks false
-   :supports_time true  ; we send our server-time
+   :supports_group_request false
+   :supported_resolutions ["15" "D"] ; ["1" "5" "15" "30" "60" "1D" "1W" "1M"]
    :symbols_types [{:value "" :name "All"}
                    {:value "Crypto" :name "Crypto"}
                    {:value "Equity" :name "Equities"}
@@ -49,6 +49,7 @@
                ;{:value "AV" :name "Austria" :desc ""}
                ;{:value "LN" :name "London" :desc ""}
                ]})
+
 (defn config-handler [_]
   (info "tv/config")
   (res/response server-config))
@@ -206,6 +207,32 @@
         series (load-series symbol resolution from to)]
     (res/response series)))
 
+
+
+
+(def demo-marks
+ { "id":[0,1,2,3,4,5],
+    "time":[1568246400,1567900800,1567641600,1567641600,1566950400,1565654400],
+    "color":["red","blue","green","red","blue","green"],
+    "text":["Today","4 days back","7 days back + Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.","7 days back once again","15 days back","30 days back"],
+    "label":["A","B","CORE","D","EURO","F"],
+    "labelFontColor":["white","white","red","#FFFFFF","white","#000"],
+    "minSize":[14,28,7,40,7,14]
+  })
+
+(defn marks-handler [{:keys [query-params] :as req}]
+  ; https://demo_feed.tradingview.com/marks?symbol=AAPL&from=1488810600&to=1491226200&resolution=D
+  (info "tv/marks: " query-params)
+  (let [{:keys [symbol resolution from to]} (clojure.walk/keywordize-keys query-params)
+        from (Integer/parseInt from)
+        to (Integer/parseInt to)
+        ;series (load-series symbol resolution from to)
+        marks demo-marks
+        ]
+    (res/response marks)))
+
+
+
 (comment
   (datetime->epoch-second (tick/date-time "1980-04-01T00:00:00"))
   (datetime->epoch-second (tick/date-time "1980-05-01T00:00:00"))
@@ -260,9 +287,13 @@
                                      "to" "1303308614"}})
 ;  
   )
+
 (add-ring-handler :tv/time (wrap-api-handler time-handler))
 (add-ring-handler :tv/config (wrap-api-handler config-handler))
 (add-ring-handler :tv/symbols (wrap-api-handler symbols-handler))
 (add-ring-handler :tv/search (wrap-api-handler search-handler))
 (add-ring-handler :tv/history (wrap-api-handler history-handler))
+(add-ring-handler :tv/marks (wrap-api-handler marks-handler))
+
+
 

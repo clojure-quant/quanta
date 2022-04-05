@@ -2,7 +2,7 @@
  {:region :us :sector :technology :name "iShares US Technology" :symbol "IYW" :category :etf :also ["IGM" "IXN" "VGT" "XLK" "MTK" "QTEC"]}
  {:region :us :sector :consumer-goods    :name "iShares US Consumer Goods" :symbol "IYK" :category :etf :also ["VDC" "XLP"]}
  {:region :us :sector :consumer-services :name "iShares US Consumer Svcs" :symbol "IYC"  :category :etf :also ["PMR" "RTH" "XRT"]}
- {:region :us :sector :healthcare        :name "iShares US Healthcare" :symbol "IYH"  :category :etf:also ["VHT" "XLV"]}
+ {:region :us :sector :healthcare        :name "iShares US Healthcare" :symbol "IYH"  :category :etf :also ["VHT" "XLV"]}
  {:region :us :sector :financial :name "iShares US Financials" :symbol "IYF"  :category :etf :also ["VFH" "XLF" "KBE"]}
  {:region :us :sector :financial-services :name "iShares US Financial Svcs" :category :etf :symbol "IYG"}
  {:region :us :sector :real-estate :name "iShares US Real Estate" :symbol "IYR" :category :etf :also ["ICF" "VNQ" "RWR"]}

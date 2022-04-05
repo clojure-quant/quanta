@@ -10,12 +10,12 @@
 ; {:cap :broad :style :all :name "Dynamic MagniQuant" :symbol "PIQ"}
 
 ; Broad Market Growth
- {:cap :broad :style :growth :name "IShares Russell 3000 Growth" :symbol "IWZ" :category :etf}
+ ;{:cap :broad :style :growth :name "IShares Russell 3000 Growth" :symbol "IWZ" :category :etf} ; delisted
  ;{:cap :broad :style :growth :name "First Trust Growth" :symbol "FPX"}
  ;{:cap :broad :style :growth :name "First Trust Multi Cap Growth AlphaDEX" :symbol "FAD"}
  
 ; Broad Market Value
- {:cap :broad :style :value :name "IShares Russell 3000 Value" :symbol "IWW" :category :etf}
+ ; {:cap :broad :style :value :name "IShares Russell 3000 Value" :symbol "IWW" :category :etf} ; delisted
  ;{:cap :broad :style :value :name "First Trust Equity Income" :symbol "FDL"}
  ;{:cap :broad :style :value :name "First Trust Multi Cap Value AlphaDEX" :symbol "FAB"}
  

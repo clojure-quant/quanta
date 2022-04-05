@@ -13,7 +13,7 @@
  {:name "IShares iBoxx High Yield Corporate Bond" :symbol "HYG" :category :etf}
 
 ; International
- {:name "Emerging Market Bonds" :symbol "ESD" :category :etf}
+ ; {:name "Emerging Market Bonds" :symbol "ESD" :category :etf} ; delisted
  
 
  ;{:name "iShares Lehman Short Term Treasury Bond" :symbol "SHV"}

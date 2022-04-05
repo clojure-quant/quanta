@@ -35,8 +35,8 @@
 
 
 ; Americas -Country
- {:name "SPDR Emerging Latin America" :symbol "GML" :category :etf}
- ;{:name "IShares S&P Latin America 40" :symbol "ILF"}
+ ;{:name "SPDR Emerging Latin America" :symbol "GML" :category :etf} ; delisted ?
+ {:name "IShares S&P Latin America 40" :symbol "ILF"}
 
 ; Asia - Country
  ;{:name "SPDR S&P Emerging Asia Pacific" :symbol "GMF"}

@@ -38,13 +38,16 @@ stored in the config in [:ta :warehouse :series]. :crypto and :stocks are two di
 warehouses. Bybit goes to :crypto. Alphavantage goes to :stocks.
 
 *import*
-- alphavantage: `clj -X:run :task :alphavantage-import :symbol "test"`
-- bybit:  `clj -X:run :task :bybit-import :symbol "crypto"`
+- alphavantage: `clj -X:run :task :alphavantage-import :symbol "test"` or
+                `bb run alphavantage-import all-stocks`
+- bybit:  `clj -X:run :task :bybit-import :symbol "crypto"` or
+          `bb run bybit-import test`
 
 *append*
 - bybit: `clj -X:run :task :bybit-append :symbol "crypto"`
 
 *warehouse summary* `clj -X:run :task :warehouse`
+ `bb run warehouse-summary`
 
 *shuffle warehouse* `clj -X:run :task :shuffle` 
 This reads the :crypto warehouse, shuffles the returns and creates the :random warehouse.

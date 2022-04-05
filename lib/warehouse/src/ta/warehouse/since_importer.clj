@@ -11,10 +11,12 @@
 
 (defn init-symbol [w fn-get-history-since-as-ds
                    frequency since symbol]
-  (let [ds (fn-get-history-since-as-ds frequency since symbol)]
-    (info "imported " symbol " - " (tablecloth/row-count ds) "bars.")
+  (let [ds (fn-get-history-since-as-ds frequency since symbol)
+        c  (tablecloth/row-count ds)]
+    (info "imported " symbol " - " c "bars.")
     ;(println (pr-str d))
-    (wh/save-symbol w ds frequency symbol)))
+    (when (> c 0)
+      (wh/save-symbol w ds frequency symbol))))
 
 (defn init-symbols [w fn-get-history-since-as-ds frequency since symbols]
   (doall (map

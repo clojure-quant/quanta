@@ -200,17 +200,27 @@
             :crypto "Time Series (Digital Currency Daily)")]
     (get-field response f)))
 
-(defn- convert-bars- [series-type response]
+
+(defn extract-error [response]
+  (get response (keyword "Error Message")))
+
+
+(defn- convert-bars- [symbol series-type response]
   (let [bar-format (case series-type
                      :crypto bar-fields-crypto-
                      :adjusted bar-fields-adjusted-
-                     bar-fields-standard-)]
-    {:meta (extract-meta response)
-     :series (->> response
+                     bar-fields-standard-)
+        err (extract-error response)]
+    (if err
+      (do 
+        (error "get series error " symbol " error message: " err )
+        {:error err})
+      {:meta (extract-meta response)
+       :series (->> response
                   (get-field-series series-type)
                   (seq)
                   (map (partial convert-bar- bar-format series-type))
-                  (sort-by :date))}))
+                  (sort-by :date))})))
 
 (defn get-daily
   "size: compact=last 100 days. full=entire history"
@@ -221,7 +231,7 @@
            :datatype "json"}
           (fn [response]
             ;(println response)
-            (convert-bars- :daily response))))
+            (convert-bars- symbol :daily response))))
 
 (defn get-daily-adjusted
   "size: compact=last 100 days. full=entire history"
@@ -231,7 +241,7 @@
            :outputsize (name size)
            :datatype "json"}
           (fn [response]
-            (let [{:keys [meta series] :as result} (convert-bars- :adjusted response)]
+            (let [{:keys [meta series] :as result} (convert-bars- symbol :adjusted response)]
               (when (= 0 (count series))
                 (warn "no data returned for: " symbol)
                 (warn "response: " response))
@@ -247,7 +257,7 @@
            :outputsize (name size)
            :datatype "json"}
           (fn [response]
-            (convert-bars- :fx response))))
+            (convert-bars- symbol :fx response))))
 
 (defn get-daily-crypto
   "size: compact=last 100 days. full=entire history"
@@ -258,7 +268,7 @@
            :outputsize (name size)
            :datatype "json"}
           (fn [response]
-            (convert-bars- :crypto response))))
+            (convert-bars- symbol :crypto response))))
 
 (def kwCryptoRating- (keyword "Crypto Rating (FCAS)"))
 
