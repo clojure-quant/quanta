@@ -41,11 +41,18 @@
          (<= estart to))))
 
 
+(defn find-aspect [{:keys [type a b] :as mark}]
+  (and (= type :thirty)
+       (or (= a :Moon) (= b :Moon))
+       (or (= b :Uranus) (= b :Uranus))))
+
+
  (defn load-marks [symbol resolution from to]
    (let [all (load-edn)
          ;from (epoch-second->datetime from)
          ;to (epoch-second->datetime to)
          window (filter (inside-epoch-range from to) all)
+         window (filter find-aspect window)
          ]
      (info "aspect all:" (count all) " window: "(count window))
      window))
@@ -70,7 +77,7 @@
     :text (str type "\r\n " a " " b "\r\n " start)
     :color "blue" 
     :labelFontColor "white" 
-    :minSize 14
+    :minSize 28 ; 14
     })
 
 (defn col [marks k]
