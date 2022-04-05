@@ -52,7 +52,7 @@
          ;from (epoch-second->datetime from)
          ;to (epoch-second->datetime to)
          window (filter (inside-epoch-range from to) all)
-         window (filter find-aspect window)
+         ;window (filter find-aspect window)
          ]
      (info "aspect all:" (count all) " window: "(count window))
      window))
@@ -61,21 +61,53 @@
 
 (defn type->str [type]
   (case type
-    :trine "T"
-    :opposition "180"
     :conjunction "0"
     :square "90"
+    :opposition "180"
+
+    :trine "2"
     :sextile "60"
+    :sesquiquadrate "5" 
     :thirty "30"
+
+    :biquentile "B" ; bullish
+    :quintile "Q" ; 72" quintile 
+
+    :semi-square "ss" ; 45" semi-square very bearish
+    :quincunx "qc"
+    :septile "sl"
+    :triseptile "ts" 
+
     "?"))
 
+(defn type->color [type]
+  (case type
+    :conjunction "black" ; 180" bullish/bearish/neutral black
+    :square "black" ; 90" "bullish/bearish/neutral black
+    :opposition "black" ; 180" green-black
+
+    :trine "green" ; bullish
+    :sextile "green" ; bullish
+    :sesquiquadrate "green" ; bullish
+    :thirty "green" ; semi-sextile bullish
+    :biquentile "green" ; bullish
+    :quintile "green" ; 72" quintile bullish
+    :novile "green"
+    :binovile "green"
+
+    :semi-square "red" ; 45" semi-square very bearish
+    :quincunx "red"
+    :septile "red" ; 51.43" 
+    :triseptile "red" 
+    
+    "blue"))
 
  (defn convert-mark [{:keys [type a b start end estart eend]}]
    {:id (str a b start)
     :time estart
     :label (type->str type)
     :text (str type "\r\n " a " " b "\r\n " start)
-    :color "blue" 
+    :color (type->color type) 
     :labelFontColor "white" 
     :minSize 28 ; 14
     })

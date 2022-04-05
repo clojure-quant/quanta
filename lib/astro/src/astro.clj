@@ -38,6 +38,16 @@
       (and (< angel 92) (> angel 88)) :square
       (and (< angel 122) (> angel 118)) :trine
       (and (< angel 182) (> angel 178)) :opposition
+      (and (< angel 47) (> angel 43)) :semi-square ; :45 degree : semi-square
+      (and (< angel 74) (> angel 70)) :quintile ; :72 degree : quintile
+      (and (< angel 137) (> angel 133)) :sesquiquadrate ; 135" 
+      (and (< angel 146) (> angel 142)) :biquentile ; 144" 
+      (and (< angel 152) (> angel 148)) :quincunx ; 150" 
+      (and (< angel 53) (> angel 49)) :septile ; 51.43" 
+      (and (< angel 156) (> angel 152)) :triseptile ; 154.29" 
+      (and (< angel 42) (> angel 38)) :novile ; 40" 
+      (and (< angel 82) (> angel 78)) :binovile ; 80" 
+      ;(and (< angel 148) (> angel 152)) :parallel ; : degree 
       )))
 
 (defn subsets [n items]
