@@ -294,7 +294,7 @@
             "equity-sector"
             ;"equity-sector-industry" ; not yet finished
             "equity-style"
-            "currency"])
+            "currency-spot"])
 
 ;(def crisis [{:start (tc/to-long (t/date-time 2020 03 03))
 ;              :end (tc/to-long (t/date-time 2020 03 20))

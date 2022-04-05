@@ -54,7 +54,9 @@
                                                               "config" :tv/config
                                                               "search" :tv/search
                                                               "symbols" :tv/symbols
-                                                              "history" :tv/history}
+                                                              "history" :tv/history
+                                                              "marks" :tv/marks
+                                                              }
                                                        "storage/1.1/" {"charts" {:get  :tv-db/load-chart
                                                                                  :post :tv-db/save-chart
                                                                                  :put  :tv-db/modify-chart
@@ -81,7 +83,7 @@
                                        "bonds"
                                        "commodity-industry"
                                        "commodity-sector"
-                                       "currency"
+                                       "currency-spot"
                                        "equity-region"
                                        "equity-region-country"
                                        "equity-sector-industry"

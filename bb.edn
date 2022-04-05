@@ -164,6 +164,9 @@
          gann-tvcharts  {:doc "create gann tradingview-charts"
                          :task (webly/clojure "app/demo" "-X:run" ":task" ":gann")}
 
+         astro  {:doc "calculate aspects"
+                 :task (webly/clojure "lib/astro" "-X:astro-test")}
+
          notebook-eval  {:doc "evaluates notebook collections"
                          :task (webly/clojure "app/demo" "-X:run" ":task" ":nbeval")}
 

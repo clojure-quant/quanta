@@ -62,7 +62,9 @@
                                        "time" :tv/time
                                        "search" :tv/search
                                        "symbols" :tv/symbols
-                                       "history" :tv/history}
+                                       "history" :tv/history
+                                       "marks" :tv/marks
+                                       }
                                 "storage/1.1/" {"charts" {:get  :tv-db/load-chart
                                                           :post :tv-db/save-chart
                                                           :put  :tv-db/modify-chart
@@ -90,14 +92,16 @@
                           "bonds"
                           "commodity-industry"
                           "commodity-sector"
-                          "currency"
+                          "currency-spot"
                           "equity-region"
                           "equity-region-country"
                           "equity-sector-industry"
                           "equity-style"
                           "test"]}
       :tradingview {:charts-path   "../../target/tradingview-charts/"
-                    :template-path "../resources/tradingview-templates/"}}
+                    :template-path "../resources/tradingview-templates/"
+                    :marks-path "../../data/"
+                    }}
 
 
  :demo {:gann-data-file "../resources/gann.edn"}

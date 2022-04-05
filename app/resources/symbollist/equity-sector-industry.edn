@@ -72,9 +72,9 @@
  ;{:sector :technology :name "Computer Hardware" :symbol "PHW" :also ["IAH"] :category :etf} ; delisted
  {:sector :technology :name "Internet - diversified" :symbol "HHH" :also ["IIH" "BHH" "FDN"] :category :etf}
  {:sector :technology :name "Software" :symbol "IGV" :also ["PSJ" "SWH"] :category :etf}
- {:sector :technology :name "Semiconductor" :symbol "IGW" :also ["PSI" "SMH" "XSD"] :category :etf}
+ ;{:sector :technology :name "Semiconductor" :symbol "IGW" :also ["PSI" "SMH" "XSD"] :category :etf} ; delisted
  {:sector :technology :name "Networking" :symbol "IGN" :also ["PXQ" "BDH"] :category :etf}
- {:sector :technology :name "Nanotech Lux Nanotech" :symbol "PXN" :category :etf}
+ ;{:sector :technology :name "Nanotech Lux Nanotech" :symbol "PXN" :category :etf} ; delisted
 
 
  ;{:sector :telecom :name "Wireless (including telcos)" :symbol "PXN" :also ["PTE" "WMH"] :category :etf} ; delisted

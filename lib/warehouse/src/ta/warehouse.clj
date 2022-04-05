@@ -84,7 +84,7 @@
                     "bonds"
                     "commodity-industry"
                     "commodity-sector"
-                    "currency"
+                    "currency-spot"
                     "equity-region"
                     "equity-region-country"
                     "equity-sector-industry"

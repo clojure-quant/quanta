@@ -259,13 +259,15 @@
      #_(println "date range: " (date-range "2022-02-15T00:13:00Z" 
                                       "2022-03-15T00:13:00Z"))
 
-     (println "durations: " 
-       (print-table  
-         [:type :a :b :start :end]
-         (calc-aspect-durations 
-           (date-range "2022-01-01T00:00:00Z" 
-                       "2023-01-01T00:00:00Z"))))
-
-
+     (let [aspects (calc-aspect-durations 
+                     (date-range "2020-01-01T00:00:00Z" 
+                                 "2023-01-01T00:00:00Z"))
+          t (with-out-str
+              (print-table [:type :a :b :start :end] aspects))]                     
+       (println "durations: " t)
+       (spit "../../data/aspects.txt" t)
+       (spit "../../data/aspects.edn" (pr-str aspects))
+       )                            
+;
 ))
 
