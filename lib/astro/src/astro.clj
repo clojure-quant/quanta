@@ -5,6 +5,26 @@
     [ephemeris.core :refer [calc]]
     [clojure.pprint :refer [print-table]]
     [tick.core :as t]))
+  
+;Zodiac Symbols	Name Of Zodiac Symbol	Zodiac Sign Unicode
+; ♈︎	Aries (Ram)	U+2648
+; ♉︎	Taurus (Bull)	U+2649
+; ♊︎	Gemini (Twins)	U+264A
+; ♋︎	Cancer (Crab)	U+264B
+; ♌︎	Leo (Lion)	U+264C
+; ♍︎	Virgo (Virgin)	U+264D
+; ♎︎	Libra (Scale)	U+264E
+; ♏︎	Scorpio (Scorpion)	U+264F
+; ♐︎	Sagittarius (Archer)	U+2650
+; ♑︎	Capricorn (Sea-Goat)	U+2651
+; ♒︎	Aquarius (Waterbearer)	U+2652
+; ♓︎	Pisces (Fish)	U+2653
+
+;<p>I will display &spades;<p>
+;<p>I will display &#9824;<p>
+;<p>I will display &#x2660;<p>
+
+
 
 ; https://github.com/astrolin/ephemeris/blob/develop/src/clj/ephemeris/points.clj
 
