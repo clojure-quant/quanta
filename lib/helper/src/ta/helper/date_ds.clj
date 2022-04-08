@@ -9,6 +9,10 @@
    [ta.helper.date :as dt]
    [ta.helper.ds :refer [cols-of-type]]))
 
+(defn now []
+  (-> (tick/now)
+      (tick/date-time)))
+
 (defn days-ago [n]
   (-> (tick/now)
       (tick/date-time)
@@ -28,6 +32,15 @@
          (-> row
              :date
              (tick/>= date))))))
+
+(defn select-rows-interval [ds date-start date-end]
+  (tc/select-rows ds
+    (fn [row]
+      (let [date (:date row)]
+       (and (tick/>= date date-start)
+            (tick/<= date date-end))))))
+
+
 
 (defn add-year-and-month-date-as-local-date [ds]
   (-> ds

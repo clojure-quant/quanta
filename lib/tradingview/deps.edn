@@ -8,8 +8,8 @@
   prismatic/schema {:mvn/version "1.2.0"}
   nano-id/nano-id {:mvn/version "1.0.0"}
   differ/differ {:mvn/version "0.3.3"}
-  org.pinkgorilla/modular {:mvn/version "0.0.20"} ; persistence
-  org.pinkgorilla/webly {:mvn/version "0.4.564"} ; web handlers
+  org.pinkgorilla/modular {:mvn/version "0.0.22"} ; persistence
+  org.pinkgorilla/webly {:mvn/version "0.4.594"} ; web handlers
   ta/trateg {:local/root "../.." :deps/manifest :deps}
   ta/data {:local/root "../data" :deps/manifest :deps}
   ta/warehouse {:local/root "../warehouse" :deps/manifest :deps}}
@@ -30,7 +30,7 @@
 
   :goldly-docs
   {:extra-paths ["resources"]
-   :extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.458"}}
+   :extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.498"}}
    :exec-fn goldly.app/goldly-server-run!
    :exec-args {:profile "jetty"
                :config {:goldly {:lazy true
