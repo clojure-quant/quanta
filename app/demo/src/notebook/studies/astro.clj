@@ -9,7 +9,9 @@
    [ta.helper.print :refer [print-all]]
    [ta.warehouse :refer [load-symbol]]
    [ta.helper.date-ds :refer [select-rows-interval days-ago days-ago-instant now]]
-   [ta.helper.returns :refer [log-return]]))
+   [ta.helper.returns :refer [log-return]]
+   [astro.windowstats :refer [window-stats]]
+   ))
 
 
 ;; load aspects
@@ -46,62 +48,61 @@
   (-> (load-aspects) (select-aspects-until-now)))
 
 
-;; interval return
-
-(defn select-first-last [ds]
-  (let [index-start 0
-        index-end (tc/row-count ds)
-        index-end (if (= 0 index-end) 0 (dec index-end))]
-    ;(println "indice: " [index-start index-end])
-    (tc/select-rows ds [index-start index-end])))
-
-
-(defn interval-change [ds dt-start dt-end]
-  (let [ds-interval (select-rows-interval ds dt-start dt-end)
-        rc (tc/row-count ds-interval)]
-    (if (> rc 0)
-      (let [ds-first-last (select-first-last ds-interval)
-            vec-first-last (:close ds-first-last)
-            [first last] vec-first-last
-            change (-> (/ last first) (- 1.0) (* 100.0))]
-        change
-        {:chg change :bars rc}
-        )
-      {:chg 0.0 :bars 0})))
 
 ;; aspect return
 
 (defn assoc-aspect-return [ds {:keys [start end] :as aspect}]
-  (merge aspect (interval-change ds start end)))
+  (merge aspect (window-stats ds start end)))
 
  (defn calc-aspect-return []
   (let [aspects (load-aspects-until-now)
-        ds (load-symbol :crypto "15" "BTCUSD")
-        ]
+        ds (load-symbol :crypto "15" "BTCUSD")]
     (map (partial assoc-aspect-return ds) aspects)))
 
-(defn aspect-mean [ds-aspect]
+(defn aspect-group-stats [ group-by ds-aspect]
   (-> ds-aspect
-      (tc/group-by [:type :a :b])
+      (tc/group-by group-by)
       (tc/aggregate 
         {:count (fn [ds]
                  (->> ds
                       :chg
                       count))
-         :avg-bars (fn [ds]
+         :bars (fn [ds]
                      (->> ds
                       :bars
-                      fun/mean))
+                      fun/mean
+                      int))
          :mean (fn [ds]
                  (->> ds
-                 :chg
-                 fun/mean))})))
+                      :chg
+                      fun/mean
+                      int))
+         :med (fn [ds]
+                  (->> ds
+                       :chg
+                       fun/median
+                       int))
+         :min (fn [ds]
+                (-> (apply min (:chg ds)) int))
+         :max (fn [ds]
+                (-> (apply max (:chg ds)) int))
+         :trend (fn [ds]
+                 (->> ds
+                      :trend
+                      fun/mean
+                      (* 100.0 )
+                      int
+                      ))
+         })))
 
-(defn calc-aspect-stats []
-  (-> (->> (calc-aspect-return)
-           tc/dataset
-           aspect-mean)
-      (tc/order-by [:type :a :b])))
+(defn calc-aspect-stats [group-by]
+  (let [ds-all (->> (calc-aspect-return)
+                    tc/dataset)
+        ds-groups (-> (->> ds-all
+                        (aspect-group-stats group-by))
+                   (tc/order-by [:type :a :b]))]
+    {:groups ds-groups
+     :all ds-all}))
 
 (defn select-moon-aspects [ds]
   (tc/select-rows
@@ -115,19 +116,24 @@
    (fn [{:keys [a b]}]
      (not (or (= a :Moon) (= b :Moon))))))
 
+(defn select-aspect-type [ds T A B]
+  (tc/select-rows 
+   ds
+   (fn [{:keys [type a b]}]
+     (and (= type T) (= a A) (= b B)))))
 
 
-(defn demo []
-  (let [ds (load-symbol :crypto "15" "BTCUSD")
-        dt-start (days-ago 50)
-        dt-end (days-ago 20)
+(defn print-stats [ds]
+  (let [ds (tc/select-columns ds [:type :a :b :bars :count :trend :mean :med :min :max])]
+    (print-all ds)))
+
+
+(defn print-aspect-type [data T A B]
+  (println "ASPECT LIST: "  T A B)
+  (let [ds (select-aspect-type (:all data) T A B)
+        ds (tc/select-columns ds [:start :chg-l :chg-r :chg :trend :bars]) ; :end
         ]
-    (count ds)
-    (println ds)
-    (println "dt-start " dt-start "dt-end" dt-end)
-    (println (select-rows-interval ds dt-start dt-end))
-    (println "interval change: " (interval-change ds dt-start dt-end))
-    ))
+    (print-all ds)))
 
 
 (comment
@@ -141,13 +147,7 @@
   (-> (load-aspects-until-now) last)
 
   (clojure.pprint/print-table (load-aspects-until-now))
-  ; bars
-  (let [ds (load-symbol :crypto "15" "BTCUSD")
-        dt-start (days-ago 50)
-        dt-end (days-ago 20)]
-    (println ds)
-    (println "interval " dt-start "-" dt-end " change: " (interval-change ds dt-start dt-end))
-    (println (select-first-last ds)))
+  
   ; aspect return
   (let [ds (load-symbol :crypto "15" "BTCUSD")
         a (-> (load-aspects-until-now) first)]
@@ -163,16 +163,28 @@
        tc/dataset
        aspect-mean)
 
-  (def ds-stats (calc-aspect-stats))
+  (def data (calc-aspect-stats [:type]))  
+
+  (def data (calc-aspect-stats [:type :a :b]))
+
+  
+  
 
   (do
     (println "MOON ASPECT STATS:")
-    (print-all (select-moon-aspects ds-stats)))
+    (print-stats (select-moon-aspects (:groups data))))
   
   (do
     (println "ASPECT STATS (MOON EXCLUDED):")
-    (print-all (remove-moon-aspects ds-stats)))
+    (print-stats (remove-moon-aspects (:groups data))))
   
+  (let [type :trine
+        a  :Moon
+        b :Jupiter]
+    (print-aspect-type data type a b))
+
+
+
 
   (demo)
 
