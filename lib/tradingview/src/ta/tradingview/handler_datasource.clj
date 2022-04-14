@@ -22,14 +22,14 @@
 (defn time-handler [_]
   (info "tv/time")
   (let [now-epoch (-> (now-datetime) datetime->epoch-second)]
-    (res/response now-epoch)))
+    (res/response (str now-epoch))))
 
 ;; CONFIG - Tell TradingView which featurs are supported by server.
 
 (def server-config
   {:supports_time true  ; we send our server-time
    :supports_search true ;search and individual symbol resolve logic.
-   :supports_marks true
+   :supports_marks false ; true
    :supports_timescale_marks false
    :supports_group_request false
    :supported_resolutions ["15" "D"] ; ["1" "5" "15" "30" "60" "1D" "1W" "1M"]

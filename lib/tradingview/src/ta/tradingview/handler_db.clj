@@ -93,3 +93,24 @@
 (add-ring-handler :tv-db/modify-chart (wrap-api-handler modify-chart-handler))
 (add-ring-handler :tv-db/delete-chart (wrap-api-handler delete-chart-handler))
 (add-ring-handler :tv-db/load-chart (wrap-api-handler load-chart-handler))
+
+(defn load-template-handler
+  "returns eithe chart-template-list or chart-template"
+  [{:keys [query-params]}]
+  (let [{:keys [client user chart]} (clojure.walk/keywordize-keys query-params);  ;(coerce/coercer CommentRequest coerce/json-coercion-matcher)
+        ]
+    (info "load template :" query-params)
+    (if chart
+      (if-let [template-data [] ;(load-chart-boxed client user chart)
+               ]
+        (res/response {:status "ok" :data template-data})
+        (res/response {:status "error" :error "template not found."}))
+      (if-let [template-list [] ; (chart-list client user)
+               ]
+        (res/response {:status "ok" :data template-list})
+        (res/response {:status "error" :error "template-list not found."})))))
+
+(add-ring-handler :tv-db/load-template (wrap-api-handler load-template-handler))
+
+
+  
