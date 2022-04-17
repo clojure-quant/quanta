@@ -50,6 +50,20 @@
 (eval-code!
  (tv/add-shapes [{:time 1649791880}] [{:shape "vertical_line"}]))
 
+(eval-code!
+ (tv/add-shapes [{:time 1649791880
+                  :price 40000}] 
+                {:shape "arrow_up" ; arrow_down arrow_left arrow_right price_label arrow_marker flag
+                 :text "🚀"
+                 ;:location=location.belowbar
+                 :color "#32CD32"
+                 ;textcolor=color.new(color.white, 0)
+                 :offset 0 
+                 ;:size size.auto
+                 }))
+
+
+plotshape(buy == 1, text=, style=shape., 
 
 (eval-code!
  (tv/add-shapes

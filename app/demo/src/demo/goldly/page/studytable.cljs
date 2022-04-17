@@ -19,8 +19,8 @@
     (if data
       [:div
         ;[:div.bg-red-500 (pr-str (:table data))]
-       [:div {:style {:width "40cm"
-                      :height "70vh"
+       [:div {:style {:width "100%" ;"40cm"
+                      :height "70vh" ; "100%" ; 
                       :background-color "blue"}}
         [aggrid {:data (:table data)
                  :box :fl
