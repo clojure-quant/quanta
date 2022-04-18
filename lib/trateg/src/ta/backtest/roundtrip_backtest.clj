@@ -108,11 +108,11 @@
   (let [algo-options (dissoc options :w :symbol :frequency :entry-cols)
         ds-study (-> ds-bars
                      (algo algo-options)
-                     trade-signal)
-        ds-roundtrips (when (:signal ds-study)
-                        (calc-roundtrips ds-study options))]
-    {:ds-study ds-study
-     :ds-roundtrips ds-roundtrips}))
+                     trade-signal)]
+    (if (:signal ds-study)
+      {:ds-study ds-study
+       :ds-roundtrips (calc-roundtrips ds-study options)}
+      {:ds-study ds-study})))
 
 (defn run-backtest
   "algo has to create :position column

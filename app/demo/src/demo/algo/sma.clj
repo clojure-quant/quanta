@@ -1,7 +1,8 @@
 (ns demo.algo.sma
   (:require
    [tablecloth.api :as tc]
-   [ta.series.ta4j :as ta4j]))
+   [ta.series.ta4j :as ta4j]
+   [ta.algo.manager :refer [add-algo]]))
 
 (defn add-sma-indicator
   ""
@@ -33,3 +34,13 @@
         signal (into [] (map calc-sma-signal sma-st sma-lt))]
     (tc/add-columns ds-study {:signal signal})))
 
+
+(add-algo 
+  {:name "sma-trendfollow"
+   :comment "best strategy so far!"
+   :algo sma-signal
+   :options {:w :crypto
+             :symbol "ETHUSD"
+             :frequency "15"
+             :sma-length-st 20
+             :sma-length-lt 200}})

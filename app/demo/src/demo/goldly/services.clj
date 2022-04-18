@@ -6,8 +6,9 @@
    [ta.helper.date-ds :refer [ds-convert-col-instant->localdatetime]]
    [ta.warehouse :as wh]
    [ta.warehouse.overview :refer [warehouse-overview]]
+   [ta.algo.manager :refer [algo-names algo-run-browser]]
    [demo.env.config] ; side-effects
-   [demo.env.algos :refer [algo-names algo-metrics algo-table algo-chart]]
+   [demo.env.algos] ; side-effects
    [ta.gann.svg-plot :refer [get-gann-spec get-boxes]]))
 
 (defn overview-map [w f]
@@ -28,9 +29,7 @@
 
   ; algo
   :algo/names algo-names
-  :algo/metrics algo-metrics  ; used in backtest
-  :algo/table algo-table      ; used in study-table
-  :algo/chart algo-chart      ; used in study-highchart
+  :algo/run algo-run-browser 
 
   ; gann
   :gann/chart get-gann-spec

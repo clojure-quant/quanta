@@ -110,4 +110,26 @@
                                     .getIndex)}))))
 
 
+(comment
+   (require '[ta.helper.date-ds  :refer [days-ago]])
+   (require '[tablecloth.api :as tc])
+(def ds
+  (-> {:open [10.0 10.6 10.7]
+       :high [10.0 10.6 10.7]
+       :low [10.0 10.6 10.7]
+       :close [10.0 10.6 10.7]
+       :volume [10.0 10.6 10.7]
+       :date [(days-ago 3) (days-ago 2) (days-ago 1)]}
+      tc/dataset))
+  ds
+  (ds->ta4j-ohlcv ds)
+  (ds->ta4j-close ds)
+  (def close  (ds->ta4j-close ds))
+
+  (ind :SMA close 2)
+  
+  
+ ; 
+  )
+
 

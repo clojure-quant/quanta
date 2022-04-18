@@ -1,6 +1,8 @@
 (ns ta.algo.buy-hold
   (:require
-   [tablecloth.api :as tc]))
+   [tablecloth.api :as tc]
+   [ta.algo.manager :refer [add-algo]]
+   ))
 
 (defn buyhold-signal-bar-length [n]
   (concat [:buy]
@@ -14,3 +16,12 @@
 
 (defn buy-hold-signal [ds _ #_options]
   (tc/add-columns ds {:signal (-> ds tc/row-count buyhold-signal-bar-length)}))
+
+(add-algo 
+ {:name "buy-hold"
+  :comment "much better than b/h nasdaq"
+  :algo buy-hold-signal
+  :options {:w :stocks
+            :symbol "SPY"
+            :frequency "D"}})
+

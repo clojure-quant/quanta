@@ -6,7 +6,9 @@
    [ta.helper.ago :refer [xf-ago]]
    [ta.backtest.signal :refer [running-index-vec]]
    [ta.series.signal :refer [prior-int cross-up cross-down price-when]]
-   [ta.gann.gann :refer [find-quadrant get-quadrant]]))
+   [ta.gann.gann :refer [find-quadrant get-quadrant]]
+   [ta.algo.manager :refer [add-algo]]
+   ))
 
 ;; up/down gann diagonal (for base box)
 
@@ -110,6 +112,34 @@
 
 ;:cross (price-when px sr-cross)
      )))
+
+(add-algo 
+  {:name "gann"
+   :comment ""
+   :algo algo-gann-signal
+   :options {:w :crypto
+             :symbol "BTCUSD"
+             :frequency "D"
+             :box {:ap 8000.0
+                   :at 180
+                   :bp 12000.0
+                   :bt 225}
+             :axes-spec [{:sr-up-0 "line"
+                          :sr-up-1 "line"
+                          :sr-up-2 "line"
+                          :sr-down-0 {:type "line" :color "red"}
+                          :sr-down-1 {:type "line" :color "red"}
+                          :sr-down-2 {:type "line" :color "red"}}
+                         {:cross-up-close "column"
+                          :cross-down-close "column"}
+                        {:qp "column"
+                         ;:qt "column"
+                        }
+                       ;{:index "column"}
+                       ; {:qt-jump-close "column"}
+                       ]}})
+
+
 (comment
 
   (sr box 29 240)

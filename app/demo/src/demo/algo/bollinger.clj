@@ -4,7 +4,9 @@
    [tablecloth.api :as tc]
    [ta.series.ta4j :as ta4j]
    [ta.backtest.signal :refer [add-running-index]]
-   [ta.helper.window :refer [drop-beginning calc-trailing-true-counter]]))
+   [ta.helper.window :refer [drop-beginning calc-trailing-true-counter]]
+    [ta.algo.manager :refer [add-algo]]
+   ))
 
 (defn add-bollinger-indicator
   "adds bollinger indicator to dataset
@@ -12,6 +14,7 @@
    * Upper Band = 20-day SMA + (20-day standard deviation of price x 2) 
    * Lower Band = 20-day SMA - (20-day standard deviation of price x 2)"
   [ds {:keys [sma-length stddev-length mult-up mult-down] #_:as #_options}]
+  ;(println "ADDING BOLLINGER sma length: " sma-length)
   (let [; input data needed for ta4j indicators
         ;bars (ta4j/ds->ta4j-ohlcv ds)
         close (ta4j/ds->ta4j-close ds)
@@ -23,10 +26,12 @@
         bb-lower (ta4j/ind :bollinger/BollingerBandsLower bb-middle stddev (ta4j/num-decimal mult-down))
         ; calculate the indicators
         bb-upper-values  (ta4j/ind-values bb-upper)
-        bb-lower-values  (ta4j/ind-values bb-lower)]
+        bb-lower-values  (ta4j/ind-values bb-lower)
+        ]
     (-> ds
         (tc/add-column :bb-lower bb-lower-values)
-        (tc/add-column :bb-upper bb-upper-values))))
+        (tc/add-column :bb-upper bb-upper-values)
+        )))
 
 (defn calc-is-above [{:keys [close bb-upper] #_:as #_row}]
   (> close bb-upper))
@@ -60,10 +65,46 @@
     (-> ds-study
         add-running-index
         add-above-below
-        add-trailing-count)))
+        add-trailing-count
+        )))
 
 (defn filter-bollinger-events [ds-study options]
   (-> ds-study
       (drop-beginning (:sma-length options))
       (tc/select-rows is-above-or-below)
       filter-count-1))
+
+
+(add-algo
+ {:name "bollinger"
+  :comment "just the data"
+  :algo add-bollinger-with-signal
+  :options {:w :stocks
+            :symbol "SPY"
+            :frequency "D"
+            :sma-length 30 
+            :stddev-length 30 
+            :mult-up 1.0
+            :mult-down 1.0
+            
+            }})
+
+
+(comment
+  (require '[ta.helper.date-ds  :refer [days-ago]])
+  (def ds
+    (-> {:close [10.0 10.6 10.7]
+         :date [(days-ago 1) (days-ago 2) (days-ago 3)]}
+        tc/dataset))
+  (require '[ta.algo.manager :refer [col-info]]) 
+  (col-info ds)
+
+   (ta4j/ds->ta4j-close ds)
+  
+
+    #_(add-bollinger-indicator {:sma-length 3
+                                :stddev-length 3
+                                :mult-up 1.0
+                                :mult-down 1.0}))
+  ;
+  )

@@ -33,11 +33,11 @@
      [:td (:avg-bars-loss rt-metrics)]]]])
 
 (defn roundtrips-view [roundtrips]
-  [:div
+  [:div.h-full.w-full.flex.flex-col
    [:h1 "roundtrips " (count roundtrips)]
    (when (> (count roundtrips) 0)
-     [:div {:style {:width "40cm"
-                    :height "70vh"
+     [:div {:style {:width "100%" ;"40cm"
+                    :height "100%" ; "70vh"
                     :background-color "blue"}}
       [aggrid {:data roundtrips
                :box :fl
@@ -45,11 +45,11 @@
                :paginationAutoPageSize true}]])])
 
 (defn navs-view [navs]
-  [:div
+  [:div.h-full.w-full.flex.flex-col
    [:h1 "navs " (count navs)]
    (when (> (count navs) 0)
-     [:div {:style {:width "40cm"
-                    :height "70vh"
+     [:div {:style {:width "100%" ; "40cm"
+                    :height "100%" ; "70vh"
                     :background-color "blue"}}
       [aggrid {:data navs
                :box :fl

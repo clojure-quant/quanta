@@ -3,7 +3,8 @@
    [tech.v3.datatype.functional :as fun]
    [tablecloth.api :as tc]
    [ta.series.ta4j :as ta4j]
-   [ta.helper.ago :refer [xf-ago]]))
+   [ta.helper.ago :refer [xf-ago]]
+   [ta.algo.manager :refer [add-algo]]))
 
 (defn calc-atr
   "calculates ATR for the price series in dataset"
@@ -68,3 +69,14 @@
                         :lower-1 lower-1
                         :upper-1 upper-1})))
 
+ ; supertrend
+   
+(add-algo 
+   {:name "supertrend"
+    :comment "a 15min strategy should be better than daily moon"
+    :algo supertrend-signal
+    :options {:w :crypto
+              :symbol "ETHUSD"
+              :frequency "15"
+              :atr-length 20
+              :atr-mult 0.7}})

@@ -1,4 +1,4 @@
-(ns demo.goldly.repl-experiment
+(ns demo.goldly.repl.tradingview
   (:require
    [goldly.scratchpad :refer [eval-code!]]))
 
@@ -41,7 +41,10 @@
 (eval-code!
  (tv/get-chart))
 
+;; SHAPES
 
+;; the MD file is copied in lib/tradingview
+;; https://github.com/bitblockart/tradingview-charting-library/blob/master/wiki/Shapes-and-Overrides.md
 
 (eval-code!
  (tv/add-shapes [{:time 1649791880}] {:shape "vertical_line"}))
@@ -49,6 +52,7 @@
 ; this adds a flag (it might be a bug, or I dont know..)
 (eval-code!
  (tv/add-shapes [{:time 1649791880}] [{:shape "vertical_line"}]))
+
 
 (eval-code!
  (tv/add-shapes [{:time 1649791880
@@ -63,13 +67,36 @@
                  }))
 
 
-plotshape(buy == 1, text=, style=shape., 
+; plotshape(buy == 1, text=, style=shape., 
 
 (eval-code!
  (tv/add-shapes
    [{:time 1625764800 :price 45000}
     {:time 1649191891 :price 50000}]
     {:shape "gannbox_square"}))
+
+
+(eval-code!
+ (tv/add-shapes
+  [{:time 1625764800 :price 45000}
+   {:time 1649191891 :price 50000}
+   {:time 1649291891 :price 55000}
+   {:time 1649391891 :price 50000}
+   {:time 1649491891 :price 40000}]
+  {:shape "xabcd_pattern"}))
+
+
+tradingViewWidget.chart.createMultipointShape(
+        // indicator points
+        [
+           
+        ],
+        // settings/overrrides
+        {
+            shape: ''
+        }
+    )
+
 
 
 
@@ -91,6 +118,12 @@ plotshape(buy == 1, text=, style=shape.,
 
 (eval-code!
   (tv/add-study "MACD" [14 30 "close" 9]))
+
+(eval-code!
+ (tv/add-study "Compare" ["open" "AAPL"]))
+;Compare study has 2 inputs: [dataSource, symbol]. 
+;Supported dataSource values are: ["close", "high", "low", "open"].
+
 
 ;; not working..
 (eval-code! 
