@@ -20,6 +20,9 @@
  :aliases
  {:outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
              :main-opts ["-m" "antq.core"]}
+  :cljfmt {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
+           :main-opts ["-m" "cljfmt.main"
+                       "--indents" "cljfmt.edn"]}
 
   ; run with: clojure -X:run :task ':bybit-import' :symbol-list "currency-spot"
   ; see README.md for available tasks
@@ -30,7 +33,7 @@
         }
 
 
-  :goldly-docs {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.499"}}
+  :goldly-docs {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.500"}}
                 :exec-fn goldly.app/goldly-server-run!
                 :exec-args {:profile "jetty"
                             :config "ta-config.edn"}}

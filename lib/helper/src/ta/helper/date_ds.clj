@@ -35,12 +35,10 @@
 
 (defn select-rows-interval [ds date-start date-end]
   (tc/select-rows ds
-    (fn [row]
-      (let [date (:date row)]
-       (and (tick/>= date date-start)
-            (tick/<= date date-end))))))
-
-
+                  (fn [row]
+                    (let [date (:date row)]
+                      (and (tick/>= date date-start)
+                           (tick/<= date date-end))))))
 
 (defn add-year-and-month-date-as-local-date [ds]
   (-> ds

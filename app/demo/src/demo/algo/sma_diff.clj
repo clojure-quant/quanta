@@ -3,8 +3,7 @@
    [tablecloth.api :as tc]
    [tech.v3.datatype.functional :as dfn]
    [ta.series.indicator :refer [sma]]
-   [ta.algo.manager :refer [add-algo]]
-   ))
+   [ta.algo.manager :refer [add-algo]]))
 
 (defn sma-diff-indicator
   [ds-bars {:keys [sma-length-st sma-length-lt st-mult] #_:as #_options
@@ -23,21 +22,19 @@
         (tc/add-column :sma-lt sma-lt)
         (tc/add-column :sma-diff sma-diff))))
 
-
 (add-algo
  {:name "sma-diff"
   :comment "experiment"
   :algo sma-diff-indicator
   :options {:w :crypto
-             :symbol "BTCUSD"
-             :frequency "D"
-             :st-mult 2.0
-             :sma-length-st 5
-             :sma-length-lt 20
-             :axes-spec [{:sma-st "line"
-                          :sma-lt "line"
-                          :sma-diff {:type "line" :color "red"}}]}})
-
+            :symbol "BTCUSD"
+            :frequency "D"
+            :st-mult 2.0
+            :sma-length-st 5
+            :sma-length-lt 20
+            :axes-spec [{:sma-st "line"
+                         :sma-lt "line"
+                         :sma-diff {:type "line" :color "red"}}]}})
 
 (comment
 

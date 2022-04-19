@@ -75,23 +75,19 @@
 
 ;; ago
 
-
 (defn add-days [dt-inst days]
   ; (t/+ due (t/new-period 1 :months)) this does not work
   ; https://github.com/juxt/tick/issues/65
-  (-> (t/>> dt-inst (t/new-duration days :days))  
+  (-> (t/>> dt-inst (t/new-duration days :days))
       t/inst) ; casting to int is required, otherwise it returns an instance.
   )
 
 (defn subtract-days [dt-inst days]
   ; (t/+ due (t/new-period 1 :months)) this does not work
   ; https://github.com/juxt/tick/issues/65
-  (-> (t/<< dt-inst (t/new-duration days :days))  
+  (-> (t/<< dt-inst (t/new-duration days :days))
       t/inst) ; casting to int is required, otherwise it returns an instance.
   )
-
-
-
 (defn days-ago [n]
   (-> (now-datetime)
       (subtract-days n)
@@ -143,7 +139,7 @@
   (clojure.repl/doc t/date-time)
 
   (t/+ (t/date "2000-01-01")
-          (t/new-period 1 :months))
+       (t/new-period 1 :months))
 
   (t/+ (t/date-time)
        (t/new-period 1 :months))

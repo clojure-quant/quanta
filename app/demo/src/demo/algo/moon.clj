@@ -3,8 +3,7 @@
    [tablecloth.api :as tc]
    [tech.v3.datatype :as dtype]
    [ta.series.moon :refer [inst->moon-phase-kw]]
-   [ta.algo.manager :refer [add-algo]]
-   ))
+   [ta.algo.manager :refer [add-algo]]))
 
 (defn add-moon-indicator [ds-bars _]
   (tc/add-column
@@ -24,11 +23,10 @@
         signal (into [] (map calc-moon-signal (:phase ds-study)))]
     (tc/add-columns ds-study {:signal signal})))
 
-
-(add-algo 
-  {:name "moon"
-   :comment "very good - 2:1"
-   :algo moon-signal
-   :options {:w :stocks
-             :symbol "SPY"
-             :frequency "D"}})
+(add-algo
+ {:name "moon"
+  :comment "very good - 2:1"
+  :algo moon-signal
+  :options {:w :stocks
+            :symbol "SPY"
+            :frequency "D"}})

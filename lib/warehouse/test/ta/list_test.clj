@@ -4,7 +4,6 @@
    [ta.warehouse :as wh]
    [ta.config]))
 
-
 (deftest test-symbollist
   (let [symbol "fidelity-select"
         l (wh/load-list symbol)]
@@ -15,7 +14,4 @@
   (let [l-test (wh/load-list-full "test")
         l-test-r (wh/load-list-full "test-recursive")]
     (println "list full: " (pr-str l-test-r))
-    (is (= (count l-test-r) (inc (count l-test))))
-  
-  ))
- 
+    (is (= (count l-test-r) (inc (count l-test))))))

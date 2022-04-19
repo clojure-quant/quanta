@@ -13,22 +13,19 @@
    [modular.persist.protocol :refer [save loadr]]
    [modular.helper.id :refer [guuid-str]]
    [modular.config :refer [get-in-config]]
-   [ta.helper.date :refer [now-datetime datetime->epoch-second epoch-second->datetime]]
-   ))
-
+   [ta.helper.date :refer [now-datetime datetime->epoch-second epoch-second->datetime]]))
 
 ;{:type :thirty, :a :Moon, :b :Venus, :start "2020-01-01T00:00:00Z", :end "2020-01-01T00:00:00Z"}
 
 (defn filename-mark  []
   (str (get-in-config [:ta :tradingview :marks-path]) "aspects.edn"))
 
-
 (defn parse-mark [{:keys [start end] :as mark}]
   (let [dstart (t/instant start) ;(t/instance start)
         dend (t/instant end) ;(t/instance end)
         estart (ti/get-epoch-second  dstart)
         eend (ti/get-epoch-second  dend)]
-   (assoc mark :start dstart :dend end :estart estart :eend eend)))
+    (assoc mark :start dstart :dend end :estart estart :eend eend)))
 
 (defn load-edn []
   (let [marks (-> (slurp (filename-mark)) edn/read-string)
@@ -37,25 +34,23 @@
 
 (defn inside-epoch-range [from to]
   (fn [{:keys [estart eend]}]
-    (and (>= estart from) 
+    (and (>= estart from)
          (<= estart to))))
-
 
 (defn find-aspect [{:keys [type a b] :as mark}]
   (and (= type :thirty)
        (or (= a :Moon) (= b :Moon))
        (or (= b :Uranus) (= b :Uranus))))
 
-
- (defn load-marks [symbol resolution from to]
-   (let [all (load-edn)
+(defn load-marks [symbol resolution from to]
+  (let [all (load-edn)
          ;from (epoch-second->datetime from)
          ;to (epoch-second->datetime to)
-         window (filter (inside-epoch-range from to) all)
+        window (filter (inside-epoch-range from to) all)
          ;window (filter find-aspect window)
-         ]
-     (info "aspect all:" (count all) " window: "(count window))
-     window))
+        ]
+    (info "aspect all:" (count all) " window: " (count window))
+    window))
 
 ;{:type :thirty, :a :Moon, :b :Venus, :start "2020-01-01T00:00:00Z", :end "2020-01-01T00:00:00Z"}
 
@@ -67,7 +62,7 @@
 
     :trine "2"
     :sextile "60"
-    :sesquiquadrate "5" 
+    :sesquiquadrate "5"
     :thirty "30"
 
     :biquentile "B" ; bullish
@@ -76,7 +71,7 @@
     :semi-square "ss" ; 45" semi-square very bearish
     :quincunx "qc"
     :septile "sl"
-    :triseptile "ts" 
+    :triseptile "ts"
 
     "?"))
 
@@ -98,23 +93,23 @@
     :semi-square "red" ; 45" semi-square very bearish
     :quincunx "red"
     :septile "red" ; 51.43" 
-    :triseptile "red" 
-    
+    :triseptile "red"
+
     "blue"))
 
- (defn convert-mark [{:keys [type a b start end estart eend]}]
-   {:id (str a b start)
-    :time estart
-    :label (type->str type)
-    :text (str type "\r\n " a " " b "\r\n " start)
-    :color (type->color type) 
-    :labelFontColor "white" 
-    :minSize 28 ; 14
-    })
+(defn convert-mark [{:keys [type a b start end estart eend]}]
+  {:id (str a b start)
+   :time estart
+   :label (type->str type)
+   :text (str type "\r\n " a " " b "\r\n " start)
+   :color (type->color type)
+   :labelFontColor "white"
+   :minSize 28 ; 14
+   })
 
 (defn col [marks k]
-  (into [] 
-    (map k marks)))
+  (into []
+        (map k marks)))
 
 (defn convert-marks [marks]
   ;(info "marks filtered: " (pr-str marks))

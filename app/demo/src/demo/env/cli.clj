@@ -14,8 +14,7 @@
    [demo.data-import.import-bybit :as bybit]
    [demo.data-import.create-random :as rr]
    [demo.goldly.reval] ; side-effects
-   [demo.data-import.demo-bybit]
-   )
+   [demo.data-import.demo-bybit])
   (:gen-class))
 
 ;; tasks (for cli use)
@@ -46,7 +45,7 @@
     (let [symbol (or symbol "crypto")
           _ (info "bybit-import list: " symbol)
           symbols (load-list symbol)
-           _ (info "symbols: " (pr-str symbols))
+          _ (info "symbols: " (pr-str symbols))
           _ (info "bybit-import list: " symbol "nr symbols: " (count symbols))]
       (bybit/init-bybit-daily symbols)
       (bybit/init-bybit-15 symbols))
@@ -79,7 +78,6 @@
     (do
       (info "evaluating notebooks")
       (nbeval))
-
 
     (error "task not found: " task)))
 

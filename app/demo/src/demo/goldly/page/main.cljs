@@ -1,24 +1,23 @@
 
 ; main page 
 
-(def zodiac-symbols 
- {:aries  '\u2648 ; ♈︎ Aries (Ram)	
-  :taurus '\u2649 ; ♉︎ Taurus (Bull)	U+2649
-  :gemini '\u264a ; ♊︎ Gemini (Twins)	U+264A
-  :cancer '\u264b  ;♋︎	Cancer (Crab)	U+264B
-  :leo '\u264c ;♌︎	Leo (Lion)	U+264C
-  :virgio '\u264d ;♍︎	Virgo (Virgin)	U+264D
-  :libra '\u264e ;♎︎	Libra (Scale)	U+264E
-  :scorpio '\u264f ;♏︎	Scorpio (Scorpion)	U+264F
-  :sagittarius '\u2650  ;♐︎	Sagittarius (Archer)	U+2650
-  :capricorn '\u2651 ;♑︎	Capricorn (Sea-Goat)	U+2651
-  :aquarius '\u2652 ;♒︎	Aquarius (Waterbearer)	U+2652
-  :pisces '\u2653 ;♓︎	Pisces (Fish)	U+2653
-  }) 
+(def zodiac-symbols
+  {:aries  '\u2648 ; ♈︎ Aries (Ram)	
+   :taurus '\u2649 ; ♉︎ Taurus (Bull)	U+2649
+   :gemini '\u264a ; ♊︎ Gemini (Twins)	U+264A
+   :cancer '\u264b  ;♋︎	Cancer (Crab)	U+264B
+   :leo '\u264c ;♌︎	Leo (Lion)	U+264C
+   :virgio '\u264d ;♍︎	Virgo (Virgin)	U+264D
+   :libra '\u264e ;♎︎	Libra (Scale)	U+264E
+   :scorpio '\u264f ;♏︎	Scorpio (Scorpion)	U+264F
+   :sagittarius '\u2650  ;♐︎	Sagittarius (Archer)	U+2650
+   :capricorn '\u2651 ;♑︎	Capricorn (Sea-Goat)	U+2651
+   :aquarius '\u2652 ;♒︎	Aquarius (Waterbearer)	U+2652
+   :pisces '\u2653 ;♓︎	Pisces (Fish)	U+2653
+   })
 
 (defn zodiac-symbol [s]
   (s zodiac-symbols))
-
 
 (defmethod reagent-page :user/main [{:keys [route-params query-params handler] :as route}]
   [:div

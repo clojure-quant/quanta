@@ -15,7 +15,6 @@
 (eval-code!
  (tv/get-symbol))
 
-
 (eval-code!
  (tv/add-demo-trendline))
 
@@ -37,7 +36,6 @@
 (eval-code!
  (tv/save-chart))
 
- 
 (eval-code!
  (tv/get-chart))
 
@@ -53,28 +51,42 @@
 (eval-code!
  (tv/add-shapes [{:time 1649791880}] [{:shape "vertical_line"}]))
 
-
 (eval-code!
  (tv/add-shapes [{:time 1649791880
-                  :price 40000}] 
+                  :price 40000}]
                 {:shape "arrow_up" ; arrow_down arrow_left arrow_right price_label arrow_marker flag
                  :text "🚀"
                  ;:location=location.belowbar
                  :color "#32CD32"
                  ;textcolor=color.new(color.white, 0)
-                 :offset 0 
+                 :offset 0
                  ;:size size.auto
                  }))
 
+(eval-code!
+ (tv/add-shapes [{:time 1641748561
+                  ;:price 40000
+                  }]
+                {:shape "arrow_up" ; arrow_down arrow_left arrow_right price_label arrow_marker flag
+                 :text "🚀"
+                 :location "above_bar" ;"belowbar"
+                 :color "#32CD32"
+                 ;textcolor=color.new(color.white, 0)
+                 :offset 300
+                 ;:size size.auto
+                 }))
+
+xxx.activeChart () .getAllShapes ()
+xxx.activeChart () .removeAllShapes ()
+tv.setLayout
 
 ; plotshape(buy == 1, text=, style=shape., 
 
 (eval-code!
  (tv/add-shapes
-   [{:time 1625764800 :price 45000}
-    {:time 1649191891 :price 50000}]
-    {:shape "gannbox_square"}))
-
+  [{:time 1625764800 :price 45000}
+   {:time 1649191891 :price 50000}]
+  {:shape "gannbox_square"}))
 
 (eval-code!
  (tv/add-shapes
@@ -84,21 +96,6 @@
    {:time 1649391891 :price 50000}
    {:time 1649491891 :price 40000}]
   {:shape "xabcd_pattern"}))
-
-
-tradingViewWidget.chart.createMultipointShape(
-        // indicator points
-        [
-           
-        ],
-        // settings/overrrides
-        {
-            shape: ''
-        }
-    )
-
-
-
 
 (eval-code!
  (tv/add-shapes [{:price 49000}]
@@ -115,30 +112,26 @@ tradingViewWidget.chart.createMultipointShape(
                              :linewidth "1"
                              :linecolor "#19ff20"}}))
 
-
 (eval-code!
-  (tv/add-study "MACD" [14 30 "close" 9]))
+ (tv/add-study "MACD" [14 30 "close" 9]))
 
 (eval-code!
  (tv/add-study "Compare" ["open" "AAPL"]))
 ;Compare study has 2 inputs: [dataSource, symbol]. 
 ;Supported dataSource values are: ["close", "high", "low", "open"].
 
-
 ;; not working..
-(eval-code! 
-  (do (defn foo [] #js {:a (fn [] “hello”)})
-      (new foo)
+(eval-code!
+ (do (defn foo [] #js {:a (fn [] “hello”)})
+     (new foo)
       ;(set! (.-foo js/globalThis) foo)
-      (js/eval "new foo().a")))
+     (js/eval "new foo().a")))
 
 (eval-code!
  (tv/add-demo-menu))
 
-
 (eval-code!
  (set-symbol "TLT" "1D"))
-
 
 (eval-code!
  (set-symbol "BTCUSD" "1D"))

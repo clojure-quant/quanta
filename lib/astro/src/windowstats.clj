@@ -9,7 +9,6 @@
    [ta.helper.date-ds :refer [select-rows-interval days-ago days-ago-instant now]]
    [ta.helper.returns :refer [log-return]]))
 
-
 ;; interval return
 
 (defn select-first-mid-last [ds]
@@ -20,8 +19,6 @@
         index-mid (int (/ (+ index-start index-end) 2))]
     ;(println "indices: " [index-start index-mid index-end])
     (tc/select-rows ds [index-start index-mid index-end])))
-
-
 
 (defn trend [chg-left chg-right]
   (cond
@@ -54,8 +51,6 @@
          :trend (trend change-left change-right)})
       {:chg 0 :bars 0
        :chg-l 0 :chg-r 0 :trend 0.0})))
-
-
 
 (comment
   (let [ds (load-symbol :crypto "15" "BTCUSD")

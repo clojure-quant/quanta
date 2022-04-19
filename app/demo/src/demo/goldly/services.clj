@@ -29,7 +29,7 @@
 
   ; algo
   :algo/names algo-names
-  :algo/run algo-run-browser 
+  :algo/run algo-run-browser
 
   ; gann
   :gann/chart get-gann-spec

@@ -36,11 +36,10 @@
                                      "../../lib/warehouse/src")
          cljfmt-fix (webly/clojure "app/demo" "-M:cljfmt" "fix"
                                    "."
-                                   "../data"
+                                   "../../data"
                                    "../demo"
-                                   "../helper"
-                                   "../tradingview"
-                                   "../warehouse/src")
+                                   "../../lib"
+                                   )
          deps-tree (webly/clojure "app/demo" "-X:deps" "tree")
          outdated (webly/clojure "app/demo" "-M:outdated")
 

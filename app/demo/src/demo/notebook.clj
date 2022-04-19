@@ -35,10 +35,7 @@
 (def ns-playground ["notebook.playground.svg"
               ;"notebook.plazground.ta4j"
               ;"notebook.plazground.throttle"
-                    ]
-  )
-
-
+                    ])
 (def ns-studies ["notebook.studies.asset-allocation-dynamic"
                  "notebook.studies.bollinger"
                  "notebook.studies.bollinger-forward"

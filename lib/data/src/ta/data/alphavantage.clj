@@ -200,10 +200,8 @@
             :crypto "Time Series (Digital Currency Daily)")]
     (get-field response f)))
 
-
 (defn extract-error [response]
   (get response (keyword "Error Message")))
-
 
 (defn- convert-bars- [symbol series-type response]
   (let [bar-format (case series-type
@@ -212,15 +210,15 @@
                      bar-fields-standard-)
         err (extract-error response)]
     (if err
-      (do 
-        (error "get series error " symbol " error message: " err )
+      (do
+        (error "get series error " symbol " error message: " err)
         {:error err})
       {:meta (extract-meta response)
        :series (->> response
-                  (get-field-series series-type)
-                  (seq)
-                  (map (partial convert-bar- bar-format series-type))
-                  (sort-by :date))})))
+                    (get-field-series series-type)
+                    (seq)
+                    (map (partial convert-bar- bar-format series-type))
+                    (sort-by :date))})))
 
 (defn get-daily
   "size: compact=last 100 days. full=entire history"

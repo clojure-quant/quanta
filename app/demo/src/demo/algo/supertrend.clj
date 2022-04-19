@@ -70,13 +70,13 @@
                         :upper-1 upper-1})))
 
  ; supertrend
-   
-(add-algo 
-   {:name "supertrend"
-    :comment "a 15min strategy should be better than daily moon"
-    :algo supertrend-signal
-    :options {:w :crypto
-              :symbol "ETHUSD"
-              :frequency "15"
-              :atr-length 20
-              :atr-mult 0.7}})
+
+(add-algo
+ {:name "supertrend"
+  :comment "a 15min strategy should be better than daily moon"
+  :algo supertrend-signal
+  :options {:w :crypto
+            :symbol "ETHUSD"
+            :frequency "15"
+            :atr-length 20
+            :atr-mult 0.7}})

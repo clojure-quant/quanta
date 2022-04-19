@@ -20,23 +20,21 @@
       [])))
 
 (defn process-item [symbols {:keys [list] :as item}]
-  (if list 
+  (if list
     (concat symbols (load-list-raw list))
     (conj symbols item)))
-            
 
 ;; lists
 (defn load-list-full [name]
   (let [items (load-list-raw name)]
     (reduce process-item [] items)
     ;items
-      ))
+    ))
 
 (defn load-lists-full [names]
   (->> (map load-list-full names)
        (apply concat)
        (into [])))
-
 
 (defn load-list [name]
   (->> (load-list-full name)
@@ -45,8 +43,6 @@
 (defn load-lists [names]
   (->> (map load-list names)
        (apply concat)))
-
-
 
 (defn symbollist->dict [l]
   (let [s-name (juxt :symbol identity)

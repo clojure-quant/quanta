@@ -1,6 +1,10 @@
 
 
-(defn metrics-view [{:keys [rt-metrics nav-metrics options comment]}]
+(defn digits [nr v]
+  (when v
+    (round-number-digits nr v)))
+
+(defn metrics-view [context {:keys [rt-metrics nav-metrics options comment]}]
   [:div
    [:h1.bg-blue-300.text-xl "comment:" comment]
    [:p "options:" (pr-str options)]
@@ -21,30 +25,64 @@
      [:td "loss"]]
     [:tr
      [:td "%winner"]
-     [:td (:win-nr-prct rt-metrics)]
+     [:td (digits 0 (:win-nr-prct rt-metrics))]
      [:td ""]]
     [:tr
      [:td "avg pl"]
-     [:td (:avg-win-log rt-metrics)]
-     [:td (:avg-loss-log rt-metrics)]]
+     [:td (digits 4 (:avg-win-log rt-metrics))]
+     [:td (digits 4 (:avg-loss-log rt-metrics))]]
     [:tr
      [:td "avg bars"]
-     [:td (:avg-bars-win rt-metrics)]
-     [:td (:avg-bars-loss rt-metrics)]]]])
+     [:td (digits 1 (:avg-bars-win rt-metrics))]
+     [:td (digits 1 (:avg-bars-loss rt-metrics))]]]])
 
-(defn roundtrips-view [roundtrips]
-  [:div.h-full.w-full.flex.flex-col
-   [:h1 "roundtrips " (count roundtrips)]
-   (when (> (count roundtrips) 0)
-     [:div {:style {:width "100%" ;"40cm"
-                    :height "100%" ; "70vh"
-                    :background-color "blue"}}
-      [aggrid {:data roundtrips
-               :box :fl
-               :pagination :true
-               :paginationAutoPageSize true}]])])
+(def roundtrip-cols
+  [:rt-no
+   ;:index-open
+   :date-open
+   {:field :price-open :format (partial round-number-digits 2)}
+   ;:index-close
+   :date-close
+   {:field :price-close :format (partial round-number-digits 2)}
+   :bars
+   ;:trades
+   :trade
+   ;:position
+   {:field :pl-log :format (partial round-number-digits 2)}
+   :win])
 
-(defn navs-view [navs]
+(defn rt-flat? [{:keys [trade position] :as roundtrip}]
+  ;(println "trade: " trade)
+  (= trade :flat))
+
+(defn remove-flat [roundtrips]
+  ;(println "filtering flat rts: " roundtrips)
+  (remove rt-flat? roundtrips))
+
+(defn roundtrips-view [context roundtrips]
+  (let [roundtrips (remove-flat roundtrips)]
+    [:div.h-full.w-full.flex.flex-col
+     [:h1 "roundtrips " (count roundtrips)]
+     (when (> (count roundtrips) 0)
+       [:div {:style {:width "100%" ;"40cm"
+                      :height "100%" ; "70vh"
+                      :background-color "blue"}}
+        [aggrid {:data roundtrips
+                 :columns roundtrip-cols
+                 :box :fl
+                 :pagination :true
+                 :paginationAutoPageSize true}]])]))
+
+(def nav-cols
+  [:year
+   :month
+   {:field :nav :format (partial round-number-digits 2)}
+   {:field :drawdown :format (partial round-number-digits 5)}
+   {:field :cum-pl-t :format (partial round-number-digits 5)}
+   {:field :pl-log-cum :format (partial round-number-digits 5)}
+   :trades])
+
+(defn navs-view [context navs]
   [:div.h-full.w-full.flex.flex-col
    [:h1 "navs " (count navs)]
    (when (> (count navs) 0)
@@ -52,11 +90,12 @@
                     :height "100%" ; "70vh"
                     :background-color "blue"}}
       [aggrid {:data navs
+               :columns nav-cols
                :box :fl
                :pagination :true
                :paginationAutoPageSize true}]])])
 
-(defn navs-chart [navs]
+(defn navs-chart [context navs]
   (let [navs-with-index (map-indexed (fn [i v]
                                        {:index i
                                         :nav (:nav v)}) navs)

@@ -16,19 +16,19 @@
 
 (defn vega-nav-plot [data]
   [:div.w-full.h-full
-  [vegalite
-   {:box :fl ; :lg
-    :spec {;:width "1000"
-           :description "NAV Plot"
-           :data {:values data} ;data
-           :mark "line"
-           :encoding  {;:x "ordinal" ;{:field "index" :type "quantitative"}
-                       :x {:field :index
-                           :type "ordinal"}
+   [vegalite
+    {:box :fl ; :lg
+     :spec {;:width "1000"
+            :description "NAV Plot"
+            :data {:values data} ;data
+            :mark "line"
+            :encoding  {;:x "ordinal" ;{:field "index" :type "quantitative"}
+                        :x {:field :index
+                            :type "ordinal"}
                        ;:x date-axes
-                       :y {:field "nav", :type "quantitative"}
+                        :y {:field "nav", :type "quantitative"}
                        ;:color "blue"
-                       }}}]])
+                        }}}]])
 
 (def vega-nav-plot-test-data
   [{:nav 100.0 :index 1}
