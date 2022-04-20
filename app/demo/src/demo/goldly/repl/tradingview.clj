@@ -149,6 +149,7 @@
 (eval-code!
  (tv/add-study "MACD" [14 30 "close" 9]))
 
+
 (eval-code!
  (tv/add-study "Compare" ["open" "AAPL"]))
 ;Compare study has 2 inputs: [dataSource, symbol]. 
@@ -174,3 +175,105 @@
 
 
 
+
+
+
+widget.activeChart().getStudyById(id).setVisible(false);
+
+
+
+widget.activeChart().setVisibleRange(
+    { from: 1420156800, to: 1451433600 },
+    { percentRightMargin: 20 }
+).then(() => console.log('New visible range is applied'));
+widget.activeChart().refreshMarks();
+
+Plot
+r1 = plot(highUsePivot, color=ta.change(highUsePivot) ? na : #FF0000, linewidth=3, offset=-(rightBars + 1), title='Resistance')
+s1 = plot(lowUsePivot, color=ta.change(lowUsePivot) ? na : #233dee, linewidth=3, offset=-(rightBars + 1), title='Support')
+
+
+shape
+plotshape(buy == 1, text='🚀', style=shape.arrowup, location=location.belowbar, color=color.new(#32CD32, 0), textcolor=color.new(color.white, 0), offset=0, size=size.auto)
+plotshape(sell == 1, text='🔨', style=shape.arrowdown, location=location.abovebar, color=color.new(#FF0000, 0), textcolor=color.new(color.white, 0), offset=0, size=size.auto)
+plotshape(buy == 1, title='Buy Signal', text='BUY', textcolor=color.new(#FFFFFF, 0), style=shape.labelup, size=size.normal, location=location.belowbar, color=color.new(#1B8112, 0))
+plotshape(sell == 1, title='Sell Signal', text='SELL', textcolor=color.new(#FFFFFF, 0), style=shape.labeldown, size=size.normal, location=location.abovebar, color=color.new(#FF5733, 0))
+plotshape(downFractal, style=shape.triangledown, location=location.belowbar, offset=-n, color=#F44336, size = size.small)
+plotshape(upFractal, style=shape.triangleup,   location=location.abovebar, offset=-n, color=#009688, size = size.small)
+
+
+
+
+widget.onChartReady(function() {
+    widget.onContextMenu(function(unixtime, price) {
+        return [{
+            position: "top",
+            text: "First top menu item, time: " + unixtime + ", price: " + price,
+            click: function() { alert("First clicked."); }
+        },
+        { text: "-", position: "top" },
+        { text: "-Objects Tree..." },
+        {
+            position: "top",
+            text: "Second top menu item 2",
+            click: function() { alert("Second clicked."); }
+        }, {
+            position: "bottom",
+            text: "Bottom menu item",
+            click: function() { alert("Third clicked."); }
+        }];
+    });
+
+(eval-code!
+  (-> (chart-active)
+      (.createOrderLine)
+      (.setTooltip "Additional order information")
+      (.setModifyTooltip "Modify order")
+      (.setCancelTooltip "Cancel order")
+      (.onMove (fn [] (.setText js/globalThis "onMove called")))
+      (.onModify "onModify called" (fn [text] (.setText js/this text)))
+      (.onCancel "onCancel called" (fn [text] 
+                                     (this-as this
+                                       (.setText this text)
+                                       (.remove this))))
+      (.setText "STOP: 73.5 (5,64%)")
+      (.setQuantity "2000")))
+       
+     
+
+        function positionLine() {
+            window.tvWidget.chart().createPositionLine()
+                .onModify(function() {
+                    this.setText("onModify called");
+                })
+//                .onReverse("onReverse called", function(text) {
+//                    this.setText(text);
+//                })
+                .onClose("onClose called", function(text) {
+                    this.setText(text);
+                    this.remove()
+                })
+                .setText("PROFIT: 71.1 (3.31%)")
+                .setTooltip("Additional position information")
+                .setProtectTooltip("Protect position")
+                .setCloseTooltip("Close position")
+                .setReverseTooltip("Reverse position")
+                .setQuantity("8.235")
+                .setPrice(49000)
+                .setExtendLeft(false)
+                .setLineStyle(0)
+                .setLineLength(1);
+        }
+
+        function executionLine() {
+            window.tvWidget.activeChart().createExecutionShape()
+                .setText("@1,320.75 Limit Buy 1")
+                .setTooltip("@1,320.75 Limit Buy 1")
+                .setTextColor("rgba(0,255,0,0.5)")
+                .setArrowColor("#0F0")
+                .setDirection("buy")
+                .setTime(widget.activeChart().getVisibleRange().from)
+                .setPrice(160);
+        }
+
+        // https://github.com/tradingview/charting_library/wiki/Shapes-and-Overrides
