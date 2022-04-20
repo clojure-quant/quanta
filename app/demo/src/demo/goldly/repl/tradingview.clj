@@ -6,6 +6,17 @@
  (+ 5 5))
 
 (eval-code!
+ (do
+   (defn foo [] (clj->js {:hello (fn [] (println "foo hello"))}) )
+   (new foo)
+   (set! (.-foo js/globalThis) foo)
+   (js/eval "new foo().hello()")))
+
+
+
+
+
+(eval-code!
  (do (tv/demo-crosshair)
      (tv/demo-range)))
 
