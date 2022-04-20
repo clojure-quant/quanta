@@ -3,7 +3,7 @@
            :algo nil
            :opts {:symbol "SPY"}
            :data-loaded nil
-           :data-tradingview nil
+           :tradingview-state nil
            :data {}
            :page :metrics}))
 
@@ -33,21 +33,47 @@
                :paginationAutoPageSize true}]]]
     [:div "no data "]))
 
-(defn tv-events [algo opts data-tradingview]
+(defn add-marks-to-tv [tradingview-server]
+  (if-let [marks (:marks tradingview-server)]
+    (do
+      (println "adding " (count marks) "marks to tv") 
+      (doall (map #(tv/add-shapes (:points %) (assoc (:override %) :disableUndo true)) marks)))
+    (println "NO TV MARKS RCVD FROM SERVER! data: " tradingview-server)
+    ))
+
+(defn clear-marks-tv []
+  (println "TV CLEAR MARKS!")
+  (let [c (chart-active)]
+     (.removeAllShapes c)))
+ 
+
+(defn tv-events [algo opts tradingview-state]
   (when algo
-    (when (not (= [algo opts] data-tradingview))
+    (when (not (= [algo opts] tradingview-state))
       (info (str "changing tv data for running algo for: " algo "opts: " opts))
-      (swap! algo-state assoc :data-tradingview [algo opts])
+      (swap! algo-state assoc :tradingview-state [algo opts])
       (wrap-chart-ready
        (fn []
-         (set-symbol (:symbol opts) "1D")))
+         (clear-marks-tv)
+         (set-symbol (:symbol opts) "1D")
+         nil))
       nil)))
 
+(defn tv-data [tradingview-server]
+  (when tradingview-server
+     (wrap-chart-ready
+       (fn []
+         (add-marks-to-tv tradingview-server)))
+    nil))
+
 (defn tv-page [context data]
-  (let [{:keys [algo opts data-tradingview]} @algo-state]
+  (let [{:keys [algo opts tradingview-state data]} @algo-state
+        tradingview-server (:tradingview data)]
     [:div.h-full.w-full
      (when @tv-widget-atom
-       [tv-events algo opts data-tradingview])
+       [tv-events algo opts tradingview-state])
+     (when @tv-widget-atom
+       [tv-data tradingview-server])
      [tradingview-chart {:feed :ta
                          :options {:autosize true}}]]))
 

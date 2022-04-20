@@ -63,7 +63,22 @@
                  ;:size size.auto
                  }))
 
+
+; getPanes () Returns an array of instances of the PaneApi that allows you to interact with the panes.
+; widget.activeChart () .getPanes () [1] .moveTo (0);
+
+
+;widget.save (function (data) {savedWidgetContent = data;
+;                           alert ('Saved');
+;});
+
+
 (eval-code!
+ (do 
+ (let [c (chart-active)
+       panes (.getPanes c)    
+       ]
+    (.log js/console panes))
  (tv/add-shapes [{:time 1641748561
                   ;:price 40000
                   }]
@@ -74,11 +89,30 @@
                  ;textcolor=color.new(color.white, 0)
                  :offset 300
                  ;:size size.auto
-                 }))
+                 })))
 
-xxx.activeChart () .getAllShapes ()
-xxx.activeChart () .removeAllShapes ()
-tv.setLayout
+(eval-code!
+  (let [c (chart-active)
+        shapes-js (.getAllShapes c)
+        ct (.-length shapes-js)
+        ;shapes (js->clj shapes-js)
+        ]
+    ;(count shapes)
+    ct
+    ))
+ 
+
+ ; this removes all drawings from the current tradingview widget
+ (eval-code!
+  (let [c (chart-active)]
+    (.removeAllShapes c)
+    ))
+ 
+
+
+
+;xxx.activeChart ()  ()
+;tv.setLayout
 
 ; plotshape(buy == 1, text=, style=shape., 
 
@@ -137,10 +171,6 @@ tv.setLayout
  (set-symbol "BTCUSD" "1D"))
 
 ;"BB:BTCUSD"
-
-
-
-
 
 
 

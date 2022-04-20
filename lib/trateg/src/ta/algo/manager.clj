@@ -8,6 +8,7 @@
    [ta.backtest.roundtrip-stats :refer [roundtrip-performance-metrics]]
    [ta.backtest.nav :refer [nav-metrics nav]]
    [ta.series.signal :refer [select-signal-has]]
+   [ta.tradingview.study :refer [get-trades]]
    ; viz
    [ta.viz.study-highchart :refer [study-highchart] :as hc]))
 
@@ -95,7 +96,9 @@
     (merge d
            (if ds-study
              {:ds-study (ds->map ds-study)
-              :study-extra-cols study-extra-cols}
+              :study-extra-cols study-extra-cols
+              :tradingview {:marks (get-trades ds-study)}
+              }
              {})
            (if ds-roundtrips
              {:ds-roundtrips (ds->map ds-roundtrips)}
@@ -120,19 +123,22 @@
 
   (get-algo an)
   (->> ;(algo-run an {:symbol "SPY"})
-   (algo-run-browser an {:symbol "TLT"})
+  (algo-run-browser an {:symbol "TLT"})
   ; :stats
       ;keys
-      ;:ds-study col-info (map :name)
+     ;:ds-study ;col-info (map :name)
       ;:ds-roundtrips   ;println
    ;:highchart
    ;first
    ;rest
    ;last
-   :study-extra-cols
+   ;:study-extra-cols
        ;:ds-roundtrips
        ; col-info (map :name)
+      ; (get-trades)
+   :tradingview-marks
    )
+  
   (-> {:x [1 2 3]
        :y ["A" "B" "A"]}
       tc/dataset

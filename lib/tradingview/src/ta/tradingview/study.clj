@@ -31,5 +31,48 @@
    :close 131.4600067138672,
    :high 131.97999572753906}
 
+(defn select-trade-of [trade-type ds]
+  (tc/select-rows
+   ds
+   (fn [{:keys [trade]}]
+     (= trade-type trade))))
+
+(defn shape-for-type [trade-type date]
+  (let [epoch (datetime->epoch-second date)
+        shape (case trade-type 
+                :buy "arrow_up"
+                :sell "arrow_down"
+                :flat "arrow_left")]
+    {:points [{:time epoch}]
+     :override {:text "🚀"
+               :shape shape}}))
+
+
+(defn trade-of-type [trade-type ds]
+  (let [dates (-> (select-trade-of trade-type ds)
+                  :date)]
+     (map (partial shape-for-type trade-type) dates)))
+
+
 (defn get-trades [ds]
-  (when (has-col? ds :trade)))
+  (when (has-col? ds :trade)
+    (let [buy (trade-of-type :buy ds)
+          sell (trade-of-type :sell ds)
+          flat (trade-of-type :flat ds)
+          ]
+      (into []
+            (concat buy sell flat))
+    )))
+
+(comment 
+   (require '[ta.helper.date-ds  :refer [days-ago]])
+  (-> {:date [(days-ago 1) (days-ago 2) (days-ago 3) 
+           (days-ago 5) (days-ago 6) (days-ago 6)]
+       :trade [:buy :sell :flat nil nil nil]}
+      tc/dataset
+      get-trades
+        ;(has-col? :iii)
+      )
+  
+  )
+  
