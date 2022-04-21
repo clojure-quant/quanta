@@ -75,6 +75,8 @@
  {:name "supertrend"
   :comment "a 15min strategy should be better than daily moon"
   :algo supertrend-signal
+  :charts [{:trade "flags"}
+           {:volume "column"}]
   :options {:w :crypto
             :symbol "ETHUSD"
             :frequency "15"

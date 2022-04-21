@@ -32,11 +32,10 @@
   [:div.bg-blue-300.p-5
     [:h1.text-blue-800.text-large "algo options"]
     [:p (pr-str (get-in @algo-state [:algoinfo :options]))]
+    
     [:h1.text-blue-800.text-large "charts"]
-   [:p (pr-str (get-in @algo-state [:algoinfo :charts]))]
-    [:p "options are view only at the moment!"]
+    [:p (pr-str (get-in @algo-state [:algoinfo :charts]))]
    ])
-
 
 ;; WINDOW
 

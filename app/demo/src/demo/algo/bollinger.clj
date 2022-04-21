@@ -74,6 +74,8 @@
  {:name "bollinger"
   :comment "just the data"
   :algo add-bollinger-with-signal
+  :charts [{:trade "flags"}
+           {:volume "column"}]
   :options {:w :stocks
             :symbol "SPY"
             :frequency "D"

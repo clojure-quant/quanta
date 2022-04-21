@@ -26,6 +26,9 @@
  {:name "sma-diff"
   :comment "experiment"
   :algo sma-diff-indicator
+  :charts [{:sma-st "line"
+            :sma-lt "line"
+            :sma-diff {:type "line" :color "red"}}]
   :options {:w :crypto
             :symbol "BTCUSD"
             :frequency "D"

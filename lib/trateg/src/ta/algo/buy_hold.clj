@@ -20,6 +20,8 @@
  {:name "buy-hold"
   :comment "much better than b/h nasdaq"
   :algo buy-hold-signal
+  :charts [{:trade "flags"}
+           {:volume "column"}]
   :options {:w :stocks
             :symbol "SPY"
             :frequency "D"}})

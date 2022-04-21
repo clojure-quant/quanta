@@ -27,6 +27,8 @@
  {:name "moon"
   :comment "very good - 2:1"
   :algo moon-signal
+  :charts [{:trade "flags"}
+           {:volume "column"}]
   :options {:w :stocks
             :symbol "SPY"
             :frequency "D"}})

@@ -38,6 +38,8 @@
  {:name "sma-trendfollow"
   :comment "best strategy so far!"
   :algo sma-signal
+  :charts [{:trade "flags"}
+           {:volume "column"}]
   :options {:w :crypto
             :symbol "ETHUSD"
             :frequency "15"
