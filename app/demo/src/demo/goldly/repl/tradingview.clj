@@ -6,6 +6,17 @@
  (+ 5 5))
 
 (eval-code!
+  (let [o (clj->js {:a 1 :b "test"})]
+    (js->clj o)))
+
+(eval-code!
+ (let [o (clj->js {:a 1 :b "test"})]
+   (js->clj o :keywordize-keys true)
+   ))
+
+
+
+(eval-code!
  (do
    (defn foo [] (clj->js {:hello (fn [] (println "foo hello"))}) )
    (new foo)
