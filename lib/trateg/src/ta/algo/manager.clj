@@ -1,6 +1,9 @@
 (ns ta.algo.manager
   (:require
+   [tech.v3.datatype :as dtype]
+   [tech.v3.dataset :as tds]
    [tablecloth.api :as tc]
+   [ta.helper.date :as dt]
    [ta.helper.ds :refer [ds->map]]
    [ta.helper.date-ds :refer [ds-convert-col-instant->localdatetime ensure-roundtrip-date-localdatetime]]
    ; backtest
@@ -22,6 +25,17 @@
 
 (defn get-algo [name]
   (get @algos name))
+
+(defn algo-info [name]
+  (if-let [algo (get-algo name)]
+    (let [charts (or (:charts algo) [])
+          options (or (:options algo) {})]
+    (-> algo
+        (dissoc :algo)
+        (assoc :charts charts 
+               :options options)))))
+
+
 
 (defn col-info [ds]
   (->> ds
@@ -97,8 +111,7 @@
            (if ds-study
              {:ds-study (ds->map ds-study)
               :study-extra-cols study-extra-cols
-              :tradingview {:marks (get-trades ds-study)}
-              }
+              :tradingview {:marks (get-trades ds-study)}}
              {})
            (if ds-roundtrips
              {:ds-roundtrips (ds->map ds-roundtrips)}
@@ -109,21 +122,79 @@
                       :nav (ds->map (:nav stats))}}
              {}))))
 
+
+(defn epoch
+  "add epoch column to ds"
+  [ds]
+  (dtype/emap dt/->epoch-second :long (:date ds)))
+
+(defn add-epoch [ds]
+  (tc/add-column
+   ds
+   :epoch (epoch ds)
+   ))
+
+(defn select-in-window [ds epoch-start epoch-end]
+  (tc/select-rows
+   ds
+   (fn [{:keys [epoch]}]
+     (and (>= epoch epoch-start) (< epoch epoch-end)))))
+
+(defn algo-run-window [name symbol frequency options epoch-start epoch-end]
+  (let [options (assoc options :symbol symbol
+                               :w :stocks
+                               :frequency frequency)
+        {:keys [ds-study] :as d} (algo-run name options)
+        ]
+    (-> ds-study 
+        (add-epoch)
+        (select-in-window epoch-start epoch-end)
+        )))
+
+
+(defn algo-run-window-browser [name symbol frequency options epoch-start epoch-end]
+  (let [ds (algo-run-window name symbol frequency options epoch-start epoch-end)]
+     (ds->map ds)
+    ))
+
+
+
 (comment
   (algo-names)
 
   (def an
     ;"buy-hold"
-    ;"sma-trendfollow"
-    "moon"
+    "sma-trendfollow"
+    ;"moon"
     ;"sma-diff"
     ;"bollinger"
    ; "supertrend"
     )
 
   (get-algo an)
+  (algo-info an)
+                   
+  (def epoch-start 1642726800) ; jan 21 2022
+  (def epoch-end 1650499200) ; april 21 2022
+
+  (require '[ta.helper.print :refer [print-overview]])
+  (-> 
+    (algo-run-window-browser an "SPY" "D" {} epoch-start epoch-end) 
+    ;:epoch
+   ;print-overview
+   println
+
+   )
+  
+  
+
+  
+
+
+
+  
   (->> ;(algo-run an {:symbol "SPY"})
-  (algo-run-browser an {:symbol "TLT"})
+   (algo-run-browser an {:symbol "TLT"})
   ; :stats
       ;keys
      ;:ds-study ;col-info (map :name)
@@ -136,9 +207,8 @@
        ;:ds-roundtrips
        ; col-info (map :name)
       ; (get-trades)
-   :tradingview-marks
-   )
-  
+   :tradingview-marks)
+
   (-> {:x [1 2 3]
        :y ["A" "B" "A"]}
       tc/dataset

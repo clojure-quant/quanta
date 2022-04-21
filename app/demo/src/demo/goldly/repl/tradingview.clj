@@ -2,6 +2,7 @@
   (:require
    [goldly.scratchpad :refer [eval-code!]]))
 
+
 (eval-code!
  (+ 5 5))
 
@@ -24,8 +25,11 @@
    (js/eval "new foo().hello()")))
 
 
+(eval-code!
+  (deref tvalgo/algo-state))
 
-
+(eval-code!
+ (deref tvalgo/window-state))
 
 (eval-code!
  (do (tv/demo-crosshair)

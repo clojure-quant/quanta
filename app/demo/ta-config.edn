@@ -37,6 +37,7 @@
                          "warehouse" :user/warehouse
                          ;backtest
                          "algo/backtest" :algo/backtest
+                         "algo/tv" :algo/tv
                          ; gann
                          "tradingview" :tradingview
                          "gann" :gann
