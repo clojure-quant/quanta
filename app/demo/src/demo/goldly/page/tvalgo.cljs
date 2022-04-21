@@ -1,13 +1,13 @@
 (ns tvalgo
   (:require 
     [r :refer :all]
-    [user :refer [run-a link-href add-page tradingview-chart set-symbol]]
+    [user :refer [println run-a link-href add-page tradingview-chart set-symbol study-table]]
     [tv]
    ))
 
 (defonce algo-state
   (r/atom {:algos []
-           :algo nil
+           :algo "buy-hold"
            :algoinfo {:options {}
                       :charts []}
            :symbols ["TLT" "SPY" "QQQ" "EURUSD"]
@@ -37,6 +37,14 @@
     [:p (pr-str (get-in @algo-state [:algoinfo :charts]))]
    ])
 
+(defn table-dialog []
+  (let [data (get-in @window-state [:data])]
+    [:div.bg-blue-300.p-5.w-full;.h-64
+     {:style {:height "10cm"}}
+      ;[:p (pr-str data)]
+     [study-table nil data]]))
+
+
 ;; WINDOW
 
 (defn get-window []
@@ -59,6 +67,23 @@
         (set-symbol symbol frequency)
         nil))))
 
+(defn algo-modifier [algo algoinfo]
+  (let [algo-showing (r/atom algo)]
+    (fn [algo algoinfo]
+      (when-let [charts (:charts algoinfo)]
+        (when (> (count charts) 0)
+          (when-not (= algo @algo-showing)
+            (reset! algo-showing algo)
+            (println "algo change detected! new algo: " algo " charts: "  charts)
+            (js/setTimeout #(tv/add-algo-studies charts) 300)
+            (js/setTimeout #(tv/track-range) 300)
+            ;(tv/add-algo-studies charts)
+            nil))))))
+
+(defn tv-status []
+  (fn []
+    [:span (pr-str @tv/state)]))
+
 (defn algo-menu []
   [:div.flex.flex-row.bg-blue-500
    [link-href "/" "main"]
@@ -70,8 +95,11 @@
     algo-state [:symbol]]
    [input/button {:on-click #(rf/dispatch [:modal/open (algo-dialog)
                                           :medium])} "options"]
-   
+   [input/button {:on-click #(rf/dispatch [:modal/open (table-dialog)
+                                           :large])} "table"]
+      
    [input/button {:on-click get-window} "get window"]
+   [tv-status]
   
    ])
 
@@ -81,16 +109,17 @@
 (defn algo-ui []
   (let [symbol-initial (:symbol @algo-state)]
   (fn []
-    (let [{:keys [algos algo symbol frequency]} @algo-state]
+    (let [{:keys [algos algo algoinfo symbol frequency]} @algo-state]
       [:div.flex.flex-col.h-full.w-full
        ;(do (run-algo algo opts data-loaded)
        ;    nil)
        [algo-menu]
-       [algo-info algo]
+       [algo-info algo ]
        ;(when-let [wd (get-in @window-state [:data])]
        ;   [:div (pr-str wd)]  
        ;  )
        [tradingview-modifier symbol frequency]
+       [algo-modifier algo algoinfo]
 
        [:div.h-full.w-full
         [tradingview-chart {:feed :ta

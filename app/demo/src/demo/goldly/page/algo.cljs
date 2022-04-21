@@ -19,19 +19,7 @@
      ;[pr-data data]
     [:div "no data."]))
 
-(defn study-table [context data]
-  (if data
-    [:div.w-full.h-full
-     ;[:div.bg-red-500 (pr-str data)]
-     [:div {:style {:width "100%" ;"40cm"
-                    :height "100%" ;"70vh" ;  
-                    :background-color "blue"}}
-      [aggrid {:data data
-               :columns (study-columns context data)
-               :box :fl
-               :pagination :true
-               :paginationAutoPageSize true}]]]
-    [:div "no data "]))
+
 
 (defn add-marks-to-tv [tradingview-server]
   (if-let [marks (:marks tradingview-server)]

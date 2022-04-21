@@ -27,7 +27,7 @@
  {:name "moon"
   :comment "very good - 2:1"
   :algo moon-signal
-  :charts [{:trade "flags"}
+  :charts [nil ; {:trade "flags"}
            {:volume "column"}]
   :options {:w :stocks
             :symbol "SPY"
