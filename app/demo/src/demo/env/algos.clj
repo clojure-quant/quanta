@@ -8,6 +8,8 @@
    [demo.algo.sma]
    [demo.algo.sma-diff]
    [demo.algo.supertrend]
+   [demo.algo.bollinger]
+   [demo.algo.supertrend]
    ; astro
    [demo.algo.moon]
    [demo.algo.astro]

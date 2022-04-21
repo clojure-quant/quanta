@@ -88,26 +88,22 @@
         nil))))
 
 (defn algo-modifier [algo algoinfo]
-  (let [algo-showing (r/atom algo)]
+  (let [showing (r/atom algoinfo)]
     (fn [algo algoinfo]
       (when-let [charts (:charts algoinfo)]
         (when (> (count charts) 0)
-          (when-not (= algo @algo-showing)
-            (reset! algo-showing algo)
+          (when-not (= algoinfo @showing)
+            (reset! showing algoinfo)
             (println "TV ALGO CHANGED TO: " algo " charts: "  charts)
             ;(set! (.-datafeed @tv-widget-atom) (tv/tradingview-algo-feed algo))
             ;(set! (-> js/window .-widget .-datafeed) (tv/tradingview-algo-feed algo))
             ;(set! (.-text obj) text)
             ;Object.getPrototypeOf (widget) .datafeed
-            (tv/set-algo! algo)
             ;(set! (.-datafeed 
             ;       (.getPrototypeOf js/Object js/widget)) 
-            ;      (tv/tradingview-algo-feed algo))
-
             (js/setTimeout #(tv/add-algo-studies charts) 300)
             (js/setTimeout #(tv/track-range) 300)
             ;(tv/add-algo-studies charts)
-            
             nil))))))
 
 (defn tv-status []
@@ -135,7 +131,12 @@
    ])
 
 
-
+(defn get-algo-and-options []
+  (let [state @algo-state
+        algo (or (:algo state) "buy-hold")
+        options (or (get-in state [:algoinfo :options]) {})]
+    {:algo algo
+     :options options}))
 
 (defn algo-ui []
   (let [symbol-initial (:symbol @algo-state)]
@@ -156,7 +157,7 @@
         [tradingview-chart {:feed :ta
                             :options {:autosize true
                                       :symbol symbol-initial
-                                      :datafeed (tv/tradingview-algo-feed algo)
+                                      :datafeed (tv/tradingview-algo-feed get-algo-and-options)
                                       }}]
         
         ]
