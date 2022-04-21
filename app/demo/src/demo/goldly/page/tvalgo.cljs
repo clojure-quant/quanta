@@ -37,26 +37,46 @@
     [:p (pr-str (get-in @algo-state [:algoinfo :charts]))]
    ])
 
-(defn table-dialog []
-  (let [data (get-in @window-state [:data])]
-    [:div.bg-blue-300.p-5.w-full;.h-64
-     {:style {:height "10cm"}}
-      ;[:p (pr-str data)]
-     [study-table nil data]]))
+
 
 
 ;; WINDOW
 
-(defn get-window []
-  (let [epoch-start 1642726800 ; jan 21 2022
-        epoch-end 1650499200 ; april 21 2022
-        algo (:algo @algo-state)
+(defn get-window [epoch-start epoch-end]
+  (let [algo (:algo @algo-state)
         symbol (:symbol @algo-state)
         frequency (:frequency @algo-state)
         options (get-in @algo-state [:algoinfo :options])]
      (run-a window-state [:data] :algo/run-window
             algo symbol frequency options epoch-start epoch-end)
   ))
+
+(defn get-window-demo []
+  (let [epoch-start 1642726800 ; jan 21 2022
+        epoch-end 1650499200 ; april 21 2022
+         ]
+    (get-window epoch-start epoch-end)))
+
+(defn get-window-current []
+  (let [state @tv/state
+        from (get-in state [:range :from])
+        to (get-in state [:range :to])]
+    (println "get-window-current from:" from "to: " to "state: " state)
+    (when (and from to)
+      (get-window from to))))
+
+
+(defn table-dialog-table []
+  (fn []
+     (let [data (get-in @window-state [:data])]
+       ;[:p (pr-str data)]
+       [study-table nil data])))
+
+(defn table-dialog []
+
+  [:div.bg-blue-300.p-5.w-full;.h-64
+     {:style {:height "10cm"}}
+     [table-dialog-table]])
 
 (defn tradingview-modifier [symbol frequency]
   (let [symbol-showing (r/atom symbol)]
@@ -95,10 +115,11 @@
     algo-state [:symbol]]
    [input/button {:on-click #(rf/dispatch [:modal/open (algo-dialog)
                                           :medium])} "options"]
-   [input/button {:on-click #(rf/dispatch [:modal/open (table-dialog)
-                                           :large])} "table"]
+   [input/button {:on-click #(do (get-window-current)
+                                  (rf/dispatch [:modal/open (table-dialog)
+                                              :large]))} "table"]
       
-   [input/button {:on-click get-window} "get window"]
+   ;[input/button {:on-click get-window-demo} "get window"]
    [tv-status]
   
    ])
