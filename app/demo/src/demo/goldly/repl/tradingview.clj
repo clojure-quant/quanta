@@ -181,6 +181,25 @@
 ;Compare study has 2 inputs: [dataSource, symbol]. 
 ;Supported dataSource values are: ["close", "high", "low", "open"].
 
+(eval-code!
+ (tv/add-study "CLJMAIN DESC ISA" ["volume"]))
+
+(eval-code!
+ (tv/add-study "CLJ DESC ISA" ["volume"]))
+
+(eval-code!
+ (tv/add-study "CLJ DESC ISA" ["high"]))
+
+
+
+
+(eval-code!
+ (study-list))
+
+
+
+
+
 ;; not working..
 (eval-code!
  (do (defn foo [] #js {:a (fn [] “hello”)})
