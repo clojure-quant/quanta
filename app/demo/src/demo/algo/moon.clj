@@ -2,7 +2,7 @@
   (:require
    [tablecloth.api :as tc]
    [tech.v3.datatype :as dtype]
-   [ta.series.moon :refer [inst->moon-phase-kw]]
+   [astro.moon :refer [inst->moon-phase-kw]]
    [ta.algo.manager :refer [add-algo]]))
 
 (defn add-moon-indicator [ds-bars _]

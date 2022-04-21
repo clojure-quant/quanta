@@ -16,7 +16,8 @@
    [ta.tradingview.db-ts :refer [save-chart-boxed delete-chart load-chart-boxed chart-list now-epoch]]
    [ta.tradingview.db-instrument :refer [inst-type inst-exchange inst-name
                                          category-name->category inst-crypto?]]
-   [ta.tradingview.db-marks :refer [load-marks convert-marks]]))
+   ;[ta.tradingview.db-marks :refer [load-marks convert-marks]]
+   ))
 
 
 (defn server-time []
@@ -32,7 +33,7 @@
 (def server-config
   {:supports_time true  ; we send our server-time
    :supports_search true ;search and individual symbol resolve logic.
-   :supports_marks false ; true
+   :supports_marks true
    :supports_timescale_marks false
    :supports_group_request false
    :supported_resolutions ["15" "D"] ; ["1" "5" "15" "30" "60" "1D" "1W" "1M"]
@@ -230,16 +231,18 @@
    :labelFontColor ["white" "white" "red" "#FFFFFF" "white" "#000"]
    :minSize [14 28 7 40 7 14]})
 
+
+
 (defn marks-handler [{:keys [query-params] :as req}]
   ; https://demo_feed.tradingview.com/marks?symbol=AAPL&from=1488810600&to=1491226200&resolution=D
   (info "tv/marks: " query-params)
   (let [{:keys [symbol resolution from to]} (clojure.walk/keywordize-keys query-params)
         from (Integer/parseInt from)
         to (Integer/parseInt to)
-        marks (load-marks symbol resolution from to)
-        marks (convert-marks marks)
+        ;marks (load-marks symbol resolution from to)
+      
         ;_ (info "marks: " marks)
-        ;marks demo-marks
+        marks demo-marks
         ]
     (res/response marks)))
 

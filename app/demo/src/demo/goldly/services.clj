@@ -6,7 +6,7 @@
    [ta.helper.date-ds :refer [ds-convert-col-instant->localdatetime]]
    [ta.warehouse :as wh]
    [ta.warehouse.overview :refer [warehouse-overview]]
-   [ta.algo.manager :refer [algo-names algo-info algo-run-window-browser algo-run-browser]]
+   [ta.algo.manager :refer [algo-names algo-info algo-run-window-browser algo-run-browser algo-marks]]
    [demo.env.config] ; side-effects
    [demo.env.algos] ; side-effects
    [ta.gann.svg-plot :refer [get-gann-spec get-boxes]]
@@ -35,6 +35,7 @@
   :algo/info algo-info
   :algo/run-window algo-run-window-browser
   :algo/run algo-run-browser
+  :algo/marks algo-marks
 
   :tv/config (fn [] server-config)
   :tv/symbol-info (fn [symbol]

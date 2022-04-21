@@ -1,11 +1,16 @@
 (ns demo.env.algos
   (:require
    ; algos
-   [ta.algo.buy-hold :refer [buy-hold-signal]]
-   [ta.gann.algo :refer [algo-gann algo-gann-signal]]
-   [demo.algo.moon :refer [moon-signal]]
-   [demo.algo.supertrend :refer [supertrend-signal]]
-   [demo.algo.sma :refer [sma-signal]]
-   [demo.algo.sma-diff :refer [sma-diff-indicator]]))
+   [ta.algo.buy-hold]
+   ; gann
+   [ta.gann.algo]
+   ; trend
+   [demo.algo.sma]
+   [demo.algo.sma-diff]
+   [demo.algo.supertrend]
+   ; astro
+   [demo.algo.moon]
+   [demo.algo.astro]
+   ))
 
 ;; this ns is purely side effects ...

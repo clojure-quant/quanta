@@ -1,4 +1,4 @@
-(ns ta.tradingview.db-marks
+(ns astro.marks
   (:require
    [clojure.set :refer [rename-keys]]
    [clojure.edn :as edn]
@@ -42,7 +42,7 @@
        (or (= a :Moon) (= b :Moon))
        (or (= b :Uranus) (= b :Uranus))))
 
-(defn load-marks [symbol resolution from to]
+(defn load-aspects [symbol resolution options from to]
   (let [all (load-edn)
          ;from (epoch-second->datetime from)
          ;to (epoch-second->datetime to)
@@ -97,7 +97,7 @@
 
     "blue"))
 
-(defn convert-mark [{:keys [type a b start end estart eend]}]
+(defn aspect->mark [{:keys [type a b start end estart eend]}]
   {:id (str a b start)
    :time estart
    :label (type->str type)
@@ -107,18 +107,32 @@
    :minSize 28 ; 14
    })
 
-(defn col [marks k]
+(defn markcol [marks k]
   (into []
         (map k marks)))
 
 (defn convert-marks [marks]
   ;(info "marks filtered: " (pr-str marks))
-  (let [marks (map convert-mark marks)]
+  (let [marks (map aspect->mark marks)]
     ;(info "marks converted: " (pr-str marks))
-    {:id (col marks :id)
-     :time (col marks :time)
-     :label (col marks :label)
-     :text (col marks :text)
-     :color (col marks :color)
-     :labelFontColor (col marks :labelFontColor)
-     :minSize (col marks :minSize)}))
+    {:id (markcol marks :id)
+     :time (markcol marks :time)
+     :label (markcol marks :label)
+     :text (markcol marks :text)
+     :color (markcol marks :color)
+     :labelFontColor (markcol marks :labelFontColor)
+     :minSize (markcol marks :minSize)}))
+
+(defn moon-aspect? [{:keys [a b] :as aspect}]
+  (or (= a :Moon) (= b :Moon)))
+
+
+(defn astro-marks [symbol resolution options from to]
+  (let [aspects (load-aspects symbol resolution options from to)
+        aspects (if (:show-moon options)
+                  aspects
+                  (remove moon-aspect? aspects))]
+    (->> aspects
+         (map aspect->mark)
+       ;(convert-marks)
+         )))

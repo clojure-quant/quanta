@@ -31,7 +31,7 @@
     (let [charts (or (:charts algo) [])
           options (or (:options algo) {})]
     (-> algo
-        (dissoc :algo)
+        (dissoc :algo :marks)
         (assoc :charts charts 
                :options options)))))
 
@@ -157,6 +157,15 @@
      (ds->map ds)
     ))
 
+(defn algo-marks [name symbol frequency user-options epoch-start epoch-end]
+    (if-let [{:keys [marks options]} (get-algo name)]
+       (if marks
+          (let [options (merge options user-options)]
+            (marks symbol frequency options epoch-start epoch-end))
+         (do (println "NO MARKS - " name "does not define a marks fn.")
+            []))
+      (do  (println "NO MARKS - algo not found: " name)
+           [])))
 
 
 (comment
@@ -186,7 +195,19 @@
 
    )
   
+  (-> (algo-marks "astro" "SPY" "D" {:show-moon false} epoch-start epoch-end)
+      count
+   )
   
+  (-> (algo-marks "astro" "SPY" "D" {:show-moon true} epoch-start epoch-end)
+      count)
+  
+  
+  
+
+
+
+   
 
   
 

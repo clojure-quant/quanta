@@ -1,7 +1,7 @@
 (ns tvalgo
   (:require 
     [r :refer :all]
-    [user :refer [println run-a link-href add-page tradingview-chart set-symbol study-table]]
+    [user :refer [println run-a link-href add-page tradingview-chart set-symbol study-table tv-widget-atom]]
     [tv]
    ))
 
@@ -94,10 +94,20 @@
         (when (> (count charts) 0)
           (when-not (= algo @algo-showing)
             (reset! algo-showing algo)
-            (println "algo change detected! new algo: " algo " charts: "  charts)
+            (println "TV ALGO CHANGED TO: " algo " charts: "  charts)
+            ;(set! (.-datafeed @tv-widget-atom) (tv/tradingview-algo-feed algo))
+            ;(set! (-> js/window .-widget .-datafeed) (tv/tradingview-algo-feed algo))
+            ;(set! (.-text obj) text)
+            ;Object.getPrototypeOf (widget) .datafeed
+            (tv/set-algo! algo)
+            ;(set! (.-datafeed 
+            ;       (.getPrototypeOf js/Object js/widget)) 
+            ;      (tv/tradingview-algo-feed algo))
+
             (js/setTimeout #(tv/add-algo-studies charts) 300)
             (js/setTimeout #(tv/track-range) 300)
             ;(tv/add-algo-studies charts)
+            
             nil))))))
 
 (defn tv-status []

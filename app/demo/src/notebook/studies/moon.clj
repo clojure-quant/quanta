@@ -5,10 +5,10 @@
    [tech.v3.datatype.functional :as fun]
    [ta.warehouse :refer [load-symbol]]
    [ta.helper.returns :refer [log-return]]
-   [ta.series.moon :refer [inst->moon-phase-kw]]
    [ta.backtest.roundtrip-backtest :refer [run-backtest]]
    [ta.backtest.print :as p]
    [ta.backtest.nav :as nav]
+   [astro.moon :refer [inst->moon-phase-kw]]
    [demo.algo.moon :refer [moon-signal]]
    [ta.algo.buy-hold :refer [buy-hold-signal]]))
 

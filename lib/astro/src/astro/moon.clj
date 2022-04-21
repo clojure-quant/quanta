@@ -1,4 +1,4 @@
-(ns ta.series.moon
+(ns astro.moon
   (:require
    [tick.core :as tick]))
 

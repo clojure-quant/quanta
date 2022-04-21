@@ -1,6 +1,7 @@
 {:timbre-loglevel
  [[#{"pinkgorilla.nrepl.*"} :warn]
   [#{"org.eclipse.jetty.*"} :warn]
+  [#{"modular.ws.*"} :warn] ; modular.ws.msg-handler
   [#{"webly.*"} :info]
   [#{"*"} :info]]
 

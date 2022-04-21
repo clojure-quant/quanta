@@ -8,12 +8,14 @@
         org.scicloj/wadogo {:mvn/version "0.1.0-SNAPSHOT"}
       ;  com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.1.0"}
         com.taoensso/timbre {:mvn/version "5.1.2"} ; clj/cljs logging
-        org.slf4j/slf4j-nop {:mvn/version "1.7.32"}
+        org.slf4j/slf4j-nop {:mvn/version "2.0.0-alpha7"}
 
+        org.pinkgorilla/reval {:mvn/version "0.0.37"}
         ta/trateg {:local/root "../../lib/trateg" :deps/manifest :deps}
         ta/data {:local/root "../../lib/data" :deps/manifest :deps}
         ta/tradingview {:local/root "../../lib/tradingview" :deps/manifest :deps}
-        org.pinkgorilla/reval {:mvn/version "0.0.37"}
+        ta/astro {:local/root "../../lib/astro" :deps/manifest :deps}
+        
 
         ;;
         }
