@@ -9,7 +9,10 @@
    [ta.algo.manager :refer [algo-names algo-info algo-run-window-browser algo-run-browser]]
    [demo.env.config] ; side-effects
    [demo.env.algos] ; side-effects
-   [ta.gann.svg-plot :refer [get-gann-spec get-boxes]]))
+   [ta.gann.svg-plot :refer [get-gann-spec get-boxes]]
+   [ta.tradingview.handler-datasource :refer [server-config symbol-info symbol-search server-time]]
+   
+   ))
 
 (defn overview-map [w f]
   (let [ds-overview (warehouse-overview w f)
@@ -32,6 +35,13 @@
   :algo/info algo-info
   :algo/run-window algo-run-window-browser
   :algo/run algo-run-browser
+
+  :tv/config (fn [] server-config)
+  :tv/symbol-info (fn [symbol]
+                    (println "symbol-info for:" symbol)
+                    (symbol-info symbol))
+  :tv/symbol-search symbol-search
+  :tv/time server-time
 
   ; gann
   :gann/chart get-gann-spec

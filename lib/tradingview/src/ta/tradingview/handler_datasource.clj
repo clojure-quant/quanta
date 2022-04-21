@@ -18,9 +18,13 @@
                                          category-name->category inst-crypto?]]
    [ta.tradingview.db-marks :refer [load-marks convert-marks]]))
 
+
+(defn server-time []
+  (-> (now-datetime) datetime->epoch-second))
+
 (defn time-handler [_]
   (info "tv/time")
-  (let [now-epoch (-> (now-datetime) datetime->epoch-second)]
+  (let [now-epoch (server-time)]
     (res/response (str now-epoch))))
 
 ;; CONFIG - Tell TradingView which featurs are supported by server.
@@ -115,21 +119,25 @@
     (let [c (category-name->category type)]
       (filter #(= c (:category %)) list))))
 
+(defn symbol-search [query type exchange limit]
+  (let [sr (->> (search query)
+          (filter-exchange exchange)
+          (filter-category type))
+        sr-limit (take limit sr)
+        sr-tv (map (fn [{:keys [symbol name] :as i}]
+                {:ticker symbol
+                :symbol symbol ; OUR SYMBOL FORMAT. TV uses exchange:symbol
+                :full_name symbol
+                :description  (inst-name symbol i)
+                :exchange (inst-exchange i)
+                :type (inst-type i)}) sr-limit)]
+     sr-tv))
+
 (defn search-handler [{:keys [query-params] :as req}]
   (info "tv/search: " query-params)
   (let [{:keys [query type exchange limit]} (clojure.walk/keywordize-keys query-params)
         limit (Integer/parseInt limit)
-        sr (->> (search query)
-                (filter-exchange exchange)
-                (filter-category type))
-        sr-limit (take limit sr)
-        sr-tv (map (fn [{:keys [symbol name] :as i}]
-                     {:ticker symbol
-                      :symbol symbol ; OUR SYMBOL FORMAT. TV uses exchange:symbol
-                      :full_name symbol
-                      :description  (inst-name symbol i)
-                      :exchange (inst-exchange i)
-                      :type (inst-type i)}) sr-limit)]
+        sr-tv (symbol-search query type exchange limit)]
     (res/response sr-tv)))
 
 (comment
