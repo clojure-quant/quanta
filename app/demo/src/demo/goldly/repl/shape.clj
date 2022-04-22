@@ -12,8 +12,21 @@
 ;; https://github.com/bitblockart/tradingview-charting-library/blob/master/wiki/Shapes-and-Overrides.md
 
 
+
 (eval-code!
- (tv/add-shapes [{:time 1649791880}] {:shape "vertical_line"}))
+ (tv/add-shapes [{:time 1644364800}] {:shape "vertical_line"})) ; feb 9
+
+
+(eval-code!
+ (tv/add-shapes [{:time 1652054400}] {:shape "vertical_line"}))
+
+
+(eval-code!
+ (tv/add-shapes [{:time 1655683200}] {:shape "vertical_line"}))
+
+; june 20
+
+
 
 
 (eval-code!
