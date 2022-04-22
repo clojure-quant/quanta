@@ -73,15 +73,45 @@
 (eval-code!
  (tv/get-symbol))
 
-
-
-
 (eval-code!
  (tv/save-chart))
 
 (eval-code!
  (tv/get-chart))
 
+; js->clj and jsx->clj DO NOT WORK!
+(eval-code!
+ (let [d (tv/get-chart)
+       c (.-charts d)
+       c0 (aget c 0)
+       ;c-clj (jsx->clj c0)
+       c-clj (js->clj c0)
+       ]
+   (.log js/console d)
+   (.log js/console c)
+   (.log js/console c0)
+
+   (println "charts: " (pr-str c-clj))
+   
+   13))
+
+ 
+
+
+
+
+
+(eval-code!
+ (tv/reset-data))
+
+
+
+(eval-code!
+ (tv/refresh-marks))
+
+; get list of all features (that supposedly can be set in the widget constructor)
+(eval-code!
+ (tv/show-features))
 
 
 ; getPanes () Returns an array of instances of the PaneApi that allows you to interact with the panes.
@@ -124,35 +154,16 @@
 
 
 
+(eval-code!
+ (let [p (tv/set-range
+          {:from 1420156800 :to 1451433600}
+          {:percentRightMargin 30})]
+   (.then p (fn [] (println "new visible range applied!")
+                   ;widget.activeChart () .refreshMarks ();              
+              ))))
 
 
-
-widget.activeChart().getStudyById(id).setVisible(false);
-
-
-
-widget.activeChart().setVisibleRange(
-    { from: 1420156800, to: 1451433600 },
-    { percentRightMargin: 20 }
-).then(() => console.log('New visible range is applied'));
-widget.activeChart().refreshMarks();
-
-Plot
-r1 = plot(highUsePivot, color=ta.change(highUsePivot) ? na : #FF0000, linewidth=3, offset=-(rightBars + 1), title='Resistance')
-s1 = plot(lowUsePivot, color=ta.change(lowUsePivot) ? na : #233dee, linewidth=3, offset=-(rightBars + 1), title='Support')
-
-
-shape
-plotshape(buy == 1, text='🚀', style=shape.arrowup, location=location.belowbar, color=color.new(#32CD32, 0), textcolor=color.new(color.white, 0), offset=0, size=size.auto)
-plotshape(sell == 1, text='🔨', style=shape.arrowdown, location=location.abovebar, color=color.new(#FF0000, 0), textcolor=color.new(color.white, 0), offset=0, size=size.auto)
-plotshape(buy == 1, title='Buy Signal', text='BUY', textcolor=color.new(#FFFFFF, 0), style=shape.labelup, size=size.normal, location=location.belowbar, color=color.new(#1B8112, 0))
-plotshape(sell == 1, title='Sell Signal', text='SELL', textcolor=color.new(#FFFFFF, 0), style=shape.labeldown, size=size.normal, location=location.abovebar, color=color.new(#FF5733, 0))
-plotshape(downFractal, style=shape.triangledown, location=location.belowbar, offset=-n, color=#F44336, size = size.small)
-plotshape(upFractal, style=shape.triangleup,   location=location.abovebar, offset=-n, color=#009688, size = size.small)
-
-
-; get list of all features (that supposedly can be set in the widget constructor)
-widget.getAllFeatures ()
+ 
 ; returns "cursor"
 widget.selectedLineTool ()
  widget.activeChart () .getAllShapes () .forEach (({name}) => console.log (name));

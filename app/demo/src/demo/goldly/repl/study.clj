@@ -28,6 +28,8 @@
 (eval-code!
  (tv/remove-all-studies))
 
+;widget.activeChart () .getStudyById (id) .setVisible (false);
+
 (eval-code!
  (tv/add-algo-studies [; main plot 
                        {:close "series"}]))
@@ -42,4 +44,5 @@
 (eval-code!
  (tv/add-algo-studies [{:close "series"} ; main plot 
                        {:volume "column"}]))
+
 

@@ -114,6 +114,7 @@
     algo-state [:symbol]]
    [input/button {:on-click #(rf/dispatch [:modal/open (algo-dialog)
                                            :medium])} "options"]
+    [input/button {:on-click #(tv/reset-data)} "R!"]
    [input/button {:on-click #(do (get-window-current)
                                  (rf/dispatch [:modal/open (table-dialog)
                                                :large]))} "table"]
