@@ -27,9 +27,11 @@
 
 (defn fixed-shapes [symbol frequency user-options epoch-start epoch-end]
   [(shapes/line-vertical 1644364800) ; feb 9
-   (shapes/line-vertical 1649791880)
+   (shapes/line-vertical 1648944000) ; april 3
    (shapes/line-horizontal 350.55)
-   (shapes/gann-square 1643846400 350.0 1648944000  550.0)])
+   (shapes/gann-square 1643846400 350.0 1648944000  550.0)
+   
+   ])
 
 
 (add-algo

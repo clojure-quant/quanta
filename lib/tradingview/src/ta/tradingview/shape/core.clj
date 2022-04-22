@@ -38,7 +38,7 @@
 
 (defn gann-square [t1 p1 t2 p2]
   {:points  [{:time t1 :price p1}
-             {:time t1 :price p2}]
+             {:time t2 :price p2}]
    :override {:shape "gannbox_square"}})
 
 
