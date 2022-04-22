@@ -151,7 +151,15 @@ plotshape(downFractal, style=shape.triangledown, location=location.belowbar, off
 plotshape(upFractal, style=shape.triangleup,   location=location.abovebar, offset=-n, color=#009688, size = size.small)
 
 
+; get list of all features (that supposedly can be set in the widget constructor)
+widget.getAllFeatures ()
+; returns "cursor"
+widget.selectedLineTool ()
+ widget.activeChart () .getAllShapes () .forEach (({name}) => console.log (name));
 
+widget.activeChart().setPriceToBarRatio(0.7567, { disableUndo: true });
+
+widget.activeChart () .getPanes () [1] .moveTo (0);
 
 widget.onChartReady(function() {
     widget.onContextMenu(function(unixtime, price) {

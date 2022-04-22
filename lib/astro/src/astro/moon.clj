@@ -46,6 +46,18 @@
 
 (def inst->moon-phase-kw (comp moon-phase->kw moon-phase-from-instant))
 
+(defn phase->text [phase]
+  (case phase
+    :new  "🌑" ;New Moon	U+1F311
+    :i1   "🌒" ;Waxing Crescent Moon	U+1F312
+    :i2   "🌓" ;First Quarter Moon	U+1F313
+    :i3   "🌔" ;Waxing Gibbous Moon	U+1F314
+    :full "🌕" ;Full Moon	U+1F315
+    :d1   "🌖" ;Waning Gibbous Moon	U+1F316
+    :d2   "🌗" ;Last Quarter Moon	U+1F317
+    :d3   "🌘" ;Waning Crescent Moon	U+1F318
+    "?"))
+
 (comment
   ; test if moon phase from localdate is the same as using an instant
   (-> (java.time.LocalDate/now) moon-phase)
@@ -57,6 +69,13 @@
   (-> tick/now moon-phase-from-instant emoji-int->string)
 
   (inst->moon-phase-kw (tick/now))
-;  
+
+  ; PHASE => UNICODE SYMOBL
+  (phase->text :full)
+  (phase->text :new)
+
+  (map phase->text [:new :i1 :i2 :i3 :full :d1 :d2 :d3])
+
+;
   )
 

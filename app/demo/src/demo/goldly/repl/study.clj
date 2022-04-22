@@ -2,7 +2,6 @@
   (:require
    [goldly.scratchpad :refer [eval-code!]]))
 
-
 (eval-code!
  (+ 5 5))
 
@@ -27,8 +26,7 @@
  (study-list))
 
 (eval-code!
-  (tv/remove-all-studies))
-  
+ (tv/remove-all-studies))
 
 (eval-code!
  (tv/add-algo-studies [; main plot 
@@ -41,9 +39,7 @@
 ; adding plot  {:volume column}  to:  CLJ
 ; adding col: :volume to:  CLJ
 
-
-
 (eval-code!
-  (tv/add-algo-studies [{:close "series"} ; main plot 
-                        {:volume "column"}]))
+ (tv/add-algo-studies [{:close "series"} ; main plot 
+                       {:volume "column"}]))
 

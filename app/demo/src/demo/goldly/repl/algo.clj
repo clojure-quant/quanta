@@ -2,7 +2,6 @@
   (:require
    [goldly.scratchpad :refer [eval-code!]]))
 
-
 (eval-code!
  (+ 5 5))
 
@@ -16,7 +15,6 @@
  ;(-> (deref algo-state) :data :study-extra-cols)
  (-> (deref algo-state) :data :tradingview)
  ;(-> (deref algo-state) :data :tradingview-marks)
-
  )
- 
+
 

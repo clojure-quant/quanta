@@ -12,7 +12,6 @@
    [demo.algo.supertrend]
    ; astro
    [demo.algo.moon]
-   [demo.algo.astro]
-   ))
+   [demo.algo.astro]))
 
 ;; this ns is purely side effects ...

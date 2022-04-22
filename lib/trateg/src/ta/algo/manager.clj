@@ -30,12 +30,10 @@
   (if-let [algo (get-algo name)]
     (let [charts (or (:charts algo) [])
           options (or (:options algo) {})]
-    (-> algo
-        (dissoc :algo :marks :shapes) ; remove functions
-        (assoc :charts charts 
-               :options options)))))
-
-
+      (-> algo
+          (dissoc :algo :marks :shapes) ; remove functions
+          (assoc :charts charts
+                 :options options)))))
 
 (defn col-info [ds]
   (->> ds
@@ -122,7 +120,6 @@
                       :nav (ds->map (:nav stats))}}
              {}))))
 
-
 (defn epoch
   "add epoch column to ds"
   [ds]
@@ -131,8 +128,7 @@
 (defn add-epoch [ds]
   (tc/add-column
    ds
-   :epoch (epoch ds)
-   ))
+   :epoch (epoch ds)))
 
 (defn select-in-window [ds epoch-start epoch-end]
   (tc/select-rows
@@ -142,41 +138,38 @@
 
 (defn algo-run-window [name symbol frequency options epoch-start epoch-end]
   (let [options (assoc options :symbol symbol
-                               :w :stocks
-                               :frequency frequency)
-        {:keys [ds-study] :as d} (algo-run name options)
-        ]
-    (-> ds-study 
+                       :w :stocks
+                       :frequency frequency)
+        {:keys [ds-study] :as d} (algo-run name options)]
+    (-> ds-study
         (add-epoch)
-        (select-in-window epoch-start epoch-end)
-        )))
-
+        (select-in-window epoch-start epoch-end))))
 
 (defn algo-run-window-browser [name symbol frequency options epoch-start epoch-end]
   (let [ds (algo-run-window name symbol frequency options epoch-start epoch-end)]
-     (ds->map ds)
-    ))
+    (ds->map ds)))
 
 (defn algo-marks [name symbol frequency user-options epoch-start epoch-end]
-    (if-let [{:keys [marks options]} (get-algo name)]
-       (if marks
-          (let [options (merge options user-options)]
-            (marks symbol frequency options epoch-start epoch-end))
-         (do (println "NO MARKS - " name "does not define a marks fn.")
-            []))
-      (do  (println "NO MARKS - algo not found: " name)
-           [])))
+  (if-let [{:keys [marks options]} (get-algo name)]
+    (if marks
+      (let [options (merge options user-options)]
+        (marks symbol frequency options epoch-start epoch-end))
+      (do (println "NO MARKS - " name "does not define a marks fn.")
+          []))
+    (do  (println "NO MARKS - algo not found: " name)
+         [])))
 
 (defn algo-shapes [name symbol frequency user-options epoch-start epoch-end]
   (if-let [{:keys [shapes options]} (get-algo name)]
     (if shapes
-      (let [options (merge options user-options)]
-        (shapes symbol frequency options epoch-start epoch-end))
+      (let [options (merge options user-options)
+            data (shapes symbol frequency options epoch-start epoch-end)]
+        (println "SHAPE [" (count data) "]" name symbol epoch-start epoch-end)
+        data)
       (do (println "NO SHAPES - " name "does not define a shapes fn.")
           []))
     (do  (println "NO SHAPES - algo not found: " name)
          [])))
-
 
 (comment
   (algo-names)
@@ -192,41 +185,27 @@
 
   (get-algo an)
   (algo-info an)
-                   
+
   (def epoch-start 1642726800) ; jan 21 2022
   (def epoch-end 1650499200) ; april 21 2022
 
   (require '[ta.helper.print :refer [print-overview]])
-  (-> 
-    (algo-run-window-browser an "SPY" "D" {} epoch-start epoch-end) 
+  (->
+   (algo-run-window an "SPY" "D" {} epoch-start epoch-end)
+    ;(algo-run-window-browser an "SPY" "D" {} epoch-start epoch-end) 
     ;:epoch
    ;print-overview
-   println
+   println)
 
-   )
-  
   (-> (algo-marks "astro" "SPY" "D" {:show-moon false} epoch-start epoch-end)
-      count
-   )
-  
+      count)
+
   (-> (algo-marks "astro" "SPY" "D" {:show-moon true} epoch-start epoch-end)
       count)
-  
+
   (-> (algo-shapes "moon" "SPY" "D" {:show-moon true} epoch-start epoch-end)
       ;count
       )
-  
-  
-
-
-
-   
-
-  
-
-
-
-  
   (->> ;(algo-run an {:symbol "SPY"})
    (algo-run-browser an {:symbol "TLT"})
   ; :stats

@@ -43,7 +43,6 @@
         cols (keys row1)]
     (remove is-default-col? cols)))
 
-
 (defn study-columns  [data]
   (let [extra-cols (or (study-extra-cols data) [])]
     (if (has-trades? data)
@@ -63,7 +62,6 @@
                :pagination :true
                :paginationAutoPageSize true}]]]
     [:div "no data "]))
-
 
 (defn table [data]
   [aggrid {:data data

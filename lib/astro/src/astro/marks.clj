@@ -126,7 +126,6 @@
 (defn moon-aspect? [{:keys [a b] :as aspect}]
   (or (= a :Moon) (= b :Moon)))
 
-
 (defn astro-marks [symbol resolution options from to]
   (let [aspects (load-aspects symbol resolution options from to)
         aspects (if (:show-moon options)

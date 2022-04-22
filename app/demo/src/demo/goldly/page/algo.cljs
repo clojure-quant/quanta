@@ -19,21 +19,17 @@
      ;[pr-data data]
     [:div "no data."]))
 
-
-
 (defn add-marks-to-tv [tradingview-server]
   (if-let [marks (:marks tradingview-server)]
     (do
-      (println "adding " (count marks) "marks to tv") 
+      (println "adding " (count marks) "marks to tv")
       (doall (map #(tv/add-shapes (:points %) (assoc (:override %) :disableUndo true)) marks)))
-    (println "NO TV MARKS RCVD FROM SERVER! data: " tradingview-server)
-    ))
+    (println "NO TV MARKS RCVD FROM SERVER! data: " tradingview-server)))
 
 (defn clear-marks-tv []
   (println "TV CLEAR MARKS!")
   (let [c (chart-active)]
-     (.removeAllShapes c)))
- 
+    (.removeAllShapes c)))
 
 (defn tv-events [algo opts tradingview-state]
   (when algo
@@ -49,9 +45,9 @@
 
 (defn tv-data [tradingview-server]
   (when tradingview-server
-     (wrap-chart-ready
-       (fn []
-         (add-marks-to-tv tradingview-server)))
+    (wrap-chart-ready
+     (fn []
+       (add-marks-to-tv tradingview-server)))
     nil))
 
 (defn tv-page [context data]

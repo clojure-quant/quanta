@@ -1,6 +1,28 @@
 (ns ta.tradingview.shape.core
   (:require
-   [taoensso.timbre :refer [info warn error]]))
+   [taoensso.timbre :refer [info warn error]]
+   [tech.v3.dataset :as tds]
+   [ta.algo.manager :refer [algo-run-window]]))
+
+(defn algo-col->shapes [algo symbol frequency options epoch-start epoch-end col cell->shape]
+  (let [ds (algo-run-window algo symbol frequency options epoch-start epoch-end)
+        r (tds/mapseq-reader ds)]
+    (into []
+          (map (fn [row]
+                 (cell->shape (:epoch row) (col row))) r))))
+
+(defn text [time text]
+  {:points [{:time time :channel "high"}]
+   :override {:shape "text"
+              :text text
+              :channel "high" ; if price not set => open, high, low, close. 
+              ;:location=location.belowbar
+              :color "#32CD32"
+              :fillBackground false
+              :backgroundColor "rgba( 102, 123, 139, 1)"
+              ;textcolor=color.new(color.white, 0)
+              ;:size size.auto
+              }})
 
 (defn line-vertical [time]
   {:points [{:time time}]
@@ -21,7 +43,6 @@
                           :linewidth "1"
                           :linecolor "#19ff20"}}})
 
-
 ; 1649791880
 
 (defn marker [time price]
@@ -40,7 +61,6 @@
   {:points  [{:time t1 :price p1}
              {:time t2 :price p2}]
    :override {:shape "gannbox_square"}})
-
 
 ;  [{:time 1625764800 :price 45000}
 ;   {:time 1649191891 :price 50000}

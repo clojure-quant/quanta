@@ -5,7 +5,6 @@
    [ta.algo.manager :refer [add-algo]]
    [astro.marks :refer [astro-marks]]))
 
-
 (add-algo
  {:name "astro"
   :comment "astrological aspects - viz only"
@@ -13,5 +12,4 @@
   :charts [nil ; nothing to add in price pane
            {:volume "column"}]
   :options {:show-moon false}
-  :marks astro-marks
-  })
+  :marks astro-marks})

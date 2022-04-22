@@ -3,20 +3,17 @@
          ]
  :deps {aysylu/loom {:mvn/version "1.0.2"}
         techascent/tech.viz {:mvn/version "6.00-beta-16-2"}
-        cljplot/cljplot {:mvn/version "0.0.2a-SNAPSHOT"}
-        io.github.adam-james-v/svg-clj {:mvn/version "0.0.9"}
-        org.scicloj/wadogo {:mvn/version "0.1.0-SNAPSHOT"}
+       
       ;  com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.1.0"}
         com.taoensso/timbre {:mvn/version "5.1.2"} ; clj/cljs logging
         org.slf4j/slf4j-nop {:mvn/version "2.0.0-alpha7"}
-
         org.pinkgorilla/reval {:mvn/version "0.0.37"}
+        
         ta/trateg {:local/root "../../lib/trateg" :deps/manifest :deps}
         ta/data {:local/root "../../lib/data" :deps/manifest :deps}
         ta/tradingview {:local/root "../../lib/tradingview" :deps/manifest :deps}
         ta/astro {:local/root "../../lib/astro" :deps/manifest :deps}
-        
-
+        ta/gann {:local/root "../../lib/gann" :deps/manifest :deps}
         ;;
         }
  :aliases

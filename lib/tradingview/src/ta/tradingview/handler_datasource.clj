@@ -18,8 +18,6 @@
                                          category-name->category inst-crypto?]]
    ;[ta.tradingview.db-marks :refer [load-marks convert-marks]]
    ))
-
-
 (defn server-time []
   (-> (now-datetime) datetime->epoch-second))
 
@@ -122,17 +120,17 @@
 
 (defn symbol-search [query type exchange limit]
   (let [sr (->> (search query)
-          (filter-exchange exchange)
-          (filter-category type))
+                (filter-exchange exchange)
+                (filter-category type))
         sr-limit (take limit sr)
         sr-tv (map (fn [{:keys [symbol name] :as i}]
-                {:ticker symbol
-                :symbol symbol ; OUR SYMBOL FORMAT. TV uses exchange:symbol
-                :full_name symbol
-                :description  (inst-name symbol i)
-                :exchange (inst-exchange i)
-                :type (inst-type i)}) sr-limit)]
-     sr-tv))
+                     {:ticker symbol
+                      :symbol symbol ; OUR SYMBOL FORMAT. TV uses exchange:symbol
+                      :full_name symbol
+                      :description  (inst-name symbol i)
+                      :exchange (inst-exchange i)
+                      :type (inst-type i)}) sr-limit)]
+    sr-tv))
 
 (defn search-handler [{:keys [query-params] :as req}]
   (info "tv/search: " query-params)
@@ -231,8 +229,6 @@
    :labelFontColor ["white" "white" "red" "#FFFFFF" "white" "#000"]
    :minSize [14 28 7 40 7 14]})
 
-
-
 (defn marks-handler [{:keys [query-params] :as req}]
   ; https://demo_feed.tradingview.com/marks?symbol=AAPL&from=1488810600&to=1491226200&resolution=D
   (info "tv/marks: " query-params)
@@ -240,10 +236,9 @@
         from (Integer/parseInt from)
         to (Integer/parseInt to)
         ;marks (load-marks symbol resolution from to)
-      
+
         ;_ (info "marks: " marks)
-        marks demo-marks
-        ]
+        marks demo-marks]
     (res/response marks)))
 
 (comment

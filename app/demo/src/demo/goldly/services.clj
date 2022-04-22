@@ -7,11 +7,10 @@
    [ta.warehouse :as wh]
    [ta.warehouse.overview :refer [warehouse-overview]]
    [ta.algo.manager :refer [algo-names algo-info algo-run-window-browser algo-run-browser algo-marks algo-shapes]]
-   [demo.env.config] ; side-effects
-   [demo.env.algos] ; side-effects
    [ta.gann.svg-plot :refer [get-gann-spec get-boxes]]
    [ta.tradingview.handler-datasource :refer [server-config symbol-info symbol-search server-time]]
-   
+   [demo.env.config] ; side-effects
+   [demo.env.algos] ; side-effects
    ))
 
 (defn overview-map [w f]

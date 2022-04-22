@@ -2,7 +2,6 @@
   (:require
    [goldly.scratchpad :refer [eval-code!]]))
 
-
 (eval-code!
  (+ 5 5))
 
@@ -11,43 +10,55 @@
 ;; the MD file is copied in lib/tradingview
 ;; https://github.com/bitblockart/tradingview-charting-library/blob/master/wiki/Shapes-and-Overrides.md
 
-
-
 (eval-code!
  (tv/add-shapes [{:time 1644364800}] {:shape "vertical_line"})) ; feb 9
 
-
 (eval-code!
- (tv/add-shapes [{:time 1652054400}] {:shape "vertical_line"}))
-
-
+ (tv/add-shapes [{:time 1652054400}]
+                {:shape "vertical_line"
+                 :disableSave true ; prevents saving the shape on the chart
+                 :disableUndo true ; prevents adding of the action to the undo stack
+                 }))
 (eval-code!
- (tv/add-shapes [{:time 1655683200}] {:shape "vertical_line"}))
-
+ (tv/add-shapes [{:time 1655683200
+                  :offset 10000}]
+                {:shape "vertical_line"}))
 ; june 20
 
+;; https://emojipedia.org/emoji/
+;; http://www.unicode.org/Public/UNIDATA/UnicodeData.txt
+;; http://www.unicode.org/charts/
 
-
+;; https://github.com/rosejn/replchart
 
 (eval-code!
- (tv/add-shapes [{:time 1649791880
-                  :price 40000}]
-                {:shape "arrow_up" ; arrow_down arrow_left arrow_right price_label arrow_marker flag
-                 :text "🚀"
+ (tv/add-shapes [{:time 1644364800
+                  ;:price 135.0
+                  }]
+                {;:shape "arrow_up" ; arrow_down arrow_left arrow_right price_label arrow_marker flag
+                 :shape "text"
+                 ;:text "🚀"
+                ; :text "🌕" ;U+1F315 :full_moon:
+                 :text "🌑" ; New Moon	U+1F311
                  ;:location=location.belowbar
                  :color "#32CD32"
+                 :frozen true
+                 :title "MR BIG"
+                 ;:fillBackground false
+                 :backgroundColor "rgba( 102, 123, 139, 1)"
                  ;textcolor=color.new(color.white, 0)
-                 :offset 0
+                 :offset 1000
                  ;:size size.auto
+                 :channel "close " ; if price not set => open, high, low, close. 
                  }))
-
+widget.activeChart () .getShapeById ('YGC4tE') .getProperties ()
 
 ; plotshape(buy == 1, text=, style=shape., 
 
 (eval-code!
  (tv/add-shapes
-  [{:time 1625764800 :price 45000}
-   {:time 1649191891 :price 50000}]
+  [{:time 1625764800 :price 150}
+   {:time 1649191891 :price 200}]
   {:shape "gannbox_square"}))
 
 (eval-code!
@@ -74,21 +85,20 @@
                              :linewidth "1"
                              :linecolor "#19ff20"}}))
 
-
 (eval-code!
-  (let [to   (-> (.now js/Date) (/ 1000))
-        from (- to  (* 500 24 3600)) ; 500 days ago
-        ]
-    (println "adding trendline from:" from " to: " to)
-    (tv/add-shapes
-     [{:time from :price 300}
-      {:time to :price 500}]
-     {:shape "trend_line"
+ (let [to   (-> (.now js/Date) (/ 1000))
+       from (- to  (* 500 24 3600)) ; 500 days ago
+       ]
+   (println "adding trendline from:" from " to: " to)
+   (tv/add-shapes
+    [{:time from :price 300}
+     {:time to :price 500}]
+    {:shape "trend_line"
       ;:lock true
-      :disableSelection true
-      :disableSave true
-      :disableUndo true
-      :text "mega trend"})))
+     :disableSelection true
+     :disableSave true
+     :disableUndo true
+     :text "mega trend"})))
 
 (eval-code!
  (do
@@ -114,10 +124,10 @@
         ;shapes (js->clj shapes-js)
        ]
     ;(count shapes)
+   (.log js/console shapes-js)
    ct))
 
-
- ; this removes all drawings from the current tradingview widget
+; this removes all drawings from the current tradingview widget
 (eval-code!
  (let [c (chart-active)]
    (.removeAllShapes c)))
