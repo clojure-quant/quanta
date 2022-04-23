@@ -10,19 +10,25 @@
 ;; the MD file is copied in lib/tradingview
 ;; https://github.com/bitblockart/tradingview-charting-library/blob/master/wiki/Shapes-and-Overrides.md
 
-(eval-code!
- (tv/add-shapes [{:time 1644364800}] {:shape "vertical_line"})) ; feb 9
 
 (eval-code!
- (tv/add-shapes [{:time 1652054400}]
+ (tv/add-shape [{:time 1644364800}] {:shape "vertical_line"})) ; feb 9
+
+(eval-code!
+ (tv/add-shape [{:time 1652054400}]
                 {:shape "vertical_line"
                  :disableSave true ; prevents saving the shape on the chart
                  :disableUndo true ; prevents adding of the action to the undo stack
                  }))
 (eval-code!
- (tv/add-shapes [{:time 1655683200
-                  :offset 10000}]
+ (tv/add-shape [{:time 1655683200
+                  :price 5000
+                  ;:offset 1000
+                  }]
                 {:shape "vertical_line"}))
+
+
+
 ; june 20
 
 ;; https://emojipedia.org/emoji/
@@ -32,7 +38,7 @@
 ;; https://github.com/rosejn/replchart
 
 (eval-code!
- (tv/add-shapes [{:time 1644364800
+ (tv/add-shape [{:time 1644364800
                   ;:price 135.0
                   }]
                 {;:shape "arrow_up" ; arrow_down arrow_left arrow_right price_label arrow_marker flag
@@ -51,18 +57,47 @@
                  ;:size size.auto
                  :channel "close " ; if price not set => open, high, low, close. 
                  }))
-widget.activeChart () .getShapeById ('YGC4tE') .getProperties ()
 
-; plotshape(buy == 1, text=, style=shape., 
 
 (eval-code!
- (tv/add-shapes
-  [{:time 1625764800 :price 150}
-   {:time 1649191891 :price 200}]
+ (tv/add-shape
+  [{:time 1625764800.0 :price 250.0}
+   {:time 1649191891.0 :price 450.0}]
   {:shape "gannbox_square"}))
 
+
 (eval-code!
- (tv/add-shapes
+ (tv/add-shape
+  [{:time 1642044120.261 :price 250.0}
+   {:time 1654214400
+       :price 450.0}]
+  {:shape "gannbox_square"}))
+
+
+
+
+
+(eval-code!
+ (let [to   (-> (.now js/Date) (/ 1000))
+       from (- to  (* 100 24 3600)) ; 100 days ago
+       to (+ to  (* 60 24 3600))]
+    (tv/add-shape
+      [{:time from :price 250.0}
+       {:time to :price 450.0}]
+       {:shape "gannbox_square"})))
+
+
+
+
+
+
+
+
+(eval-code!
+ (tv/get-shape-properties "hgVGwq"))
+
+(eval-code!
+ (tv/add-shape
   [{:time 1625764800 :price 45000}
    {:time 1649191891 :price 50000}
    {:time 1649291891 :price 55000}
@@ -71,7 +106,7 @@ widget.activeChart () .getShapeById ('YGC4tE') .getProperties ()
   {:shape "xabcd_pattern"}))
 
 (eval-code!
- (tv/add-shapes [{:price 49000}]
+ (tv/add-shape [{:price 49000}]
                 {:shape "horizontal_line"
                  :lock true
                  :disableSelection true
@@ -87,10 +122,11 @@ widget.activeChart () .getShapeById ('YGC4tE') .getProperties ()
 
 (eval-code!
  (let [to   (-> (.now js/Date) (/ 1000))
-       from (- to  (* 500 24 3600)) ; 500 days ago
+       from (- to  (* 100 24 3600)) ; 100 days ago
+        to (+ to  (* 60 24 3600))
        ]
    (println "adding trendline from:" from " to: " to)
-   (tv/add-shapes
+   (tv/add-shape
     [{:time from :price 300}
      {:time to :price 500}]
     {:shape "trend_line"
@@ -105,7 +141,7 @@ widget.activeChart () .getShapeById ('YGC4tE') .getProperties ()
    (let [c (chart-active)
          panes (.getPanes c)]
      (.log js/console panes))
-   (tv/add-shapes [{:time 1641748561
+   (tv/add-shape [{:time 1641748561
                   ;:price 40000
                     }]
                   {:shape "arrow_up" ; arrow_down arrow_left arrow_right price_label arrow_marker flag
@@ -131,3 +167,6 @@ widget.activeChart () .getShapeById ('YGC4tE') .getProperties ()
 (eval-code!
  (let [c (chart-active)]
    (.removeAllShapes c)))
+
+
+ widget.activeChart () .getAllShapes () .forEach (({name}) => console.log (name));

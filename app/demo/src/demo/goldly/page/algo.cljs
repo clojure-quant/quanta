@@ -23,7 +23,7 @@
   (if-let [marks (:marks tradingview-server)]
     (do
       (println "adding " (count marks) "marks to tv")
-      (doall (map #(tv/add-shapes (:points %) (assoc (:override %) :disableUndo true)) marks)))
+      (doall (map #(tv/add-shape (:points %) (assoc (:override %) :disableUndo true)) marks)))
     (println "NO TV MARKS RCVD FROM SERVER! data: " tradingview-server)))
 
 (defn clear-marks-tv []
