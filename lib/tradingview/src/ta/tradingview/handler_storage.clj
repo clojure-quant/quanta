@@ -4,6 +4,7 @@
    [taoensso.timbre :refer [trace debug info warnf error]]
    [schema.core :as s]
    [ring.util.response :as res]
+    [ring.middleware.multipart-params :refer [wrap-multipart-params]]
    [modular.webserver.middleware.api :refer [wrap-api-handler]]
    [modular.webserver.handler.registry :refer [add-ring-handler]]
    [ta.tradingview.db-ts :refer [save-chart-boxed delete-chart load-chart-boxed chart-list now-epoch]]))
@@ -47,6 +48,13 @@
         (res/response {:status "ok" :data chart-list})
         (res/response {:status "error" :error "chart-list for user failed."})))))
 
+
+(add-ring-handler :tv-db/save-chart  (wrap-api-handler save-chart-handler))
+(add-ring-handler :tv-db/modify-chart (wrap-api-handler modify-chart-handler))
+(add-ring-handler :tv-db/delete-chart (wrap-api-handler delete-chart-handler))
+(add-ring-handler :tv-db/load-chart (wrap-api-handler load-chart-handler))
+
+
 (comment
   {"status" "ok"
    "data" [{"id" 888
@@ -70,6 +78,8 @@
 
 ; POST REQUEST: charts_storage_url/charts_storage_api_version/charts?client=client_id&user=user_id&chart=chart_id
 
+
+
 #_(defn save-template
     [db client_id user_id data]
     (let [query {:client_id client_id :user_id user_id :name (:name data)}
@@ -89,10 +99,6 @@
     (mc/remove db "tvtemplate"
                {:client_id client_id :user_id user_id :name name}))
 
-(add-ring-handler :tv-db/save-chart (wrap-api-handler save-chart-handler))
-(add-ring-handler :tv-db/modify-chart (wrap-api-handler modify-chart-handler))
-(add-ring-handler :tv-db/delete-chart (wrap-api-handler delete-chart-handler))
-(add-ring-handler :tv-db/load-chart (wrap-api-handler load-chart-handler))
 
 (defn load-template-handler
   "returns eithe chart-template-list or chart-template"
@@ -110,6 +116,26 @@
         (res/response {:status "ok" :data template-list})
         (res/response {:status "error" :error "template-list not found."})))))
 
+(defn save-template-handler [{:keys [query-params form-params body multipart-params] :as req}] ; params
+  (info "saving tradingview template: " (keys req))
+  (info "saving tradingview template query-params: " (keys query-params))
+  (info "saving tradingview template form-params: " form-params)
+  (info "saving tradingview template body: " body)
+  (info "saving tradingview template multipart-params: " multipart-params)
+
+  (let [{:keys [client user]} (clojure.walk/keywordize-keys query-params)
+        ;{:keys [name content]} (clojure.walk/keywordize-keys multipart-params)
+        id (now-epoch)
+        ; post request can contain chart id, or not
+        ;chart (if chart chart (now-epoch))
+        ]
+    (spit "/tmp/template.edn" (pr-str multipart-params) )
+    (res/response {:status "ok"
+                   :id id})))
+
+
+
 (add-ring-handler :tv-db/load-template (wrap-api-handler load-template-handler))
+(add-ring-handler :tv-db/save-template (wrap-multipart-params (wrap-api-handler save-template-handler)))
 
 
