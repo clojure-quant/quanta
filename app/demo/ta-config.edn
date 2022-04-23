@@ -42,11 +42,6 @@
                          ; gann
                          "tradingview" :tradingview
                          "gann" :gann
-                         ;test
-                         "error" :user/error
-                         "test/heatmap" :test/heatmap
-                         "test/histogram" :test/histogram
-                         "test/experiment" :test/experiment
                          ; devtools
                          "devtools/pages" :pages
                          "devtools/help" :devtools

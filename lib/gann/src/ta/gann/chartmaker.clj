@@ -1,4 +1,4 @@
-(ns ta.gann.tradingview
+(ns ta.gann.chartmaker
   (:require
    [clojure.pprint]
    [taoensso.timbre :refer [trace debug info warnf error]]
@@ -72,15 +72,4 @@
          nil) ; nil, so we dont accumulate memory.
     (gann-symbols))))
 
-(comment
 
-  (make-boxes-symbols  "2005-01-01" "2022-03-31"
-                       ["BTCUSD"
-                        "QQQ"])
-
-  (make-boxes-all  "2005-01-01" "2022-04-01")
-
-  (make-boxes-all-individual  "2000-01-01" "2022-04-01")
-
-; 
-  )

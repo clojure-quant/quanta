@@ -7,7 +7,7 @@
    [ta.warehouse :as wh]
    [ta.warehouse.overview :refer [warehouse-overview]]
    [ta.algo.manager :refer [algo-names algo-info algo-run-window-browser algo-run-browser algo-marks algo-shapes]]
-   [ta.gann.svg-plot :refer [get-gann-spec get-boxes]]
+   [ta.gann.svg-plot :refer [gann-svg get-boxes]]
    [ta.tradingview.handler-datasource :refer [server-config symbol-info symbol-search server-time]]
    [demo.env.config] ; side-effects
    [demo.env.algos] ; side-effects
@@ -46,7 +46,7 @@
   :tv/time server-time
 
   ; gann
-  :gann/chart get-gann-spec
+  :gann/chart gann-svg
   :gann/boxes get-boxes
 
   ; testing

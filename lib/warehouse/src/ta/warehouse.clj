@@ -94,15 +94,17 @@
 
 ; timeseries - name
 
+(defn filename-ts [w symbol]
+  (let [p (get-in-config [:ta :warehouse :series w])]
+    (str p symbol ".nippy.gz")))
+
 (defn save-ts [wkw ds name]
-  (let [p (get-in-config [:ta :warehouse :series wkw])
-        s (io/gzip-output-stream! (str p name ".nippy.gz"))]
+  (let [s (io/gzip-output-stream! (filename-ts wkw name))]
     (info "saving series " name " count: " (tc/row-count ds))
     (io/put-nippy! s ds)))
 
 (defn load-ts [wkw name]
-  (let [p (get-in-config [:ta :warehouse :series wkw])
-        s (io/gzip-input-stream (str p name ".nippy.gz"))
+  (let [s (io/gzip-input-stream (filename-ts wkw name))
         ds (io/get-nippy s)]
     (debug "loaded series " name " count: " (tc/row-count ds))
     ds))
@@ -111,6 +113,10 @@
 
 (defn make-filename [frequency symbol]
   (str symbol "-" frequency))
+
+(defn exists-symbol? [w frequency s]
+  (let [filename (filename-ts w (make-filename frequency s))]
+    (.exists (java-io/file filename))))
 
 (defn load-symbol [w frequency s]
   (-> (load-ts w (make-filename frequency s))
@@ -156,6 +162,10 @@
          (map :symbol))))
 
 (comment
+
+  (exists-symbol? :crypto "D" "BTCUSD")
+  (exists-symbol? :stocks "D" "SPY")
+  (exists-symbol? :stocks "D" "BAD")
 
   (config/set! :ta {:warehouse {:list "../resources/etf/"
                                 :series  {:crypto "../db/crypto/"

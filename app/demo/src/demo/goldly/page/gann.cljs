@@ -24,18 +24,13 @@
           (map box boxes))))
 
 (defn gann-page [{:keys [route-params query-params handler] :as route}]
-  (let [*state (r/atom {:params {:symbol "BTCUSD"
-                                 ;:wh :crypto
+  (let [*state (r/atom {:params {:s "BTCUSD"
                                  ;:dt-start (parse-date "2021-01-01")
                                  ;:dt-end (parse-date "2021-12-31")
                                  }
                         :data [:div "data not yet loaded."]})
         get-data (fn [& args]
-                   (let [p (-> (:params @*state)
-                               (assoc :wh
-                                      (if (= "BTCUSD" (get-in @*state [:params :symbol]))
-                                        :crypto
-                                        :stocks)))]
+                   (let [p (:params @*state)]
                      (run-a *state [:data] :gann/chart p)
                      (run-a *state [:boxes] :gann/boxes p)))]
     (fn [{:keys [route-params query-params handler] :as route}]
@@ -46,7 +41,7 @@
          [input/select
           {:nav? false
            :items ["BTCUSD" "SPY" "QQQ" "GLD" "SLV" "EURUSD"]}
-          *state [:params :symbol]]]
+          *state [:params :s]]]
         [input/button {:on-click get-data} "show gann"]
         [link-href "/" "main"]]
        [box-table (:boxes @*state)]

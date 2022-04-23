@@ -1,4 +1,4 @@
-(ns demo.goldly.repl.algo
+(ns demo.goldly.repl.tradingview.algo
   (:require
    [goldly.scratchpad :refer [eval-code!]]))
 

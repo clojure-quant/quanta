@@ -1,19 +1,17 @@
-
-
-
-
 (defn vega-list-plot [data]
   [:div
-   [:h1 "Vega charts"]
-   [:h4 "generated via gorilla-plot dsl"]
+   [:h1 "vega-list-plot"]
    [:div.flex.flex-row.content-between
     [:div.flex.flex-col.justify-start
-     (plot/list-plot data :joined true
-                     :plot-size 400
-                     :color "red"
-                     :aspect-ratio 1.6
-                     :plot-range [:all :all]
-                     :opacity 0.5)]]])
+     (plot/list-plot {:data data
+                      :joined true
+                      :plot-size 400
+                      :color "red"
+                      :aspect-ratio 1.6
+                      :plot-range [:all :all]
+                      :opacity 0.5})]]])
+
+(pinkie/register-tag :p/vega-line vega-list-plot)
 
 #_[:p/composeplot
    [:p/listplot d]

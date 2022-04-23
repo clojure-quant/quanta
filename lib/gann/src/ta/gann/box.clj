@@ -1,12 +1,11 @@
-(ns ta.gann.gann
+(ns ta.gann.box
   (:require
    [taoensso.timbre :refer [trace debug info warnf error]]
-   [clojure.edn :as edn]
-   [modular.config :refer [get-in-config]]
-   [ta.helper.date :refer [parse-date now-datetime]]
    [cljc.java-time.duration :as duration]
+   [cljc.java-time.local-date-time :as ldt]
    [tick.core :as tick]
-   [tick.alpha.interval :as t.i]))
+   [tick.alpha.interval :as t.i]
+   [ta.helper.date :refer [parse-date now-datetime]]))
 
 (defn convert-gann-dates [{:keys [symbol at bt] :as gann}]
   (try
@@ -16,24 +15,6 @@
     (catch Exception _
       (error "Error converting: " symbol)
       gann)))
-
-(comment
-
-  (def btc
-    (convert-gann-dates
-     {:symbol "BTCUSD"
-      :ap 0.01
-      :at "2010-07-18"
-      :bp 11.0
-      :bt "2014-04-13"}))
-
- ; 
-  )
-;; box
-;; a: left point of square
-;; b: right point of square
-;; bt > at
-;; bp > ap
 
 (defn make-root-box [{:keys [ap bp at bt] :as box}]
   (let [ap (Math/log10 ap)
@@ -48,11 +29,6 @@
            :dp (- bp ap)
            :dt (tick/duration interval))))
 
-(comment
-  (def root (make-root-box btc))
-  root
-;
-  )
 ;; quadrant
 ;; q-t and q-p are positive/negative integers. 
 ;; 0 returns base box
@@ -83,45 +59,6 @@
 (defn move-left [box]
   (get-quadrant box -1 0))
 
-(comment
-
-  root
-  (get-quadrant root 0 0)
-  (get-quadrant root 1 0)
-  (get-quadrant root 2 0)
-  (get-quadrant root 3 0)
-
-  (get-quadrant root 0 1)
-  (get-quadrant root 0 2)
-
-  (get-quadrant box 1 0)
-  (get-quadrant box 0 1)
-  (get-quadrant box 1000 1)
-
-  (move-right root)
-  (move-up root)
-  (move-left root)
-  (move-down root)
-
-  (-> root move-left move-left)
-  (-> root move-down move-down)
-
-  (->> 5
-       (iterate inc)
-       (take 4))
-
-  (->> root
-       (iterate move-right)
-       (take-while #(tick/< (:at %) (now-datetime)))
-       (clojure.pprint/print-table))
-
-  (->> root
-       (iterate zoom-root)
-       (take 4)
-       (clojure.pprint/print-table))
-
- ; 
-  )
 ;; zoom
 
 (defn zoom-out [{:keys [ap bp at bt dp dt zoom] :as box}]
@@ -156,20 +93,6 @@
     (if (> i zoom)
       box
       (recur (inc i) (zoom-out box)))))
-
-(comment
-  (zoom-root root)
-  (zoom-level root 1)
-  (zoom-level root 2)
-  (zoom-level root 3)
-
-  (clojure.pprint/print-table
-   [root
-    (zoom-root root)
-    (zoom-root (zoom-root root))
-    (zoom-root (zoom-root (zoom-root root)))])
-;  
-  )
 
 ;; boxes in window
 
@@ -222,47 +145,6 @@
                       (map :idx-p))]
       (get-quadrant box idx-t idx-p))))
 
-(comment
-  root
-
-  (->> (iterate move-left root)
-       (take 5)
-       last)
-
-  (->> (iterate move-down root)
-       (take 5)
-       last)
-
-  (->> (iterate move-down root)
-       (take-while #(> (:bp %) -50))
-       last)
-
-  (left-window-box root (parse-date "2020-01-01")) ; nil -> no adjustment
-  (left-window-box root (parse-date "1980-01-01")) ; moved root box
-
-  (bottom-window-box root 50.0)
-  (bottom-window-box root -10)
-
-  (root-box-bottom-left root (parse-date "1980-01-01") -10)
-
-  (->> (move-right-in-window root (parse-date "2021-01-01") (parse-date "2021-12-31"))
-      ;(clojure.pprint/print-table)
-       (map :idx-t))
-
-  (-> (move-up-in-window root 2.197252998145341 2.2621424532947794)
-      (move-up-in-window root (Math/log10 1000) (Math/log10 70000))
-      (clojure.pprint/print-table))
-
-  (-> (get-boxes-in-window root (parse-date "2021-01-01") (parse-date "2021-12-31")
-                           (Math/log10 1000) (Math/log10 70000))
-      (clojure.pprint/print-table))
-
-  (-> (get-boxes-in-window root (parse-date "1990-01-01") (parse-date "2021-12-31")
-                           (Math/log10 0.00001) (Math/log10 70000))
-      (clojure.pprint/print-table))
-
- ; 
-  )
 ;; finder
 
 (defn- quot-inc [a b]
@@ -272,8 +154,8 @@
   (-> (quot a b) dec int))
 
 (defn find-quadrant [{:keys [ap bp at bt] :as box} t p]
-  (let [time-right-shift? (> t bt)
-        time-left-shift? (< t at)
+  (let [time-right-shift? (ldt/is-after t bt)
+        time-left-shift? (ldt/is-before t at)
         price-up-shift? (> p bp)
         price-down-shift? (< p ap)]
     {:qt (cond
@@ -285,14 +167,6 @@
            price-down-shift? (quot-dec (- p ap) (:dp box))
            :else 0)}))
 
-(comment
-  (find-quadrant box 40 240)
-  (find-quadrant box 80 240)
-  (find-quadrant box 20 340)
-  (find-quadrant box 20 440)
-  (find-quadrant box 80 440)
-;  
-  )
 (comment
 
   ; time experiments
@@ -320,60 +194,6 @@
 
   (tick/>> (now-datetime) (:dt root))
  ; 
-  )
-
-;; data
-
-(defn gann-symbols []
-  (let [filename (get-in-config [:demo :gann-data-file])
-        ganns (-> filename slurp edn/read-string)]
-    (map :symbol ganns)))
-
-(defn load-ganns []
-  (let [filename (get-in-config [:demo :gann-data-file])
-        ganns (-> filename slurp edn/read-string)
-        tuple (juxt :symbol identity)]
-    (->> ganns
-         (map convert-gann-dates)
-         (map make-root-box)
-         (map tuple)
-         (into {}))))
-
-(defn get-root-box [symbol]
-  (get (load-ganns) symbol))
-
-; (def gld-box (move-down (move-down (make-root-box gld))))
-
-;                "QQQ" (zoom-in  (make-root-box qqq))
-;                "GLD" (move-down (move-down (make-root-box gld)))
-;                "SLV" (zoom-in (zoom-in (make-root-box slv)))
-;                "EURUSD" (zoom-in (zoom-in (zoom-in (make-root-box eurusd))))})
-
-;; printing
-
-(defn exponentialize-prices [{:keys [ap bp] :as box}]
-  (assoc box
-         :apl (Math/pow 10 ap)
-         :apr (Math/pow 10 bp)))
-
-(defn print-boxes [boxes]
-  (->> boxes
-       (map exponentialize-prices)
-       (clojure.pprint/print-table)))
-
-(comment
-  (get-in-config [:demo :gann-data-file])
-  (gann-symbols)
-
-  (-> (load-ganns)
-      vals
-      (print-boxes))
-
-  (get-root-box "BTCUSD")
-  (get-root-box "GLD")
-  (get-root-box "BAD")
-
-  ;
   )
 
 

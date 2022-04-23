@@ -4,12 +4,14 @@
    [cljc.java-time.duration :as duration]
    [tick.core :as tick :refer [>>]]
    [tick.alpha.interval :as t.i]
-   [ta.helper.date :refer [parse-date now-datetime]]
-   [ta.warehouse :refer [load-symbol]]
    [tablecloth.api :as tc]
    [tech.v3.dataset :as tds]
    [tech.v3.datatype.functional :as dfn]
-   [ta.gann.gann :refer [get-boxes-in-window make-root-box zoom-out zoom-in get-root-box]]))
+   [ta.helper.date :refer [parse-date now-datetime]]
+   [ta.warehouse :refer [exists-symbol? load-symbol]]
+   [ta.warehouse.symbol-db :refer [determine-wh]]
+   [ta.gann.box :refer [get-boxes-in-window make-root-box zoom-out zoom-in]]
+   [ta.gann.db :refer [get-root-box]]))
 
 ;; get prices
 
@@ -18,15 +20,16 @@
        (tick/<= date dt-end)))
 
 (defn get-prices [wh symbol dt-start dt-end]
-  (let [ds (-> (load-symbol wh "D" symbol)
-               (tc/select-rows
-                (partial row-in-range dt-start dt-end))
-               (tc/select-columns [:date :close]))
-        ds-log (tc/add-columns ds {:close-log (dfn/log10 (:close ds))})]
-    {:series (mapv (juxt :date :close-log) (tds/mapseq-reader ds-log))
-     :px-min (apply min (:close-log ds-log))
-     :px-max (apply max (:close-log ds-log))
-     :count (count (:close-log ds-log))}))
+  (when (exists-symbol? wh "D" symbol)
+    (let [ds (-> (load-symbol wh "D" symbol)
+                 (tc/select-rows
+                  (partial row-in-range dt-start dt-end))
+                 (tc/select-columns [:date :close]))
+          ds-log (tc/add-columns ds {:close-log (dfn/log10 (:close ds))})]
+      {:series (mapv (juxt :date :close-log) (tds/mapseq-reader ds-log))
+       :px-min (apply min (:close-log ds-log))
+       :px-max (apply max (:close-log ds-log))
+       :count (count (:close-log ds-log))})))
 
 (comment
   (-> (get-prices :crypto "BTCUSD" (parse-date "2021-01-01") (parse-date "2021-12-31"))
@@ -41,14 +44,6 @@
 
 ;
   )
-
-(defn determine-wh [s]
-  (info "determining wh for: " s)
-  (case s
-    "ETHUSD" :crypto
-    "BTCUSD" :crypto
-    :stocks))
-
 (comment  ; in case you dont want to load instrument data below:
 
   (defn get-close-prices-test [symbol dt-start dt-end]
@@ -73,12 +68,14 @@
         boxes (if root-box
                 (get-boxes-in-window root-box dt-start dt-end px-min px-max)
                 [])]
-    {:px-min px-min
-     :px-max px-max
-     :dt-start dt-start
-     :dt-end dt-end
-     :boxes boxes
-     :close-series close-series}))
+    (when root-box
+      {:symbol s
+       :px-min px-min
+       :px-max px-max
+       :dt-start dt-start
+       :dt-end dt-end
+       :boxes boxes
+       :close-series close-series})))
 
 (defn get-gann-boxes [opts]
   (->> opts
@@ -89,26 +86,29 @@
 
 (comment
 
+  (load-symbol :crypto "D" "ETHUSD")
+  (exists-symbol? :crypto "D" "BAD")
+  (load-symbol :crypto "D" "BAD") ; throws exception
   (determine-wh "ETHUSD")
-  (determine-wh "QQQ")
+  (determine-wh "BAD")
+
+  (get-root-box "BTCUSD")
+  (get-root-box "BAD")
+
+  (get-gann-data {:s "BTCUSD"})
+  (get-gann-data {:s "BAD"})
+
+  (get-gann-boxes {:s "BTCUSD"})
+  (get-gann-boxes {:s "BAD"})
 
   (-> (get-gann-data {:s "BTCUSD"})
-      (dissoc :close-series))
-
+      ;(dissoc :close-series)
+      )
   (-> (get-gann-data {:s "GLD"
                       :wh :stocks
                       :dt-start (parse-date "2021-01-01")
                       :dt-end (parse-date "2021-12-31")})
       (dissoc :close-series))
-
-  (get-gann-boxes {:s "BTCUSD"})
-  (get-gann-data {:s "GLD"})
-
-  (-> (get-gann-boxes {:s "GLD"
-                       :wh :stocks
-                       :dt-start  "1990-01-01"
-                       :dt-end "2022-03-31"})
-      (clojure.pprint/print-table))
 
 ;  
   )

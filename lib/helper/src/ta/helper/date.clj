@@ -152,9 +152,15 @@
       )
 
   ;; comparison
-  (ld/is-after (ld/now)  (parse-date "2021-05-16"))
+  (ldt/is-after
+   (ldt/now)
+   (parse-date "2021-05-16"))
 
-  ;; duration
+  (ldt/is-after
+   (ldt/now)
+   (parse-date "2022-05-16"))
+
+;; duration
   (tick/new-duration 80 :days)
 
 ; start (-> (* bars 15) tick/minutes tick/ago)

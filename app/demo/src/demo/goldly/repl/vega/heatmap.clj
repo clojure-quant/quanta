@@ -1,4 +1,6 @@
-
+(ns demo.goldly.repl.vega-heatmap
+  (:require
+   [goldly.scratchpad :refer [show! show-as clear! eval-code!]]))
 
 (def vega-spec-heatmap-url
   {:$schema "https://vega.github.io/schema/vega-lite/v5.json"
@@ -32,7 +34,11 @@
                       :type "quantitative"}}
    :config {:view {:stroke "transparent"}}})
 
-(def demo-data-heatmap-cor-matrix
+(defn heatmap-corr-matrix [data]
+  [:p/vegalite {:box :sm
+                :spec (make-vega-heatmap-spec data)}])
+
+(def demo-cor
   [{:from :a :to :b :cor 0.6}
    {:from :a :to :c :cor 0.2}
    {:from :a :to :d :cor -0.1}
@@ -47,6 +53,4 @@
 
    {:from :d :to :e :cor -0.2}])
 
-(defn heatmap-corr-matrix [data]
-  [vegalite {:box :sm
-             :spec (make-vega-heatmap-spec data)}])
+(show! (heatmap-corr-matrix demo-cor))

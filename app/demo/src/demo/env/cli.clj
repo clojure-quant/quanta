@@ -8,7 +8,7 @@
    [ta.warehouse :refer [load-list]]
    [ta.warehouse.overview :refer [warehouse-overview]]
    [ta.gann.gann :refer [gann-symbols]]
-   [ta.gann.tradingview :refer [make-boxes-all-individual]]
+   [ta.gann.chartmaker :refer [make-boxes-all-individual]]
    [demo.env.config] ; side-effects
    [demo.data-import.import-alphavantage :as av]
    [demo.data-import.import-bybit :as bybit]

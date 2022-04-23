@@ -12,12 +12,12 @@
                  (cell->shape (:epoch row) (col row))) r))))
 
 (defn text [time text]
-  {:points [{:time time 
+  {:points [{:time time
              :channel "high" ; if price not set => open, high, low, close. 
              }]
    :override {:shape "text"
               :text text
-              :channel "high" 
+              :channel "high"
               ;:location=location.belowbar
               :color "#32CD32"
               :fillBackground false

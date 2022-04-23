@@ -1,7 +1,6 @@
-(ns demo.goldly.repl.tradingview
+(ns demo.goldly.repl.tradingview.admin
   (:require
    [goldly.scratchpad :refer [eval-code!]]))
-
 
 (eval-code!
  (+ 5 5))
@@ -9,48 +8,45 @@
 ;; CLJS
 
 (eval-code!
-  (let [o (clj->js {:a 1 :b "test"})]
-    (js->clj o)))
+ (let [o (clj->js {:a 1 :b "test"})]
+   (js->clj o)))
 
 (eval-code!
  (let [o (clj->js {:a 1 :b "test"})]
-   (js->clj o :keywordize-keys true)
-   ))
+   (js->clj o :keywordize-keys true)))
 
 (eval-code!
  (do
-   (defn foo [] (clj->js {:hello (fn [] (println "foo hello"))}) )
+   (defn foo [] (clj->js {:hello (fn [] (println "foo hello"))}))
    (new foo)
    (set! (.-foo js/globalThis) foo)
    (js/eval "new foo().hello()")))
 
 ;(set! (.-bongo js/globalThis) i-clj)
 
+(eval-code!
+ (add-header-button
+  "re-gann" "my tooltip"
+  (fn []
+    (println "button clicked "))))
 
 (eval-code!
-  (add-header-button 
-   "re-gann" "my tooltip" 
-   (fn [] 
-     (println "button clicked "))))
+ (tv/add-context-menu
+  [{"position" "top"
+    "text" (str "First top menu item"); , time: " unixtime  ", price: " price)
+    "click" (fn [] (alert "First clicked."))}
+   {:text "-"
+    :position "top"}
+   {:text "-Objects Tree..."}
+   {:position "top"
+    :text "Second top menu item 2"
+    :click (fn [] (alert "second clicked."))}
+   {:position "bottom"
+    :text "Bottom menu item"
+    :click (fn [] (alert "third clicked."))}]))
 
 (eval-code!
-  (tv/add-context-menu
-   [{"position" "top"
-     "text" (str "First top menu item"); , time: " unixtime  ", price: " price)
-     "click" (fn [] (alert "First clicked."))}
-    #_{:text "-"
-       :position "top"}
-    #_{:text "-Objects Tree..."}
-    #_{:position "top"
-       :text "Second top menu item 2"
-       :click (fn [] (alert "second clicked."))}
-    #_{:position "bottom"
-       :text "Bottom menu item"
-       :click (fn [] (alert "third clicked."))}]))
-
-
-(eval-code!
-  (deref tvalgo/algo-state))
+ (deref tvalgo/algo-state))
 
 (eval-code!
  (deref tvalgo/window-state))
@@ -59,13 +55,11 @@
  (do (tv/demo-crosshair)
      (tv/demo-range)))
 
-
 (eval-code!
  (tv/get-range))
 
 (eval-code!
  (tv/track-range))
-
 
 (eval-code!
  (deref tv/state))
@@ -85,26 +79,16 @@
        c (.-charts d)
        c0 (aget c 0)
        ;c-clj (jsx->clj c0)
-       c-clj (js->clj c0)
-       ]
+       c-clj (js->clj c0)]
    (.log js/console d)
    (.log js/console c)
    (.log js/console c0)
 
    (println "charts: " (pr-str c-clj))
-   
    13))
-
- 
-
-
-
-
 
 (eval-code!
  (tv/reset-data))
-
-
 
 (eval-code!
  (tv/refresh-marks))
@@ -113,15 +97,12 @@
 (eval-code!
  (tv/show-features))
 
-
 ; getPanes () Returns an array of instances of the PaneApi that allows you to interact with the panes.
 ; widget.activeChart () .getPanes () [1] .moveTo (0);
-
 
 ;widget.save (function (data) {savedWidgetContent = data;
 ;                           alert ('Saved');
 ;});
-
 
 ;; not working..
 (eval-code!
@@ -141,8 +122,6 @@
 
 ;"BB:BTCUSD"
 
-
-
 (eval-code!
  (let [p (tv/set-range
           {:from 1420156800 :to 1451433600}
@@ -150,37 +129,8 @@
    (.then p (fn [] (println "new visible range applied!")
                    ;widget.activeChart () .refreshMarks ();              
               ))))
-
-
-
- 
-; returns "cursor"
-widget.selectedLineTool ()
- widget.activeChart () .getAllShapes () .forEach (({name}) => console.log (name));
-
-widget.activeChart().setPriceToBarRatio(0.7567, { disableUndo: true });
-
-widget.activeChart () .getPanes () [1] .moveTo (0);
-
-widget.onChartReady(function() {
-    widget.onContextMenu(function(unixtime, price) {
-        return [{
-            position: "top",
-            text: "First top menu item, time: " + unixtime + ", price: " + price,
-            click: function() { alert("First clicked."); }
-        },
-        { text: "-", position: "top" },
-        { text: "-Objects Tree..." },
-        {
-            position: "top",
-            text: "Second top menu item 2",
-            click: function() { alert("Second clicked."); }
-        }, {
-            position: "bottom",
-            text: "Bottom menu item",
-            click: function() { alert("Third clicked."); }
-        }];
-    });
-
-      
-        widget.activeChart () .getTimeScaleLogicalRange ()
+;widget.selectedLineTool () ; returns "cursor"
+;widget.activeChart () .getAllShapes () .forEach (({name}) => console.log (name));
+;widget.activeChart().setPriceToBarRatio(0.7567, { disableUndo: true });
+;widget.activeChart () .getPanes () [1] .moveTo (0);
+;widget.activeChart () .getTimeScaleLogicalRange ()

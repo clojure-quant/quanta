@@ -3,15 +3,14 @@
    [cljc.java-time.duration :as duration]
    [tick.core :as tick :refer [>>]]
    [tick.alpha.interval :as t.i]
-   [ta.helper.date :refer [parse-date now-datetime]]
-   [ta.warehouse :refer [load-symbol]]
    [tablecloth.api :as tc]
    [tech.v3.dataset :as tds]
    [tech.v3.datatype.functional :as dfn]
-   [demo.lib.svg :refer [svg-view]]
- ;  [ta.gann.gann :refer [get-boxes-in-window make-root-box zoom-out zoom-in load-root-box]]
-   [ta.gann.window :refer [get-gann-data]]
-   [goldly.scratchpad :refer [show! show-as clear!]]))
+   [ta.helper.date :refer [parse-date now-datetime]]
+   [ta.warehouse :refer [load-symbol]]
+   [ta.gann.svg-view :refer [svg-view]]
+   ;  [ta.gann.gann :refer [get-boxes-in-window make-root-box zoom-out zoom-in load-root-box]]
+   [ta.gann.window :refer [get-gann-data]]))
 
 ;; Gann Box (Box + Fan)
 
@@ -104,8 +103,9 @@
        :boxes
        (map #(dissoc % :dt))))
 
-(defn get-gann-spec [opts]
-  (let [{:keys [px-min px-max dt-start dt-end boxes close-series]} (get-gann-data opts)
+(defn gann-svg [opts]
+  (let [{:keys [symbol px-min px-max dt-start dt-end boxes close-series]
+         :or {symbol "x"}} (get-gann-data opts)
         boxes-plotted (apply concat (map #(gann-plot {} %) boxes))
         series-plotted [:series {:color "red"} close-series]]
     [:div
@@ -122,65 +122,6 @@
      ;boxes-plotted
       (conj boxes-plotted series-plotted))]))
 
-(comment
-
-  root
-
-  (show!
-   (get-gann-spec {:wh :crypto
-                   :symbol "BTCUSD"
-                   :dt-start (parse-date "2021-01-01")
-                   :dt-end (parse-date "2021-12-31")}))
-
-  (show!
-   (get-gann-spec {;:wh :crypto
-                   :symbol "BTCUSD"
-                   :dt-start (parse-date "2018-01-01")
-                   :dt-end (parse-date "2021-12-31")}))
-
-  (show!
-   (get-gann-spec {:wh :crypto
-                   :symbol "BTCUSD"
-                   :dt-start (parse-date "2021-01-01")
-                   :dt-end (parse-date "2021-12-31")
-                   :root-box (zoom-out boxes/btc-box)}))
-
-  (show!
-   (get-gann-spec {:wh :crypto
-                   :symbol "BTCUSD"
-                   :dt-start (parse-date "2021-01-01")
-                   :dt-end (parse-date "2021-12-31")
-                   :root-box (zoom-in boxes/btc-box)}))
-
-  (show!
-   (get-gann-spec {:wh :crypto
-                   :symbol "BTCUSD"
-                   :dt-start (parse-date "2021-01-01")
-                   :dt-end (parse-date "2021-12-31")
-                   :root-box (zoom-in (zoom-in (zoom-in (zoom-in boxes/btc-box))))}))
-
-  (show!
-   (get-gann-spec {:wh :stocks
-                   :symbol  "SPY"
-                   :dt-start (parse-date "2021-01-01")
-                   :dt-end (parse-date "2021-12-31")}))
-
-  (show!
-   (get-gann-spec {:wh :stocks
-                   :symbol  "SPY"
-                   :dt-start (parse-date "2020-01-01")
-                   :dt-end (parse-date "2021-12-31")
-                   :root-box (zoom-in boxes/sup-box)}))
-
-  (show!
-   (get-gann-spec {:wh :stocks
-                   :symbol  "GLD"
-                   :dt-start (parse-date "2005-01-01")
-                   :dt-end (parse-date "2021-12-31")
-                   ;:root-box (zoom-in (zoom-in boxes/gld-box))
-                   }))
-; 
-  )
 
 
 

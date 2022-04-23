@@ -40,14 +40,10 @@
 
    ; trateg demos
    [:div.bg-blue-300.m-5
-    [:h1.text-xl.text-red-600 "some demos to show what you could do too.."]
-    [:p.text-blue.text-xl "backtest components"]
-    [link-href "/algo/chart" "highchart gann"]
-    [link-href "/algo/table" "table s&p"]
-    [:p.text-blue.text-xl "gann chart"]
-    [link-href "/gann" "gann"]]
+    [:h1.text-xl.text-red-600 "gann tools"]
+    [link-href "/gann" "gann chart"]]
 
-   ; trateg docs
+; trateg docs
    [:div.bg-blue-300.m-5
     [:p.text-blue.text-xl "trateg docs"]
     [:p "with luck, some docs might be added soon"]
