@@ -7,15 +7,17 @@
 
 (show!
  (gann-svg
-  {:s "BTCUSD"
-   :dt-start (parse-date "2021-01-01")
-   :dt-end (parse-date "2021-12-31")}))
+  {:s "GLD"
+   ;:dt-start "2021-01-01"
+   ;:dt-end "2021-12-31"
+   :height 500
+   :width 500}))
 
 (show!
  (gann-svg
   {:s "BTCUSD"
-   :dt-start (parse-date "2018-01-01")
-   :dt-end (parse-date "2021-12-31")}))
+   :dt-start "2018-01-01"
+   :dt-end "2021-12-31"}))
 
 (def btc-box
   (box/make-root-box

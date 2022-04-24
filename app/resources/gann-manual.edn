@@ -1,0 +1,30 @@
+
+
+[ 
+ ;;crypto
+   {:symbol "BTCUSD" :ap 0.01 :at "2010-07-18" :bp 11.0 :bt "2014-04-13"}
+   ;{:symbol "BTCUSD" :ap 0.01 :at "2010-07-18" :bp 18.00 :bt "2010-10-08" } Bitcoin
+   ;{:symbol "BTCUSD" :ap 0.01 :at "2010-07-18"  :bp 0.04  :bt  "2011-04-17"}
+
+  ;; stock indici
+
+  {:symbol "SPY" :ap 77.24 :at "2000-08-18" :bp  153.48  :bt "2002-10-10" }; S&P 500
+  ;{:symbol "SPY" :ap 2.75 :at "1972-01-01" :bp 63.59 :bt "1996-07-24" }
+  {:symbol "QQQ"  :ap 21.80 :at "2000-02-01"  :bp  110.92 :bt "2013-11-01"} ; Nasdaq
+  ;{:symbol "NDX" :ap 110.20 :at "1985-02-01" :bp 236.95 :bt "1987-04-22" }
+  
+  ;; currencies
+  {:symbol "EURUSD" :ap 0.8485 :at "2001-08-01" :bp 1.591 :bt "2010-12-01"}
+ 
+  ;; prescious metals
+  {:symbol "GLD" :ap 254.0 :at  "2001-02-27"  :bp  329.0  :bt  "2003-02-12"}
+  ;{:symbol "Gold" :ap 184.84 :at "1975-01-01" :bp 15.73 :bt "1977-11-14" }
+  ;{:symbol "SLV" :ap 1.281 :at "1971-12-01" :bp 28.945 :bt "1986-12-01"}
+  {:symbol "SLV" :ap 1.381 :at "1969-10-01" :bp 7.362 :bt "1978-09-05" }
+
+ ; stocks
+ {:symbol "AMZN" :ap 1.27 :at "1997-05-15" :bp 30.54 :bt "2002-05-02" } ; first we had this bt: "2002-05-28"
+ {:symbol "TSLA" :ap 3.51 :at "2010-06-29" :bp 6.10 :bt "2010-11-04" }
+ ;{:ap 11.06 :at "1999-10-01" :bp 236.95 :bt "2000-08-23" :symbol "BlackRock"}
+
+]

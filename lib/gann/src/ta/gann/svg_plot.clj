@@ -10,7 +10,7 @@
    [ta.warehouse :refer [load-symbol]]
    [ta.gann.svg-view :refer [svg-view]]
    ;  [ta.gann.gann :refer [get-boxes-in-window make-root-box zoom-out zoom-in load-root-box]]
-   [ta.gann.window :refer [get-gann-data]]))
+   [ta.gann.window :as window]))
 
 ;; Gann Box (Box + Fan)
 
@@ -91,36 +91,37 @@
      (circle ap bt 1)
      (circle bp at 1)]))
 
-(comment
-
-  (gann-plot nil boxes/btc-box)
-
-;
-  )
 (defn get-boxes [opts]
   (->> opts
-       get-gann-data
+       window/get-gann-data
        :boxes
        (map #(dissoc % :dt))))
 
 (defn gann-svg [opts]
   (let [{:keys [symbol px-min px-max dt-start dt-end boxes close-series]
-         :or {symbol "x"}} (get-gann-data opts)
+         :or {symbol "x"}} (window/get-gann-data opts)
+        height (or (:height opts) 1000)
+        width (or (:width opts) 1000)
         boxes-plotted (apply concat (map #(gann-plot {} %) boxes))
         series-plotted [:series {:color "red"} close-series]]
-    [:div
-     [:h1 (str "gann: " symbol " " dt-start " - " dt-end " box-count: " (count boxes))]
-     (svg-view
-      {:min-px px-min
-       :max-px px-max
-       :min-dt dt-start
-       :max-dt dt-end
-       :svg-width 1000
-       :svg-height 1000}
+    (println "generating gann-svg width:" width "height:" height)
+    ;[:div
+     ;[:h1 (str "gann: " symbol " " dt-start " - " dt-end " box-count: " (count boxes))]
+    (svg-view
+     {:min-px px-min
+      :max-px px-max
+      :min-dt dt-start
+      :max-dt dt-end
+      :svg-width  width
+      :svg-height height}
      ;(gann-plot {} (first boxes))
      ;(concat boxes-plotted series-plotted)
      ;boxes-plotted
-      (conj boxes-plotted series-plotted))]))
+     (conj boxes-plotted series-plotted))
+  ;  ]
+    ))
+
+
 
 
 

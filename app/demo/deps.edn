@@ -32,7 +32,7 @@
         }
 
 
-  :goldly-docs {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.500"}}
+  :goldly-docs {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.502"}}
                 :exec-fn goldly.app/goldly-server-run!
                 :exec-args {:profile "jetty"
                             :config "ta-config.edn"}}

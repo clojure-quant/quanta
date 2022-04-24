@@ -7,10 +7,25 @@
 
 ;; data
 
+(defn load-ganns []
+  (let [filename (get-in-config [:demo :gann-data-file])]
+    (-> filename slurp edn/read-string)))
+
+(defn load-gann [symbol]
+  (->> (load-ganns)
+       (filter #(= (:symbol %) symbol))
+       first))
+
+(defn save-gann [root-box]
+  (->> (load-ganns)
+       (remove #(= (:symbol %) symbol))
+       (conj root-box)
+       (into [])
+       (pr-str)
+       (spit (get-in-config [:demo :gann-data-file]))))
+
 (defn gann-symbols []
-  (let [filename (get-in-config [:demo :gann-data-file])
-        ganns (-> filename slurp edn/read-string)]
-    (map :symbol ganns)))
+  (map :symbol (load-ganns)))
 
 (defn load-ganns []
   (let [filename (get-in-config [:demo :gann-data-file])

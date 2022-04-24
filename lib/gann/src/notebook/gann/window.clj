@@ -11,6 +11,8 @@
 
 (window/get-gann-data {:s "GLD"})
 
+(window/get-gann-data {:s "GLD" :dt-start "2020-01-01"})
+
 (window/get-gann-data {:s "BAD"})
 
 (-> (window/get-gann-boxes {:s "GLD"
