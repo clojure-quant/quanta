@@ -46,7 +46,7 @@
   :tv/time server-time
 
   ; gann
-  :gann/chart gann-svg
+  :gann/svg gann-svg
   :gann/boxes get-boxes
 
   ; testing

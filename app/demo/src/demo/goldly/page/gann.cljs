@@ -38,11 +38,11 @@
         p2 (assoc p :height height :width width)]
     (println "params: " p)
     (println "params: " p2)
-    (run-a *state [:data] :gann/chart p2)
+    (run-a *state [:data] :gann/svg p2)
     (run-a *state [:boxes] :gann/boxes p2)))
 
 (defn menu []
-  [:div ;.flex.flex-cols
+  [:div.bg-gray-300 ;.flex.flex-cols
    [:div.w-64
     [input/select
      {:nav? false
@@ -54,6 +54,7 @@
     *state [:params :dt-end]]
    [input/button {:on-click get-data} "show gann"]
    [input/checkbox {} *state [:table?]]
+   [:p "boxes: " (count (:boxes @*state) )]
    [link-href "/" "main"]])
 
 (defn float-table []
