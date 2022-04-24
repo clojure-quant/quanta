@@ -5,27 +5,33 @@
    [modular.config :refer [get-in-config]]
    [ta.gann.box :as box]))
 
+
 ;; data
 
-(defn load-ganns []
-  (let [filename (get-in-config [:demo :gann-data-file])]
+(defn edn-filename []
+  (get-in-config [:demo :gann-data-file]))
+
+(defn edn-load []
+  (let [filename (edn-filename)]
     (-> filename slurp edn/read-string)))
 
 (defn load-gann [symbol]
-  (->> (load-ganns)
+  (println "gann-db/load: " symbol)
+  (->> (edn-load)
        (filter #(= (:symbol %) symbol))
        first))
 
+
 (defn save-gann [root-box]
-  (->> (load-ganns)
+  (->> (edn-load)
        (remove #(= (:symbol %) symbol))
        (conj root-box)
        (into [])
        (pr-str)
-       (spit (get-in-config [:demo :gann-data-file]))))
+       (spit (edn-filename))))
 
 (defn gann-symbols []
-  (map :symbol (load-ganns)))
+  (map :symbol (edn-load)))
 
 (defn load-ganns []
   (let [filename (get-in-config [:demo :gann-data-file])
@@ -61,7 +67,15 @@
 
 (comment
   (get-in-config [:demo :gann-data-file])
+  
+  (edn-load)
   (gann-symbols)
+
+  
+  (load-ganns)
+  (load-gann "BTCUSD")
+  (load-gann "SPY")
+  (load-gann "BAD")
 
   (-> (load-ganns)
       vals
