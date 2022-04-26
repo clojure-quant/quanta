@@ -1,3 +1,137 @@
+(ns notebook.studies.mesa
+  (:require
+     [tech.v3.datatype :as dtype]
+     [tech.v3.datatype.functional :as fun]
+     [tablecloth.api :as tc]))
+
+
+
+
+; Analyze
+; This are found via walk and match to symbol (same row index of column) 
+; or seq-of-size-2 (past row shifted by n of column)
+; This is easy: we process a vec in pairs. The left side is the oitput-symbol.
+
+; Process
+; Window-size: biggest n of input-terms
+;Output-vectors: size: (count-rows ds). 
+;Input-vectors: 
+;For First window-size rows: assign output vectors nan. 
+;For rows after window-size:
+
+
+
+
+
+
+#_(defn calculate-columns [db back-size row-count vec-col->col-expr-fn]
+ (doall (map #(calculate-column db back-size row-count  %) 
+          vec-col->col-expr-fn)))
+
+#_(defn calculate-expr 
+   [ds
+    map-input-vecs map-output-vecs 
+     vec-col->col-expr-fn
+     back-size]
+ (let [db (merge map-input-vecs map-output-vecs)
+       window-size (tc/row-count ds)
+      ds-rows]
+    (calculate-columns db back-size row-count vec-col->col-expr-fn)))
+
+
+;Syntax
+;[?a (+ ?x (* (?z 2) 2.0 (?y 1))]
+; x => (store x)
+; (x n) -> (store x n)
+
+(defn current-cols [inp-exprs]
+  (filter keyword? inp-exprs))
+
+(defn prior-cols [inp-exprs]
+  (remove keyword? inp-exprs))
+
+(defn inp-symbol->col-kw [s]
+  (-> s name keyword))
+
+(current-cols [:p :x '(:z 3) :y])
+(prior-cols [:p :x '(:y 3) :z])
+(inp-symbol->col-kw 's)
+(inp-symbol->col-kw 'z)
+
+
+
+(defn col-calc [out-col-vec n]
+  (dtype/make-reader
+   :float64
+   (count col)
+   (if (>= idx n)
+     (col (- idx n))
+     0)))
+
+#_(defn calculate-column-row [db row-index col-expr-fn]
+    (let [store (fn ([col] (get-row (get-vec db col) row-index))
+                  ([col n] (get-row (get-vec db col) (- row-index n))))]
+      (col-expr-fn store)))
+
+#_(defn calculate-column [db back-size row-count [col col-expr-fn]]
+    (for [row-index (range back-size row-count)]
+      (->> (calculate-column-row db row-index col-expr-fn)
+           (set-row (get-vec db col) row-index))))
+
+(defn create-vec-maps [ds {:keys [out-vars inp-exprs back-size]}]
+  (let [size (tc/row-count ds)
+        new-vec (fn [] (dtype/->float-array size))
+        add-out (fn [v] [v (new-vec)])
+        out-vecs (map add-out out-vars)
+        ; input current 
+        cur-symbols (current-cols inp-exprs)
+        add-cur-inp (fn [c] 
+                      [c (-> c (ds))])
+        inp-cur (into {} (map add-cur-inp cur-symbols))
+        ; input past 
+        past-exprs (prior-cols inp-exprs)
+        add-past-inp (fn [[c n]] 
+                      (let [vec (-> c ds (prior-shift n))]
+                        [c vec]
+                        ))      
+        inp-past-vecs (map add-past-inp past-exprs)
+        ; property accessors
+        c (fn [col-kw]
+            (col-kw inp-cur))
+        ]
+    {:cur cur-symbols
+     :past past-exprs
+     :out out-vecs
+     :inp-cur inp-cur
+     :inp-past inp-past-vecs
+     })
+  )
+
+
+
+(def demo-backstudy-params
+  {:back-size 2
+   :out-vars  [:a :b]
+   :inp-exprs [:x '(:x 1) '(:y 1) :z '(:z 2)]
+   :vec-col->col-expr-fn
+      ['a (fn [c p]
+            (+ 2.9 (c :x))
+            ;(* (p :z 2) 2.0 (p :y 1)))
+            )
+       ]})
+
+
+
+
+
+
+
+
+
+
+ 
+
+
 
 [a (+ (x 1) (y 1))
  b (* (y 0) (z 1))]

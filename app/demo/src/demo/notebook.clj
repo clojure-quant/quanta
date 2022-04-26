@@ -36,7 +36,8 @@
               ;"notebook.plazground.ta4j"
               ;"notebook.plazground.throttle"
                     ])
-(def ns-studies ["notebook.studies.asset-allocation-dynamic"
+(def ns-studies ["notebook.studies.astro"
+                 "notebook.studies.asset-allocation-dynamic"
                  "notebook.studies.bollinger"
                  "notebook.studies.bollinger-forward"
                  "notebook.studies.buyhold"
@@ -46,12 +47,13 @@
                  "notebook.studies.supertrend"
                     ;task.clj
                  ])
+
 (load-notebook "notebook.studies.asset-allocation-dynamic")
 
 (eval-notebook "demo.playground.dataset-group")
 
 (-> ;(eval-notebook "demo.playground.cljplot")
- (eval-notebook "demo.warehouse.overview")
+ (eval-notebook "notebook.data.warehouse-overview")
  show!)
 
 (eval-notebooks ns-misc)
@@ -61,6 +63,7 @@
 
 (eval-notebooks ns-data)
 (eval-notebooks ns-studies)
+
 
 (-> (eval-notebook "user.notebook.hello")
     :content
