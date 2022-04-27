@@ -1,8 +1,6 @@
 (ns ta.warehouse
   (:require
-   [clojure.string :refer [includes? lower-case]]
    [clojure.java.io :as java-io]
-   [clojure.edn :as edn]
    [taoensso.timbre :refer [debug info warnf error]]
    [tech.v3.io :as io]
    ;[taoensso.nippy :as nippy]
@@ -10,87 +8,6 @@
    [modular.config :refer [get-in-config] :as config]
    [ta.warehouse.split-adjust :refer [split-adjust]]))
 
-(defn load-list-raw [name]
-  (try
-    (->> (str (get-in-config [:ta :warehouse :list]) name ".edn")
-         slurp
-         edn/read-string)
-    (catch Exception _
-      (error "Error loading List: " name)
-      [])))
-
-(defn process-item [symbols {:keys [list] :as item}]
-  (if list
-    (concat symbols (load-list-raw list))
-    (conj symbols item)))
-
-;; lists
-(defn load-list-full [name]
-  (let [items (load-list-raw name)]
-    (reduce process-item [] items)
-    ;items
-    ))
-
-(defn load-lists-full [names]
-  (->> (map load-list-full names)
-       (apply concat)
-       (into [])))
-
-(defn load-list [name]
-  (->> (load-list-full name)
-       (map :symbol)))
-
-(defn load-lists [names]
-  (->> (map load-list names)
-       (apply concat)))
-
-(defn symbollist->dict [l]
-  (let [s-name (juxt :symbol identity)
-        dict (into {} (map s-name l))]
-    dict))
-
-(defn get-dict [names]
-  (let [l (load-lists-full names)
-        d (symbollist->dict l)]
-    d))
-
-(defn search [q]
-  (let [l (load-lists-full (get-in-config [:ta :warehouse :lists]))
-        q (lower-case q)]
-    (filter (fn [{:keys [name symbol]}]
-              (or (includes? (lower-case name) q)
-                  (includes? (lower-case symbol) q)))
-
-            l)))
-
-(defn instrument-details [s]
-  (let [d (get-dict (get-in-config [:ta :warehouse :lists]))]
-    (get d s)))
-
-(comment
-
-   ;(search "P")
-  (search "Bitc")
-  (search "BT")
-  (instrument-details "BTCUSD")
-
-  (load-list-full "fidelity-select")
-  (load-lists-full ["crypto"
-                    "fidelity-select"
-                    "bonds"
-                    "commodity-industry"
-                    "commodity-sector"
-                    "currency-spot"
-                    "equity-region"
-                    "equity-region-country"
-                    "equity-sector-industry"
-                    "equity-style"
-                    "test"])
-  (->  (load-lists-full ["fidelity-select" "bonds"])
-       (symbollist->dict))
-
-; 
-  )
 
 ; timeseries - name
 

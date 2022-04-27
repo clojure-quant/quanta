@@ -19,6 +19,9 @@
 (defn zodiac-symbol [s]
   (s zodiac-symbols))
 
+(defonce symbol-atom (r/atom {:symbol ""}))
+(require '[tsymbol :refer [symbol-picker]])
+
 (defmethod reagent-page :user/main [{:keys [route-params query-params handler] :as route}]
   [:div
 
@@ -50,6 +53,11 @@
     ;[video {:url "https://www.youtube.com/watch?v=JGhOa9TZYx8"}]
     ]
 
+    [:div.bg-blue-300.m-5
+      [:p.text-blue.text-xl "ui component tests"]
+      [:div.w-64
+        [symbol-picker symbol-atom [:symbol]]]]
+   
    ; goldly developer tools
    [:div.bg-blue-300.m-5
     [:p.text-blue.text-xl "goldly developer tools"]

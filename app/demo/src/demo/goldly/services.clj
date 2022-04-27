@@ -5,6 +5,7 @@
    [ta.helper.date :refer [now-datetime]]
    [ta.helper.date-ds :refer [ds-convert-col-instant->localdatetime]]
    [ta.warehouse :as wh]
+   [ta.warehouse.symbollist :as slist]
    [ta.warehouse.overview :refer [warehouse-overview]]
    [ta.algo.manager :refer [algo-names algo-info algo-run-window-browser algo-run-browser algo-marks algo-shapes]]
    [ta.gann.db :refer [load-gann save-gann]]
@@ -26,7 +27,8 @@
 
 (service/add
  {; warehouse
-  :ta/symbols wh/load-list ; param: symbol-list-name 
+  :ta/lists slist/get-lists
+  :ta/symbols slist/load-list ; param: symbol-list-name 
   :ta/warehouse-overview overview-map ; param: wh-key frequency
   :ta/load-ts (partial wh/load-symbol :crypto); needs symbol parameter
 

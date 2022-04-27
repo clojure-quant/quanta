@@ -1,6 +1,8 @@
 (ns gann.svg
   (:require
-   [user :refer [println run-a run-cb link-href add-page aggrid to-fixed]]))
+   [user :refer [println run-a run-cb link-href add-page aggrid to-fixed]]
+   [tsymbol :refer [symbol-picker]]
+   ))
 
 (defn round-number-digits
   [digits number] ; digits is first parameter, so it can easily be applied (data last)
@@ -130,10 +132,11 @@
 (defn menu []
   [:div.bg-gray-300.w-full ;.flex.flex-cols
    [:div.w-full
-    [input/select
-     {:nav? false
-      :items ["BTCUSD" "SPY" "QQQ" "GLD" "SLV" "EURUSD"]}
-     *state [:params :s]]]
+    #_[input/select
+     {:nav? false :items ["BTCUSD" "SPY" "QQQ" "GLD" "SLV" "EURUSD"]}
+       *state [:params :s]]
+     [symbol-picker *state [:params :s]]]
+   
    [rootbox]
    [:p.text-blue-500.text-bold "show"]
    [:div.grid {:style {:grid-template-columns "60px 1fr"}}

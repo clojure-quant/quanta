@@ -1,8 +1,7 @@
 (ns ta.tradingview.db-instrument
   (:require
-   [taoensso.timbre :refer [trace debug info warnf error]]
-   [modular.config :refer [get-in-config]]
-   [ta.warehouse :refer [symbols-available load-symbol search]]))
+   [ta.warehouse.symbollist :refer [search]]
+   [ta.warehouse :refer [symbols-available]]))
 
 (comment
   (symbols-available :crypto "D")
