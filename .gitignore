@@ -42,3 +42,4 @@ goldly_bindings_generated.cljs
 rdocument/
 tvdb/
 app/demo/certs
+.clj-kondo

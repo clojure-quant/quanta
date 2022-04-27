@@ -1,11 +1,8 @@
 (ns notebook.studies.mesa
   (:require
-     [tech.v3.datatype :as dtype]
-     [tech.v3.datatype.functional :as fun]
-     [tablecloth.api :as tc]))
-
-
-
+   [tech.v3.datatype :as dtype]
+   [tech.v3.datatype.functional :as fun]
+   [tablecloth.api :as tc]))
 
 ; Analyze
 ; This are found via walk and match to symbol (same row index of column) 
@@ -19,25 +16,19 @@
 ;For First window-size rows: assign output vectors nan. 
 ;For rows after window-size:
 
-
-
-
-
-
 #_(defn calculate-columns [db back-size row-count vec-col->col-expr-fn]
- (doall (map #(calculate-column db back-size row-count  %) 
-          vec-col->col-expr-fn)))
+    (doall (map #(calculate-column db back-size row-count  %)
+                vec-col->col-expr-fn)))
 
-#_(defn calculate-expr 
-   [ds
-    map-input-vecs map-output-vecs 
+#_(defn calculate-expr
+    [ds
+     map-input-vecs map-output-vecs
      vec-col->col-expr-fn
      back-size]
- (let [db (merge map-input-vecs map-output-vecs)
-       window-size (tc/row-count ds)
-      ds-rows]
-    (calculate-columns db back-size row-count vec-col->col-expr-fn)))
-
+    (let [db (merge map-input-vecs map-output-vecs)
+          window-size (tc/row-count ds)
+          ds-rows]
+      (calculate-columns db back-size row-count vec-col->col-expr-fn)))
 
 ;Syntax
 ;[?a (+ ?x (* (?z 2) 2.0 (?y 1))]
@@ -57,8 +48,6 @@
 (prior-cols [:p :x '(:y 3) :z])
 (inp-symbol->col-kw 's)
 (inp-symbol->col-kw 'z)
-
-
 
 (defn col-calc [out-col-vec n]
   (dtype/make-reader
@@ -85,54 +74,33 @@
         out-vecs (map add-out out-vars)
         ; input current 
         cur-symbols (current-cols inp-exprs)
-        add-cur-inp (fn [c] 
+        add-cur-inp (fn [c]
                       [c (-> c (ds))])
         inp-cur (into {} (map add-cur-inp cur-symbols))
         ; input past 
         past-exprs (prior-cols inp-exprs)
-        add-past-inp (fn [[c n]] 
-                      (let [vec (-> c ds (prior-shift n))]
-                        [c vec]
-                        ))      
+        add-past-inp (fn [[c n]]
+                       (let [vec (-> c ds (prior-shift n))]
+                         [c vec]))
         inp-past-vecs (map add-past-inp past-exprs)
         ; property accessors
         c (fn [col-kw]
-            (col-kw inp-cur))
-        ]
+            (col-kw inp-cur))]
     {:cur cur-symbols
      :past past-exprs
      :out out-vecs
      :inp-cur inp-cur
-     :inp-past inp-past-vecs
-     })
-  )
-
-
+     :inp-past inp-past-vecs}))
 
 (def demo-backstudy-params
   {:back-size 2
    :out-vars  [:a :b]
    :inp-exprs [:x '(:x 1) '(:y 1) :z '(:z 2)]
    :vec-col->col-expr-fn
-      ['a (fn [c p]
-            (+ 2.9 (c :x))
+   ['a (fn [c p]
+         (+ 2.9 (c :x))
             ;(* (p :z 2) 2.0 (p :y 1)))
-            )
-       ]})
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
+         )]})
 [a (+ (x 1) (y 1))
  b (* (y 0) (z 1))]
 

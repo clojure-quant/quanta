@@ -64,7 +64,6 @@
 (eval-notebooks ns-data)
 (eval-notebooks ns-studies)
 
-
 (-> (eval-notebook "user.notebook.hello")
     :content
     count)

@@ -31,15 +31,11 @@
         :jvm-opts ["-Xmx4G"] ;; or more
         }
 
-
-  :goldly-docs {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.502"}}
+  :goldly-docs {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.503"}}
                 :exec-fn goldly.app/goldly-server-run!
                 :exec-args {:profile "jetty"
                             :config "ta-config.edn"}}
 
-
-
-
-;
+  ;
   }}
 

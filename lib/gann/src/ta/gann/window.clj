@@ -59,6 +59,7 @@
                            dt-start (parse-date "2021-01-01")
                            dt-end (parse-date "2021-12-31")}}]
   (info "get-gann-data symbol: " s "wh: " wh)
+  ;(error "root box:" root-box)
   (let [dt-start (if (string? dt-start) (parse-date dt-start) dt-start)
         dt-end (if (string? dt-end) (parse-date dt-end) dt-end)
         data (get-prices wh s dt-start dt-end)  ; vec of float

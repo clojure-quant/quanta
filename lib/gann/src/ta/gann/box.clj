@@ -16,6 +16,11 @@
       (error "Error converting: " symbol)
       gann)))
 
+(defn exponentialize-prices [{:keys [ap bp] :as box}]
+  (assoc box
+         :apl (Math/pow 10 ap)
+         :apr (Math/pow 10 bp)))
+
 (defn make-root-box [{:keys [ap bp at bt] :as box}]
   (let [ap (Math/log10 ap)
         bp (Math/log10 bp)
