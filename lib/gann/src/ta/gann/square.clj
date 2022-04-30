@@ -175,7 +175,11 @@
 
 (defn polar [x y]
   (let [r (Math/sqrt (+ (Math/pow x 2.0) (Math/pow y 2.0)))
-        a (Math/atan (/ y x))
+        a (if (or (= x 0.0) (= x 0))
+            (if (> y 0.0) 
+              (/ Math/PI 2.0)
+              (- 0.0 (/ Math/PI 2.0)))
+            (Math/atan (/ y x)))
         a (if (< x 0.0) (+ a Math/PI) a)
         a (if (< a 0.0) (+ a Math/PI Math/PI) a) ; negative angle => add 360 deg = 2* PI
         ]
@@ -206,6 +210,10 @@
   (polar-deg -1.0 -1.0)
   (polar-deg -1.0 -1000.0)
   (polar-deg 0.001 1.0)
+  (polar-deg 0.0 1.0)
+  (polar-deg 0 1)
+
+  
 
   (polar-deg 1.0 0.001)
   (polar-deg 1.0 0.577)
@@ -214,16 +222,83 @@
   (polar-deg 1.0 1000.0)
   (polar-deg 1.0 -1000.0)
 
-
-
   (polar-deg 2.0 1.0)
   (polar-deg 3.0 1.0)
-
-
     ;
   )
 
 
+(defn nr->polar [nr]
+  (let [{:keys [x y]} (nr->coordinates nr)] 
+    (-> (polar-deg x y)
+        (assoc :nr nr))))
+
+(comment
+  (nr->polar 1)
+  (nr->polar 2)
+  (nr->polar 3)
+  (nr->coordinates 4)
+  (polar-deg 0.0 1.0)
+  (nr->polar 4)
+  (nr->polar 5)
+
+  (nr->polar 311)
+ ; 
+  )
+
+
+
+(defn square-phase-spec [data]
+  {:$schema "https://vega.github.io/schema/vega-lite/v5.json"
+   :data {:values data}
+   :width 1000
+   :height 600
+   :layer [{:mark "point"
+            :encoding {:x {:field "a"
+                           :type "quantitative"}
+                       :y {:field "r"
+                           :type "quantitative"}
+                       :color {;:value "blue"
+                               :field "layer"
+                               :type "ordinal"
+                               :legend nil}}}
+           #_{:mark "text"
+            :encoding {:x {:field "a"
+                           :type "quantitative"}
+                       :y {:field "r"
+                           :type "quantitative"}
+                       :text {:field "nr"
+                              :type "quantitative"}
+                       :color {:value "black"}}}]
+   :config {:view {:stroke "transparent"}}})
+
+(defn phase-plot [max-nr]
+  (let [f (fn [nr]
+            (-> (nr->polar nr)
+                (assoc :nr nr
+                       :layer (nr->layer nr))))
+        spec (square-phase-spec (map f (range 2 (inc max-nr))))]
+     [:p/vegalite {:box :sm
+                   :spec spec}]))
+
+
+(comment
+  (nr->coordinates 3)
+  (nr->coordinates 5)
+  (require '[goldly.scratchpad :refer [show!]])
+
+  (map nr->polar (range 2 5))
+
+  (show! (phase-plot 9))
+
+  (show! (plot 25))
+  (show! (plot 49))
+  (show! (phase-plot 81))
+  (show! (plot 121))
+  (show! (phase-plot 1089))
+  
+;
+  )
 
 
 
