@@ -14,6 +14,22 @@
   (layer-end 2)
   (layer-end 3)
   (layer-end 4)
+  (layer-end 5)
+  (layer-end 6)
+  (layer-end 7)
+  (layer-end 8)
+  (layer-end 9)
+  (layer-end 10)
+  (layer-end 11)
+  (layer-end 12)
+  (layer-end 13)
+  (layer-end 14)
+  (layer-end 15)
+  (layer-end 16)
+
+
+
+
   ;
   )
 
@@ -53,6 +69,7 @@
   (layer-corners 3)
   (layer-corners 4)
   (layer-corners 5)
+
 ;
   )
 
@@ -99,8 +116,8 @@
   {:$schema "https://vega.github.io/schema/vega-lite/v5.json"
    :data {:values data}
 
-   :width 600
-   :height 400
+   :width 1000
+   :height 600
    :layer [{:mark "rect"
             :align "center"
             :width 0.5
@@ -111,7 +128,10 @@
                            :type "ordinal"}
                        :color {;:value "blue"
                                :field "layer"
-                               :type "ordinal"}}}
+                               :type "ordinal"
+                               :legend nil        
+                               }
+                       }}
            {:mark "text"
             :encoding {:x {:field "x"
                            :type "ordinal"}
@@ -148,6 +168,8 @@
   (show! (plot 25))
   (show! (plot 49))
   (show! (plot 81))
+  (show! (plot 121))
+  (show! (plot 1089))
 
 
 
