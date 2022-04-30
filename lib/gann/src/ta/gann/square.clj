@@ -1,4 +1,5 @@
-(ns ta.gann.square)
+(ns ta.gann.square
+  (:require [clojure.math :refer [asin sqrt]]))
 
 (defn layer-size [layer-no]
   (* 8 layer-no))
@@ -129,9 +130,7 @@
                        :color {;:value "blue"
                                :field "layer"
                                :type "ordinal"
-                               :legend nil        
-                               }
-                       }}
+                               :legend nil}}}
            {:mark "text"
             :encoding {:x {:field "x"
                            :type "ordinal"}
@@ -164,18 +163,66 @@
 
   (map nr->coordinates (range 5))
 
-  (show! (plot 10))
+  (show! (plot 9))
   (show! (plot 25))
   (show! (plot 49))
   (show! (plot 81))
   (show! (plot 121))
   (show! (plot 1089))
-
-
-
-
- ; 
+;
   )
+
+
+(defn polar [x y]
+  (let [r (Math/sqrt (+ (Math/pow x 2.0) (Math/pow y 2.0)))
+        a (Math/atan (/ y x))
+        a (if (< x 0.0) (+ a Math/PI) a)
+        a (if (< a 0.0) (+ a Math/PI Math/PI) a) ; negative angle => add 360 deg = 2* PI
+        ]
+    {:r r
+     :a a}))
+
+(defn ->deg [a]
+  (/ (* a 180.0) Math/PI))
+
+(defn polar-deg [x y]
+  (let [p (polar x y)]
+    (assoc p :a (-> (:a p) ->deg))))
+
+
+(comment
+  (->deg 0.785398)
+  (->deg 1.5707)
+  (->deg 2.5)
+  (->deg 3.1)
+  (->deg 3.14)
+
+  (polar-deg 1.0 0.0)
+  (polar-deg -1.0 0.0)
+
+  (polar-deg 1.0 1.0)
+  (polar-deg 1.0 -1.0)
+  (polar-deg -1.0 1.0)
+  (polar-deg -1.0 -1.0)
+  (polar-deg -1.0 -1000.0)
+  (polar-deg 0.001 1.0)
+
+  (polar-deg 1.0 0.001)
+  (polar-deg 1.0 0.577)
+  (polar-deg 1.0 1.0)
+  (polar-deg 1.0 2.0)
+  (polar-deg 1.0 1000.0)
+  (polar-deg 1.0 -1000.0)
+
+
+
+  (polar-deg 2.0 1.0)
+  (polar-deg 3.0 1.0)
+
+
+    ;
+  )
+
 
 
 
