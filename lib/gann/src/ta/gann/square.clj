@@ -1,5 +1,5 @@
 (ns ta.gann.square
-  (:require [clojure.math :refer [asin sqrt]]))
+ )
 
 (defn layer-size [layer-no]
   (* 8 layer-no))
@@ -158,12 +158,14 @@
 
 (comment
   (nr->coordinates 3)
+  
   (nr->coordinates 5)
   (require '[goldly.scratchpad :refer [show!]])
 
   (map nr->coordinates (range 5))
 
   (show! (plot 9))
+
   (show! (plot 25))
   (show! (plot 49))
   (show! (plot 81))
@@ -174,6 +176,7 @@
 
 
 (defn polar [x y]
+  ; https://de.wikipedia.org/wiki/Rechtwinkliges_Dreieck
   (let [r (Math/sqrt (+ (Math/pow x 2.0) (Math/pow y 2.0)))
         a (if (or (= x 0.0) (= x 0))
             (if (> y 0.0) 
@@ -248,15 +251,15 @@
 
 
 
-(defn square-phase-spec [data]
+(defn square-phase-spec [y-field data ]
   {:$schema "https://vega.github.io/schema/vega-lite/v5.json"
    :data {:values data}
    :width 1000
    :height 600
-   :layer [{:mark "point"
+   :layer [{:mark "line" ;"point"
             :encoding {:x {:field "a"
                            :type "quantitative"}
-                       :y {:field "r"
+                       :y {:field y-field ; "r"
                            :type "quantitative"}
                        :color {;:value "blue"
                                :field "layer"
@@ -272,14 +275,16 @@
                        :color {:value "black"}}}]
    :config {:view {:stroke "transparent"}}})
 
-(defn phase-plot [max-nr]
+
+(defn phase-plot [phase-field max-nr]
   (let [f (fn [nr]
             (-> (nr->polar nr)
                 (assoc :nr nr
                        :layer (nr->layer nr))))
-        spec (square-phase-spec (map f (range 2 (inc max-nr))))]
+        spec (square-phase-spec phase-field (map f (range 2 (inc max-nr))))]
      [:p/vegalite {:box :sm
                    :spec spec}]))
+
 
 
 (comment
@@ -288,15 +293,18 @@
   (require '[goldly.scratchpad :refer [show!]])
 
   (map nr->polar (range 2 5))
-
-  (show! (phase-plot 9))
-
+  
   (show! (plot 25))
   (show! (plot 49))
-  (show! (phase-plot 81))
   (show! (plot 121))
-  (show! (phase-plot 1089))
-  
+  (show! (phase-plot "r" 1089))
+  (show! (phase-plot "nr" 1089))
+  (show! (phase-plot "nr" 10890))
+
+  (show! (phase-plot "nr" 108900))
+
+
+
 ;
   )
 
