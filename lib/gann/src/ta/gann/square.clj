@@ -251,13 +251,13 @@
 
 
 
-(defn square-phase-spec [y-field data ]
+(defn square-phase-spec [x-field y-field data ]
   {:$schema "https://vega.github.io/schema/vega-lite/v5.json"
    :data {:values data}
    :width 1000
    :height 600
    :layer [{:mark "line" ;"point"
-            :encoding {:x {:field "a"
+            :encoding {:x {:field x-field ; "a"
                            :type "quantitative"}
                        :y {:field y-field ; "r"
                            :type "quantitative"}
@@ -276,12 +276,12 @@
    :config {:view {:stroke "transparent"}}})
 
 
-(defn phase-plot [phase-field max-nr]
+(defn phase-plot [x-field y-field max-nr]
   (let [f (fn [nr]
             (-> (nr->polar nr)
                 (assoc :nr nr
                        :layer (nr->layer nr))))
-        spec (square-phase-spec phase-field (map f (range 2 (inc max-nr))))]
+        spec (square-phase-spec x-field y-field (map f (range 2 (inc max-nr))))]
      [:p/vegalite {:box :sm
                    :spec spec}]))
 
@@ -297,11 +297,15 @@
   (show! (plot 25))
   (show! (plot 49))
   (show! (plot 121))
-  (show! (phase-plot "r" 1089))
-  (show! (phase-plot "nr" 1089))
-  (show! (phase-plot "nr" 10890))
+  
+  (show! (phase-plot "a" "r" 1089))
+  (show! (phase-plot "a" "nr" 1089))
+  (show! (phase-plot "layer" "r" 1000))
 
-  (show! (phase-plot "nr" 108900))
+
+  (show! (phase-plot "a" "nr" 10890))
+
+  (show! (phase-plot "a" "nr" 108900))
 
 
 
