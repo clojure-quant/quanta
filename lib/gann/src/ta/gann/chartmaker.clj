@@ -5,7 +5,7 @@
    [ta.helper.date :refer [parse-date now-datetime epoch-second->datetime ->epoch-second]]
    [ta.tradingview.chart.maker :refer [make-chart]]
    [ta.tradingview.chart.template :as t :refer [dt gann]]
-   [ta.gann.gann :refer [gann-symbols print-boxes]]
+   [ta.gann.db :refer [gann-symbols]]
    [ta.gann.window :refer [get-gann-boxes]]))
 
 (defn gann-box->tradingview-study [{:keys [symbol ap bp at bt]}]
@@ -34,7 +34,6 @@
      (apply concat)
      (into [])
      (make-chart client-id user-id chart-id s chart-name))
-    (print-boxes boxes)
     boxes))
 
 (comment

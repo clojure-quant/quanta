@@ -1,4 +1,4 @@
-(ns demo.studies.task
+(ns notebook.studies.task
   (:require
    [taoensso.timbre :refer [info]]
    [tablecloth.api :as tc]

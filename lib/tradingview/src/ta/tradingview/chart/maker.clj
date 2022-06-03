@@ -1,7 +1,7 @@
 (ns ta.tradingview.chart.maker
   (:require
    [nano-id.core :refer [nano-id]]
-   [ta.warehouse :refer [instrument-details]]
+   [ta.warehouse.symbollist :refer [instrument-details]]
    [ta.tradingview.db-ts :refer [save-chart now-epoch chart-list load-chart load-chart-boxed]]
    [ta.tradingview.db-instrument :refer [inst-type inst-exchange inst-name category-name->category inst-crypto?]]
    [ta.tradingview.chart.template.mainseries :refer [template-mainseries]]

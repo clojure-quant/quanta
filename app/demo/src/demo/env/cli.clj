@@ -5,9 +5,9 @@
    [modular.config :refer [load-config!]]
    [reval.task :refer [nbeval]]
    [ta.helper.print :refer [print-all]]
-   [ta.warehouse :refer [load-list]]
+   [ta.warehouse.symbollist :refer [load-list]]
    [ta.warehouse.overview :refer [warehouse-overview]]
-   [ta.gann.gann :refer [gann-symbols]]
+   ;[ta.gann.gann :refer [gann-symbols]]
    [ta.gann.chartmaker :refer [make-boxes-all-individual]]
    [demo.env.config] ; side-effects
    [demo.data-import.import-alphavantage :as av]
@@ -67,12 +67,12 @@
     :shuffle
     (rr/create-crypto-shuffled)
 
-    :gann
-    (let [dt-start "2000-01-01"
-          dt-end "2022-04-01"
-          s (gann-symbols)]
-      (info "making gann boxes from " dt-start " to " dt-end " for: " (pr-str s))
-      (make-boxes-all-individual dt-start dt-end))
+    ;:gann
+    ;(let [dt-start "2000-01-01"
+    ;      dt-end "2022-04-01"
+    ;      s (gann-symbols)]
+    ;  (info "making gann boxes from " dt-start " to " dt-end " for: " (pr-str s))
+    ;  (make-boxes-all-individual dt-start dt-end))
 
     :nbeval
     (do

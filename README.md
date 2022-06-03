@@ -13,12 +13,30 @@ TA is a technical analysis datascience platform written in Clojure.
 - Statistics and Machine Learning Libraries: 
 You can use libraries similar to matplotlib, scipy, statsmodels, and sklearn to support development, analysis, and visualization of state-of-the-art trading systems.
 
-- Extensible: UI is based on [goldy-docs](https://github.com/pink-gorilla/goldly) , so you can create websites / dashboards / notebooks quickly.
+
+## symbol-lists
+
+*symbol lists*
+`app/resources/symbollist`contains edn files that contain symbols.
+The name (without .edn) can be specified in the commandline.
+
+## timeseries warehouse
+
+Timeseries data is stored as gzipped nippy files in db directory. The path is
+stored in the config in [:ta :warehouse :series]. :crypto and :stocks are two different
+warehouses. Bybit goes to :crypto. Alphavantage goes to :stocks.
+
+*warehouse summary* `cd app/demo && clojure -X:run :task :warehouse` or
+                    `bb warehouse-summary`
+
+*shuffle warehouse* `clj -X:run :task :shuffle` 
+
+This reads the :crypto warehouse, shuffles the returns and creates the :random warehouse.
 
 
 ##  data import 
 
-First, lets get some data. Goto demo directory: `cd app/demo`
+
 
 *Bybit Feed*
 Bybit feed does not need credentials. It has data since 2018-11 for BTC and ETH.
@@ -29,16 +47,10 @@ The creds file in `profiles/demo/creds.edn` has to contain your alphavantage api
 `{:alphavantage "your-alphavantage-api-key"}`
 Alphavantage can download 5 symbols a minute. We have 40 demo symbols, so this will take a while.
 
-*symbol lists*
-`app/resources/symbollist`contains edn files that contain symbols.
-The name (without .edn) can be specified in the commandline.
 
-Timeseries data is stored as gzipped nippy files in db directory. The path is
-stored in the config in [:ta :warehouse :series]. :crypto and :stocks are two different
-warehouses. Bybit goes to :crypto. Alphavantage goes to :stocks.
 
 *import*
-- alphavantage: `clj -X:run :task :alphavantage-import :symbol "test"` or
+- alphavantage: `cd app/demo && clojure -X:run :task :alphavantage-import :symbol "test"` or
                 `bb run alphavantage-import all-stocks`
 - bybit:  `clj -X:run :task :bybit-import :symbol "crypto"` or
           `bb run bybit-import test`
@@ -46,11 +58,6 @@ warehouses. Bybit goes to :crypto. Alphavantage goes to :stocks.
 *append*
 - bybit: `clj -X:run :task :bybit-append :symbol "crypto"`
 
-*warehouse summary* `clj -X:run :task :warehouse`
- `bb run warehouse-summary`
-
-*shuffle warehouse* `clj -X:run :task :shuffle` 
-This reads the :crypto warehouse, shuffles the returns and creates the :random warehouse.
 
 *gann maker** `clj -X:run :task :gann` 
 This reads profiles/resources/gann.edn and creates tradingview charts for each symbol in it.

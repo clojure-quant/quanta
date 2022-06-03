@@ -7,11 +7,8 @@
    [ring.util.response :as res]
    [ring.util.io :as ring-io]
    [tech.v3.libs.arrow :as arrow]
-   [reval.persist.protocol :refer [save loadr]])
-   ;(:import 
-   ; [org.apache.arrow.memory UnsafeAllocationManager DefaultAllocationManagerFactory BaseAllocator] )
-   ;(:use [clojure.set :only (subset?)])
-  )
+   [reval.persist.protocol :refer [save loadr]]))
+
 ; csv
 
 (defmethod save :ds-csv [_ file-name ds]
