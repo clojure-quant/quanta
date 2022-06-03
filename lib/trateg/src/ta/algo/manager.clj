@@ -11,7 +11,7 @@
    [ta.backtest.roundtrip-stats :refer [roundtrip-performance-metrics]]
    [ta.backtest.nav :refer [nav-metrics nav]]
    [ta.series.signal :refer [select-signal-has]]
-   [ta.tradingview.study :refer [get-trades]]
+   [ta.backtest.trades :refer [get-trades]]
    ; viz
    [ta.viz.study-highchart :refer [study-highchart] :as hc]))
 

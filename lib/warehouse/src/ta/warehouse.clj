@@ -8,7 +8,6 @@
    [modular.config :refer [get-in-config] :as config]
    [ta.warehouse.split-adjust :refer [split-adjust]]))
 
-
 ; timeseries - name
 
 (defn filename-ts [w symbol]

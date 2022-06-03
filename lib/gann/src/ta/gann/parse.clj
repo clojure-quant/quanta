@@ -11,7 +11,6 @@
         (error "cannot parse: " number-string)
         nil)))
 
-
 (defn parse-double [number-string]
   (let [locale-en-us (Locale. "en" "US")
         fmt (NumberFormat/getInstance locale-en-us) ;NumberFormat.getNumberInstance(Locale.getDefault());

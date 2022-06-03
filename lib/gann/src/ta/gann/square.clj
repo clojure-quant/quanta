@@ -1,5 +1,4 @@
-(ns ta.gann.square
- )
+(ns ta.gann.square)
 
 (defn layer-size [layer-no]
   (* 8 layer-no))
@@ -28,10 +27,7 @@
   (layer-end 15)
   (layer-end 16)
 
-
-
-
-  ;
+;
   )
 
 (defn nr->layer [nr]
@@ -46,12 +42,6 @@
   (nr->layer 200)
   ;
   )
-
-
-
-
-
-
 (defn layer-movement [layer-no]
   (* layer-no 2))
 
@@ -73,8 +63,6 @@
 
 ;
   )
-
-
 (defn coordinates-in-layer [layer-no nr]
   (let [s layer-no
         [tl tr br bl] (layer-corners layer-no)]
@@ -88,9 +76,6 @@
                   :x (+ (- 0 s) (- nr tl))}
       :gre-bl   {:x (- 0 s) ; left
                  :y (- s (- tl nr))})))
-
-
-
 
 (comment
   (coordinates-in-layer 1 9)
@@ -147,7 +132,6 @@
   [:p/vegalite {:box :sm
                 :spec (square-vega-spec data)}])
 
-
 (defn plot [max-nr]
   (let [f (fn [nr]
             (-> (nr->coordinates nr)
@@ -155,10 +139,9 @@
                        :layer (nr->layer nr))))]
     (square-plot (map f (range 2 (inc max-nr))))))
 
-
 (comment
   (nr->coordinates 3)
-  
+
   (nr->coordinates 5)
   (require '[goldly.scratchpad :refer [show!]])
 
@@ -173,13 +156,11 @@
   (show! (plot 1089))
 ;
   )
-
-
 (defn polar [x y]
   ; https://de.wikipedia.org/wiki/Rechtwinkliges_Dreieck
   (let [r (Math/sqrt (+ (Math/pow x 2.0) (Math/pow y 2.0)))
         a (if (or (= x 0.0) (= x 0))
-            (if (> y 0.0) 
+            (if (> y 0.0)
               (/ Math/PI 2.0)
               (- 0.0 (/ Math/PI 2.0)))
             (Math/atan (/ y x)))
@@ -195,7 +176,6 @@
 (defn polar-deg [x y]
   (let [p (polar x y)]
     (assoc p :a (-> (:a p) ->deg))))
-
 
 (comment
   (->deg 0.785398)
@@ -216,8 +196,6 @@
   (polar-deg 0.0 1.0)
   (polar-deg 0 1)
 
-  
-
   (polar-deg 1.0 0.001)
   (polar-deg 1.0 0.577)
   (polar-deg 1.0 1.0)
@@ -229,10 +207,8 @@
   (polar-deg 3.0 1.0)
     ;
   )
-
-
 (defn nr->polar [nr]
-  (let [{:keys [x y]} (nr->coordinates nr)] 
+  (let [{:keys [x y]} (nr->coordinates nr)]
     (-> (polar-deg x y)
         (assoc :nr nr))))
 
@@ -248,10 +224,7 @@
   (nr->polar 311)
  ; 
   )
-
-
-
-(defn square-phase-spec [x-field y-field data ]
+(defn square-phase-spec [x-field y-field data]
   {:$schema "https://vega.github.io/schema/vega-lite/v5.json"
    :data {:values data}
    :width 1000
@@ -266,15 +239,14 @@
                                :type "ordinal"
                                :legend nil}}}
            #_{:mark "text"
-            :encoding {:x {:field "a"
-                           :type "quantitative"}
-                       :y {:field "r"
-                           :type "quantitative"}
-                       :text {:field "nr"
-                              :type "quantitative"}
-                       :color {:value "black"}}}]
+              :encoding {:x {:field "a"
+                             :type "quantitative"}
+                         :y {:field "r"
+                             :type "quantitative"}
+                         :text {:field "nr"
+                                :type "quantitative"}
+                         :color {:value "black"}}}]
    :config {:view {:stroke "transparent"}}})
-
 
 (defn phase-plot [x-field y-field max-nr]
   (let [f (fn [nr]
@@ -282,10 +254,8 @@
                 (assoc :nr nr
                        :layer (nr->layer nr))))
         spec (square-phase-spec x-field y-field (map f (range 2 (inc max-nr))))]
-     [:p/vegalite {:box :sm
-                   :spec spec}]))
-
-
+    [:p/vegalite {:box :sm
+                  :spec spec}]))
 
 (comment
   (nr->coordinates 3)
@@ -293,21 +263,18 @@
   (require '[goldly.scratchpad :refer [show!]])
 
   (map nr->polar (range 2 5))
-  
+
   (show! (plot 25))
   (show! (plot 49))
   (show! (plot 121))
-  
+
   (show! (phase-plot "a" "r" 1089))
   (show! (phase-plot "a" "nr" 1089))
   (show! (phase-plot "layer" "r" 1000))
 
-
   (show! (phase-plot "a" "nr" 10890))
 
   (show! (phase-plot "a" "nr" 108900))
-
-
 
 ;
   )

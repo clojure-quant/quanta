@@ -3,8 +3,7 @@
    [clojure.edn :as edn]
    [modular.config :refer [get-in-config]]
    [ta.gann.box :as box]
-   [ta.gann.parse :refer [parse-double]]
-   ))
+   [ta.gann.parse :refer [parse-double]]))
 
 ;; config
 
@@ -45,14 +44,13 @@
 
 (defn coerce-col-to-double [k m]
   (if (string? (k m))
-    (assoc m k (parse-double (k m)) )
-    m))    
+    (assoc m k (parse-double (k m)))
+    m))
 
 (defn sanitize-root-box [root-box]
   (->> root-box
        (coerce-col-to-double :ap)
        (coerce-col-to-double :bp)))
-
 
 (defn save-gann [root-box]
   (->> (assoc (boxes-dict) (:symbol root-box) (sanitize-root-box root-box))

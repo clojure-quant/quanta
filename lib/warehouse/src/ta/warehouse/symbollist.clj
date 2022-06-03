@@ -6,10 +6,8 @@
    [taoensso.timbre :refer [debug info warnf error]]
    [modular.config :refer [get-in-config] :as config]))
 
-
- (defn get-lists []
-   (get-in-config [:ta :warehouse :lists]))
- 
+(defn get-lists []
+  (get-in-config [:ta :warehouse :lists]))
 
 (defn load-list-raw [name]
   (try
@@ -68,18 +66,15 @@
   (let [d (get-dict (get-in-config [:ta :warehouse :lists]))]
     (get d s)))
 
-
 (comment
 
   (get-lists)
-  
 
   (def directory (clojure.java.io/file "/path/to/directory"))
-(def files (file-seq directory))
-(take 10 files)
+  (def files (file-seq directory))
+  (take 10 files)
 
-
-   ;(search "P")
+;(search "P")
   (search "Bitc")
   (search "BT")
 

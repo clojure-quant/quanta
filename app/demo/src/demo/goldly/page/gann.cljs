@@ -1,8 +1,7 @@
 (ns gann.svg
   (:require
    [user :refer [println run-a run-cb link-href add-page aggrid to-fixed]]
-   [tsymbol :refer [symbol-picker]]
-   ))
+   [tsymbol :refer [symbol-picker]]))
 
 (defn round-number-digits
   [digits number] ; digits is first parameter, so it can easily be applied (data last)
@@ -64,55 +63,46 @@
         height (.-innerHeight js/window)
         width (.-innerWidth js/window)
         p-with-size (assoc p :height height :width width)
-        p-with-size-rootbox (assoc p-with-size :root-box (:root @*state))
-        ]
+        p-with-size-rootbox (assoc p-with-size :root-box (:root @*state))]
     (println "getting gann-svg with params: " p-with-size-rootbox)
     (run-a *state [:data] :gann/svg p-with-size-rootbox)
-    (run-a *state [:boxes] :gann/boxes p-with-size-rootbox)
-    ))
-
+    (run-a *state [:boxes] :gann/boxes p-with-size-rootbox)))
 
 (defn save-rootbox []
   (let [root-box (:root @*state)]
     (println "saving root-box: " root-box)
-    (run-cb {:fun :gann/save 
+    (run-cb {:fun :gann/save
              :args [root-box]
              :timeout 1000
-             :cb #(js/alert "rootbox saved!")
-             })
-                 
-    ))
-
+             :cb #(js/alert "rootbox saved!")})))
 
 (defn rootbox-ui [{:keys [at ap bt bp] :as box}]
   ;[:p (pr-str (:root @*state))]
-  [:div.grid 
-    {:style {:grid-template-columns "60px 1fr"}}
-   
-    [:span.bg-blue-500 "at"]
-    [input/textbox {:class "w-full"
-                    :placeholder "Start Date"}
-       *state [:root :at]]
-    
-    [:p "bt"]
-    [input/textbox {:class "w-full"
-                    :placeholder "End Date"}
-         *state [:root :bt]]
-   
-    [:p "ap"]
-    [input/textbox {:class "w-full"
-                    :placeholder "Start Price"}
-       *state [:root :ap]]
-  
-     [:p "bp"]
-     [input/textbox {:class "w-full"
-                     :placeholder "End Price"}
-        *state [:root :bp]]
-    
-     [:span ""]
-     [input/button {:on-click save-rootbox} "save rootbox"]
-   
-   ])
+  [:div.grid
+   {:style {:grid-template-columns "60px 1fr"}}
+
+   [:span.bg-blue-500 "at"]
+   [input/textbox {:class "w-full"
+                   :placeholder "Start Date"}
+    *state [:root :at]]
+
+   [:p "bt"]
+   [input/textbox {:class "w-full"
+                   :placeholder "End Date"}
+    *state [:root :bt]]
+
+   [:p "ap"]
+   [input/textbox {:class "w-full"
+                   :placeholder "Start Price"}
+    *state [:root :ap]]
+
+   [:p "bp"]
+   [input/textbox {:class "w-full"
+                   :placeholder "End Price"}
+    *state [:root :bp]]
+
+   [:span ""]
+   [input/button {:on-click save-rootbox} "save rootbox"]])
 
 (defn rootbox []
   (let [symbol-loaded (r/atom nil)]
@@ -124,40 +114,34 @@
            (run-a *state [:root] :gann/load symbol)
            nil)
          [:p.text-blue-500.text-bold "root box"]
-         [rootbox-ui (:root @*state)]
-         ]))))
-
-
+         [rootbox-ui (:root @*state)]]))))
 
 (defn menu []
   [:div.bg-gray-300.w-full ;.flex.flex-cols
    [:div.w-full
     #_[input/select
-     {:nav? false :items ["BTCUSD" "SPY" "QQQ" "GLD" "SLV" "EURUSD"]}
+       {:nav? false :items ["BTCUSD" "SPY" "QQQ" "GLD" "SLV" "EURUSD"]}
        *state [:params :s]]
-     [symbol-picker *state [:params :s]]]
-   
+    [symbol-picker *state [:params :s]]]
+
    [rootbox]
    [:p.text-blue-500.text-bold "show"]
    [:div.grid {:style {:grid-template-columns "60px 1fr"}}
-      [:span "start"]
-      [input/textbox {:class "bg-red-500 text-black-500 w-full"
-                      :placeholder "Start Date"}
-       *state [:params :dt-start]]
-      [:span "end"]
-      [input/textbox {:class "bg-red-500 text-black-500 w-full"
-                      :placeholder "End Date"}
-       *state [:params :dt-end]]
-    
-      [:span ""]
-      [input/button {:on-click get-data} "show gann"] 
-    
-      [:span "table?"]
-      [input/checkbox {} *state [:table?]]
+    [:span "start"]
+    [input/textbox {:class "bg-red-500 text-black-500 w-full"
+                    :placeholder "Start Date"}
+     *state [:params :dt-start]]
+    [:span "end"]
+    [input/textbox {:class "bg-red-500 text-black-500 w-full"
+                    :placeholder "End Date"}
+     *state [:params :dt-end]]
 
-    ]
-   
-   
+    [:span ""]
+    [input/button {:on-click get-data} "show gann"]
+
+    [:span "table?"]
+    [input/checkbox {} *state [:table?]]]
+
    [:p "boxes: " (count (:boxes @*state))]
    [link-href "/" "main"]])
 

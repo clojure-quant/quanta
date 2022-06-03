@@ -53,11 +53,11 @@
     ;[video {:url "https://www.youtube.com/watch?v=JGhOa9TZYx8"}]
     ]
 
-    [:div.bg-blue-300.m-5
-      [:p.text-blue.text-xl "ui component tests"]
-      [:div.w-64
-        [symbol-picker symbol-atom [:symbol]]]]
-   
+   [:div.bg-blue-300.m-5
+    [:p.text-blue.text-xl "ui component tests"]
+    [:div.w-64
+     [symbol-picker symbol-atom [:symbol]]]]
+
    ; goldly developer tools
    [:div.bg-blue-300.m-5
     [:p.text-blue.text-xl "goldly developer tools"]

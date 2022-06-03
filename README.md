@@ -56,8 +56,6 @@ This reads the :crypto warehouse, shuffles the returns and creates the :random w
 This reads profiles/resources/gann.edn and creates tradingview charts for each symbol in it.
 The charts can be loaded via the tradingview page.
 
-
-
 ## GoldlyDocs Web app
 
 In `profiles/demo`
@@ -72,12 +70,7 @@ In `profiles/demo`
 Generated charts are stored in profiles/resources/tradingview-charts
 and can be seen in goldlydocs web app in developer tools / pages / tradingview
 
-## build your app with goldly docs
 
-When you start goldly-docs it starts an nrepl server on port 9100.
-You could jack in, and start developing.
-
-Have a look at [demo-goldy](https://github.com/pink-gorilla/demo-goldly) 
  
 
 ## for TA developers
@@ -86,11 +79,11 @@ Have a look at [demo-goldy](https://github.com/pink-gorilla/demo-goldly)
 
 *code formatter `clj -M:cljfmt-fix`
 
-*unit tests* `./script/unit_test.sh`
+*unit tests* `bb test-clj`
 
-*speed test* `./script/performance_test.sh`
+*warehouse io-performance speed test* `bb performance-test`
 
-*outdated dependencies* `./script/outdated.sh`
+
 
 
 

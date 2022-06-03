@@ -11,8 +11,7 @@
    [ta.gann.svg-view :refer [svg-view]]
    ;  [ta.gann.gann :refer [get-boxes-in-window make-root-box zoom-out zoom-in load-root-box]]
    [ta.gann.window :as window]
-   [ta.gann.db :refer [sanitize-root-box prepare-box]]
-   ))
+   [ta.gann.db :refer [sanitize-root-box prepare-box]]))
 
 ;; Gann Box (Box + Fan)
 
@@ -93,8 +92,6 @@
      (circle ap bt 1)
      (circle bp at 1)]))
 
-
-
 (defn gann-svg [opts]
   (let [{:keys [symbol px-min px-max dt-start dt-end boxes close-series]
          :or {symbol "x"}} (window/get-gann-data opts)
@@ -120,20 +117,19 @@
     ))
 
 (defn sanitize-box [root-box]
-   (-> root-box
-       sanitize-root-box
-       prepare-box))
+  (-> root-box
+      sanitize-root-box
+      prepare-box))
 
-(defn fix-opts-web-request [{:keys [root-box] :as opts} ]
-   (if root-box
-     (assoc opts :root-box (sanitize-box root-box))
-     opts))
+(defn fix-opts-web-request [{:keys [root-box] :as opts}]
+  (if root-box
+    (assoc opts :root-box (sanitize-box root-box))
+    opts))
 
 (defn gann-svg-web [opts]
-   (-> opts
-       fix-opts-web-request
-       gann-svg))
-
+  (-> opts
+      fix-opts-web-request
+      gann-svg))
 
 (defn get-boxes [opts]
   (->> opts
@@ -141,30 +137,27 @@
        window/get-gann-data
        :boxes
        (map #(dissoc % :dt))))
-  
+
 (comment
-  
+
   (gann-svg {:s "GLD"
              ;:dt-start "2021-01-01"
              ;:dt-end "2021-12-31"
              :height 500
              :width 500})
-   
+
   (gann-svg-web {:s "GLD"
                   ;:dt-start "2021-01-01"
                   ;:dt-end "2021-12-31"
-                  :height 500
-                  :width 500
-                  :root-box {:symbol "GLD"
-                             :ap 77.24
-                             :at "2000-08-18"
-                             :bp 153.48
-                             :bt "2002-10-10"
-                             }})
+                 :height 500
+                 :width 500
+                 :root-box {:symbol "GLD"
+                            :ap 77.24
+                            :at "2000-08-18"
+                            :bp 153.48
+                            :bt "2002-10-10"}})
 
- ; 
-  
-
+; 
   )
 
 

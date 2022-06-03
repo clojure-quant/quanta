@@ -1,14 +1,12 @@
-(ns ta.tradingview.study
+(ns ta.backtest.trades
   (:require
-   [clojure.set :refer [rename-keys]]
-   [clojure.walk]
+   ;[clojure.set :refer [rename-keys]]
+   ;[clojure.walk]
    [taoensso.timbre :refer [trace debug info warnf error]]
-   [tick.core :as t]
-   [cljc.java-time.instant :as ti]
-   [cljc.java-time.local-date-time :as ldt]
+   ;[tick.core :as t]
+   ;[cljc.java-time.instant :as ti]
+   ;[cljc.java-time.local-date-time :as ldt]
    [tablecloth.api :as tc]
-   [modular.helper.id :refer [guuid-str]]
-   [modular.config :refer [get-in-config]]
    [ta.helper.date :refer [now-datetime datetime->epoch-second epoch-second->datetime]]))
 
 (defn has-col? [ds col-kw]
