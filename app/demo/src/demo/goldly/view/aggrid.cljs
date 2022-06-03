@@ -1,20 +1,25 @@
 (ns demo.goldly.view.aggrid
   (:require
    [re-frame.core :as rf]
-   [goldly.js]
-   [tick.goldly]
-   [ui.aggrid]))
+   ;[goldly.js]
+   ;[tick.goldly]
+   [ui.aggrid :refer [aggrid]]))
 
 (defn round-number-digits
   [digits number] ; digits is first parameter, so it can easily be applied (data last)
-  (if (nil? number) "" (goldly.js/to-fixed number digits)))
+  (if (nil? number) "" 
+      (str number) ; (goldly.js/to-fixed number digits)
+      
+      ))
 
 (defn fmt-yyyymmdd [dt]
   (when dt
-    (tick.goldly/dt-format "YYYYMMdd" dt)))
+    ;(tick.goldly/dt-format "YYYYMMdd" dt)
+    (str dt)
+    ))
 
 ; use fresh theme
-(re-frame.core/dispatch [:css/set-theme-component :aggrid "fresh"])
+;(re-frame.core/dispatch [:css/set-theme-component :aggrid "fresh"])
 
 (defn has-trades? [data]
   (let [row1 (first data)
@@ -63,15 +68,15 @@
      [:div {:style {:width "100%" ;"40cm"
                     :height "100%" ;"70vh" ;  
                     :background-color "blue"}}
-      [ui.aggrid/aggrid {:data data
-                         :columns (study-columns data)
-                         :box :fl
-                         :pagination :true
-                         :paginationAutoPageSize true}]]]
+      [aggrid {:data data
+               :columns (study-columns data)
+               :box :fl
+               :pagination :true
+               :paginationAutoPageSize true}]]]
     [:div "no data"]))
 
 (defn table [data]
-  [ui.aggrid/aggrid {:data data
-                     :box :lg
-                     :pagination :false
-                     :paginationAutoPageSize true}])
+  [aggrid {:data data
+           :box :lg
+           :pagination :false
+           :paginationAutoPageSize true}])

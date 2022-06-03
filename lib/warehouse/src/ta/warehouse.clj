@@ -68,7 +68,7 @@
                               (remove dir?)
                               doall))
                 (do
-                  (warnf "path for: %s not found: %s"  dir)
+                  (warnf "path for: %s not found: %s" w dir)
                   []))]
     (debug "explore-dir: " files)
     ;(warn "type file:" (type (first files)) "dir?: " (dir? (first files)))

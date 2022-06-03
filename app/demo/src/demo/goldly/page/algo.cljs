@@ -7,9 +7,8 @@
    [input]
    [goldly.tradingview :refer [tv-widget-atom tradingview-chart wrap-chart-ready set-symbol chart-active add-shape]]
    [demo.goldly.lib.ui :refer [link-href]]
-   [demo.goldly.view.aggrid :refer [study-table]]
    [demo.goldly.view.backtest :refer [navs-chart navs-view roundtrips-view metrics-view]]
-  ; [demo.goldly.view.tsymbol :refer [symbol-picker]]
+   [demo.goldly.view.aggrid :refer [study-table]]
    ))
 
 (defonce algo-state
@@ -34,14 +33,13 @@
     [:div "no data."]))
 
 (defn add-marks-to-tv [tradingview-server]
-  (if-let [marks (:marks tradingview-server)]
-    (do
-      (println "adding " (count marks) "marks to tv")
-      (doall (map #(add-shape (:points %) (assoc (:override %) :disableUndo true)) marks)))
-    (println "NO TV MARKS RCVD FROM SERVER! data: " tradingview-server)))
+  (when-let [marks (:marks tradingview-server)]
+    ;(println "adding " (count marks) "marks to tv")
+    (doall (map #(add-shape (:points %) (assoc (:override %) :disableUndo true)) marks)))
+    )
 
 (defn clear-marks-tv []
-  (println "TV CLEAR MARKS!")
+  ;(println "TV CLEAR MARKS!")
   (let [c (chart-active)]
     (.removeAllShapes c)))
 
@@ -103,7 +101,7 @@
 (defn page-renderer [data page]
   (if data
     (let [[view-fn view-data] (page pages)]
-      (println "page renderer context: " context)
+      ;(println "page renderer context: " context)
       (if view-fn
         (if view-data
           [view-fn (context data) (get-in data view-data)]

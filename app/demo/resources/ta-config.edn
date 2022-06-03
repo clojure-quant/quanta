@@ -1,9 +1,10 @@
-{:timbre-loglevel
- [[#{"pinkgorilla.nrepl.*"} :warn]
-  [#{"org.eclipse.jetty.*"} :warn]
-  [#{"modular.ws.*"} :warn] ; modular.ws.msg-handler
-  [#{"webly.*"} :info]
-  [#{"*"} :info]]
+{:timbre/clj {:min-level  [[#{"org.eclipse.jetty.*"
+                               "webly.*"
+                               "webly.ws.*"} :info]
+                            [#{"goldly.*"} :info]
+                            [#{"ui.*"} :info]
+                            [#{"user"} :warn] ; demos
+                            [#{"*"} :info]]}
 
  :nrepl {:enabled true
          :bind "0.0.0.0"
@@ -63,7 +64,7 @@
                                                                    ;:put :tv-db/modify-template
                                                                    :delete :tv-db/delete-template}}}}}}
 
- :reval {:rdocument  {:storage-root "../../target/rdocument/"
+ :reval {:rdocument  {:storage-root "../../output/rdocument/"
                       :url-root "/api/rdocument/file/"}
          :collections {:data [:clj "notebook/data/"]
                        :studies [:clj "notebook/studies/"]
@@ -75,10 +76,10 @@
                        }}
 
  :ta {:warehouse {:list "../resources/symbollist/"
-                  :series  {:crypto "../../target/db/crypto/"
-                            :stocks "../../target/db/stocks/"
-                            :random "../../target/db/random/"
-                            :shuffled  "../../target/db/shuffled/"}
+                  :series  {:crypto "../../output/db/crypto/"
+                            :stocks "../../output/db/stocks/"
+                            :random "../../output/db/random/"
+                            :shuffled  "../../output/db/shuffled/"}
                   :lists ["crypto"
                           "fidelity-select"
                           "bonds"
@@ -90,7 +91,7 @@
                           "equity-sector-industry"
                           "equity-style"
                           "test"]}
-      :tradingview {:charts-path   "../../target/tradingview-charts/"
+      :tradingview {:charts-path   "../../output/tradingview-charts/"
                     :template-path "../resources/tradingview-templates/"
                     :marks-path "../../data/"}}
 

@@ -61,6 +61,9 @@ Alphavantage can download 5 symbols a minute. We have 40 demo symbols, so this w
  - run: `cd app/demo && clojure -X:docs`
  - in webbrowser go to localhost:8080 
 
+## Notebook Eval
+
+`bb notebook-eval`
 
 ## Tradingview Chart Study maker
 

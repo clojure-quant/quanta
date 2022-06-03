@@ -69,13 +69,13 @@
         width (.-innerWidth js/window)
         p-with-size (assoc p :height height :width width)
         p-with-size-rootbox (assoc p-with-size :root-box (:root @*state))]
-    (println "getting gann-svg with params: " p-with-size-rootbox)
+    ;(println "getting gann-svg with params: " p-with-size-rootbox)
     (run-a *state [:data] :gann/svg p-with-size-rootbox)
     (run-a *state [:boxes] :gann/boxes p-with-size-rootbox)))
 
 (defn save-rootbox []
   (let [root-box (:root @*state)]
-    (println "saving root-box: " root-box)
+    ;(println "saving root-box: " root-box)
     (run-cb {:fun :gann/save
              :args [root-box]
              :timeout 1000

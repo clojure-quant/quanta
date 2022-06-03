@@ -26,7 +26,7 @@
   ; see README.md for available tasks
   :run {:extra-paths ["cli"]
         :exec-fn demo.env.cli/run
-        :exec-args {:config "ta-config.edn"}
+        :exec-args {:config "resources/ta-config.edn"}
         :jvm-opts ["-Xmx4G"] ;; or more
         }
 

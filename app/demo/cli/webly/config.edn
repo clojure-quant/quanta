@@ -1,7 +1,0 @@
-; this file is here for modular
-; has to stay here, until modular is refactored.
-
-{:cli true
- 
-}
-

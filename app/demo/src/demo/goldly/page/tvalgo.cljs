@@ -5,10 +5,9 @@
    [goldly.service :refer [run-a]]
    [goldly.page :as page]
    [input]
+   [goldly.tradingview :as tv :refer [tradingview-chart set-symbol state add-algo-studies]]
    [demo.goldly.lib.ui :refer [link-href]]
-   [goldly.tradingview :refer [tradingview-chart set-symbol]]
-   [demo.goldly.view.aggrid :refer [study-table]]
-   [tv]))
+   [demo.goldly.view.aggrid :refer [study-table]]))
 
 (defonce algo-state
   (r/atom {:algos []
@@ -58,7 +57,7 @@
     (get-window epoch-start epoch-end)))
 
 (defn get-window-current []
-  (let [state @tv/state
+  (let [state @state
         from (get-in state [:range :from])
         to (get-in state [:range :to])]
     (println "get-window-current from:" from "to: " to "state: " state)
@@ -100,14 +99,14 @@
             ;Object.getPrototypeOf (widget) .datafeed
             ;(set! (.-datafeed 
             ;       (.getPrototypeOf js/Object js/widget)) 
-            (js/setTimeout #(tv/add-algo-studies charts) 300)
+            (js/setTimeout #(add-algo-studies charts) 300)
             (js/setTimeout #(tv/track-range) 300)
             ;(tv/add-algo-studies charts)
             nil))))))
 
 (defn tv-status []
   (fn []
-    [:span (pr-str @tv/state)]))
+    [:span (pr-str @state)]))
 
 (defn algo-menu []
   [:div.flex.flex-row.bg-blue-500

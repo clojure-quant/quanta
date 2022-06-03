@@ -25,7 +25,7 @@
       [:div
        [run-on-change state-internal [:list]
         (fn [list]
-          (println "getting symbols for list " list)
+          ;(println "getting symbols for list " list)
           (run-a state-internal [:symbols-in-list] :ta/symbols list))]
        [input/select
         {:nav? false
