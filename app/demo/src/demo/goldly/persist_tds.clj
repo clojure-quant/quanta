@@ -54,10 +54,10 @@
     (fn [ostream]
       (arrow/write-dataset-to-stream! ds ostream {})))))
 
-(defn filename->response-arrow [filename]
-  (-> filename
-      load-arrow
-      ds->response-arrow))
+#_(defn filename->response-arrow [filename]
+    (-> filename
+        load-arrow
+        ds->response-arrow))
 
 (comment
 
@@ -71,7 +71,7 @@
 
   ; java.lang.NoClassDefFoundError: Could not initialize class org.apache.arrow.memory.UnsafeAllocationManager
 
-  (save-arrow "/tmp/ZZZZ.arrow" (tc/dataset {:a [1.0 2.0 3.4]}))
+  ; (save-arrow "/tmp/ZZZZ.arrow" (tc/dataset {:a [1.0 2.0 3.4]}))
 
  ;
   )

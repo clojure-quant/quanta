@@ -9,7 +9,6 @@
          :bind "0.0.0.0"
          :port 9100}
 
- 
  :webly/web-server {:port 8080
                     :host "0.0.0.0"
                     :ssl-port 8443
@@ -17,22 +16,18 @@
                     :key-password "password"; Password you gave when creating the keystore
                     :jetty-ws {"/api/chsk" :ws/chsk-get}}
 
+ :ns-clj [demo.goldly.services
+          demo.goldly.reval ; for techml rendering (no need to require namespace)
+          ta.tradingview.server]
 
  :goldly {:enabled true
           :lazy true
           :src-dir "src"
           ; runtime
-          :autoload-clj-ns [demo.goldly.services
-                            demo.goldly.reval ; for techml rendering (no need to require namespace)
-                            ta.tradingview.server
-                            goldly.devtools]
-
-          :autoload-cljs-dir ["goldly/lib"
-                              "goldly/devtools"
-                              "ta/tradingview/goldly"
+          :autoload-cljs-dir ["ta/tradingview/goldly"
+                              "demo/goldly/lib"
                               "demo/goldly/view"
-                              "demo/goldly/page"
-                              ]
+                              "demo/goldly/page"]
           :routes {:app {"" :user/main
                          ;warehouse
                          "warehouse" :user/warehouse
@@ -58,8 +53,7 @@
                                        "search" :tv/search
                                        "symbols" :tv/symbols
                                        "history" :tv/history
-                                       "marks" :tv/marks
-                                       }
+                                       "marks" :tv/marks}
                                 "storage/1.1/" {"charts" {:get  :tv-db/load-chart
                                                           :post :tv-db/save-chart
                                                           :put  :tv-db/modify-chart
@@ -75,7 +69,10 @@
                        :studies [:clj "notebook/studies/"]
                        :datascience [:clj "notebook/datascience/"]
                        :playground [:clj "notebook/playground/"]
-                       :demo [:clj "demo/notebook/"]}}
+                       :demo [:clj "demo/notebook/"]
+                       :test [:cljs "demo/goldly/view/"]
+                       
+                       }}
 
  :ta {:warehouse {:list "../resources/symbollist/"
                   :series  {:crypto "../../target/db/crypto/"
@@ -95,8 +92,7 @@
                           "test"]}
       :tradingview {:charts-path   "../../target/tradingview-charts/"
                     :template-path "../resources/tradingview-templates/"
-                    :marks-path "../../data/"
-                    }}
+                    :marks-path "../../data/"}}
 
 
  :demo {:gann-data-file "../resources/gann.edn"}

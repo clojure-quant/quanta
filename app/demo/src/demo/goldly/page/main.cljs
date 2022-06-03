@@ -1,3 +1,9 @@
+(ns demo.goldly.page.main
+  (:require
+   [reagent.core :as r]
+   [goldly.page :as page]
+   [demo.goldly.lib.ui :refer [link-dispatch link-href]]
+   [demo.goldly.view.tsymbol :refer [symbol-picker]]))
 
 ; main page 
 
@@ -20,9 +26,8 @@
   (s zodiac-symbols))
 
 (defonce symbol-atom (r/atom {:symbol ""}))
-(require '[tsymbol :refer [symbol-picker]])
 
-(defmethod reagent-page :user/main [{:keys [route-params query-params handler] :as route}]
+(defn main-page [{:keys [_route-params _query-params _handler] :as _route}]
   [:div
 
    [:p "Aries: " (zodiac-symbol :cancer)]
@@ -68,3 +73,5 @@
 
 ;
    ])
+
+(page/add main-page :user/main)

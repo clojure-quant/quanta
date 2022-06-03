@@ -1,7 +1,10 @@
-(ns tsymbol
+(ns demo.goldly.view.tsymbol
   (:require
-   [user :refer :all]
-   [input]))
+   [reagent.core :as r]
+   [layout]
+   [site]
+   [input]
+   [goldly.service :refer [run-a]]))
 
 (defn run-on-change [input-atom input-path f]
   (let [loaded (r/atom nil)]
@@ -13,7 +16,7 @@
            (f current)
            nil)]))))
 
-(defn symbol-picker [state-atom path-symbol]
+(defn symbol-picker [_state-atom _path-symbol]
   (let [state-internal (r/atom {:lists []
                                 :symbols-in-list ["BTCUSD" "SPY" "QQQ" "GLD" "SLV" "EURUSD"]
                                 :list "currencies"})]

@@ -1,7 +1,7 @@
 (ns demo.goldly.reval
   (:require
    [modular.persist.edn :refer [pprint-str]]
-   [reval.type.protocol :refer [hiccup-convertable to-hiccup]]))
+   [reval.type.protocol :refer [hiccup-convertable #_to-hiccup]]))
 
 (defn text-render-fipp
   [o comment]

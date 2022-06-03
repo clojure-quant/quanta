@@ -9,7 +9,7 @@
    [svg-clj.layout :as lo]
    [svg-clj.tools :as tools]
    [ta.helper.date :refer [parse-date]]
-   [goldly.scratchpad :refer [show! show-as clear!]]))
+   [scratchpad.core :refer [show! clear!]]))
 
 (def basic-group
   (el/g

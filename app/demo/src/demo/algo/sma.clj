@@ -5,7 +5,6 @@
    [ta.algo.manager :refer [add-algo]]))
 
 (defn add-sma-indicator
-  ""
   [ds {:keys [sma-length-st sma-length-lt] #_:as #_options}]
   (let [; input data needed for ta4j indicators
         ;bars (ta4j/ds->ta4j-ohlcv ds)

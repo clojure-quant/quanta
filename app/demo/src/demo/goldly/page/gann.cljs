@@ -1,13 +1,18 @@
-(ns gann.svg
+(ns demo.goldly.page.gann
   (:require
-   [user :refer [println run-a run-cb link-href add-page aggrid to-fixed]]
-   [tsymbol :refer [symbol-picker]]))
+   [reagent.core :as r]
+   [goldly.service :refer [run-a run-cb]]
+   [goldly.page :as page]
+   [ui.aggrid :refer [aggrid]]
+   [input]
+   [demo.goldly.lib.ui :refer [link-href to-fixed rnd]] ; todo: move rnd + to-fixed out of user
+   [demo.goldly.view.tsymbol :refer [symbol-picker]]))
 
 (defn round-number-digits
   [digits number] ; digits is first parameter, so it can easily be applied (data last)
   (if (nil? number) "" (to-fixed number digits)))
 
-(defn box [{:keys [at bt zoom dp ap bp idx-p idx-t]}]
+(defn box [{:keys [at bt zoom _dp ap bp idx-p idx-t]}]
   [:tr
    [:td zoom]
    [:td idx-p]
@@ -17,18 +22,18 @@
    [:td (str at)]
    [:td (str bt)]])
 
-(defn box-table [boxes]
-  (when boxes
-    (into [:table.bg-yellow-300
-           [:tr
-            [:td "zoom"]
-            [:td "idx-p"]
-            [:td "idx-t"]
-            [:td "ap"]
-            [:td "bp"]
-            [:td "at"]
-            [:td "bt"]]]
-          (map box boxes))))
+#_(defn box-table [boxes]
+    (when boxes
+      (into [:table.bg-yellow-300
+             [:tr
+              [:td "zoom"]
+              [:td "idx-p"]
+              [:td "idx-t"]
+              [:td "ap"]
+              [:td "bp"]
+              [:td "at"]
+              [:td "bt"]]]
+            (map box boxes))))
 
 (defn box-table [boxes]
   (when boxes
@@ -58,7 +63,7 @@
                          :root {}
                          :data [:div "data not yet loaded."]}))
 
-(defn get-data [& args]
+(defn get-data [& _args]
   (let [p (:params @*state)
         height (.-innerHeight js/window)
         width (.-innerWidth js/window)
@@ -76,7 +81,7 @@
              :timeout 1000
              :cb #(js/alert "rootbox saved!")})))
 
-(defn rootbox-ui [{:keys [at ap bt bp] :as box}]
+(defn rootbox-ui [{:keys [_at _ap _bt _bp] :as _box}]
   ;[:p (pr-str (:root @*state))]
   [:div.grid
    {:style {:grid-template-columns "60px 1fr"}}
@@ -146,33 +151,33 @@
    [link-href "/" "main"]])
 
 (defn float-table []
-  [container/rnd {:bounds "window"
-                  :default {:width 600
-                            :height 300
-                            :x 400
-                            :y 60}
-                  :style {:display "flex"
+  [rnd {:bounds "window"
+        :default {:width 600
+                  :height 300
+                  :x 400
+                  :y 60}
+        :style {:display "flex"
                           ;:alignItems "center"
-                          :justifyContent "center"
-                          :border "solid 1px #ddd"
-                          :background "#f0f0f0"}}
+                :justifyContent "center"
+                :border "solid 1px #ddd"
+                :background "#f0f0f0"}}
    [box-table (:boxes @*state)]])
 
 (defn float-menu []
-  [container/rnd {:bounds "window"
-                  :default {:width 200
-                            :height 400
-                            :x 50
-                            :y 60}
-                  :style {:display "flex"
+  [rnd {:bounds "window"
+        :default {:width 200
+                  :height 400
+                  :x 50
+                  :y 60}
+        :style {:display "flex"
                           ;:alignItems "center"
-                          :justifyContent "center"
-                          :border "solid 1px #ddd"
-                          :background "#f0f0f0"}}
+                :justifyContent "center"
+                :border "solid 1px #ddd"
+                :background "#f0f0f0"}}
    [menu]])
 
-(defn gann-page [{:keys [route-params query-params handler] :as route}]
-  (fn [{:keys [route-params query-params handler] :as route}]
+(defn gann-page [{:keys [_route-params _query-params _handler] :as _route}]
+  (fn [{:keys [_route-params _query-params _handler] :as _route}]
     [:div.w-screen.h-screen.p-0.m-0
      [float-menu]
      (when (:table? @*state)
@@ -181,4 +186,5 @@
    ;[:div (pr-str (:boxes @*state))]
    ;[:div.bg-gray-500.mt-12 "params:" (pr-str (:params @*state))]
      ]))
-(add-page gann-page :gann)
+
+(page/add gann-page :gann)

@@ -1,7 +1,13 @@
 (ns tvalgo
   (:require
-   [r :refer :all]
-   [user :refer [println run-a link-href add-page tradingview-chart set-symbol study-table tv-widget-atom]]
+   [reagent.core :as r]
+   [re-frame.core :as rf]
+   [goldly.service :refer [run-a]]
+   [goldly.page :as page]
+   [input]
+   [demo.goldly.lib.ui :refer [link-href]]
+   [goldly.tradingview :refer [tradingview-chart set-symbol]]
+   [demo.goldly.view.aggrid :refer [study-table]]
    [tv]))
 
 (defonce algo-state
@@ -71,7 +77,7 @@
    {:style {:height "10cm"}}
    [table-dialog-table]])
 
-(defn tradingview-modifier [symbol frequency]
+(defn tradingview-modifier [symbol _frequency]
   (let [symbol-showing (r/atom symbol)]
     (fn [symbol frequency]
       (when-not (= symbol @symbol-showing)
@@ -80,7 +86,7 @@
         (set-symbol symbol frequency)
         nil))))
 
-(defn algo-modifier [algo algoinfo]
+(defn algo-modifier [_algo algoinfo]
   (let [showing (r/atom algoinfo)]
     (fn [algo algoinfo]
       (when-let [charts (:charts algoinfo)]
@@ -132,7 +138,7 @@
 (defn algo-ui []
   (let [symbol-initial (:symbol @algo-state)]
     (fn []
-      (let [{:keys [algos algo algoinfo symbol frequency]} @algo-state]
+      (let [{:keys [_algos algo algoinfo symbol frequency]} @algo-state]
         [:div.flex.flex-col.h-full.w-full
        ;(do (run-algo algo opts data-loaded)
        ;    nil)
@@ -153,8 +159,8 @@
 ;[page-renderer data page]
          ]))))
 
-(defn tvalgo-page [route]
+(defn tvalgo-page [_route]
   [:div.h-screen.w-screen.bg-red-500
    [algo-ui]])
 
-(add-page tvalgo-page :algo/tv)
+(page/add tvalgo-page :algo/tv)

@@ -1,10 +1,14 @@
+(ns demo.goldly.view.backtest
+  (:require
+   [demo.goldly.lib.ui :refer [to-fixed]]
+   [ui.aggrid :refer [aggrid]]
+   [demo.goldly.view.vega-nav :refer [vega-nav-plot]]))
 
+(defn round-number-digits
+  [digits number] ; digits is first parameter, so it can easily be applied (data last)
+  (if (nil? number) "" (to-fixed number digits)))
 
-(defn digits [nr v]
-  (when v
-    (round-number-digits nr v)))
-
-(defn metrics-view [context {:keys [rt-metrics nav-metrics options comment]}]
+(defn metrics-view [_context {:keys [rt-metrics nav-metrics options comment]}]
   [:div
    [:h1.bg-blue-300.text-xl "comment:" comment]
    [:p "options:" (pr-str options)]
@@ -25,16 +29,16 @@
      [:td "loss"]]
     [:tr
      [:td "%winner"]
-     [:td (digits 0 (:win-nr-prct rt-metrics))]
+     [:td (round-number-digits 0 (:win-nr-prct rt-metrics))]
      [:td ""]]
     [:tr
      [:td "avg pl"]
-     [:td (digits 4 (:avg-win-log rt-metrics))]
-     [:td (digits 4 (:avg-loss-log rt-metrics))]]
+     [:td (round-number-digits 4 (:avg-win-log rt-metrics))]
+     [:td (round-number-digits 4 (:avg-loss-log rt-metrics))]]
     [:tr
      [:td "avg bars"]
-     [:td (digits 1 (:avg-bars-win rt-metrics))]
-     [:td (digits 1 (:avg-bars-loss rt-metrics))]]]])
+     [:td (round-number-digits 1 (:avg-bars-win rt-metrics))]
+     [:td (round-number-digits 1 (:avg-bars-loss rt-metrics))]]]])
 
 (def roundtrip-cols
   [:rt-no
@@ -51,7 +55,7 @@
    {:field :pl-log :format (partial round-number-digits 2)}
    :win])
 
-(defn rt-flat? [{:keys [trade position] :as roundtrip}]
+(defn rt-flat? [{:keys [trade] :as _roundtrip}]
   ;(println "trade: " trade)
   (= trade :flat))
 
@@ -59,7 +63,7 @@
   ;(println "filtering flat rts: " roundtrips)
   (remove rt-flat? roundtrips))
 
-(defn roundtrips-view [context roundtrips]
+(defn roundtrips-view [_context roundtrips]
   (let [roundtrips (remove-flat roundtrips)]
     [:div.h-full.w-full.flex.flex-col
      [:h1 "roundtrips " (count roundtrips)]
@@ -82,7 +86,7 @@
    {:field :pl-log-cum :format (partial round-number-digits 5)}
    :trades])
 
-(defn navs-view [context navs]
+(defn navs-view [_context navs]
   [:div.h-full.w-full.flex.flex-col
    [:h1 "navs " (count navs)]
    (when (> (count navs) 0)
@@ -95,7 +99,7 @@
                :pagination :true
                :paginationAutoPageSize true}]])])
 
-(defn navs-chart [context navs]
+(defn navs-chart [_context navs]
   (let [navs-with-index (map-indexed (fn [i v]
                                        {:index i
                                         :nav (:nav v)}) navs)

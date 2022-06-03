@@ -1,3 +1,6 @@
+(ns demo.goldly.view.vega-nav
+  (:require
+   [ui.vega :refer [vegalite]]))
 
 (def date-axes
   {:field "date" :type "temporal"

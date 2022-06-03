@@ -9,7 +9,7 @@
    [ta.warehouse.overview :refer [warehouse-overview]]
    [ta.algo.manager :refer [algo-names algo-info algo-run-window-browser algo-run-browser algo-marks algo-shapes]]
    [ta.gann.db :refer [load-gann save-gann]]
-   [ta.gann.svg-plot :refer [gann-svg gann-svg-web get-boxes]]
+   [ta.gann.svg-plot :refer [#_gann-svg gann-svg-web get-boxes]]
    [ta.tradingview.handler-datasource :refer [server-config symbol-info symbol-search server-time]]
    [demo.env.config] ; side-effects
    [demo.env.algos] ; side-effects

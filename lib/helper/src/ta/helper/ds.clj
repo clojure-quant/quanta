@@ -35,6 +35,7 @@
        not
        ;(map :name)
        ))
+
 (comment
 
   (-> (tc/dataset {:close [1 2 3]

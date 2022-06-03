@@ -1,3 +1,17 @@
+(ns demo.goldly.page.algo
+  (:require
+   [reagent.core :as r]
+   [goldly.service :refer [run-a]]
+   [goldly.page :as page]
+   [ui.highcharts :refer [highstock]]
+   [input]
+   [goldly.tradingview :refer [tv-widget-atom tradingview-chart wrap-chart-ready set-symbol chart-active add-shape]]
+   [demo.goldly.lib.ui :refer [link-href]]
+   [demo.goldly.view.aggrid :refer [study-table]]
+   [demo.goldly.view.backtest :refer [navs-chart navs-view roundtrips-view metrics-view]]
+  ; [demo.goldly.view.tsymbol :refer [symbol-picker]]
+   ))
+
 (defonce algo-state
   (r/atom {:algos []
            :algo nil
@@ -9,10 +23,10 @@
 
 (def symbol-list ["TLT" "SPY" "QQQ" "EURUSD"])
 
-(defn pr-data [context data]
+(defn pr-data [_context data]
   [:div.bg-red-500 (pr-str data)])
 
-(defn pr-highchart [context data]
+(defn pr-highchart [_context data]
   (if data
     [highstock {:box :fl ; :lg
                 :data data}]
@@ -23,7 +37,7 @@
   (if-let [marks (:marks tradingview-server)]
     (do
       (println "adding " (count marks) "marks to tv")
-      (doall (map #(tv/add-shape (:points %) (assoc (:override %) :disableUndo true)) marks)))
+      (doall (map #(add-shape (:points %) (assoc (:override %) :disableUndo true)) marks)))
     (println "NO TV MARKS RCVD FROM SERVER! data: " tradingview-server)))
 
 (defn clear-marks-tv []
@@ -34,7 +48,7 @@
 (defn tv-events [algo opts tradingview-state]
   (when algo
     (when (not (= [algo opts] tradingview-state))
-      (info (str "changing tv data for running algo for: " algo "opts: " opts))
+      ;(info (str "changing tv data for running algo for: " algo "opts: " opts))
       (swap! algo-state assoc :tradingview-state [algo opts])
       (wrap-chart-ready
        (fn []
@@ -50,7 +64,7 @@
        (add-marks-to-tv tradingview-server)))
     nil))
 
-(defn tv-page [context data]
+(defn tv-page [_context _data]
   (let [{:keys [algo opts tradingview-state data]} @algo-state
         tradingview-server (:tradingview data)]
     [:div.h-full.w-full
@@ -78,7 +92,6 @@
   (when algo
     ;(info (str "run-algo check: " algo " opts: " opts))
     (when (not (= [algo opts] data-loaded))
-      (info (str "running algo for: " algo "opts: " opts))
       (swap! algo-state assoc :data {})
       (swap! algo-state assoc :data-loaded [algo opts])
       (run-a algo-state [:data] :algo/run algo opts)
@@ -113,16 +126,16 @@
 
 (defn algo-ui []
   (fn []
-    (let [{:keys [algos algo opts data-loaded data page]} @algo-state]
+    (let [{:keys [_algos algo opts data-loaded data page]} @algo-state]
       [:div.flex.flex-col.h-full.w-full
        (do (run-algo algo opts data-loaded)
            nil)
        [algo-menu]
        [page-renderer data page]])))
 
-(defn algo-page [route]
+(defn algo-page [_route]
   [:div.h-screen.w-screen.bg-red-500
    [algo-ui]])
 
-(add-page algo-page :algo/backtest)
+(page/add algo-page :algo/backtest)
 

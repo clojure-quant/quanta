@@ -1,7 +1,7 @@
 (ns demo.notebook
   (:require
    [reval.document.notebook :refer [eval-notebook load-notebook]]
-   [goldly.scratchpad :refer [show! show-as clear!]]
+   [goldly.scratchpad :refer [show! show-as]]
    ;[demo.init] ; side effects
    ))
 

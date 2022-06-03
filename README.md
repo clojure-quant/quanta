@@ -29,14 +29,11 @@ warehouses. Bybit goes to :crypto. Alphavantage goes to :stocks.
 *warehouse summary* `cd app/demo && clojure -X:run :task :warehouse` or
                     `bb warehouse-summary`
 
-*shuffle warehouse* `clj -X:run :task :shuffle` 
+*shuffle warehouse* `cd app/demo && clojure -X:run :task :shuffle` 
 
 This reads the :crypto warehouse, shuffles the returns and creates the :random warehouse.
 
-
 ##  data import 
-
-
 
 *Bybit Feed*
 Bybit feed does not need credentials. It has data since 2018-11 for BTC and ETH.
@@ -47,8 +44,6 @@ The creds file in `profiles/demo/creds.edn` has to contain your alphavantage api
 `{:alphavantage "your-alphavantage-api-key"}`
 Alphavantage can download 5 symbols a minute. We have 40 demo symbols, so this will take a while.
 
-
-
 *import*
 - alphavantage: `cd app/demo && clojure -X:run :task :alphavantage-import :symbol "test"` or
                 `bb run alphavantage-import all-stocks`
@@ -56,18 +51,15 @@ Alphavantage can download 5 symbols a minute. We have 40 demo symbols, so this w
           `bb run bybit-import test`
 
 *append*
-- bybit: `clj -X:run :task :bybit-append :symbol "crypto"`
+- bybit: `cd app/demo && clojure -X:run :task :bybit-append :symbol "crypto"`
+- alphavantage: Appending is not supported by Alphavantage (only has full-fetch feature)
 
 
-*gann maker** `clj -X:run :task :gann` 
-This reads profiles/resources/gann.edn and creates tradingview charts for each symbol in it.
-The charts can be loaded via the tradingview page.
 
 ## GoldlyDocs Web app
 
-In `profiles/demo`
- - run: `clj -X:goldly-docs`
- - in webbrowser go to localhost:8000 
+ - run: `cd app/demo && clojure -X:docs`
+ - in webbrowser go to localhost:8080 
 
 
 ## Tradingview Chart Study maker
@@ -77,7 +69,9 @@ In `profiles/demo`
 Generated charts are stored in profiles/resources/tradingview-charts
 and can be seen in goldlydocs web app in developer tools / pages / tradingview
 
-
+*gann maker** `clj -X:run :task :gann` 
+This reads profiles/resources/gann.edn and creates tradingview charts for each symbol in it.
+The charts can be loaded via the tradingview page.
  
 
 ## for TA developers
