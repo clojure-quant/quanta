@@ -3,11 +3,10 @@
          ]
  :deps {aysylu/loom {:mvn/version "1.0.2"}
         techascent/tech.viz {:mvn/version "6.00-beta-16-2"}
-       
       ;  com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.1.0"}
-        com.taoensso/timbre {:mvn/version "5.1.2"} ; clj/cljs logging
+        com.taoensso/timbre {:mvn/version "5.2.1"} ; clj/cljs logging
         org.slf4j/slf4j-nop {:mvn/version "2.0.0-alpha7"}
-        org.pinkgorilla/reval {:mvn/version "0.0.37"}
+        org.pinkgorilla/reval {:mvn/version "0.5.112"}
         
         ta/trateg {:local/root "../../lib/trateg" :deps/manifest :deps}
         ta/data {:local/root "../../lib/data" :deps/manifest :deps}
@@ -31,7 +30,7 @@
         :jvm-opts ["-Xmx4G"] ;; or more
         }
 
-  :goldly-docs {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.503"}}
+  :goldly-docs {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.553"}}
                 :exec-fn goldly.app/goldly-server-run!
                 :exec-args {:profile "jetty"
                             :config "ta-config.edn"}}

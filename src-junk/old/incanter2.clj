@@ -7,7 +7,8 @@
 
 (comment
 
-  ; Incanter, Clojure's primary statistical computing library used throughout the book. Similar to R.
+  ; Incanter, Clojure's primary statistical computing library used throughout the book. 
+  ; Similar to R.
   ; Incanter 2.0 lib for statistics
 
   (use '(incanter core stats charts io))

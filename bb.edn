@@ -21,7 +21,7 @@
                              ;"profiles/demo/src/notebook/playground"
                              ;"profiles/demo/src/notebook/studies"
                              ;"profiles/demo/src/notebook/warehouse"
-)  ; "../goldly-docs" nothing to lint in goldly-docs
+                             ) 
          cljfmt-check (webly/clojure "lib/trateg" "-M:cljfmt" "check"
                                      "."
                                      "../../lib/data"

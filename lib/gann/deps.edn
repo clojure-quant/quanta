@@ -1,31 +1,10 @@
 {:paths ["src"]
- :deps
- {org.clojure/clojure    {:mvn/version "1.10.3"}
-  cljplot/cljplot {:mvn/version "0.0.2a-SNAPSHOT"}
-  io.github.adam-james-v/svg-clj {:mvn/version "0.0.9"}
-  org.scicloj/wadogo {:mvn/version "0.1.0-SNAPSHOT"}
-
-  org.pinkgorilla/modular {:mvn/version "0.0.20"}
-  ta/trateg {:local/root "..//trateg" :deps/manifest :deps}
-  }
- :aliases
- {:outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}
-                          org.slf4j/slf4j-nop {:mvn/version "1.7.32"}}
-             :main-opts ["-m" "antq.core"]}
-
-  :nrepl {:extra-deps {nrepl/nrepl  {:mvn/version "0.8.3"}
-                       cider/cider-nrepl {:mvn/version,"0.27.2"}}
-          :main-opts  ["-m" "nrepl.cmdline"]}
-
-  :test {:extra-paths ["test"]
-         :extra-deps {io.github.cognitect-labs/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
-                                                            :sha "9e35c979860c75555adaff7600070c60004a0f44"}}
-         :main-opts ["-m" "cognitect.test-runner"]
-         :exec-fn cognitect.test-runner.api/test}
-
-
-  :astro-test {:exec-fn astro/astro-test
-               :exec-args {:name "equity-region"}}}
+ :deps {org.clojure/clojure {:mvn/version "1.10.3"}
+        io.github.adam-james-v/svg-clj {:mvn/version "0.0.11"}
+        cljplot/cljplot {:mvn/version "0.0.2-SNAPSHOT"}
+        org.scicloj/wadogo {:mvn/version "1.0.0-SNAPSHOT"}
+        org.pinkgorilla/modular {:mvn/version "0.0.31"}
+        ta/trateg {:local/root "../trateg" :deps/manifest :deps}}
 ;                 
  }
 
