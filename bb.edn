@@ -1,10 +1,10 @@
 {:paths ["script"]
  :deps {babashka/fs {:mvn/version "0.1.1"}}
 
- :tasks {:requires 
-           [webly
-            [clojure.edn :as edn]
-            [babashka.fs :as fs]]
+ :tasks {:requires
+         [webly
+          [clojure.edn :as edn]
+          [babashka.fs :as fs]]
          ; dev tools
          lint (webly/clojure "app/demo" "-M:lint"
                              "." ; "../goldly-test"
@@ -18,10 +18,10 @@
                              "../demo/src/demo/env"
                              ; notebooks
                              "../demo/src/notebook"
-                             ;"profiles/demo/src/notebook/playground"
-                             ;"profiles/demo/src/notebook/studies"
-                             ;"profiles/demo/src/notebook/warehouse"
-                             ) 
+                             ;"app/demo/src/notebook/playground"
+                             ;"app/demo/src/notebook/studies"
+                             ;"app/demo/src/notebook/warehouse"
+                             )
          cljfmt-check (webly/clojure "lib/trateg" "-M:cljfmt" "check"
                                      "."
                                      "../../lib/data"
@@ -33,8 +33,7 @@
                                    "."
                                    "../../data"
                                    "../demo"
-                                   "../../lib"
-                                   )
+                                   "../../lib")
          deps-tree (webly/clojure "app/demo" "-X:deps" "tree")
          outdated (webly/clojure "app/demo" "-M:outdated")
 
@@ -56,15 +55,14 @@
                              (println "unit test lib/trateg")
                              (shell {:dir "lib/trateg"} "clojure" "-M:test"))}
 
-        performance-test {:doc "runs warehouse performance test"
-                          :task (do (println "performance test lib/warehouse")
-                                    (shell {:dir "lib/warehouse"} 
-                                           "clojure" "-X:performance-test"))}
+         performance-test {:doc "runs warehouse performance test"
+                           :task (do (println "performance test lib/warehouse")
+                                     (shell {:dir "lib/warehouse"}
+                                            "clojure" "-X:performance-test"))}
 
          ;; CI
          ci-check {:depends [cljfmt-check
-                             test-clj
-                             ]
+                             test-clj]
                    :task (shell "echo" "ci checks are ok!")}
 
          commit-check {:doc "if this succeeds, then the github ci pipeline will work too."
@@ -87,17 +85,11 @@
          warehouse-summary  {:doc "warehouse-summary"
                              :task (webly/clojure "app/demo" "-X:run" ":task" ":warehouse")}
 
-         gann-tvcharts  {:doc "create gann tradingview-charts"
-                         :task (webly/clojure "app/demo" "-X:run" ":task" ":gann")}
-
-         astro  {:doc "calculate aspects"
-                 :task (webly/clojure "lib/astro" "-X:astro-test")}
-
          notebook-eval  {:doc "evaluates notebook collections"
                          :task (webly/clojure "app/demo" "-X:run" ":task" ":nbeval")}
 
          goldly-docs {:doc "goldly docs ui"
-                      :task (webly/clojure "app/demo" "-X:goldly-docs")}
+                      :task (webly/clojure "app/demo" "-X:docs")}
 
          goldly-cert {:doc "Creates ssl certificate for quant.hoertlehner.com"
                       :task (do (shell {:dir "app/demo"} "mkdir" "-p" "certs")
@@ -110,19 +102,25 @@
                                        "--work-dir" "./certs"
                                        "--standalone")
                                 (shell {:dir "app/demo/certs/live/quant.hoertlehner.com"}
-                                      "openssl" "pkcs12" 
-                                      "-export" 
-                                      "-CAfile" "chain.pem"
-                                      "-caname" "root" 
-                                      "-in" "fullchain.pem" 
-                                      "-inkey" "privkey.pem"
-                                      "-out" "../../keystore.p12"
-                                      "-passout" "pass:password" 
-                                      "-name" "quant")
+                                       "openssl" "pkcs12"
+                                       "-export"
+                                       "-CAfile" "chain.pem"
+                                       "-caname" "root"
+                                       "-in" "fullchain.pem"
+                                       "-inkey" "privkey.pem"
+                                       "-out" "../../keystore.p12"
+                                       "-passout" "pass:password"
+                                       "-name" "quant")
                                 (shell {:dir "app/demo/certs"}
-                                       "chmod" "a+r" "./keystore.p12")
-                                
-                                )}
+                                       "chmod" "a+r" "./keystore.p12"))}
+         
+         gann-tvcharts  {:doc "create gann tradingview-charts"
+                         :task (webly/clojure "app/demo" "-X:run" ":task" ":gann")}
+
+         astro  {:doc "calculate aspects"
+                 :task (webly/clojure "lib/astro" "-X:astro-test")}
+
+
 
  ;        
          }}

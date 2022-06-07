@@ -80,9 +80,6 @@ FLORIAN TODO:
 - https://github.com/johnmn3/injest   BETTER THREADING MACROS
 
 
-https://github.com/scicloj/scicloj.ml
-
-
 
   (defn ->html [df]
     (apply vector
