@@ -1,8 +1,7 @@
 {:paths ["src"]
- :deps {org.clojure/clojure    {:mvn/version "1.10.3"}
+ :deps {org.clojure/clojure    {:mvn/version "1.11.1"}
         org.clojure/core.async {:mvn/version "1.3.618"}
-        clj-http/clj-http      {:mvn/version "3.12.3"} ; http requests (bybit) 
+        clj-http/clj-http      {:mvn/version "3.12.3"} ; http requests (bybit)
         cheshire/cheshire      {:mvn/version "5.11.0"} ; json for bybit
-        throttler/throttler    {:mvn/version "1.0.1"}  ; api rate-limits 
+        throttler/throttler    {:mvn/version "1.0.1"}  ; api rate-limits
         ta/helper {:local/root "../helper" :deps/manifest :deps}}}
-

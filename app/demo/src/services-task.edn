@@ -1,0 +1,19 @@
+ {:modular (modular.system/modular-env)  ; {:profile "jetty"  :config ["demo.edn" "secrets.edn"]}
+ :components
+ {:config {:start (modular.config/load-config! (:config #ref [:modular]))}
+  :secrets {:start (clojure.edn/read-string
+                     (slurp #envf ["%s/trateg/creds.edn" "MYVAULT"]))
+                      }
+
+  :timbre {:start (modular.log/timbre-config!
+                   (:timbre/clj (deref (clip/ref :config))))}
+
+    ; load the :ns-clj defined by the user [demo.service]
+    ;  :ns-require {:start (modular.require/require-namespaces
+    ;                      (:ns-clj (deref (clip/ref :config))))}
+
+  :alphavantage {:start (ta.data.alphavantage/set-key!
+                         (:alphavantage (clip/ref :secrets)))}
+
+;
+  }}

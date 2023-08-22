@@ -1,33 +1,21 @@
-(ns demo.env.cli
+(ns demo.env.task
   (:require
    [taoensso.timbre :refer [trace debug info warnf error]]
-   [modular.log :refer [timbre-config!]]
-   [modular.config :refer [load-config!]]
    [reval.task :refer [nbeval]]
    [ta.helper.print :refer [print-all]]
    [ta.warehouse.symbollist :refer [load-list]]
    [ta.warehouse.overview :refer [warehouse-overview]]
    ;[ta.gann.gann :refer [gann-symbols]]
    [ta.gann.chartmaker :refer [make-boxes-all-individual]]
-   [demo.env.config] ; side-effects
    [demo.data-import.import-alphavantage :as av]
    [demo.data-import.import-bybit :as bybit]
    [demo.data-import.create-random :as rr]
    [demo.goldly.reval] ; side-effects
-   [demo.data-import.demo-bybit])
-  (:gen-class))
+   [demo.data-import.demo-bybit]))
 
 ;; tasks (for cli use)
 
-(defn run  [{:keys [config task symbol] :as config}]
-  (timbre-config!
-   {:timbre-loglevel
-    [[#{"*"} :info]]})
-  (info "loading config: " config)
-  (load-config! config)
-  (timbre-config!
-   {:timbre-loglevel
-    [[#{"*"} :info]]})
+(defn run  [{:keys [task symbol]}]
   (case task
 
     :bybit-test
@@ -67,27 +55,23 @@
     :shuffle
     (rr/create-crypto-shuffled)
 
-    ;:gann
-    ;(let [dt-start "2000-01-01"
-    ;      dt-end "2022-04-01"
-    ;      s (gann-symbols)]
-    ;  (info "making gann boxes from " dt-start " to " dt-end " for: " (pr-str s))
-    ;  (make-boxes-all-individual dt-start dt-end))
+;:gann
+;(let [dt-start "2000-01-01"
+;      dt-end "2022-04-01"
+;      s (gann-symbols)]
+;  (info "making gann boxes from " dt-start " to " dt-end " for: " (pr-str s))
+;  (make-boxes-all-individual dt-start dt-end))
 
     :nbeval
     (do
       (info "evaluating notebooks")
       (nbeval))
 
+    :dummy
+    (info "dummy task!!")
+
     (error "task not found: " task)))
 
-(defn -main
-  ([]
-   (println "printing default list: currency")))
-
-;  (-main "currency")
-
-;  (-main "fidelity-select")
 
 (comment
   (run {:task :alphavantage-import
@@ -96,5 +80,5 @@
   (run {:task :alphavantage-import
         :symbol "currency-spot"})
 
-;  
+;
   )

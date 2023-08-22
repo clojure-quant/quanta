@@ -1,11 +1,11 @@
 {:paths ["src"
          ;"classes"
          ]
- :deps {aysylu/loom {:mvn/version "1.0.2"}
+ :deps {org.clojure/clojure  {:mvn/version "1.11.1"}
+        aysylu/loom {:mvn/version "1.0.2"}
         techascent/tech.viz {:mvn/version "6.00-beta-16-2"}
       ;  com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.1.0"}
-        com.taoensso/timbre {:mvn/version "5.2.1"} ; clj/cljs logging
-        org.slf4j/slf4j-nop {:mvn/version "2.0.0-alpha7"}
+        com.taoensso/timbre {:mvn/version "6.2.2"} ; clj/cljs logging
         org.pinkgorilla/reval {:mvn/version "0.5.114"}
         ; ta
         ta/trateg {:local/root "../../lib/trateg" :deps/manifest :deps}
@@ -24,9 +24,20 @@
 
   ; run with: clojure -X:run :task ':bybit-import' :symbol-list "currency-spot"
   ; see README.md for available tasks
-  :run {:extra-paths ["cli"]
-        :exec-fn demo.env.cli/run
-        :exec-args {:config "resources/ta-config.edn"}
+  :run-old {:extra-paths ["cli"]
+            :exec-fn demo.env.cli/run
+            :exec-args {:config "resources/ta-config.edn"}
+            :jvm-opts ["-Xmx4G"] ;; or more
+            }
+
+  :run {:extra-deps {org.pinkgorilla/modular {:mvn/version "0.0.37"}
+                     com.fzakaria/slf4j-timbre {:mvn/version "0.4.0"}
+                     environ/environ {:mvn/version "0.5.0"}}
+        :extra-paths ["cli"]
+        :exec-fn modular.system/start!
+        :exec-args {:config "resources/ta-config.edn"
+                    :services "services-task.edn"
+                    :run demo.env.task/run}
         :jvm-opts ["-Xmx4G"] ;; or more
         }
 
@@ -41,8 +52,8 @@
                :config  ["webly/config.edn" "goldly/config.edn" "goldly/docs-config.edn"
                          "ta-config.edn"]}}
 
+  :tree2 {:extra-deps {org.clojure/tools.deps.alpha {:mvn/version "0.14.1178"}}
+          :exec-fn tree/demo}
 
-
-  ;
+;
   }}
-

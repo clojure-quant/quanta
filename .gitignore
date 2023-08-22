@@ -40,3 +40,7 @@ app/demo/certs
 /output/db/random/*.nippy.gz
 /output/db/shuffled/*.nippy.gz
 .clj-kondo
+*~
+\#*\#
+.\#*
+.~*

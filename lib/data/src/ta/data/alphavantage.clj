@@ -8,6 +8,7 @@
    [ta.data.helper :refer [str->float]]))
 
 ;; https://www.alphavantage.co/documentation/#
+;; https://github.com/RomelTorres/alpha_vantage/issues/13
 
 ; 5 API requests per minute
 ; 500 requests per day
@@ -27,17 +28,6 @@
 ;; GBG.L
 ;; LON:RR
 
-;; http://www.nasdaq.com/screening/company-list.aspx
-;; NASDAQTrader
-;; ftp://ftp.nasdaqtrader.com/SymbolDirectory
-;; ftp://ftp.nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt
-;; ftp://ftp.nasdaqtrader.com/SymbolDirectory/otherlisted.txt
-;; ftp://ftp.nasdaqtrader.com/symboldirectory
-;; ftp://nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt
-;; ftp://nasdaqtrader.com/SymbolDirectory/otherlisted.txt
-
-;; https://github.com/RomelTorres/alpha_vantage/issues/13
-
 ;; AlphaVantage ApiKey Management
 
 (defonce api-key (atom "demo"))
@@ -45,6 +35,7 @@
 (defn set-key!
   "to use alphavantage api, call at least once set-key! api-key"
   [key]
+  (info "setting alphavantage key..")
   (reset! api-key key)
   nil ; Important not to return by chance the key, as this would be shown in the notebook.
   )
@@ -61,9 +52,9 @@
 
 ; Response of throtteled:
 ;
-; {:Note "Thank you for using Alpha Vantage! 
-;        Our standard API call frequency is 5 calls per minute and 500 calls per day. 
-;        Please visit https://www.alphavantage.co/premium/ if you would like to target 
+; {:Note "Thank you for using Alpha Vantage!
+;        Our standard API call frequency is 5 calls per minute and 500 calls per day.
+;        Please visit https://www.alphavantage.co/premium/ if you would like to target
 ;        a higher API call frequency."}
 
 (defn- throtteled? [response]
@@ -295,6 +286,5 @@
       :date
       ;(clojure.pprint/print-table)
       )
-;  
+;
   )
-

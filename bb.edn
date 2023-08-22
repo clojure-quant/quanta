@@ -71,8 +71,7 @@
                                  ci-check]
                        :task (shell "echo" "all good - you can push to github")}
 
-
-         ;; demo
+;; demo
 
          alphavantage-import {:doc "symbollist. example: bb alphavantage-import test"
                               :task (let [[symbol-list] *command-line-args*]
@@ -113,7 +112,7 @@
                                        "-name" "quant")
                                 (shell {:dir "app/demo/certs"}
                                        "chmod" "a+r" "./keystore.p12"))}
-         
+
          gann-tvcharts  {:doc "create gann tradingview-charts"
                          :task (webly/clojure "app/demo" "-X:run" ":task" ":gann")}
 
@@ -121,6 +120,5 @@
                  :task (webly/clojure "lib/astro" "-X:astro-test")}
 
 
-
- ;        
+ ;
          }}

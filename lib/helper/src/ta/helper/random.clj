@@ -1,6 +1,4 @@
 (ns ta.helper.random
-  (:require
-   [clojure.repl])
   (:import
    [java.util Random]))
 
@@ -13,7 +11,7 @@
 
 (comment
   (random-float 10.0 100.0)
-; 
+;
   )
 
 (defn zero-mean-random-value []
@@ -45,7 +43,7 @@
 
 (comment
   (integrate-returns (random-return-series 1000))
- ; 
+ ;
   )
 (defn random-series
   [n]
@@ -55,6 +53,3 @@
 
   (-> (random-series 100)
       count))
-
-
-

@@ -1,9 +1,3 @@
-# visual studio code
-
-add this extensions
-- calva
-- kondo
-
 # 2021 10 - bollinger strategy backtest
 
 bollinger band strategy:
@@ -13,7 +7,7 @@ bollinger-event-analysis
 event index: :above=true and :above-count=1
 for each bollinger-evnet:
 - create walk-forward window (if it is possible
-- find min/max in walk-forward window 
+- find min/max in walk-forward window
 - normalize min/max with range=bollinger-up - bollinger-down
 the bollinger band is significant if range is squed
 
@@ -29,7 +23,7 @@ diff   (up-down)
 diff%  (up% - down%)
 
 target funktion
-for cross-type-up: average diff% 
+for cross-type-up: average diff%
 for cross-type-down: (-average diff%)
 
 ## run strategy

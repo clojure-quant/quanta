@@ -2,7 +2,7 @@
  :deps
  {org.clojure/clojure    {:mvn/version "1.10.3"}
   ephemeris/ephemeris {:mvn/version "0.0.1"}
-  org.pinkgorilla/modular {:mvn/version "0.0.31"}}
+  org.pinkgorilla/modular {:mvn/version "0.0.37"}}
  :aliases
  {:test {:extra-paths ["test"]
          :extra-deps {io.github.cognitect-labs/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
@@ -12,6 +12,5 @@
 
   :astro-test {:exec-fn astro/astro-test
                :exec-args {:name "equity-region"}}}
-;                 
+;
 }
-

@@ -1,13 +1,13 @@
 {:paths ["src"
          "resources" ; tradingview javascript library
          ]
- :deps {org.clojure/clojure    {:mvn/version "1.10.3"}
+ :deps {org.clojure/clojure    {:mvn/version "1.11.1"}
         tick/tick {:mvn/version "0.5.0-RC5"}
         prismatic/schema {:mvn/version "1.2.0"}
         nano-id/nano-id {:mvn/version "1.0.0"}
         differ/differ {:mvn/version "0.3.3"}
-        org.pinkgorilla/modular {:mvn/version "0.0.31"} ; persistence
-        org.pinkgorilla/webly {:mvn/version "0.4.604"} ; web handlers
+        org.pinkgorilla/modular {:mvn/version "0.0.37"} ; persistence
+        org.pinkgorilla/webly {:mvn/version "0.4.623"} ; web handlers
         ta/trateg {:local/root "../.." :deps/manifest :deps}
         ta/data {:local/root "../data" :deps/manifest :deps}
         ta/warehouse {:local/root "../warehouse" :deps/manifest :deps}}
@@ -83,6 +83,3 @@
 
 ;
   }}
-
-
-

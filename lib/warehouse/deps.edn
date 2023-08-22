@@ -1,9 +1,9 @@
 {:paths ["src"]
  :deps
- {org.clojure/clojure    {:mvn/version "1.10.3"}
+ {org.clojure/clojure    {:mvn/version "1.11.1"}
   com.taoensso/nippy {:mvn/version "3.1.1"}
   techascent/tech.io {:mvn/version "4.13"}
-  org.pinkgorilla/modular {:mvn/version "0.0.31"}
+  org.pinkgorilla/modular {:mvn/version "0.0.37"}
   ta/helper {:local/root "../helper" :deps/manifest :deps}}
  :aliases
  {:test {:extra-paths ["test"]
@@ -22,4 +22,3 @@
   :victor-print {:extra-paths ["test"]
                  :exec-fn repl.experiment/fn-print-symbol-list
                  :exec-args {:name "equity-region"}}}}
-

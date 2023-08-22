@@ -1,6 +1,3 @@
-
-
-
 https://quantocracy.com/
 https://www.quantconnect.com/market/alpha/e219bc8c86278eb3d2d0d8ab6/v1.1
 
@@ -131,5 +128,15 @@ https://github.com/cgrand/xforms
 
 
 
-TASK PIPELINE: 
+TASK PIPELINE:
 https://github.com/sunng87/papaline
+
+
+;; http://www.nasdaq.com/screening/company-list.aspx
+;; NASDAQTrader
+;; ftp://ftp.nasdaqtrader.com/SymbolDirectory
+;; ftp://ftp.nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt
+;; ftp://ftp.nasdaqtrader.com/SymbolDirectory/otherlisted.txt
+;; ftp://ftp.nasdaqtrader.com/symboldirectory
+;; ftp://nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt
+;; ftp://nasdaqtrader.com/SymbolDirectory/otherlisted.txt
