@@ -2,20 +2,20 @@
   (:require
    [goldly.service.core :as service]
    [ta.helper.ds :refer [ds->map show-meta cols-of-type]]
-   [ta.helper.date :refer [now-datetime]]
+   [ta.helper.date]
    [ta.helper.date-ds :refer [ds-convert-col-instant->localdatetime]]
    [ta.warehouse :as wh]
-   [ta.warehouse.symbollist :as slist]
-   [ta.warehouse.overview :refer [warehouse-overview]]
-   [ta.algo.manager :refer [algo-names algo-info algo-run-window-browser algo-run-browser algo-marks algo-shapes]]
+   [ta.warehouse.symbollist]
+   [ta.warehouse.overview]
+   [ta.algo.manager]
    [ta.gann.db]
-   [ta.gann.svg-plot :refer [#_gann-svg gann-svg-web get-boxes]]
-   [ta.tradingview.handler-datasource :refer [server-config symbol-info symbol-search server-time]]
+   [ta.gann.svg-plot]
+   [ta.tradingview.handler-datasource]
    [demo.env.algos] ; side-effects
    ))
 
 (defn overview-map [w f]
-  (let [ds-overview (warehouse-overview w f)
+  (let [ds-overview (ta.warehouse.overview/warehouse-overview w f)
         m (-> ds-overview
               ds-convert-col-instant->localdatetime
               ds->map)]
@@ -25,33 +25,31 @@
     m))
 
 (service/add
- {; warehouse
-  :ta/lists slist/get-lists
-  :ta/symbols slist/load-list ; param: symbol-list-name
-  :ta/warehouse-overview overview-map ; param: wh-key frequency
-  :ta/load-ts (partial wh/load-symbol :crypto); needs symbol parameter
+ { ; warehouse
+  :ta/lists ta.warehouse.symbollist/get-lists
+  :ta/symbols ta.warehouse.symbollist/load-list ; param: symbol-list-name
+  :ta/warehouse-overview overview-map           ; param: wh-key frequency
+  :ta/load-ts (partial wh/load-symbol :crypto)  ; needs symbol parameter
 
-  ; algo
-  :algo/names algo-names
-  :algo/info algo-info
-  :algo/run-window algo-run-window-browser
-  :algo/run algo-run-browser
-  :algo/marks algo-marks
-  :algo/shapes algo-shapes
+; algo
+  :algo/names ta.algo.manager/algo-names
+  :algo/info ta.algo.manager/algo-info
+  :algo/run-window ta.algo.manager/algo-run-window-browser
+  :algo/run ta.algo.manager/algo-run-browser
+  :algo/marks ta.algo.manager/algo-marks
+  :algo/shapes ta.algo.manager/algo-shapes
 
-  ; tradingview api (via websocket)
-  :tv/config (fn [] server-config)
-  :tv/symbol-info (fn [symbol]
-                    (println "symbol-info for:" symbol)
-                    (symbol-info symbol))
-  :tv/symbol-search symbol-search
-  :tv/time server-time
+; tradingview api (via websocket)
+  :tv/config (fn [] ta.tradingview.handler-datasource/server-config)
+  :tv/symbol-info ta.tradingview.handler-datasource/symbol-info
+  :tv/symbol-search ta.tradingview.handler-datasource/symbol-search
+  :tv/time ta.tradingview.handler-datasource/server-time
 
-  ; gann
+; gann
   :gann/load ta.gann.db/load-gann
   :gann/save ta.gann.db/save-gann
-  :gann/svg gann-svg-web ; gann-svg
-  :gann/boxes get-boxes
+  :gann/svg ta.gann.svg-plot/gann-svg-web ; gann-svg
+  :gann/boxes ta.gann.svg-plot/get-boxes
 
-  ; testing
-  :date now-datetime})
+; testing
+  :date ta.helper.date/now-datetime})
