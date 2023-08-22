@@ -21,13 +21,10 @@
           demo.goldly.reval ; for techml rendering (no need to require namespace)
           ta.tradingview.server]
 
- :goldly {:enabled true
-          :lazy true
+ :goldly {:lazy true
           :src-dir "src"
           ; runtime
           :autoload-cljs-dir ["ta/tradingview/goldly"
-                              "demo/goldly/lib"
-                              "demo/goldly/view"
                               "demo/goldly/page"]
           :routes {:app {"" :user/main
                          ;warehouse
@@ -72,7 +69,7 @@
                        :playground [:clj "notebook/playground/"]
                        :demo [:clj "demo/notebook/"]
                        :test [:cljs "demo/goldly/view/"]
-                       
+
                        }}
 
  :ta {:warehouse {:list "../resources/symbollist/"
