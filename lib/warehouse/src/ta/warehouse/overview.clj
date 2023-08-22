@@ -71,5 +71,5 @@
    :datatype)
    ; crypto is instant
 
-;  
+;
   )

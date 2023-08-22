@@ -8,10 +8,9 @@
    [ta.warehouse.symbollist :as slist]
    [ta.warehouse.overview :refer [warehouse-overview]]
    [ta.algo.manager :refer [algo-names algo-info algo-run-window-browser algo-run-browser algo-marks algo-shapes]]
-   [ta.gann.db :refer [load-gann save-gann]]
+   [ta.gann.db]
    [ta.gann.svg-plot :refer [#_gann-svg gann-svg-web get-boxes]]
    [ta.tradingview.handler-datasource :refer [server-config symbol-info symbol-search server-time]]
-   [demo.env.config] ; side-effects
    [demo.env.algos] ; side-effects
    ))
 
@@ -28,7 +27,7 @@
 (service/add
  {; warehouse
   :ta/lists slist/get-lists
-  :ta/symbols slist/load-list ; param: symbol-list-name 
+  :ta/symbols slist/load-list ; param: symbol-list-name
   :ta/warehouse-overview overview-map ; param: wh-key frequency
   :ta/load-ts (partial wh/load-symbol :crypto); needs symbol parameter
 
@@ -49,13 +48,10 @@
   :tv/time server-time
 
   ; gann
-  :gann/load load-gann
-  :gann/save save-gann
+  :gann/load ta.gann.db/load-gann
+  :gann/save ta.gann.db/save-gann
   :gann/svg gann-svg-web ; gann-svg
   :gann/boxes get-boxes
 
   ; testing
   :date now-datetime})
-
-
-

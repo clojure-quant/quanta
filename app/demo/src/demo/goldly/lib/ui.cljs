@@ -5,7 +5,7 @@
    [site]
    [goldly.page :as page]
    [goldly.js] ; to-fixed
-   [user] ;  rnd
+   [ui.rnd] ;  rnd
    ))
 
 ;; links
@@ -45,4 +45,4 @@
 
 (def to-fixed goldly.js/to-fixed)
 
-(def rnd user/rnd)
+(def rnd ui.rnd/rnd)

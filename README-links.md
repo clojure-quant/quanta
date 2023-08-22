@@ -140,3 +140,10 @@ https://github.com/sunng87/papaline
 ;; ftp://ftp.nasdaqtrader.com/symboldirectory
 ;; ftp://nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt
 ;; ftp://nasdaqtrader.com/SymbolDirectory/otherlisted.txt
+
+
+SLF4J: Class path contains multiple SLF4J providers.
+SLF4J: Found provider [com.github.fzakaria.slf4j.timbre.TimbreServiceProvider@6297e12a]
+SLF4J: Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@12731c65]
+SLF4J: See https://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual provider is of type [com.github.fzakaria.slf4j.timbre.TimbreServiceProvider@6297e12a]
