@@ -1,7 +1,7 @@
 {:paths ["src"]
  :deps {org.clojure/clojure {:mvn/version "1.11.1"}
         io.github.adam-james-v/svg-clj {:mvn/version "0.0.11"}
-        cljplot/cljplot {:mvn/version "0.0.2-SNAPSHOT"}
+        cljplot/cljplot {:mvn/version "0.0.3"}
         org.scicloj/wadogo {:mvn/version "1.0.0-SNAPSHOT"}
         org.pinkgorilla/modular {:mvn/version "0.0.37"}
         ta/trateg {:local/root "../trateg" :deps/manifest :deps}}

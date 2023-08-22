@@ -2,7 +2,6 @@
   (:require
    [reval.document.notebook :refer [eval-notebook load-notebook]]
    [goldly.scratchpad :refer [show! show-as]]
-   ;[demo.init] ; side effects
    ))
 
 (defn eval-notebooks [ns-list]
@@ -74,4 +73,3 @@
 ; demo.notebook.image is part of the reval demo notebooks
 (->> (eval-notebook "user.notebook.image")
      (show-as :p/notebook))
-
