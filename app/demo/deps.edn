@@ -6,7 +6,7 @@
         techascent/tech.viz {:mvn/version "6.00-beta-16-2"}
       ;  com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.1.0"}
         com.taoensso/timbre {:mvn/version "6.2.2"} ; clj/cljs logging
-        org.pinkgorilla/reval {:mvn/version "0.5.114"}
+        org.pinkgorilla/reval {:mvn/version "0.5.133"}
         ; ta
         ta/trateg {:local/root "../../lib/trateg" :deps/manifest :deps}
         ta/data {:local/root "../../lib/data" :deps/manifest :deps}
@@ -16,23 +16,18 @@
         ;;
         }
  :aliases
- {:outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
+ {:outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}
+                          com.fzakaria/slf4j-timbre {:mvn/version "0.4.0"}}
              :main-opts ["-m" "antq.core"]}
   :cljfmt {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
            :main-opts ["-m" "cljfmt.main"
                        "--indents" "cljfmt.edn"]}
 
-  ; run with: clojure -X:run :task ':bybit-import' :symbol-list "currency-spot"
+  ; example: clojure -X:run :task ':bybit-import' :symbol-list "currency-spot"
   ; see README.md for available tasks
-  :run-old {:extra-paths ["cli"]
-            :exec-fn demo.env.cli/run
-            :exec-args {:config "resources/ta-config.edn"}
-            :jvm-opts ["-Xmx4G"] ;; or more
-            }
 
   :run {:extra-deps {org.pinkgorilla/modular {:mvn/version "0.0.37"}
-                     com.fzakaria/slf4j-timbre {:mvn/version "0.4.0"}
-                     environ/environ {:mvn/version "0.5.0"}}
+                     com.fzakaria/slf4j-timbre {:mvn/version "0.4.0"}}
         :extra-paths ["cli"]
         :exec-fn modular.system/start!
         :exec-args {:config "resources/ta-config.edn"
@@ -42,7 +37,7 @@
         }
 
   :docs ; RUN SERVICES (keep running)
-  {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.556"}}
+  {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.601"}}
    :extra-paths ["target/webly" ; to include the sci-bindings info
                  "node_modules"
                  "resources"]
