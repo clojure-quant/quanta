@@ -56,7 +56,7 @@
 
 (comment
   (filename->info "BTCUSD-15.nippy.gz")
- ; 
+ ;
   )
 (defn- dir? [filename]
   (-> (java-io/file filename) .isDirectory))
@@ -79,6 +79,7 @@
 
 (comment
 
+  (get-in-config [:ta])
   (exists-symbol? :crypto "D" "BTCUSD")
   (exists-symbol? :stocks "D" "SPY")
   (exists-symbol? :stocks "D" "BAD")
@@ -92,5 +93,5 @@
   (symbols-available :crypto "D")
   (load-symbol :crypto "D" "ETHUSD")
 
- ; 
+ ;
   )

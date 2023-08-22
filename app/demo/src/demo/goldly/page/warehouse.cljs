@@ -16,7 +16,8 @@
   (if symbol
     (when (not data)
       ; (warehouse-overview :stocks "D")
-      (run-a warehouse-state [:data] :ta/warehouse-overview w f)
+      (run-a warehouse-state [:data]
+             'ta.warehouse.overview/overview-map w f)
       nil)
     (do (swap! warehouse-state assoc :data nil)
         nil)))

@@ -1,7 +1,7 @@
 (ns demo.goldly.page.gann
   (:require
    [reagent.core :as r]
-   [goldly.service :refer [run-a run-cb]]
+   [goldly.service.core :refer [run-a run-cb]]
    [goldly.page :as page]
    [ui.aggrid :refer [aggrid]]
    [input]
@@ -39,7 +39,7 @@
   (when boxes
     [:div.p-2.bg-blue-300
      {:style {:width "100%" ;"40cm"
-              :height "100%" ;"70vh" ;  
+              :height "100%" ;"70vh" ;
       ;:background-color "blue"
               }}
      [aggrid {:data boxes
@@ -70,13 +70,15 @@
         p-with-size (assoc p :height height :width width)
         p-with-size-rootbox (assoc p-with-size :root-box (:root @*state))]
     ;(println "getting gann-svg with params: " p-with-size-rootbox)
-    (run-a *state [:data] :gann/svg p-with-size-rootbox)
+    (run-a *state [:data]
+           'ta.gann.svg-plot/gann-svg-web
+           p-with-size-rootbox)
     (run-a *state [:boxes] :gann/boxes p-with-size-rootbox)))
 
 (defn save-rootbox []
   (let [root-box (:root @*state)]
     ;(println "saving root-box: " root-box)
-    (run-cb {:fun :gann/save
+    (run-cb {:fun 'ta.gann.db/save-gann
              :args [root-box]
              :timeout 1000
              :cb #(js/alert "rootbox saved!")})))
@@ -116,7 +118,8 @@
         [:div
          (when-not (= symbol @symbol-loaded)
            (reset! symbol-loaded symbol)
-           (run-a *state [:root] :gann/load symbol)
+           (run-a *state [:root]
+                  'ta.gann.db/load-gann symbol)
            nil)
          [:p.text-blue-500.text-bold "root box"]
          [rootbox-ui (:root @*state)]]))))
@@ -178,7 +181,7 @@
 
 (defn gann-page [{:keys [_route-params _query-params _handler] :as _route}]
   (fn [{:keys [_route-params _query-params _handler] :as _route}]
-    [:div.w-screen.h-screen.p-0.m-0
+    [:div.w-screen.h-screen.p-0.m-
      [float-menu]
      (when (:table? @*state)
        [float-table])

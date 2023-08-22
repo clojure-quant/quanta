@@ -74,7 +74,7 @@
                          :options {:autosize true}}]]))
 
 (defonce pages
-  {;:pr-str [pr-data []] 
+  {;:pr-str [pr-data []]
    :metrics  [metrics-view [:stats]]
    :roundtrips [roundtrips-view [:ds-roundtrips]]
    :nav-table [navs-view [:stats :nav]]
@@ -84,7 +84,8 @@
    ;:study-table-tradeonly]
    :tradingview [tv-page [:tradingview]]})
 
-(run-a algo-state [:algos] :algo/names) ; get once the names of all available algos
+(run-a algo-state [:algos]
+       'ta.algo.manager/algo-names) ; get once the names of all available algos
 
 (defn run-algo [algo opts data-loaded]
   (when algo
@@ -92,7 +93,9 @@
     (when (not (= [algo opts] data-loaded))
       (swap! algo-state assoc :data {})
       (swap! algo-state assoc :data-loaded [algo opts])
-      (run-a algo-state [:data] :algo/run algo opts)
+      (run-a algo-state [:data]
+             'ta.algo.manager/algo-run-browser
+             algo opts)
       nil)))
 
 (defn context [data]
@@ -136,4 +139,3 @@
    [algo-ui]])
 
 (page/add algo-page :algo/backtest)
-

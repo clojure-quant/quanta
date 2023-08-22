@@ -42,5 +42,9 @@
                   :handler cider.nrepl/cider-nrepl-handler)
           :stop (.close this)}
 
+  :clj-services {:start (goldly.service.expose/start-services
+                         (:clj-services (deref (clip/ref :config))))
+                 :stop (goldly.service.expose/stop-services this)}
+
 ;
   }}

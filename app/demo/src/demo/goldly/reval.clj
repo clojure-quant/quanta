@@ -1,5 +1,7 @@
 (ns demo.goldly.reval
   (:require
+   [tech.v3.dataset.impl.dataset]
+   [tech.v3.dataset.impl.column]
    [modular.persist.edn :refer [pprint-str]]
    [reval.type.protocol :refer [hiccup-convertable #_to-hiccup]]))
 

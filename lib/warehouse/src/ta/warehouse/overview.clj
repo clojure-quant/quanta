@@ -1,6 +1,8 @@
 (ns ta.warehouse.overview
   (:require
    [tablecloth.api :as tc]
+   [ta.helper.ds :refer [ds->map show-meta cols-of-type]]
+   [ta.helper.date-ds :refer [ds-convert-col-instant->localdatetime]]
    [ta.warehouse :as wh]))
 
 (defn load-datasets [w frequency symbols]
@@ -52,6 +54,18 @@
     (-> datasets
         concatenate-datasets
         (overview-view options))))
+
+(defn overview-map [w f]
+  (let [ds-overview (warehouse-overview w f)
+        m (-> ds-overview
+              ds-convert-col-instant->localdatetime
+              ds->map)]
+    (println "overview-types: " (show-meta ds-overview))
+    (println "overview type packet-instant" (cols-of-type ds-overview :packed-instant))
+    (println "overview-map: " m)
+    m))
+
+
 
 (comment
 

@@ -20,13 +20,15 @@
   (let [state-internal (r/atom {:lists []
                                 :symbols-in-list ["BTCUSD" "SPY" "QQQ" "GLD" "SLV" "EURUSD"]
                                 :list "currencies"})]
-    (run-a state-internal [:lists] :ta/lists)
+    (run-a state-internal [:lists]
+           'ta.warehouse.symbollist/get-lists)
     (fn [state-atom path-symbol]
       [:div
        [run-on-change state-internal [:list]
         (fn [list]
           ;(println "getting symbols for list " list)
-          (run-a state-internal [:symbols-in-list] :ta/symbols list))]
+          (run-a state-internal [:symbols-in-list]
+                 'ta.warehouse.symbollist/load-list list))]
        [input/select
         {:nav? false
          :items (:lists @state-internal)}
@@ -35,5 +37,3 @@
         {:nav? false
          :items (:symbols-in-list @state-internal)}
         state-atom path-symbol]])))
-
-

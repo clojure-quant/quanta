@@ -23,13 +23,15 @@
 
 ;; ALGO
 
-(run-a algo-state [:algos] :algo/names) ; get once the names of all available algos
+(run-a algo-state [:algos]
+       'ta.algo.manager/algo-names) ; get once the names of all available algos
 
 (defn algo-info [algo]
   (let [algo-loaded (r/atom nil)]
     (when algo
       (when-not (= @algo-loaded algo)
-        (run-a algo-state [:algoinfo] :algo/info algo)
+        (run-a algo-state [:algoinfo]
+               'ta.algo.manager/algo-info algo)
         nil))))
 
 (defn algo-dialog []
@@ -47,7 +49,8 @@
         symbol (:symbol @algo-state)
         frequency (:frequency @algo-state)
         options (get-in @algo-state [:algoinfo :options])]
-    (run-a window-state [:data] :algo/run-window
+    (run-a window-state [:data]
+           'ta.algo.manager/algo-run-window-browser
            algo symbol frequency options epoch-start epoch-end)))
 
 (defn get-window-demo []
@@ -97,8 +100,8 @@
             ;(set! (-> js/window .-widget .-datafeed) (tv/tradingview-algo-feed algo))
             ;(set! (.-text obj) text)
             ;Object.getPrototypeOf (widget) .datafeed
-            ;(set! (.-datafeed 
-            ;       (.getPrototypeOf js/Object js/widget)) 
+            ;(set! (.-datafeed
+            ;       (.getPrototypeOf js/Object js/widget))
             (js/setTimeout #(add-algo-studies charts) 300)
             (js/setTimeout #(tv/track-range) 300)
             ;(tv/add-algo-studies charts)
@@ -144,7 +147,7 @@
          [algo-menu]
          [algo-info algo]
        ;(when-let [wd (get-in @window-state [:data])]
-       ;   [:div (pr-str wd)]  
+       ;   [:div (pr-str wd)]
        ;  )
          [tradingview-modifier symbol frequency]
          [algo-modifier algo algoinfo]

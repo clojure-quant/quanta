@@ -55,6 +55,9 @@
                ;{:value "LN" :name "London" :desc ""}
                ]})
 
+(defn get-server-config []
+    server-config)
+
 (defn config-handler [_]
   (info "tv/config")
   (res/response server-config))
@@ -149,7 +152,7 @@
       ;count
       )
 
- ; 
+ ;
   )
 ;; series
 
@@ -294,7 +297,7 @@
                                      "resolution" "D"
                                      "from" "1299075015"
                                      "to" "1303308614"}})
-;  
+;
   )
 
 (add-ring-handler :tv/time (wrap-api-handler time-handler))
@@ -303,6 +306,3 @@
 (add-ring-handler :tv/search (wrap-api-handler search-handler))
 (add-ring-handler :tv/history (wrap-api-handler history-handler))
 (add-ring-handler :tv/marks (wrap-api-handler marks-handler))
-
-
-
