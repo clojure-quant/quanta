@@ -48,8 +48,13 @@
                :config  ["webly/config.edn" "goldly/config.edn" "goldly/docs-config.edn"
                          "ta-config.edn"]}}
 
+  ; clj -T:tree2
   :tree2 {:extra-deps {org.clojure/tools.deps.alpha {:mvn/version "0.14.1178"}}
           :exec-fn tree/demo}
 
+  ; clj -X:docs:res2
+  :res-logback-xml {:exec-fn resources/logback-xml}
+  :res-logback-test-xml {:exec-fn resources/logback-test-xml}
+  :res-deps-cljs  {:exec-fn resources/deps-cljs}
 ;
   }}

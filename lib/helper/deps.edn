@@ -2,8 +2,10 @@
  :deps
  {org.clojure/clojure    {:mvn/version "1.11.1"}
   tick/tick              {:mvn/version "0.6.2"}
-  scicloj/tablecloth {:mvn/version "6.103.1"} ; brings techml-dataset
+  scicloj/tablecloth {:mvn/version "7.000-beta-51"
+;                      6.103.1" ; logger conflict
+} ; brings techml-dataset
   org.pinkgorilla/modular {:mvn/version "0.0.37"} ; logging
   }
 ;
-  }
+ }

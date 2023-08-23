@@ -30,6 +30,12 @@
         (map println)
         )))
 
+
+
+(defn version [el]
+ ; (println "version: " el)
+  (get-in el [:coord :mvn/version]))
+
 (defn search
 ([el s]
    (search [] el s))
@@ -38,7 +44,7 @@
         filtered (filter #(= % s) children)
         this-result (if (empty? filtered)
                       []
-                      [{:path path}])
+                      [{:path path :version (version el)}])
         search-child (fn [c]
                        (search (conj path c)
                                (get (:children el) c)
@@ -73,3 +79,11 @@
 (-> (search-dependency (:search cli-opts))
     (print-table)
     )
+
+; usage: bb tree-parser.clj
+;        bb tree-parser.clj :search 'codox-theme-rdash/codox-theme-rdash'
+
+; cljplot/cljplot brings these: https://github.com/generateme/cljplot
+; codox-theme-rdash/codox-theme-rdash
+
+;ch.qos.logback.classic.spi.LogbackServiceProvide
