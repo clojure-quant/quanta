@@ -1,0 +1,130 @@
+{
+    "success": true,
+    "result": {
+        "IL": "bmI9Ks46_X4Rs5t65HsFaqtR+WN8B0g==_05wlajvqb5/Lukqj/jWqNQ1I6IkyPXp5w/BqbZlJiEmi9WQMcDKcLEwE2npsOkxv6zo9kdkJO+VNYPXwveAHTvueN1MXnbHqjp19VhSLI9I6xz60d9grgZb05aIjiD74ygNcmko8ANKr7TeZghpWbdiy+XPl06pkZPITgwWZXV/zWyIno3WEnUkSJQ==",
+        "ilTemplate": "bmI9Ks46_Z76yWM2k1o9lry9RdkO58Q==_fiSI9SR+kSDAwjzE+pfWVVOlispQ+Pu9NaCxDmATQlSBu0wYUFcN4fmlmMcc1JbXJw0Mn55GJLUmBbfexzqVtcWAk+guwLBpz+qkdnL95w4fhMMM/ehHmzxMGVL852im3GnFCGN7+WS5W5XTExKT3gLXO+sUURNk5AnP8EJ4Lk8w1BbhoOLZ+PAxDw==",
+        "metaInfo": {
+            "_metainfoVersion": 53,
+            "defaults": {
+                "inputs": {
+                    "pineFeatures": "{\"indicator\":1,\"plot\":1,\"ta\":1}",
+                    "pineId": "",
+                    "pineVersion": "",
+                    "text": "bmI9Ks46_Z76yWM2k1o9lry9RdkO58Q==_fiSI9SR+kSDAwjzE+pfWVVOlispQ+Pu9NaCxDmATQlSBu0wYUFcN4fmlmMcc1JbXJw0Mn55GJLUmBbfexzqVtcWAk+guwLBpz+qkdnL95w4fhMMM/ehHmzxMGVL852im3GnFCGN7+WS5W5XTExKT3gLXO+sUURNk5AnP8EJ4Lk8w1BbhoOLZ+PAxDw=="
+                },
+                "styles": {
+                    "plot_0": {
+                        "color": "#2962ff",
+                        "display": 15,
+                        "linestyle": 0,
+                        "linewidth": 1,
+                        "plottype": 0,
+                        "trackPrice": false,
+                        "transparency": 0
+                    },
+                    "plot_1": {
+                        "color": "#2962ff",
+                        "display": 15,
+                        "linestyle": 0,
+                        "linewidth": 1,
+                        "plottype": 0,
+                        "trackPrice": false,
+                        "transparency": 0
+                    },
+                    "plot_2": {
+                        "color": "#2962ff",
+                        "display": 15,
+                        "linestyle": 0,
+                        "linewidth": 1,
+                        "plottype": 0,
+                        "trackPrice": false,
+                        "transparency": 0
+                    }
+                }
+            },
+            "description": "My script",
+            "docs": "",
+            "format": {
+                "type": "inherit"
+            },
+            "id": "Script$USER;8e4b992d9bc245568abd528f12d90893@tv-scripting-101",
+            "inputs": [
+                {
+                    "defval": "bmI9Ks46_Z76yWM2k1o9lry9RdkO58Q==_fiSI9SR+kSDAwjzE+pfWVVOlispQ+Pu9NaCxDmATQlSBu0wYUFcN4fmlmMcc1JbXJw0Mn55GJLUmBbfexzqVtcWAk+guwLBpz+qkdnL95w4fhMMM/ehHmzxMGVL852im3GnFCGN7+WS5W5XTExKT3gLXO+sUURNk5AnP8EJ4Lk8w1BbhoOLZ+PAxDw==",
+                    "id": "text",
+                    "isHidden": true,
+                    "name": "ILScript",
+                    "type": "text"
+                },
+                {
+                    "defval": "",
+                    "id": "pineId",
+                    "isHidden": true,
+                    "name": "pineId",
+                    "type": "text"
+                },
+                {
+                    "defval": "",
+                    "id": "pineVersion",
+                    "isHidden": true,
+                    "name": "pineVersion",
+                    "type": "text"
+                },
+                {
+                    "defval": "{\"indicator\":1,\"plot\":1,\"ta\":1}",
+                    "id": "pineFeatures",
+                    "isFake": true,
+                    "isHidden": true,
+                    "name": "pineFeatures",
+                    "type": "text"
+                }
+            ],
+            "isTVScript": true,
+            "isTVScriptStub": false,
+            "is_hidden_study": false,
+            "is_price_study": false,
+            "pine": {
+                "digest": "c250208dc8da235ea5765ec42f692b1d019f11eb",
+                "version": "2.1"
+            },
+            "plots": [
+                {
+                    "id": "plot_0",
+                    "type": "line"
+                },
+                {
+                    "id": "plot_1",
+                    "type": "line"
+                },
+                {
+                    "id": "plot_2",
+                    "type": "line"
+                }
+            ],
+            "scriptIdPart": "USER;8e4b992d9bc245568abd528f12d90893",
+            "shortDescription": "My script",
+            "styles": {
+                "plot_0": {
+                    "histogramBase": 0,
+                    "isHidden": false,
+                    "joinPoints": false,
+                    "title": "myclose"
+                },
+                "plot_1": {
+                    "histogramBase": 0,
+                    "isHidden": false,
+                    "joinPoints": false,
+                    "title": "sma-long"
+                },
+                "plot_2": {
+                    "histogramBase": 0,
+                    "isHidden": false,
+                    "joinPoints": false,
+                    "title": "sma-short"
+                }
+            },
+            "usesPrivateLib": false,
+            "warnings": []
+        }
+    }
+}
