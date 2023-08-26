@@ -38,7 +38,7 @@
 
     [:p.text-blue.text-xl "tradingview"]
     [link-dispatch [:bidi/goto :algo/tv] "tradingview-algo"]
-    [link-dispatch [:bidi/goto :tradingview] "tradingview-chart"]
+    [link-dispatch [:bidi/goto :tradingview] "tradingview-udf"]
 
     [:p.text-blue.text-xl "backtest"]
     [link-href "/algo/backtest" "backtester"]
@@ -50,13 +50,6 @@
    [:div.bg-blue-300.m-5
     [:h1.text-xl.text-red-600 "gann tools"]
     [link-href "/gann" "gann chart"]]
-
-; trateg docs
-   [:div.bg-blue-300.m-5
-    [:p.text-blue.text-xl "trateg docs"]
-    [:p "with luck, some docs might be added soon"]
-    ;[video {:url "https://www.youtube.com/watch?v=JGhOa9TZYx8"}]
-    ]
 
    [:div.bg-blue-300.m-5
     [:p.text-blue.text-xl "ui component tests"]

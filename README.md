@@ -45,6 +45,7 @@ The creds file in `profiles/demo/creds.edn` has to contain your alphavantage api
 Alphavantage can download 5 symbols a minute. We have 40 demo symbols, so this will take a while.
 
 *import*
+
 - alphavantage: `cd app/demo && clojure -X:run :task :alphavantage-import :symbol "test"` or
                 `bb run alphavantage-import all-stocks`
 - bybit:  `clj -X:run :task :bybit-import :symbol "crypto"` or

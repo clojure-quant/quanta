@@ -2,9 +2,8 @@
 
  {:name "Vanguard FTSE All-World Ex U.S." :symbol "VEU" :category :etf}
 
- {:name "SPDR S&P Emerging Markets" :symbol "GMM" :category :etf}
 ;{:name "BLDRS Development Markets 100 ADR" :symbol "ADRD"}
-;{:name "IShares MSCI Emerging Markets Free" :symbol "EEM"}
+  {:name "IShares MSCI Emerging Markets" :symbol "EEM" :category :etf}
 ;{:name "BLDRS Emerging Markets 50 ADR" :symbol "ADRE"}
 
  ;{:name "Claymore/Robeco Developed World Equity " :symbol "EEW"}

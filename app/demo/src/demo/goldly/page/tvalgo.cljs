@@ -5,8 +5,8 @@
    [goldly.service.core :refer [run-a]]
    [goldly.page :as page]
    [input]
-   [ta.tradingview.goldly.tradingview :as tv :refer [tradingview-chart  ]]
-   [ta.tradingview.goldly.feed.algo :refer [tradingview-algo-feed]]
+   [ta.tradingview.goldly.tradingview :as tv :refer [tradingview-chart]]
+   [ta.tradingview.goldly.feed.algo :refer [get-tradingview-options-algo-feed]]
    [ta.tradingview.goldly.interact :refer [set-symbol state add-algo-studies track-range reset-data add-algo-studies]]
    [demo.goldly.lib.ui :refer [link-href]]
    [demo.goldly.view.aggrid :refer [study-table]]))
@@ -155,10 +155,9 @@
          [algo-modifier algo algoinfo]
 
          [:div.h-full.w-full
-          [tradingview-chart {:feed :ta
+          [tradingview-chart {:feed (get-tradingview-options-algo-feed get-algo-and-options)
                               :options {:autosize true
-                                        :symbol symbol-initial
-                                        :datafeed (tradingview-algo-feed get-algo-and-options)}}]]
+                                        :symbol symbol-initial}}]]
 
 ;[page-renderer data page]
          ]))))

@@ -5,7 +5,6 @@
    [demo.goldly.lib.ui :refer [link-href]]
    [demo.goldly.view.aggrid :refer [table]]))
 
-
 (defn warehouse-overview-view [wh f]
   (let [wh-overview (clj->p 'ta.warehouse.overview/overview-map wh f)]
     (fn [wh f]

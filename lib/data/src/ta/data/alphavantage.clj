@@ -30,14 +30,14 @@
 
 ;; AlphaVantage ApiKey Management
 
-(defonce api-key (atom "demo"))
+(defonce api-key (atom ""))
 
 (defn set-key!
   "to use alphavantage api, call at least once set-key! api-key"
   [key]
   (info "setting alphavantage key..")
   (reset! api-key key)
-  nil ; Important not to return by chance the key, as this would be shown in the notebook.
+  nil ; Important not to return by chance the key, as this would be shown in the repl.
   )
 
 ;; helper
@@ -60,9 +60,19 @@
 (defn- throtteled? [response]
   (contains? response :Note))
 
+(defn- error? [response]
+  (contains? response :Information))
+
 (defn- success-if [response process-success]
-  (if (throtteled? response)
-    :throttled ;awb99: perhaps better return :throttled ???
+  (cond 
+    (throtteled? response)
+     :throttled ;awb99: perhaps better return :throttled ???
+    
+    (error? response)
+    (do (error "Alphavantage error : " (:Information response))
+        nil)
+    
+    :else
     (process-success response)))
 
 (defn- get-av-raw [params process-success]
@@ -219,7 +229,8 @@
            :outputsize (name size)
            :datatype "json"}
           (fn [response]
-            ;(println response)
+            (println "response: " response)
+            (println "information: " (:Information response))
             (convert-bars- symbol :daily response))))
 
 (defn get-daily-adjusted
@@ -230,13 +241,16 @@
            :outputsize (name size)
            :datatype "json"}
           (fn [response]
-            (let [{:keys [meta series] :as result} (convert-bars- symbol :adjusted response)]
+            (println "response: " response)
+             (let [{:keys [meta series] :as result} (convert-bars- symbol :adjusted response)]
               (when (= 0 (count series))
                 (warn "no data returned for: " symbol)
                 (warn "response: " response))
               result)
             ;(println "data adjusted: " (pr-str response))
             )))
+
+
 (defn get-daily-fx
   "size: compact=last 100 days. full=entire history"
   [size symbol]
@@ -280,7 +294,13 @@
   (-> (search "MO")
       (clojure.pprint/print-table))
 
-  (-> (get-daily-adjusted "compact" "MO")
+  (-> (try (get-daily "compact" "MO")
+         (catch Exception ex
+           (println "ex: " (ex-data ex))
+           (println "status: " (:status ex) "reason: " (:reason-phrase ex))
+           )  
+           )
+      
       :series
       first
       :date

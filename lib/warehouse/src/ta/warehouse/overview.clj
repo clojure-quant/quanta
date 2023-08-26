@@ -60,11 +60,10 @@
         m (-> ds-overview
               ds-convert-col-instant->localdatetime
               ds->map)]
-    (println "overview-types: " (show-meta ds-overview))
-    (println "overview type packet-instant" (cols-of-type ds-overview :packed-instant))
-    (println "overview-map: " m)
+    ;(println "overview-types: " (show-meta ds-overview))
+    ;(println "overview type packet-instant" (cols-of-type ds-overview :packed-instant))
+    ;(println "overview-map: " m)
     m))
-
 
 
 (comment

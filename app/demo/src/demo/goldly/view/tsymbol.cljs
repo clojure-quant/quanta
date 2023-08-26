@@ -19,7 +19,7 @@
 (defn symbol-picker [_state-atom _path-symbol]
   (let [state-internal (r/atom {:lists []
                                 :symbols-in-list ["BTCUSD" "SPY" "QQQ" "GLD" "SLV" "EURUSD"]
-                                :list "currencies"})]
+                                :list "currency-etf"})]
     (run-a state-internal [:lists]
            'ta.warehouse.symbollist/get-lists)
     (fn [state-atom path-symbol]
