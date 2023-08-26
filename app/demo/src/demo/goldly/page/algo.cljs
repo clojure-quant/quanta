@@ -1,11 +1,12 @@
 (ns demo.goldly.page.algo
   (:require
    [reagent.core :as r]
-   [goldly.service :refer [run-a]]
+   [goldly.service.core :refer [run-a]]
    [goldly.page :as page]
    [ui.highcharts :refer [highstock]]
    [input]
-   [goldly.tradingview :refer [tv-widget-atom tradingview-chart wrap-chart-ready set-symbol chart-active add-shape]]
+   [ta.tradingview.goldly.tradingview :refer [ tradingview-chart]]
+   [ta.tradingview.goldly.interact :refer [tv-widget-atom  wrap-chart-ready set-symbol chart-active add-shape]]
    [demo.goldly.lib.ui :refer [link-href]]
    [demo.goldly.view.backtest :refer [navs-chart navs-view roundtrips-view metrics-view]]
    [demo.goldly.view.aggrid :refer [study-table]]

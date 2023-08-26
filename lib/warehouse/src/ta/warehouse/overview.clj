@@ -11,19 +11,19 @@
               (-> (wh/load-symbol w frequency symbol)
                   (tc/add-column :symbol symbol)
                   (tc/drop-columns [:volume])
-                  ;add-year-and-month-date-as-instant
-                  #_(tc/add-column :return #(-> %
-                                                :close
-                                                returns)))))))
+                  )))))
 
 (defn concatenate-datasets [seq-ds-bar]
-  (->> seq-ds-bar
-       (apply tc/concat)))
+  (if (empty? seq-ds-bar)
+      nil
+    (->> seq-ds-bar
+         (apply tc/concat))))
 
 (defn overview-view [ds-concatenated
                      {:keys [grouping-columns pivot?]
                       :or {grouping-columns [:symbol]
                            pivot? false}}]
+  (when ds-concatenated
   (-> ds-concatenated
       (tc/group-by grouping-columns)
       (tc/aggregate {:count tc/row-count
@@ -45,7 +45,7 @@
                                  (apply max)))})
       ((if pivot?
          #(tc/pivot->wider % :symbol [:min :max :count])
-         identity))))
+         identity)))))
 
 (defn warehouse-overview [w frequency & options]
   (let [options (if options options {})
@@ -72,6 +72,10 @@
   (wh/symbols-available :stocks "D")
   (wh/symbols-available :crypto "D")
 
+  (load-datasets :crypto "D" (wh/symbols-available :crypto "D"))
+  (load-datasets :stocks "D" (wh/symbols-available :stocks "D"))
+
+  
   (warehouse-overview :stocks "D")
   (warehouse-overview :crypto "D")
   (warehouse-overview :crypto "15")

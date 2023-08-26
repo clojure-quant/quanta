@@ -1,42 +1,31 @@
 (ns demo.goldly.page.warehouse
   (:require
-   [reagent.core :as r]
    [goldly.page :as page]
-   [goldly.service :refer [run-a]]
+   [demo.goldly.lib.loader :refer [clj->p]]
    [demo.goldly.lib.ui :refer [link-href]]
    [demo.goldly.view.aggrid :refer [table]]))
 
-(defonce warehouse-state
-  (r/atom {:w :crypto
-           :frequency "D"
-           :data nil
-           :loading false}))
 
-(defn load-data [w f data]
-  (if symbol
-    (when (not data)
-      ; (warehouse-overview :stocks "D")
-      (run-a warehouse-state [:data]
-             'ta.warehouse.overview/overview-map w f)
-      nil)
-    (do (swap! warehouse-state assoc :data nil)
-        nil)))
+(defn warehouse-overview-view [wh f]
+  (let [wh-overview (clj->p 'ta.warehouse.overview/overview-map wh f)]
+    (fn [wh f]
+      [:div
+        [:h1.text-bold.bg-green-500 "Warehouse " (str wh) " " (str f)]
+        (case (:status @wh-overview)
+          :loading [:p "loading"]
+          :error [:p "error!"]
+          :data [table (:data @wh-overview)]
+          [:p "unknown: status:" (pr-str @wh-overview #_(:status @wh-overview))])])))
+
 
 (defn warehouse-page [_route]
-  (let [{:keys [w frequency data]} @warehouse-state]
-    (load-data w frequency data)
-    [:div.h-screen.w-screen.bg-red-500
-     [:div.flex.flex-col.h-full.w-full
-
-     ; "menu"
-      [:div.flex.flex-row.bg-blue-500
-       [link-href "/" "main"]]
-     ; "main"
-      (if data
-        [:div
-         ;(pr-str data)
-         [table data]]
-
-        [:div "no data "])]]))
+  [:div.h-screen.w-screen.bg-red-500
+    [:div.flex.flex-col.h-full.w-full
+      ;[:div.flex.flex-row.bg-blue-500
+        [link-href "/" "main"] 
+        [warehouse-overview-view :stocks "D"]
+        [warehouse-overview-view :crypto "D"]
+   ;    ]
+   ]])
 
 (page/add warehouse-page :user/warehouse)

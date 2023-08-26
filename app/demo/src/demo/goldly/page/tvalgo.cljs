@@ -2,10 +2,12 @@
   (:require
    [reagent.core :as r]
    [re-frame.core :as rf]
-   [goldly.service :refer [run-a]]
+   [goldly.service.core :refer [run-a]]
    [goldly.page :as page]
    [input]
-   [goldly.tradingview :as tv :refer [tradingview-chart set-symbol state add-algo-studies]]
+   [ta.tradingview.goldly.tradingview :as tv :refer [tradingview-chart  ]]
+   [ta.tradingview.goldly.feed.algo :refer [tradingview-algo-feed]]
+   [ta.tradingview.goldly.interact :refer [set-symbol state add-algo-studies track-range reset-data add-algo-studies]]
    [demo.goldly.lib.ui :refer [link-href]]
    [demo.goldly.view.aggrid :refer [study-table]]))
 
@@ -96,15 +98,15 @@
           (when-not (= algoinfo @showing)
             (reset! showing algoinfo)
             (println "TV ALGO CHANGED TO: " algo " charts: "  charts)
-            ;(set! (.-datafeed @tv-widget-atom) (tv/tradingview-algo-feed algo))
-            ;(set! (-> js/window .-widget .-datafeed) (tv/tradingview-algo-feed algo))
+            ;(set! (.-datafeed @tv-widget-atom) (tradingview-algo-feed algo))
+            ;(set! (-> js/window .-widget .-datafeed) (tradingview-algo-feed algo))
             ;(set! (.-text obj) text)
             ;Object.getPrototypeOf (widget) .datafeed
             ;(set! (.-datafeed
             ;       (.getPrototypeOf js/Object js/widget))
             (js/setTimeout #(add-algo-studies charts) 300)
-            (js/setTimeout #(tv/track-range) 300)
-            ;(tv/add-algo-studies charts)
+            (js/setTimeout #(track-range) 300)
+            ;(add-algo-studies charts)
             nil))))))
 
 (defn tv-status []
@@ -122,7 +124,7 @@
     algo-state [:symbol]]
    [input/button {:on-click #(rf/dispatch [:modal/open (algo-dialog)
                                            :medium])} "options"]
-   [input/button {:on-click #(tv/reset-data)} "R!"]
+   [input/button {:on-click #(reset-data)} "R!"]
    [input/button {:on-click #(do (get-window-current)
                                  (rf/dispatch [:modal/open (table-dialog)
                                                :large]))} "table"]
@@ -156,7 +158,7 @@
           [tradingview-chart {:feed :ta
                               :options {:autosize true
                                         :symbol symbol-initial
-                                        :datafeed (tv/tradingview-algo-feed get-algo-and-options)}}]]
+                                        :datafeed (tradingview-algo-feed get-algo-and-options)}}]]
 
 ;[page-renderer data page]
          ]))))

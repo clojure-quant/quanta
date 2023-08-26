@@ -4,7 +4,7 @@
    [layout]
    [site]
    [input]
-   [goldly.service :refer [run-a]]))
+   [goldly.service.core :refer [run-a]]))
 
 (defn run-on-change [input-atom input-path f]
   (let [loaded (r/atom nil)]
