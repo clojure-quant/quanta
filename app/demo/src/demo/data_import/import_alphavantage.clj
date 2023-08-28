@@ -39,7 +39,7 @@
 
   (def symbols (wh/load-list "test"))
 
-  (get-alphavantage-daily symbols)
-  (get-alphavantage-fx-daily symbols)
+  (get-alphavantage-daily ["QQQ" "SPY" "TLT"])
+  (get-alphavantage-fx-daily ["EURUSD"])
 ;
   )

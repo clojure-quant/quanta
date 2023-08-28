@@ -1,4 +1,4 @@
-(ns demo.goldly.page.algo
+(ns demo.goldly.page.backtest
   (:require
    [reagent.core :as r]
    [goldly.service.core :refer [run-a]]

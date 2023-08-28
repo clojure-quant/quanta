@@ -1,6 +1,6 @@
 (ns demo.goldly.repl.tradingview.execution
   (:require
-   [goldly.scratchpad :refer [eval-code!]]))
+   [eval.cljs-eval :refer [eval-code!]]))
 
 (eval-code!
  (-> (tv/chart-active)

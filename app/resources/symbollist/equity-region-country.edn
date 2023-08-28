@@ -1,5 +1,4 @@
 [
- 
 ;; https://www.ishares.com/us/products/etf-investments
 
 ;Europe - Country
@@ -26,17 +25,16 @@
  ;  {:region :asia :name "Streettracks Russell/Nomura Japan Prime" :symbol "EJPP"}
  ;{:region :asia :name "Streettracks Russell/Nomura Japan Small Cap" :symbol "EJSC"}
 
-  {:region :asia :name "IShares MSCI China" :symbol "MCHI"}
-  {:region :asia :name "IShares China LargeCap" :symbol "FXI"}
+  {:region :asia :name "IShares MSCI China" :symbol "MCHI" :category :etf}
+  {:region :asia :name "IShares China LargeCap" :symbol "FXI" :category :etf}
  ;{:region :asia :name "IShares FTSE/Xinhuu China 25" :symbol "EFXI"}
  ;{:region :asia :name "SPDR S&P China" :symbol "GXC" :category :etf}
 ;{:region :asia :name "PowerShares Golden Dragon USX China Portfolio" :symbol "EPGJ" :category :etf}
   {:region :asia :name "IShares MSCI Taiwan" :symbol "EWT" :category :etf}
   {:region :asia :name "IShares MSCI Hong Kong" :symbol "EWH" :category :etf}
 
- {:region :asia :name "IShares MSCI India" :symbol "INDA"}
-  {:region :asia :name "IShares MSCI India 50" :symbol "INDY"}
-
+ {:region :asia :name "IShares MSCI India" :symbol "INDA" :category :etf}
+ {:region :asia :name "IShares MSCI India 50" :symbol "INDY" :category :etf}
 
  {:region :asia :name "IShares MSCI Australia" :symbol "EWA" :category :etf}
  {:region :asia :name "IShares MSCI Malaysia (Free)" :symbol "EWM" :category :etf}

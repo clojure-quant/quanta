@@ -1,9 +1,9 @@
 (ns ta.tradingview.chart.maker
   (:require
    [nano-id.core :refer [nano-id]]
-   [ta.warehouse.symbollist :refer [instrument-details]]
+   [ta.warehouse.symbol-db :refer [instrument-details]]
    [ta.tradingview.db-ts :refer [save-chart now-epoch chart-list load-chart load-chart-boxed]]
-   [ta.tradingview.db-instrument :refer [inst-type inst-exchange inst-name category-name->category inst-crypto?]]
+   [ta.tradingview.db-instrument :refer [inst-type]]
    [ta.tradingview.chart.template.mainseries :refer [template-mainseries]]
    [ta.tradingview.chart.template.study :refer [template-study]]
    [ta.tradingview.chart.template.sessions :refer [template-sessions]]
@@ -48,9 +48,9 @@
      :user (str user-id) ; "77"
      :symbol symbol
      :short_name symbol
-     :name  name ; (inst-name symbol i)
+     :name  name ; (:name i)
      :symbol_type (inst-type i)
-     :exchange (inst-exchange i) ;  "NasdaqNM"
+     :exchange (:exchange i) ;  "NasdaqNM"
      :listed_exchange ""
      :resolution "D"
      :is_realtime "1"

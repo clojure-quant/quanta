@@ -43,28 +43,11 @@
   (->> (map load-list names)
        (apply concat)))
 
-(defn symbollist->dict [l]
-  (let [s-name (juxt :symbol identity)
-        dict (into {} (map s-name l))]
-    dict))
 
-(defn get-dict [names]
-  (let [l (load-lists-full names)
-        d (symbollist->dict l)]
-    d))
+(defn load-lists-from-config []
+  (load-lists-full (get-in-config [:ta :warehouse :lists])))
 
-(defn search [q]
-  (let [l (load-lists-full (get-in-config [:ta :warehouse :lists]))
-        q (lower-case q)]
-    (filter (fn [{:keys [name symbol]}]
-              (or (includes? (lower-case name) q)
-                  (includes? (lower-case symbol) q)))
 
-            l)))
-
-(defn instrument-details [s]
-  (let [d (get-dict (get-in-config [:ta :warehouse :lists]))]
-    (get d s)))
 
 (comment
 
@@ -73,13 +56,6 @@
   (def directory (clojure.java.io/file "/path/to/directory"))
   (def files (file-seq directory))
   (take 10 files)
-
-;(search "P")
-  (search "Bitc")
-  (search "BT")
-
-  (instrument-details "BTCUSD")
-  (instrument-details "EURUSD")
 
   (load-list-full "fidelity-select")
   (load-lists-full ["crypto"
@@ -93,8 +69,7 @@
                     "equity-sector-industry"
                     "equity-style"
                     "test"])
-  (->  (load-lists-full ["fidelity-select" "bonds"])
-       (symbollist->dict))
+
 
 ; 
   )

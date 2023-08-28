@@ -1,6 +1,6 @@
 (ns demo.goldly.repl.tradingview.admin
   (:require
-   [goldly.scratchpad :refer [eval-code!]]))
+   [reval.cljs-eval :refer [eval-code!]]))
 
 (eval-code!
  (+ 5 5))
@@ -31,19 +31,19 @@
     (println "button clicked "))))
 
 (eval-code!
- (tv/add-context-menu
+ (ta.tradingview.goldly.interact/add-context-menu
   [{"position" "top"
     "text" (str "First top menu item"); , time: " unixtime  ", price: " price)
-    "click" (fn [] (alert "First clicked."))}
+    "click" (fn [] (js/alert "First clicked."))}
    {:text "-"
     :position "top"}
    {:text "-Objects Tree..."}
    {:position "top"
     :text "Second top menu item 2"
-    :click (fn [] (alert "second clicked."))}
+    :click (fn [] (js/alert "second clicked."))}
    {:position "bottom"
     :text "Bottom menu item"
-    :click (fn [] (alert "third clicked."))}]))
+    :click (fn [] (js/alert "third clicked."))}]))
 
 (eval-code!
  (deref tvalgo/algo-state))
@@ -52,20 +52,20 @@
  (deref tvalgo/window-state))
 
 (eval-code!
- (do (tv/demo-crosshair)
-     (tv/demo-range)))
+ (do (ta.tradingview.goldly.interact/demo-crosshair)
+     (ta.tradingview.goldly.interact/demo-range)))
 
 (eval-code!
- (tv/get-range))
+ (ta.tradingview.goldly.interact/get-range))
 
 (eval-code!
- (tv/track-range))
+ (ta.tradingview.goldly.interact/track-range))
 
 (eval-code!
  (deref tv/state))
 
 (eval-code!
- (tv/get-symbol))
+ (ta.tradingview.goldly.interact/get-symbol))
 
 (eval-code!
  (tv/save-chart))

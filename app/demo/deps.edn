@@ -1,16 +1,17 @@
 {:paths ["src"
-         ;"classes"
+         "classes"
          ]
  :deps {org.clojure/clojure  {:mvn/version "1.11.1"}
         aysylu/loom {:mvn/version "1.0.2"}
         techascent/tech.viz {:mvn/version "6.00-beta-16-2"}
       ;  com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.1.0"}
         com.taoensso/timbre {:mvn/version "6.2.2"} ; clj/cljs logging
-        org.pinkgorilla/reval {:mvn/version "0.5.133"}
+        org.pinkgorilla/reval {:mvn/version "0.5.134"}
         ; ta
         ta/trateg {:local/root "../../lib/trateg" :deps/manifest :deps}
         ta/data {:local/root "../../lib/data" :deps/manifest :deps}
         ta/tradingview {:local/root "../../lib/tradingview" :deps/manifest :deps}
+        ta/indicator {:local/root "../../lib/indicator" :deps/manifest :deps}
         ta/astro {:local/root "../../lib/astro" :deps/manifest :deps}
         ta/gann {:local/root "../../lib/gann" :deps/manifest :deps}
         ;;
@@ -37,7 +38,7 @@
         }
 
   :docs ; RUN SERVICES (keep running)
-  {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.604"}
+  {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.605"}
                 com.fzakaria/slf4j-timbre {:mvn/version "0.4.0"}}
    :extra-paths ["target/webly" ; to include the sci-bindings info
                  "node_modules"

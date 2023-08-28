@@ -11,12 +11,11 @@
    [modular.webserver.middleware.api :refer [wrap-api-handler]]
    [modular.webserver.handler.registry :refer [add-ring-handler]]
    [ta.helper.date :refer [now-datetime datetime->epoch-second epoch-second->datetime]]
-   [ta.warehouse.symbollist :refer [search instrument-details]]
    [ta.warehouse :refer [load-symbol]]
    [ta.warehouse.tml :refer [filter-date-range]]
    ;[ta.tradingview.db-ts :refer [save-chart-boxed delete-chart load-chart-boxed chart-list now-epoch]]
-   [ta.tradingview.db-instrument :refer [inst-type inst-exchange inst-name
-                                         category-name->category inst-crypto?]]
+   [ta.warehouse.symbol-db :refer [search instrument-details determine-wh]]
+   [ta.tradingview.db-instrument :refer [inst-type category-name->category]]
    ;[ta.tradingview.db-marks :refer [load-marks convert-marks]]
    ))
 (defn server-time []
@@ -71,9 +70,9 @@
   (let [i (instrument-details s)]
     {:ticker s  ; OUR SYMBOL FORMAT. TV uses exchange:symbol
      :name  s ; for tv this is only the symbol
-     :description (inst-name s i)
-     :exchange (inst-exchange i)
-     :exchange-listed (inst-exchange i)
+     :description (:name i)
+     :exchange (:exchange i)
+     :exchange-listed (:exchange i)
      :type (inst-type i)
      :supported_resolutions ["15" "D"]
      :has_no_volume false
@@ -114,7 +113,7 @@
 (defn filter-exchange [exchange list]
   (if (str/blank? exchange)
     list
-    (filter #(= exchange (inst-exchange %)) list)))
+    (filter #(= exchange (:exchange %)) list)))
 
 (defn filter-category [type list]
   (if (str/blank? type)
@@ -131,8 +130,8 @@
                      {:ticker symbol
                       :symbol symbol ; OUR SYMBOL FORMAT. TV uses exchange:symbol
                       :full_name symbol
-                      :description  (inst-name symbol i)
-                      :exchange (inst-exchange i)
+                      :description  (:name i)
+                      :exchange (:exchange i)
                       :type (inst-type i)}) sr-limit)]
     sr-tv))
 
@@ -178,7 +177,7 @@
 
 (defn load-series [s resolution from to]
   (let [i (instrument-details s)
-        w (if (inst-crypto? i) :crypto :stocks)
+        w (determine-wh s)
         frequency (case resolution
                     "1D" "D"  ; tradingview sometimes queries daily as 1D
                     resolution)

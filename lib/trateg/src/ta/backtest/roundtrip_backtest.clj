@@ -4,6 +4,7 @@
    [tech.v3.datatype.functional :as fun]
    [tablecloth.api :as tc]
    [ta.warehouse :as wh]
+   [ta.warehouse.symbol-db :refer [determine-wh ]]
    [ta.helper.ago :refer [xf-future]]
    [ta.backtest.signal :refer [trade-signal]]
    [ta.backtest.position-pl :refer [position-pl]]))
@@ -117,8 +118,9 @@
 (defn run-backtest
   "algo has to create :position column
    creates roundtrips based on this column"
-  [algo {:keys [w symbol frequency] :as options}]
-  (let [ds-bars  (wh/load-symbol w frequency symbol)]
+  [algo {:keys [symbol frequency] :as options}]
+  (let [w (determine-wh symbol)
+        ds-bars (wh/load-symbol w frequency symbol)]
     (backtest-ds ds-bars algo options)))
 
 (defn run-backtest-parameter-range

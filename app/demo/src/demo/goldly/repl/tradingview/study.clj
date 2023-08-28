@@ -1,17 +1,19 @@
 (ns demo.goldly.repl.tradingview.study
   (:require
-   [goldly.scratchpad :refer [eval-code!]]))
+   [reval.cljs-eval :refer [eval-code!]]))
 
 (eval-code!
  (+ 5 5))
 
 (eval-code!
- (tv/add-study "MACD" [14 30 "close" 9]))
+ (ta.tradingview.goldly.interact/add-study 
+  "MACD" [14 30 "close" 9]))
 
 (eval-code!
- (tv/add-study "Compare" ["open" "AAPL"]))
-;Compare study has 2 inputs: [dataSource, symbol]. 
-;Supported dataSource values are: ["close", "high", "low", "open"].
+ (ta.tradingview.goldly.interact/add-study 
+  "Compare" ["open" "AAPL"]))
+;Compare has 2 inputs: [dataSource, symbol]. 
+;Supported dataSource values: ["close", "high", "low", "open"].
 
 (eval-code!
  (tv/add-study "CLJMAIN" ["close"]))
