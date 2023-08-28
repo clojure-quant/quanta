@@ -9,6 +9,7 @@
    [ta.backtest.signal :refer [trade-signal]]
    [ta.backtest.position-pl :refer [position-pl]]))
 
+
 (defn- bar->roundtrip-partial [ds]
   (let [close (:close ds)
         close-f1  (into [] xf-future close)

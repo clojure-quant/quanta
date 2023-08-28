@@ -69,8 +69,13 @@
      :avg-win-log (:pl-log-mean win)
      :avg-loss-log (:pl-log-mean loss)
      :win-nr-prct (* 100.0 win-prct)
-     :avg-bars-win  (* 1.0 (/ (:bars win) (:trades win)))
-     :avg-bars-loss  (* 1.0 (/ (:bars loss) (:trades loss)))}))
+     :avg-bars-win  (if (> (:trades win) 0.0)
+                      (* 1.0 (/ (:bars win) (:trades win)))
+                      0.0)
+     :avg-bars-loss (if (> (:trades loss) 0.0)
+                      (* 1.0 (/ (:bars loss) (:trades loss))) 
+                      0.0
+                      )}))
 
 (defn roundtrip-performance-metrics [backtest-result]
   (let [ds-roundtrips (:ds-roundtrips backtest-result)

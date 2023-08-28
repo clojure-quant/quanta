@@ -36,26 +36,25 @@
        (xf result)))))
 
 (defn xf-future [xf]
-  (let [last-val (atom nil)]
+  (let [first (atom true)]
     (fn
       ;; SET-UP
       ([]
-       (reset! last-val nil)
+       (reset! first true)
        (xf))
      	;; PROCESS
       ([result input]
-       (let [v @last-val]
-         (reset! last-val input)
-         ;(println "input: " input "result: " result)
-         (if (nil? v)
-           (xf)
-           (xf result input))))
+         (if @first
+           (do (reset! first false)
+               result) ; unchanged collection for first element
+           (xf result input) ; add current element thereafter
+           ))
       ;; TEAR-DOWN
       ([result]
-       (let [v @last-val]
-         (when-not (nil? v)
-           (xf result v))
-         (xf result))))))
+       (when-not @first
+         (xf result nil))
+         (xf result)))))
+
 
 (comment
 

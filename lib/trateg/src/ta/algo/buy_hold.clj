@@ -13,7 +13,7 @@
  ; 
   )
 
-(defn buy-hold-signal [ds _ #_options]
+(defn buy-hold-signal [ds _options]
   (tc/add-columns ds {:signal (-> ds tc/row-count buyhold-signal-bar-length)}))
 
 (add-algo
