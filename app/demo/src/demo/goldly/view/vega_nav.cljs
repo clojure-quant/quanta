@@ -22,6 +22,8 @@
    [vegalite
     {:box :fl ; :lg
      :spec {;:width "1000"
+            :width "100%"
+            :height "100%"
             :description "NAV Plot"
             :data {:values data} ;data
             :mark "line"

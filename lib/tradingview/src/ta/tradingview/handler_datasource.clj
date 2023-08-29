@@ -84,6 +84,7 @@
      :volume_precision 0 ;Integer showing typical volume value decimal places for a particular symbol. 0 means volume is always an integer. 1 means that there might be 1 numeric character after the comma.
      :pointvalue 1
      ; session
+     :data_status "streaming"  ; 
      :has_intraday true
      :timezone "Etc/UTC" ; "America/New_York"
      :session "0900-1600"  ;"0900-1630|0900-1400:2",

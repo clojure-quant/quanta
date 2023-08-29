@@ -23,14 +23,41 @@
 
 (def symbol-list ["TLT" "SPY" "QQQ" "EURUSD"])
 
+(run-a algo-state [:algos]
+       'ta.algo.manager/algo-names) ; get once the names of all available algos
+
+(defn run-algo [algo opts data-loaded]
+  (when algo
+    ;(info (str "run-algo check: " algo " opts: " opts))
+    (when (not (= [algo opts] data-loaded))
+      (swap! algo-state assoc :data {})
+      (swap! algo-state assoc :data-loaded [algo opts])
+      (run-a algo-state [:data]
+             'ta.algo.manager/algo-run-browser
+             algo opts)
+      nil)))
+
+
+
+
 (defn pr-data [_context data]
   [:div.bg-red-500 (pr-str data)])
 
 (defn pr-highchart [_context data]
   (if data
-    [highstock {:box :fl ; :lg
-                :data data}]
-     ;[pr-data data]
+    [:div {:style {:width "100%"
+                   :min-width "100%"
+                   :max-width "100%"
+                   :height "100%"
+                   :min-height "100%"
+                   :max-height "100%"}}
+    #_[:div (pr-str data)]
+    [highstock {:style {:width "100%"
+                        :height "100%"
+                        :overflow-y "scroll"
+                        }
+                :box :fl ; :lg
+                :data (assoc data :height "100%")}]]
     [:div "no data."]))
 
 (defn add-marks-to-tv [tradingview-server]
@@ -75,29 +102,14 @@
                          :options {:autosize true}}]]))
 
 (defonce pages
-  {;:pr-str [pr-data []]
-   :metrics  [metrics-view [:stats]]
+  {:metrics  [metrics-view [:stats]]
    :roundtrips [roundtrips-view [:ds-roundtrips]]
    :nav-table [navs-view [:stats :nav]]
    :nav-chart [navs-chart [:stats :nav]]
    :highchart [pr-highchart [:highchart]]
    :study-table [study-table [:ds-study]]
-   ;:study-table-tradeonly]
    :tradingview [tv-page [:tradingview]]})
 
-(run-a algo-state [:algos]
-       'ta.algo.manager/algo-names) ; get once the names of all available algos
-
-(defn run-algo [algo opts data-loaded]
-  (when algo
-    ;(info (str "run-algo check: " algo " opts: " opts))
-    (when (not (= [algo opts] data-loaded))
-      (swap! algo-state assoc :data {})
-      (swap! algo-state assoc :data-loaded [algo opts])
-      (run-a algo-state [:data]
-             'ta.algo.manager/algo-run-browser
-             algo opts)
-      nil)))
 
 (defn context [data]
   (:study-extra-cols data))
@@ -129,7 +141,7 @@
 (defn algo-ui []
   (fn []
     (let [{:keys [_algos algo opts data-loaded data page]} @algo-state]
-      [:div.flex.flex-col.h-full.w-full
+      [:div.flex.flex-col
        (do (run-algo algo opts data-loaded)
            nil)
        [algo-menu]

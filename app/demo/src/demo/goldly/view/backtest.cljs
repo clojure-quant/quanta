@@ -104,9 +104,9 @@
                                        {:index i
                                         :nav (:nav v)}) navs)
         navs-with-index (into [] navs-with-index)]
-    [:div
+    [:div.w-full.h-full
      [:h1 "navs " (count navs-with-index)]
      (when (> (count navs) 0)
-       [:div ; {:style {:width "50vw"}}
+       [:div.w-full.h-full; {:style {:width "50vw"}}
         ;(pr-str navs-with-index)
         [vega-nav-plot navs-with-index]])]))

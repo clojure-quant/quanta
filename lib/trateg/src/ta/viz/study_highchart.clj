@@ -132,7 +132,7 @@
                                           }}
                    :credits {:enabled false}}]
     ^:R
-    [:p/highstock (merge spec-base (add-data ds axes-spec))]))
+    ['ui.highcharts/highstock (merge spec-base (add-data ds axes-spec))]))
 
 (comment
 

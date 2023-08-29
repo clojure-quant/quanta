@@ -85,12 +85,13 @@
 ; 
 
 (defn algo-run [name user-options]
-  (if-let [{:keys [algo options]} (get-algo name)]
+  (if-let [{:keys [algo options charts]} (get-algo name)]
     (let [options (merge options user-options)
           {:keys [ds-study ds-roundtrips] :as backtest} (run-backtest algo options)]
       (merge
        {:name name
         :options options
+        :charts charts
         :study-extra-cols (study-extra-cols ds-study)}
        backtest
        (if ds-roundtrips
@@ -103,11 +104,21 @@
     {:name name
      :error "Algo not found."}))
 
-(defn algo-run-browser [name user-options]
-  (let [{:keys [ds-study study-extra-cols ds-roundtrips stats] :as d} (algo-run name user-options)]
+(defn epoch
+  "add epoch column to ds"
+  [ds]
+  (dtype/emap dt/->epoch-second :long (:date ds)))
+
+(defn add-epoch-second [ds]
+  (tc/add-column
+   ds
+   :epoch (epoch ds)))
+
+(defn algo-run-browser [algo-name algo-opts]
+  (let [{:keys [ds-study study-extra-cols ds-roundtrips stats] :as d} (algo-run algo-name algo-opts)]
     (merge d
            (if ds-study
-             {:ds-study (ds->map ds-study)
+             {:ds-study (ds->map (add-epoch-second ds-study))
               :study-extra-cols study-extra-cols
               :tradingview {:marks (get-trades ds-study)}}
              {})
@@ -120,15 +131,6 @@
                       :nav (ds->map (:nav stats))}}
              {}))))
 
-(defn epoch
-  "add epoch column to ds"
-  [ds]
-  (dtype/emap dt/->epoch-second :long (:date ds)))
-
-(defn add-epoch [ds]
-  (tc/add-column
-   ds
-   :epoch (epoch ds)))
 
 (defn select-in-window [ds epoch-start epoch-end]
   (tc/select-rows
@@ -142,7 +144,7 @@
                        :frequency frequency)
         {:keys [ds-study] :as d} (algo-run name options)]
     (-> ds-study
-        (add-epoch)
+        (add-epoch-second)
         (select-in-window epoch-start epoch-end))))
 
 (defn algo-run-window-browser [name symbol frequency options epoch-start epoch-end]

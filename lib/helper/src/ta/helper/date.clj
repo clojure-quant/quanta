@@ -75,6 +75,18 @@
 (defn epoch-second->datetime [es]
   (-> es (ldt/of-epoch-second 1 utc)))
 
+
+(comment 
+  ;FEED [QQQ|1D]: Requesting data: [1960-10-20T00:00:00.000Z ... 1961-12-14T00:00:00.000Z, 300 bars]
+   {:from -290304000, :to -254016000, :count-back 300, :first-request? false}
+  (epoch-second->datetime -290304000)
+  (epoch-second->datetime -254016000)
+  (epoch-second->datetime 941414400)
+  
+
+  
+  )
+
 ;; ago
 
 (defn add-days [dt-inst days]

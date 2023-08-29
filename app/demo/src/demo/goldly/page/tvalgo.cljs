@@ -1,4 +1,4 @@
-(ns tvalgo
+(ns demo.goldly.page.tvalgo
   (:require
    [reagent.core :as r]
    [re-frame.core :as rf]
@@ -6,24 +6,20 @@
    [goldly.page :as page]
    [input]
    [ta.tradingview.goldly.tradingview :as tv :refer [tradingview-chart]]
-   [ta.tradingview.goldly.feed.algo :refer [get-tradingview-options-algo-feed]]
-   [ta.tradingview.goldly.interact :refer [set-symbol state add-algo-studies track-range reset-data add-algo-studies]]
+   [ta.tradingview.goldly.algo.context :as c]
+   [ta.tradingview.goldly.feed.algo2 :refer [get-tradingview-options-algo-feed]]
+   ;[ta.tradingview.goldly.interact :refer [set-symbol state track-range reset-data]]
    [demo.goldly.lib.ui :refer [link-href]]
-   [demo.goldly.view.aggrid :refer [study-table]]))
+   [demo.goldly.algo.dialog :refer [show-algo-dialog show-table-dialog]]))
+
+(defonce algo-ctx
+  (c/create-algo-context "moon" {:symbol "QQQ" :frequency "D"}))
+
+;; symbol/algo switcher
 
 (defonce algo-state
   (r/atom {:algos []
-           :algo "buy-hold"
-           :algoinfo {:options {}
-                      :charts []}
-           :symbols ["TLT" "SPY" "QQQ" "EURUSD"]
-           :symbol "SPY"
-           :frequency "D"}))
-
-(defonce window-state
-  (r/atom {:data []}))
-
-;; ALGO
+           :symbols ["TLT" "SPY" "QQQ" "EURUSD"]}))
 
 (run-a algo-state [:algos]
        'ta.algo.manager/algo-names) ; get once the names of all available algos
@@ -32,54 +28,9 @@
   (let [algo-loaded (r/atom nil)]
     (when algo
       (when-not (= @algo-loaded algo)
-        (run-a algo-state [:algoinfo]
-               'ta.algo.manager/algo-info algo)
+        (run-a algo-state [:algoinfo] 'ta.algo.manager/algo-info algo)
         nil))))
 
-(defn algo-dialog []
-  [:div.bg-blue-300.p-5
-   [:h1.text-blue-800.text-large "algo options"]
-   [:p (pr-str (get-in @algo-state [:algoinfo :options]))]
-
-   [:h1.text-blue-800.text-large "charts"]
-   [:p (pr-str (get-in @algo-state [:algoinfo :charts]))]])
-
-;; WINDOW
-
-(defn get-window [epoch-start epoch-end]
-  (let [algo (:algo @algo-state)
-        symbol (:symbol @algo-state)
-        frequency (:frequency @algo-state)
-        options (get-in @algo-state [:algoinfo :options])]
-    (run-a window-state [:data]
-           'ta.algo.manager/algo-run-window-browser
-           algo symbol frequency options epoch-start epoch-end)))
-
-(defn get-window-demo []
-  (let [epoch-start 1642726800 ; jan 21 2022
-        epoch-end 1650499200 ; april 21 2022
-        ]
-    (get-window epoch-start epoch-end)))
-
-(defn get-window-current []
-  (let [state @state
-        from (get-in state [:range :from])
-        to (get-in state [:range :to])]
-    (println "get-window-current from:" from "to: " to "state: " state)
-    (when (and from to)
-      (get-window from to))))
-
-(defn table-dialog-table []
-  (fn []
-    (let [data (get-in @window-state [:data])]
-       ;[:p (pr-str data)]
-      [study-table nil data])))
-
-(defn table-dialog []
-
-  [:div.bg-blue-300.p-5.w-full;.h-64
-   {:style {:height "10cm"}}
-   [table-dialog-table]])
 
 (defn tradingview-modifier [symbol _frequency]
   (let [symbol-showing (r/atom symbol)]
@@ -87,7 +38,7 @@
       (when-not (= symbol @symbol-showing)
         (reset! symbol-showing symbol)
         (.log js/console "tv symbol change detected!")
-        (set-symbol symbol frequency)
+        ;(set-symbol symbol frequency)
         nil))))
 
 (defn algo-modifier [_algo algoinfo]
@@ -104,12 +55,12 @@
             ;Object.getPrototypeOf (widget) .datafeed
             ;(set! (.-datafeed
             ;       (.getPrototypeOf js/Object js/widget))
-            (js/setTimeout #(add-algo-studies charts) 300)
-            (js/setTimeout #(track-range) 300)
+            ;(js/setTimeout #(add-algo-studies charts) 300)
+           ; (js/setTimeout #(track-range) 300)
             ;(add-algo-studies charts)
             nil))))))
 
-(defn tv-status []
+#_(defn tv-status []
   (fn []
     [:span (pr-str @state)]))
 
@@ -122,45 +73,36 @@
    [input/select {:nav? false
                   :items (:symbols @algo-state)}
     algo-state [:symbol]]
-   [input/button {:on-click #(rf/dispatch [:modal/open (algo-dialog)
-                                           :medium])} "options"]
-   [input/button {:on-click #(reset-data)} "R!"]
-   [input/button {:on-click #(do (get-window-current)
-                                 (rf/dispatch [:modal/open (table-dialog)
-                                               :large]))} "table"]
-
+   [input/button {:on-click #(show-algo-dialog algo-ctx)} "options"]
+   ;[input/button {:on-click #(reset-data)} "R!"]
+   [input/button {:on-click #(show-table-dialog algo-ctx)} "table"]
    ;[input/button {:on-click get-window-demo} "get window"]
-   [tv-status]])
+   ;[tv-status]
+   ])
 
-(defn get-algo-and-options []
-  (let [state @algo-state
-        algo (or (:algo state) "buy-hold")
-        options (or (get-in state [:algoinfo :options]) {})]
-    {:algo algo
-     :options options}))
+
+(defn tradingview-algo [algo-ctx]
+  (let [{:keys [algo opts]} (c/get-algo-input algo-ctx)
+        symbol (:symbol opts)]
+    (println "showing tradingview-widget algo-mode algo: " algo " symbol: " symbol)
+  [tradingview-chart {:feed (get-tradingview-options-algo-feed algo-ctx)
+                      :options {:autosize true
+                                :symbol symbol}}]))
 
 (defn algo-ui []
-  (let [symbol-initial (:symbol @algo-state)]
-    (fn []
-      (let [{:keys [_algos algo algoinfo symbol frequency]} @algo-state]
-        [:div.flex.flex-col.h-full.w-full
-       ;(do (run-algo algo opts data-loaded)
-       ;    nil)
-         [algo-menu]
-         [algo-info algo]
-       ;(when-let [wd (get-in @window-state [:data])]
-       ;   [:div (pr-str wd)]
-       ;  )
-         [tradingview-modifier symbol frequency]
-         [algo-modifier algo algoinfo]
-
-         [:div.h-full.w-full
-          [tradingview-chart {:feed (get-tradingview-options-algo-feed get-algo-and-options)
-                              :options {:autosize true
-                                        :symbol symbol-initial}}]]
+  (fn []
+    (let [{:keys [_algos algo algoinfo]} @algo-state]
+      [:div.flex.flex-col.h-full.w-full
+        [algo-menu]
+        [algo-info algo]
+        ;[tradingview-modifier symbol frequency]
+        ;[algo-modifier algo algoinfo]
+        [:div.h-full.w-full
+           [tradingview-algo algo-ctx]
+          ]
 
 ;[page-renderer data page]
-         ]))))
+         ])))
 
 (defn tvalgo-page [_route]
   [:div.h-screen.w-screen.bg-red-500
