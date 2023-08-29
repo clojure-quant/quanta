@@ -5,12 +5,12 @@
    [goldly.service.core :refer [run-a]]
    [goldly.page :as page]
    [input]
-   [ta.tradingview.goldly.tradingview :as tv :refer [tradingview-chart]]
    [ta.tradingview.goldly.algo.context :as c]
-   [ta.tradingview.goldly.feed.algo2 :refer [get-tradingview-options-algo-feed]]
    ;[ta.tradingview.goldly.interact :refer [set-symbol state track-range reset-data]]
    [demo.goldly.lib.ui :refer [link-href]]
-   [demo.goldly.algo.dialog :refer [show-algo-dialog show-table-dialog]]))
+   [demo.goldly.algo.dialog :refer [show-algo-dialog show-table-dialog]]
+   [ta.tradingview.goldly.algo.tradingview :refer [tradingview-algo]]
+   ))
 
 (defonce algo-ctx
   (c/create-algo-context "moon" {:symbol "QQQ" :frequency "D"}))
@@ -65,29 +65,25 @@
     [:span (pr-str @state)]))
 
 (defn algo-menu []
+  (let [algo-input (c/get-algo-input-atom algo-ctx)]
+    (fn []
   [:div.flex.flex-row.bg-blue-500
    [link-href "/" "main"]
    [input/select {:nav? false
                   :items (or (:algos @algo-state) [])}
-    algo-state [:algo]]
+    algo-input [:algo]]
    [input/select {:nav? false
                   :items (:symbols @algo-state)}
-    algo-state [:symbol]]
+    algo-input [:opts :symbol]]
    [input/button {:on-click #(show-algo-dialog algo-ctx)} "options"]
    ;[input/button {:on-click #(reset-data)} "R!"]
    [input/button {:on-click #(show-table-dialog algo-ctx)} "table"]
    ;[input/button {:on-click get-window-demo} "get window"]
    ;[tv-status]
-   ])
+   ])))
 
 
-(defn tradingview-algo [algo-ctx]
-  (let [{:keys [algo opts]} (c/get-algo-input algo-ctx)
-        symbol (:symbol opts)]
-    (println "showing tradingview-widget algo-mode algo: " algo " symbol: " symbol)
-  [tradingview-chart {:feed (get-tradingview-options-algo-feed algo-ctx)
-                      :options {:autosize true
-                                :symbol symbol}}]))
+
 
 (defn algo-ui []
   (fn []
