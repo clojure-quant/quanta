@@ -6,7 +6,7 @@
    [ta.backtest.signal :refer [add-running-index]]
    [ta.helper.window :refer [drop-beginning calc-trailing-true-counter]]
    [ta.algo.manager :refer [add-algo]]
-   [ta.tradingview.chart.color :as color]
+   [ta.tradingview.chart.color :refer [color]]
    ))
 
 (defn add-bollinger-indicator
@@ -77,13 +77,17 @@
   :comment "just the data"
   :algo add-bollinger-with-signal
   :charts [{;:trade "flags"
-            :bb-lower {:type "line" :linewidth 2 
-                       ;:color color/red
+            :bb-lower {:type "line" 
+                       :linewidth 2 
+                       :color (color :blue-900)
                        }
-            :bb-upper {:type "line" :linewidth 4
-                       ;:color "#2962ff80"
+            :bb-upper {:type "line" 
+                       :linewidth 4
+                       :color (color :red)
                        }}
-           {:volume "line"}] ;
+           {:volume {:type "line" 
+                     :color (color :gold)
+                     }}] ;
   :options {:w :stocks
             :symbol "SPY"
             :frequency "D"
