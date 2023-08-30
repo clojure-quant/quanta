@@ -35,6 +35,19 @@
           (assoc :charts charts
                  :options options)))))
 
+(defn tradingview-algo-chart-specs []
+  (->> @algos
+       vals
+       (map #(select-keys % [:name :charts]))
+       (remove nil?)
+       (remove #(nil? (:charts %)))))
+
+(comment 
+(tradingview-algo-chart-specs)  
+  
+  )
+
+
 (defn col-info [ds]
   (->> ds
        tc/columns

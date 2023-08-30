@@ -5,6 +5,11 @@
 (eval-code!
  (+ 5 5))
 
+
+(eval-code!
+ (ta.tradingview.goldly.interact/add-study
+  "Moving Average" [30 "close"]))
+
 (eval-code!
  (ta.tradingview.goldly.interact/add-study 
   "MACD" [14 30 "close" 9]))
@@ -16,7 +21,8 @@
 ;Supported dataSource values: ["close", "high", "low", "open"].
 
 (eval-code!
- (tv/add-study "CLJMAIN" ["close"]))
+ (ta.tradingview.goldly.interact/add-study 
+  "CLJMAIN" ["close"]))
 
 (eval-code!
  (tv/add-study "CLJ" ["volume"]))
@@ -25,10 +31,11 @@
  (tv/add-study "CLJ" ["high"]))
 
 (eval-code!
- (study-list))
+ (ta.tradingview.goldly.interact/study-list))
+
 
 (eval-code!
- (tv/remove-all-studies))
+ (ta.tradingview.goldly.interact/remove-all-studies))
 
 ;widget.activeChart () .getStudyById (id) .setVisible (false);
 

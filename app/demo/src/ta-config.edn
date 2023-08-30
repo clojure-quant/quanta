@@ -94,6 +94,7 @@
                           ; algo
                           ta.algo.manager/algo-names
                           ta.algo.manager/algo-info
+                          ta.algo.manager/tradingview-algo-chart-specs
                           ta.algo.manager/algo-run-window-browser
                           ta.algo.manager/algo-run-browser
                           ta.algo.manager/algo-marks
