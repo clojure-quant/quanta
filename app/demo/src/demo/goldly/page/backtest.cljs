@@ -6,7 +6,8 @@
    [ui.highcharts :refer [highstock]]
    [input]
    [ta.tradingview.goldly.tradingview :refer [ tradingview-chart]]
-   [ta.tradingview.goldly.interact :refer [tv-widget-atom  wrap-chart-ready set-symbol chart-active add-shape]]
+   [ta.tradingview.goldly.interact :refer [tv-widget-atom wrap-chart-ready add-shape]]
+   [ta.tradingview.goldly.interact2 :refer [set-symbol chart-active]]
    [demo.goldly.lib.ui :refer [link-href]]
    [demo.goldly.view.backtest :refer [navs-chart navs-view roundtrips-view metrics-view]]
    [demo.goldly.view.aggrid :refer [study-table]]
@@ -68,7 +69,7 @@
 
 (defn clear-marks-tv []
   ;(println "TV CLEAR MARKS!")
-  (let [c (chart-active)]
+  (let [c (chart-active @tv-widget-atom)]
     (.removeAllShapes c)))
 
 (defn tv-events [algo opts tradingview-state]
@@ -79,7 +80,7 @@
       (wrap-chart-ready
        (fn []
          (clear-marks-tv)
-         (set-symbol (:symbol opts) "1D")
+         (set-symbol @tv-widget-atom (:symbol opts) "1D")
          nil))
       nil)))
 
