@@ -83,8 +83,21 @@
   (epoch-second->datetime -254016000)
   (epoch-second->datetime 941414400)
   
-
+  ; tradingview bar-chart is using 9:00 as time for each bar.
+  (epoch-second->datetime 1692262800)
+  (epoch-second->datetime 1689930000)
+  (epoch-second->datetime 1692954000)
   
+  ; we return time 00:00
+  (epoch-second->datetime 1692316800)
+  (epoch-second->datetime 1692921600)
+
+  (- 1692954000 1692921600)
+  ;; => 32400
+ (* 60 60 9)
+  (epoch-second->datetime 1692953967)
+
+
   )
 
 ;; ago

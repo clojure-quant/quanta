@@ -5,7 +5,9 @@
    [ta.series.ta4j :as ta4j]
    [ta.backtest.signal :refer [add-running-index]]
    [ta.helper.window :refer [drop-beginning calc-trailing-true-counter]]
-   [ta.algo.manager :refer [add-algo]]))
+   [ta.algo.manager :refer [add-algo]]
+   [ta.tradingview.chart.color :as color]
+   ))
 
 (defn add-bollinger-indicator
   "adds bollinger indicator to dataset
@@ -75,9 +77,13 @@
   :comment "just the data"
   :algo add-bollinger-with-signal
   :charts [{;:trade "flags"
-            :bb-lower "line"
-            :bb-upper "line"}
-           {:volume "column"}]
+            :bb-lower {:type "line" :linewidth 2 
+                       ;:color color/red
+                       }
+            :bb-upper {:type "line" :linewidth 4
+                       ;:color "#2962ff80"
+                       }}
+           {:volume "line"}] ;
   :options {:w :stocks
             :symbol "SPY"
             :frequency "D"
@@ -85,6 +91,7 @@
             :stddev-length 30
             :mult-up 1.0
             :mult-down 1.0}})
+
 
 (comment
   (require '[ta.helper.date-ds  :refer [days-ago]])

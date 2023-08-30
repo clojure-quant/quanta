@@ -11,11 +11,14 @@
 
 ;; chart handler
 
-(defn save-chart-handler [{:keys [query-params params] :as req}]
-  (info "saving tradingview chart: " (keys req))
+(defn save-chart-handler [{:keys [query-params form-params params] :as req}]
+  ;(info "saving tradingview chart: " (keys req))
+  ;(info "saving tradingview chart form-params: " form-params)
+  ;(info "saving tradingview chart params: " params) ; {:client "77", :user "77", :chart "1693414404"}
   (let [{:keys [client user chart]} (clojure.walk/keywordize-keys query-params)
         ; post request can contain chart id, or not
         chart (if chart chart (now-epoch))]
+    (info "saving tradingview chart: " client user chart)
     (save-chart-boxed client user chart params)
     (res/response {:status "ok"
                    :id chart})))
@@ -48,8 +51,8 @@
         (res/response {:status "ok" :data chart-list})
         (res/response {:status "error" :error "chart-list for user failed."})))))
 
-(add-ring-handler :tv-db/save-chart  (wrap-api-handler save-chart-handler))
-(add-ring-handler :tv-db/modify-chart (wrap-api-handler modify-chart-handler))
+(add-ring-handler :tv-db/save-chart   (wrap-multipart-params (wrap-api-handler save-chart-handler)))
+(add-ring-handler :tv-db/modify-chart  (wrap-multipart-params (wrap-api-handler modify-chart-handler)))
 (add-ring-handler :tv-db/delete-chart (wrap-api-handler delete-chart-handler))
 (add-ring-handler :tv-db/load-chart (wrap-api-handler load-chart-handler))
 

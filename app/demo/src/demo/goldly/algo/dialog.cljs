@@ -18,15 +18,19 @@
 
 (defn table-dialog-table [algo-ctx]
   (fn []
-    (let [data (c/get-data algo-ctx)]
+    (let [data (c/get-data algo-ctx)
+          data (update data :ds-study (fn [rows] (take-last 100 rows)))
+          ]
       (cond
         (nil? data)
         [:div "No Data available!"]
         (empty? data)
         [:div "Data is empty"]
         :else
-        [:div (pr-str data)]
-        ;[study-table nil data]
+        #_[:div 
+          [:div (pr-str (keys data))]
+          [:div (pr-str (:ds-study data))]]
+        [study-table nil (:ds-study data)]
         ))))
 
 (defn table-dialog [algo-ctx]

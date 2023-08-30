@@ -8,6 +8,7 @@
    [tick.core :as tick]
    [cljc.java-time.instant :as ti]
    [clojure.java.io :as io]
+   [babashka.fs :refer [create-dirs]]
    [modular.persist.protocol :refer [save loadr]]
    [modular.helper.id :refer [guuid-str]]
    [modular.config :refer [get-in-config]]))
@@ -27,6 +28,7 @@
         chart-meta (dissoc content-edn :content)
         content-unboxed  (parse-string content true) ; {:layout :charts}
         legs-unboxed (into [] (parse-string legs true))]
+    (info "data keys:" (keys data))
     (info "data no content: " data-without-content)
     (info "content-edn keys" (keys content-edn))
     (info "content-unboxed keys" (keys content-unboxed))
@@ -34,6 +36,7 @@
            chart-meta
            {:legs legs-unboxed}
            content-unboxed)))
+
 
 (defn chart-box [{:keys [id name timestamp layout charts legs] :as data}]
   (let [chart {:layout layout
@@ -60,6 +63,7 @@
                     :id (if (string? chart-id)  (Integer/parseInt chart-id) chart-id)
                     :client (if (string? client-id)  (Integer/parseInt client-id) client-id)
                     :user (if (string? user-id)  (Integer/parseInt user-id) user-id))]
+    (create-dirs (get-in-config [:ta :tradingview :charts-path]))
     (save :edn (filename-chart client-id user-id chart-id) data)
     (info "saved chart id: " chart-id)))
 
@@ -70,6 +74,7 @@
 
 (defn save-chart-boxed
   [client-id user-id chart-id data-boxed]
+  ;(info "save-chart-boxed: " data-boxed)
   (let [{:keys [content]} data-boxed
         data-edn (chart-unbox data-boxed)]
     (when debug?

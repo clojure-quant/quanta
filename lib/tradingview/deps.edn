@@ -6,6 +6,7 @@
         prismatic/schema {:mvn/version "1.2.0"}
         nano-id/nano-id {:mvn/version "1.0.0"}
         differ/differ {:mvn/version "0.3.3"}
+        babashka/fs {:mvn/version "0.4.19"}
         org.pinkgorilla/modular {:mvn/version "0.0.37"} ; persistence
         org.pinkgorilla/webly {:mvn/version "0.4.623"} ; web handlers
         ta/trateg {:local/root "../.." :deps/manifest :deps}
