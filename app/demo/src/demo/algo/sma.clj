@@ -42,8 +42,7 @@
             ;:trade "flags"
             }
            {:volume "column"}]
-  :options {:w :crypto
-            :symbol "ETHUSD"
+  :options {:symbol "ETHUSD"
             :frequency "15"
             :sma-length-st 20
             :sma-length-lt 200}})

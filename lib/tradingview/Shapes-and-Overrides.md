@@ -133,12 +133,6 @@ You can create more than 50 different shapes using [createMultipointShape(points
 |----------------------------|---------------|---------------------|-------------------|-----------------|
 | fixed_range_volume_profile | 24            | `'Number Of Rows'`  | 70                | `'Up/Down'`     |
 
-<!-- markdownlint-disable no-inline-html -->
-
-<nowiki />* icon can be one of the following values:
-![images/icons.png](images/icons.png)
-
-<!-- markdownlint-enable no-inline-html -->
 
 | shape        | color   | flipped | mirrored | mode |
 |--------------|---------|---------|----------|------|
@@ -151,12 +145,3 @@ You can create more than 50 different shapes using [createMultipointShape(points
 | shape      | showLabel  | horzLabelsAlign | vertLabelsAlign | textcolor | fontsize | bold  | italic |
 |------------|------------|-----------------|-----------------|-----------|----------|------ |--------|
 | price_note | FALSE      | center          | bottom          | #2962FF   | 14       | FALSE | FALSE  |
-
-Possible values of some properties:
-
-* `linestyle`: `[0 (solid), 1 (dotted), 2 (dashed), 3 (large dashed)]`
-* `linewidth`: `[1, 2, 3, 4]`
-* `horzLabelsAlign`: `["center", "left", "right"]`
-* `vertLabelsAlign`: `["top", "middle", "bottom"]`
-* `leftEnd`, `rightEnd`: `[0 (Normal), 1 (Arrow)]`
-* `bars_pattern` - `mode`: `[0 (HL Bars, 1 (Line-Close), 2 (OC Bars), 3 (Line-Open), 4 (Line-High), 5 (Line-Low), 6 (Line-HL/2)]`

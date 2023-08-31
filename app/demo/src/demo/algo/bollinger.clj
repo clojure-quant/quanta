@@ -7,6 +7,7 @@
    [ta.helper.window :refer [drop-beginning calc-trailing-true-counter]]
    [ta.algo.manager :refer [add-algo]]
    [ta.tradingview.chart.color :refer [color]]
+   [ta.tradingview.chart.plot :refer [plot-type]]
    ))
 
 (defn add-bollinger-indicator
@@ -87,9 +88,9 @@
                        }}
            {:volume {:type "line" 
                      :color (color :gold)
+                     :plottype (plot-type :columns)
                      }}] ;
-  :options {:w :stocks
-            :symbol "SPY"
+  :options {:symbol "SPY"
             :frequency "D"
             :sma-length 30
             :stddev-length 30

@@ -4,7 +4,10 @@
    [tech.v3.datatype :as dtype]
    [ta.algo.manager :refer [add-algo]]
    [astro.moon :refer [inst->moon-phase-kw phase->text]]
-   [ta.tradingview.shape.core :as shapes]))
+   [ta.tradingview.shape.core :as shapes] 
+   [ta.tradingview.chart.plot :refer [plot-type]]
+    [ta.tradingview.chart.color :refer [color]]
+   ))
 
 (defn add-moon-indicator [ds-bars _]
   (tc/add-column
@@ -20,10 +23,23 @@
       :hold)
     :hold))
 
+(defn buy-signal->text [signal]
+  (if (= signal :buy)
+    1.0
+    nil))
+
+(defn add-buy-signal-bool [ds-bars]
+  (tc/add-column
+   ds-bars
+   :signal-text
+   (dtype/emap buy-signal->text :bool (:signal ds-bars))))
+
 (defn moon-signal [ds-bars options]
   (let [ds-study (add-moon-indicator ds-bars options)
         signal (into [] (map calc-moon-signal (:phase ds-study)))]
-    (tc/add-columns ds-study {:signal signal})))
+    (-> ds-study
+        (tc/add-columns {:signal signal})
+        (add-buy-signal-bool))))
 
 ;; SHAPES 
 
@@ -49,13 +65,21 @@
    (shapes/line-horizontal 350.55)
    (shapes/gann-square 1643846400 350.0 1648944000  550.0)])
 
+
+
 (add-algo
  {:name "moon"
   :comment "very good - 2:1"
   :algo moon-signal
-  :charts [nil ; {:trade "flags"}
-           {:volume "column"}]
+  :charts [;nil ; {:trade "flags"}
+           ;{:trade "chars" #_"arrows"}
+           {:signal-text {:type "chars" 
+                          :char "!" 
+                          :textColor (color :steelblue)
+                          ;:title "moon-phase-fullmoon" ; title is not working
+                          }}
+           {:volume {:type "line" :plottype (plot-type :columns)}}] 
   :shapes moon-phase-shapes ; fixed-shapes
-  :options {:w :stocks
-            :symbol "SPY"
+  :options {:symbol "SPY"
             :frequency "D"}})
+

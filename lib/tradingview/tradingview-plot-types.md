@@ -1,9 +1,8 @@
 
-
-Colors:
-You need to return color codes supported by tradingview.
-for this you can use (color :red)
-
+# color hex/rgba codes
+- Colors:
+- You need to return color codes supported by tradingview.
+- for this you can use (color :red)
 
 
 
@@ -27,6 +26,8 @@ for this you can use (color :red)
 * `trackPrice`- boolean
 
 ## Shapes
+
+Location value for plotshape, plotchar functions. Shape is plotted near the top chart border.
 
 * `type`- 'shapes'
 * `visible`- boolean
@@ -57,6 +58,10 @@ for this you can use (color :red)
 * `textColor`- string
 
 ## Chars
+The main
+difference between plotshape and plotchar is that with plotchar, the shape is an ASCII or Unicode symbol (provided it’s supported by the TradingView standard font) defined with the char parameter.
+
+The default character is ★ (U+2605, the “BLACK STAR” character). It’s possible to use any letter or digit and many symbols, for example: ❤, ☀, €, ⚑, ❄, ◆, ⬆, ⬇. The supported character codes are those of the Trebuchet MS font family.
 
 * `type`- 'chars'
 * `visible`- boolean
