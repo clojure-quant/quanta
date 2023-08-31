@@ -1,6 +1,6 @@
 (ns demo.goldly.repl.tradingview.algo
   (:require
-   [eval.cljs-eval :refer [eval-code!]]))
+   [reval.cljs-eval :refer [eval-code!]]))
 
 (eval-code!
  (+ 5 5))

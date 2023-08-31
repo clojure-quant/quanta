@@ -5,7 +5,6 @@
 (eval-code!
  (+ 5 5))
 
-
 (eval-code!
  (ta.tradingview.goldly.interact/add-study
   "Moving Average" [30 "close"]))
