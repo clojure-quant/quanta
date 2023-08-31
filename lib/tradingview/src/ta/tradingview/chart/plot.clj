@@ -80,3 +80,16 @@
 (defn shape [shape-kw]
   (or (get shape-types shape-kw)
       (:cross shape-types)))
+ 
+
+ (def text-sizes 
+   {:auto "auto"
+    :tiny "tiny"
+    :small "small"
+    :normal "normal"
+    :huge "huge"})
+
+ 
+(defn text-size [size-kw]
+  (or (get text-sizes size-kw)
+      (:auto text-sizes)))
