@@ -1,7 +1,6 @@
 (ns demo.goldly.page.tvalgo
   (:require
    [reagent.core :as r]
-   [re-frame.core :as rf]
    [goldly.service.core :refer [run-a]]
    [goldly.page :as page]
    [input]

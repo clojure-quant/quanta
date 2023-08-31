@@ -134,3 +134,7 @@
 ;widget.activeChart().setPriceToBarRatio(0.7567, { disableUndo: true });
 ;widget.activeChart () .getPanes () [1] .moveTo (0);
 ;widget.activeChart () .getTimeScaleLogicalRange ()
+
+
+(eval-code!
+   (ta.tradingview.goldly.interact2/set-layout "2h"))

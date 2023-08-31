@@ -76,7 +76,7 @@
            {:signal-text {:type "chars" 
                           :char "!" 
                           :textColor (color :steelblue)
-                          ;:title "moon-phase-fullmoon" ; title is not working
+                          :title "moon-phase-fullmoon" ; title should show up in pane settings
                           }}
            {:volume {:type "line" :plottype (plot-type :columns)}}] 
   :shapes moon-phase-shapes ; fixed-shapes

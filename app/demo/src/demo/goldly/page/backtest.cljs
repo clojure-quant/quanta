@@ -6,8 +6,8 @@
    [ui.highcharts :refer [highstock]]
    [input]
    [ta.tradingview.goldly.tradingview :refer [ tradingview-chart]]
-   [ta.tradingview.goldly.interact :refer [tv-widget-atom wrap-chart-ready add-shape]]
-   [ta.tradingview.goldly.interact2 :refer [set-symbol chart-active]]
+   [ta.tradingview.goldly.interact :refer [tv-widget-atom ]]
+   [ta.tradingview.goldly.interact2 :refer [set-symbol chart-active wrap-chart-ready add-shape]]
    [demo.goldly.lib.ui :refer [link-href]]
    [demo.goldly.view.backtest :refer [navs-chart navs-view roundtrips-view metrics-view]]
    [demo.goldly.view.aggrid :refer [study-table]]
@@ -64,7 +64,7 @@
 (defn add-marks-to-tv [tradingview-server]
   (when-let [marks (:marks tradingview-server)]
     ;(println "adding " (count marks) "marks to tv")
-    (doall (map #(add-shape (:points %) (assoc (:override %) :disableUndo true)) marks)))
+    (doall (map #(add-shape @tv-widget-atom (:points %) (assoc (:override %) :disableUndo true)) marks)))
     )
 
 (defn clear-marks-tv []
@@ -77,7 +77,7 @@
     (when (not (= [algo opts] tradingview-state))
       ;(info (str "changing tv data for running algo for: " algo "opts: " opts))
       (swap! algo-state assoc :tradingview-state [algo opts])
-      (wrap-chart-ready
+      (wrap-chart-ready @tv-widget-atom
        (fn []
          (clear-marks-tv)
          (set-symbol @tv-widget-atom (:symbol opts) "1D")
@@ -86,7 +86,7 @@
 
 (defn tv-data [tradingview-server]
   (when tradingview-server
-    (wrap-chart-ready
+    (wrap-chart-ready @tv-widget-atom
      (fn []
        (add-marks-to-tv tradingview-server)))
     nil))
