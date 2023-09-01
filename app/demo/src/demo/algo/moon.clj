@@ -54,6 +54,7 @@
   )
 
 (defn moon-phase-shapes [user-options epoch-start epoch-end]
+  ; todo: change api, so that it will add the ds also.
   (shapes/algo-col->shapes
    "moon"
    user-options epoch-start epoch-end
@@ -79,7 +80,7 @@
                           :title "moon-phase-fullmoon" ; title should show up in pane settings
                           }}
            {:volume {:type "line" :plottype (plot-type :columns)}}] 
-  :shapes moon-phase-shapes ; fixed-shapes
+ ; :shapes moon-phase-shapes ; fixed-shapes
   :options {:symbol "SPY"
             :frequency "D"}})
 
