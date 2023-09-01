@@ -5,10 +5,12 @@
    [tick.core :as t]
    [ta.helper.date :refer [parse-date epoch-second->datetime ->epoch-second ]]
    [ta.algo.manager :refer [add-algo]]
-   [ta.tradingview.chart.plot :refer [plot-type]]
+   [ta.tradingview.chart.plot :refer [plot-type linestyle]]
    [ta.tradingview.chart.shape :as shapes2] 
    [ta.tradingview.chart.color :refer [color]]
    ))
+
+
 
 (def d parse-date)
 
@@ -104,8 +106,11 @@
                        {:linecolor (if (= direction :long)
                                      (color :lightgreen)
                                      (color :lightsalmon))
+                        :linestyle (linestyle :dashed)
                         :text (str direction)
-                                     }
+                        :showLabel true
+                        :leftEnd 1
+                        :rightEnd 1}
                        )])
 
 (defn roundtrip-shapes [options epoch-start epoch-end]
