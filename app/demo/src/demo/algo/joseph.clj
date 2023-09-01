@@ -44,7 +44,7 @@
 (defn load-trades []
   (->> (slurp "../resources/trades.edn")
        (edn/read-string)
-       (filter #(= :equity (:category %)))
+       ;(filter #(= :equity (:category %)))
        (map #(update % :entry-date parse-date))
        (map #(update % :exit-date parse-date))
       ))
@@ -56,7 +56,12 @@
 (comment 
   (-> (load-trades-demo) count)
    (-> (load-trades) count)
-   (->> (load-trades) (map :symbol) (into #{}) (into []))
+   (->> (load-trades) 
+        (filter #(= :future (:category %))) 
+        (map :symbol)
+        (into #{}) 
+        (into []))
+   ;; => ["ZC" "DAX" "M2K" "MNQ" "BZ" "RB" "MYM" "MES" "NG"]
    ;; => ["RIVN" "GOOGL" "FCEL" "NKLA" "INTC" "FRC" "AMZN" "WFC" "PLTR"]
 
   )

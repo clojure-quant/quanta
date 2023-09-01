@@ -14,6 +14,8 @@
 
   :alphavantage {:start (ta.data.alphavantage/set-key!
                          (:alphavantage (clip/ref :secrets)))}
-
+  
+  :quandl {:start (ta.data.quandl/set-key!
+                  (:quandl (clip/ref :secrets)))}
 ;
   }}
