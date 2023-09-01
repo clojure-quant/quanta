@@ -11,6 +11,9 @@
    [demo.algo.bollinger]
    ; astro
    [demo.algo.moon]
-   [demo.algo.astro]))
+   [demo.algo.astro]
+   ; joseph
+   [demo.algo.joseph]
+   ))
 
 ;; this ns is purely side effects ...

@@ -2,6 +2,7 @@
   (:require
    [reval.cljs-eval :refer [eval-code!]]))
 
+
 (eval-code!
  (+ 5 5))
 
@@ -11,20 +12,41 @@
 ;; https://github.com/bitblockart/tradingview-charting-library/blob/master/wiki/Shapes-and-Overrides.md
 
 (eval-code!
- (tv/add-shape [{:time 1644364800}] {:shape "vertical_line"})) ; feb 9
+ (ta.tradingview.goldly.interact2/add-shape
+  @ta.tradingview.goldly.interact/tv-widget-atom
+  [{:time 1644364800}] {:shape "vertical_line"})) ; feb 9
 
 (eval-code!
- (tv/add-shape [{:time 1652054400}]
-               {:shape "vertical_line"
-                :disableSave true ; prevents saving the shape on the chart
-                :disableUndo true ; prevents adding of the action to the undo stack
-                }))
+ (ta.tradingview.goldly.interact2/add-shape
+  @ta.tradingview.goldly.interact/tv-widget-atom
+   [{:time 1652054400}]
+     {:shape "vertical_line"
+      :disableSave true ; prevents saving the shape on the chart
+      :disableUndo true ; prevents adding of the action to the undo stack
+      }))
+
 (eval-code!
- (tv/add-shape [{:time 1655683200
-                 :price 5000
-                  ;:offset 1000
-                 }]
-               {:shape "vertical_line"}))
+ (ta.tradingview.goldly.interact2/add-shape
+  @ta.tradingview.goldly.interact/tv-widget-atom
+  [{:price 360.11}]
+  {:shape "horizontal_line"
+   ;:disableSave true ; prevents saving the shape on the chart
+   ;:disableUndo true ; prevents adding of the action to the undo stack
+   :text "AASDFASDFSDF"
+   :overrides {:showLabel true}
+   
+   }))
+
+
+
+(eval-code!
+ (ta.tradingview.goldly.interact2/add-shape
+  @ta.tradingview.goldly.interact/tv-widget-atom
+  [{:time 1655683200
+    :price 5000
+    ;:offset 1000
+    }]
+  {:shape "vertical_line"}))
 
 ; june 20
 
@@ -35,7 +57,9 @@
 ;; https://github.com/rosejn/replchart
 
 (eval-code!
- (tv/add-shape [{:time 1644364800
+ (ta.tradingview.goldly.interact2/add-shape
+  @ta.tradingview.goldly.interact/tv-widget-atom
+  [{:time 1644364800
                   ;:price 135.0
                  }]
                {;:shape "arrow_up" ; arrow_down arrow_left arrow_right price_label arrow_marker flag
@@ -52,8 +76,12 @@
                  ;textcolor=color.new(color.white, 0)
                 :offset 1000
                  ;:size size.auto
-                :channel "close " ; if price not set => open, high, low, close. 
+                :channel "close" ; if price not set => open, high, low, close. 
                 }))
+
+
+
+
 (eval-code!
  (tv/add-shape
   [{:time 1625764800.0 :price 250.0}

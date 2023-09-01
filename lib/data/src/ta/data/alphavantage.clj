@@ -229,7 +229,7 @@
            :outputsize (name size)
            :datatype "json"}
           (fn [response]
-            (println "response: " response)
+            ;(println "response: " response)
             (println "information: " (:Information response))
             (convert-bars- symbol :daily response))))
 

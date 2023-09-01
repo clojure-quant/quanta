@@ -174,16 +174,16 @@
     (do  (println "NO MARKS - algo not found: " name)
          [])))
 
-(defn algo-shapes [name symbol frequency user-options epoch-start epoch-end]
-  (if-let [{:keys [shapes options]} (get-algo name)]
+(defn algo-shapes [algo-name user-options epoch-start epoch-end]
+  (if-let [{:keys [shapes options]} (get-algo algo-name)]
     (if shapes
       (let [options (merge options user-options)
-            data (shapes symbol frequency options epoch-start epoch-end)]
-        (println "SHAPE [" (count data) "]" name symbol epoch-start epoch-end)
+            data (shapes options epoch-start epoch-end)]
+        (println "SHAPE [" (count data) "]" algo-name (:symbol options) epoch-start epoch-end)
         data)
-      (do (println "NO SHAPES - " name "does not define a shapes fn.")
+      (do (println "NO SHAPES - " algo-name "does not define a shapes fn.")
           []))
-    (do  (println "NO SHAPES - algo not found: " name)
+    (do  (println "NO SHAPES - algo not found: " algo-name)
          [])))
 
 (comment

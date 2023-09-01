@@ -18,7 +18,9 @@
 
 (defonce algo-state
   (r/atom {:algos []
-           :symbols ["TLT" "SPY" "QQQ" "EURUSD"]}))
+           :symbols ["TLT" "SPY" "QQQ" "EURUSD"
+                     "RIVN" "GOOGL" "FCEL" "NKLA" "INTC" "FRC" "AMZN" "WFC" "PLTR"
+                     ]}))
 
 (run-a algo-state [:algos]
        'ta.algo.manager/algo-names) ; get once the names of all available algos

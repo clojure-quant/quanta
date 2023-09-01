@@ -4,9 +4,9 @@
    [tech.v3.datatype :as dtype]
    [ta.algo.manager :refer [add-algo]]
    [astro.moon :refer [inst->moon-phase-kw phase->text]]
-   [ta.tradingview.shape.core :as shapes] 
+   [ta.tradingview.chart.shape :as shapes] 
    [ta.tradingview.chart.plot :refer [plot-type]]
-    [ta.tradingview.chart.color :refer [color]]
+   [ta.tradingview.chart.color :refer [color]]
    ))
 
 (defn add-moon-indicator [ds-bars _]
@@ -53,13 +53,13 @@
  ;
   )
 
-(defn moon-phase-shapes [symbol frequency user-options epoch-start epoch-end]
+(defn moon-phase-shapes [user-options epoch-start epoch-end]
   (shapes/algo-col->shapes
    "moon"
-   symbol frequency user-options epoch-start epoch-end
+   user-options epoch-start epoch-end
    :phase cell->shape))
 
-(defn fixed-shapes [symbol frequency user-options epoch-start epoch-end]
+(defn fixed-shapes [user-options epoch-start epoch-end]
   [(shapes/line-vertical 1644364800) ; feb 9
    (shapes/line-vertical 1648944000) ; april 3
    (shapes/line-horizontal 350.55)
