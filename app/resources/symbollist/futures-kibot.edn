@@ -1,0 +1,114 @@
+[
+;; agriculture
+{:symbol "BO" :name "CONTINUOUS SOYBEAN OIL CONTRACT" :category :future}
+{:symbol "C"  :name "CONTINUOUS CORN CONTRACT" :category :future}
+{:symbol "S"  :name "CONTINUOUS SOYBEANS CONTRACT" :category :future}
+{:symbol "W"  :name "CONTINUOUS WHEAT CONTRACT" :category :future}
+{:symbol "SM" :name "CONTINUOUS SOYBEAN MEAL CONTRACT" :category :future}
+{:symbol "RR" :name "CONTINUOUS ROUGH RICE CONTRACT" :category :future}
+{:symbol "O"  :name "CONTINUOUS OATS CONTRACT" :category :future}
+{:symbol "LE" :name "CONTINUOUS LIVE CATTLE CONTRACT" :category :future}
+{:symbol "HE" :name "CONTINUOUS LEAN HOGS CONTRACT" :category :future}
+{:symbol "GF" :name "CONTINUOUS FEEDER CATTLE CONTRACT" :category :future}
+;; mini
+{:symbol "YC" :name "CONTINUOUS MINI CORN CONTRACT" :category :future}
+{:symbol "YW" :name "CONTINUOUS MINI WHEAT CONTRACT" :category :future}
+{:symbol "YK" :name "CONTINUOUS MINI SOYBEAN CONTRACT" :category :future}
+
+;; energy
+{:symbol "CL" :name "CONTINUOUS CRUDE OIL CONTRACT" :category :future}
+{:symbol "NG" :name "CONTINUOUS NATURAL GAS CONTRACT" :category :future}
+{:symbol "RB" :name "CONTINUOUS RBOB GASOLINE CONTRACT" :category :future}
+{:symbol "BZ" :name "CONTINUOUS BRENT CRUDE OIL LAST DAY CONTRACT" :category :future}
+{:symbol "HO" :name "CONTINUOUS NEW YORK HARBOR ULSD CONTRACT" :category :future}
+{:symbol "AC" :name "CONTINUOUS ETHANOL CONTRACT" :category :future}
+;; mini
+{:symbol "QM" :name "CONTINUOUS E-MINI CRUDE OIL CONTRACT" :category :future}
+{:symbol "QG" :name "CONTINUOUS E-MINI NATURAL GAS CONTRACT" :category :future}
+
+;; interest rates
+{:symbol "FF" :name "CONTINUOUS 30 DAY FED FUND CONTRACT" :category :future}
+{:symbol "TU" :name "CONTINUOUS 2 YR US TREASURY NOTE CONTRACT" :category :future}
+{:symbol "FV" :name "CONTINUOUS 5 YR US TREASURY NOTE CONTRACT" :category :future}
+{:symbol "TY" :name "CONTINUOUS 10 YR US TREASURY NOTE CONTRACT" :category :future}
+{:symbol "US" :name "CONTINUOUS 30 YR US TREASURY BOND CONTRAC" :category :future}
+{:symbol "UB" :name "CONTINUOUS ULTRA US TREASURY BOND CONTRACT" :category :future}
+{:symbol "TN" :name "CONTINUOUS ULTRA 10 YR US TREASURY NOTE CONTRACT" :category :future}
+
+;; metals
+{:symbol "GC" :name "CONTINUOUS GOLD CONTRACT" :category :future}
+{:symbol "SI" :name "CONTINUOUS SILVER CONTRACT" :category :future}
+{:symbol "PL" :name "CONTINUOUS PLATINUM CONTRACT" :category :future}
+{:symbol "PA" :name "CONTINUOUS PALLADIUM CONTRACT" :category :future}
+{:symbol "HG" :name "CONTINUOUS COPPER CONTRACT" :category :future}
+;; mini 
+{:symbol "QO" :name  "CONTINUOUS E-MINI GOLD CONTRACT" :category :future}
+{:symbol "MGC" :name "CONTINUOUS MICRO GOLD CONTRACT" :category :future}
+{:symbol "QI" :name  "CONTINUOUS E-MINI SILVER CONTRACT" :category :future}
+{:symbol "SIL" :name "CONTINUOUS MICRO SILVER CONTRACT" :category :future}
+
+;; currencies
+{:symbol "EU" :name  "CONTINUOUS EURO FX CONTRACT" :category :future}
+{:symbol "JY" :name  "CONTINUOUS JAPANESE YEN CONTRACT" :category :future}
+{:symbol "BP" :name  "CONTINUOUS BRITISH POUND CONTRACT" :category :future}
+{:symbol "AD" :name  "CONTINUOUS AUSTRALIAN DOLLAR CONTRACT" :category :future}
+{:symbol "CD" :name  "CONTINUOUS CANADIAN DOLLAR CONTRACT" :category :future}
+{:symbol "SF" :name  "CONTINUOUS SWISS FRANC CONTRACT" :category :future}
+{:symbol "PX" :name  "CONTINUOUS MEXICAN PESO CONTRACT" :category :future}
+{:symbol "NE" :name  "CONTINUOUS NEW ZEALAND DOLLAR CONTRACT" :category :future}
+{:symbol "RF" :name  "CONTINUOUS EURO FX/SWISS FRANC CONTRACT" :category :future}
+{:symbol "SIR" :name "CONTINUOUS INR/USD STANDARD CONTRACT" :category :future}
+{:symbol "RU" :name  "CONTINUOUS RUSSIAN RUBLE CONTRACT" :category :future}
+{:symbol "RA" :name  "CONTINUOUS SOUTH AFRICAN RAND CONTRACT" :category :future}
+{:symbol "RP" :name  "CONTINUOUS EURO FX/BRITISH POUND CONTRACT" :category :future}
+{:symbol "BR" :name  "CONTINUOUS BRAZILIAN REAL CONTRACT" :category :future}
+{:symbol "RY" :name  "CONTINUOUS EURO FX/JAPANESE YEN CONTRACT" :category :future}
+{:symbol "SEK" :name "CONTINUOUS SWEDISH KRONA CONTRACT" :category :future}
+{:symbol "AJY" :name "CONTINUOUS AUSTRALIAN $/JAPANESE YEN CONTRACT" :category :future}
+{:symbol "NOK" :name "CONTINUOUS NORWEGIAN KRONE CONTRACT" :category :future}
+{:symbol "PJY" :name "CONTINUOUS BRITISH PD/JAPANSE YEN CONTRACT" :category :future}
+{:symbol "ECD" :name "CONTINUOUS EURO FX/CANADIAN DOLLAR CONTRACT" :category :future}
+{:symbol "EAD" :name "CONTINUOUS EURO FX/AUSTRALIAN $ CONTRACT" :category :future}
+;; mini
+{:symbol "ME" :name  "CONTINUOUS E-MINI EURO FX CONTRACT" :category :future}
+{:symbol "JE" :name  "CONTINUOUS E-MINI JAPANESE YEN CONTRACT" :category :future}
+{:symbol "M6E" :name "CONTINUOUS E-MICRO EUR/USD CONTRACT" :category :future}
+{:symbol "M6A" :name "CONTINUOUS E-MICRO AUD/USD CONTRACT" :category :future}
+{:symbol "MCD" :name "CONTINUOUS E-MICRO CAD/USD CONTRACT" :category :future}
+{:symbol "M6B" :name "CONTINUOUS E-MICRO GBP/USD CONTRACT" :category :future}
+{:symbol "MSF" :name "CONTINUOUS E-MICRO CHF/USD CONTRACT" :category :future}
+
+;; stock index
+{:symbol "VX" :name "CONTINUOUS CBOE VOLATILITY INDEX (VIX) CONTRACT" :category :future}
+{:symbol "BTC" :name "CONTINUOUS BITCOIN FUTURES CONTRACT" :category :future}
+{:symbol "NIY" :name "CONTINUOUS NIKKEI 225 YEN INDEX CONTRACT" :category :future}
+{:symbol "NKD" :name "CONTINUOUS NIKKEI 225 DOLLAR INDEX CONTRACT" :category :future}
+
+;; mini
+{:symbol "ES" :name  "CONTINUOUS E-MINI S&P 500 CONTRACT" :category :future}
+{:symbol "YM" :name  "CONTINUOUS E-MINI DOW JONES $5 CONTRACT" :category :future}
+{:symbol "NQ" :name  "CONTINUOUS E-MINI NASDAQ 100 CONTRACT" :category :future}
+{:symbol "RTY" :name "CONTINUOUS E-MINI RUSSELL 2000 CONTRACT" :category :future}
+{:symbol "EMD" :name "CONTINUOUS E-MINI S&P MIDCAP 400 CONTRACT" :category :future}
+{:symbol "XAE" :name "CONTINUOUS E-MINI S&P 500 ENERGY SECTOR CONTRACT" :category :future}
+{:symbol "XAF" :name "CONTINUOUS E-MINI S&P 500 FINANCIAL SECTOR CONTRACT" :category :future}
+{:symbol "XAU" :name "CONTINUOUS E-MINI S&P 500 UTILITIES SECTOR CONTRACT" :category :future}
+{:symbol "XAV" :name "CONTINUOUS E-MINI S&P 500 HEALTH CARE SECTOR CONTRACT" :category :future}
+{:symbol "XAK" :name "CONTINUOUS E-MINI S&P 500 TECHNOLOGY SECTOR CONTRACT" :category :future}
+{:symbol "XAP" :name "CONTINUOUS E-MINI S&P 500 CONSUMER STAPLES CONTRACT" :category :future}
+{:symbol "XAY" :name "CONTINUOUS E-MINI S&P 500 CONSUMER DISCRETIONARY CONTRACT" :category :future}
+{:symbol "XAI" :name "CONTINUOUS E-MINI S&P 500 INDUSTRIAL SECTOR CONTRACT" :category :future}
+{:symbol "XAB" :name "CONTINUOUS E-MINI S&P 500 MATERIALS SECTOR CONTRACT" :category :future}
+;
+]
+
+
+
+
+
+
+
+
+
+
+

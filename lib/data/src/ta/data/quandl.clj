@@ -13,10 +13,23 @@
 
 ; quandl has been purchased by nasdaq
 ; https://docs.data.nasdaq.com/v1.0/docs/getting-started
-
+; https://data.nasdaq.com/search
 
 ; continuous futures
 ; https://static.quandl.com/Ticker+CSV%27s/Futures/continuous.csv
+
+
+; university of michigan - consumer sentiment
+;https://data.nasdaq.com/data/UMICH/SOC35-university-of-michigan-consumer-surveybuying-conditions-for-large-household-goods
+
+;; merrill lynch yield data
+; https://data.nasdaq.com/data/ML-corporate-bond-yield-rates
+
+; inflation data
+; https://data.nasdaq.com/data/RATEINF-inflation-rates
+
+; london buillion market
+; https://data.nasdaq.com/data/LBMA-london-bullion-market-association
 
 (defn- space->dash [s]
    (str/replace s #" " "-"))
@@ -75,11 +88,17 @@
     ;  (throw (ex-info (:retMsg result) result))
     ))
 
+; 4.6 million datasets
+#_(make-request "https://www.quandl.com/api/v3/datasets/" 
+              {:per_page 5000})
+
+
+
 ; CHRIS/CME_HG13.xml?api_key=JFT3-kxtkx-SS-o5wSee
 ; :Quandl-Code "CHRIS/CME_B3"
 (def base-url "https://data.nasdaq.com/api/v3/datasets/")
 
-(defn quandl-request [quandl-symbol opts]
+(defn quandl-request-raw [quandl-symbol opts]
   (let [query-params (merge opts {:api_key @api-key})
         url (str base-url quandl-symbol ".json")
         _ (info "quandl-request url: " url " opts: " opts)
@@ -88,9 +107,18 @@
     ; {:dataset
     ;   {:description {:column_names ["Date" "Previous Settlement"],}
     ;    :data [["2021-06-29" 302.0] ...]
+    result
+    ))
+
+(defn quandl-request [quandl-symbol opts]
+  (let [result (quandl-request-raw quandl-symbol opts)]
     {:data (get-in result [:dataset :data])
-     :columns (get-in result [:dataset :column_names])
-     }))
+     :columns (get-in result [:dataset :column_names])}))
+
+(defn quandl-metadata [quandl-symbol opts]
+   (let [result (quandl-request-raw quandl-symbol opts)]
+     (-> (get-in result [:dataset])
+         (dissoc :data))))
 
 ; single date: end_date=2021-06-29
 ; date range: start_date=2021-06-25 end_date=2021-06-29
@@ -145,4 +173,8 @@
         cfut-symbol (str quandl-symbol "1")]
      (quandl-request cfut-symbol opts)))
 
-(cfuture-request "FDAX" {})
+(comment 
+   (cfuture-request "FDAX" {})  
+  
+  )
+
