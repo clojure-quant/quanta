@@ -12,10 +12,6 @@
    [ta.data.helper :refer [str->float]]))
 
 
-
-
-
-
 ;; ApiKey Management
 
 (defonce api-key (atom {:user "guest" :password "guest"}))
@@ -32,7 +28,10 @@
 (defn make-request [url query-params]
   (let [result (-> (http/get url
                              {:accept :json
-                              :query-params query-params})
+                              :query-params query-params
+                              :socket-timeout 3000 
+                              :connection-timeout 3000
+                              })
                    (:body)
                    ;(cheshire/parse-string true)
                    )]
@@ -57,25 +56,15 @@
     (make-request base-url
                   {:action "status"}))
 
-(login)
-(status)
-
-http://api.kibot.com/?action=history
-&symbol=[symbol]
-&interval=[interval]
-&period=[period]
-&startdate=[startdate]
-&enddate=[enddate]
-&regularsession=[regularsession]
-&unadjusted=[unadjusted]
-&splitadjusted=[splitadjusted]
-&type=[type]
-&attach=[attach]
-&timezone=[timezone]
+(comment 
+  (login)
+  (status) 
+  ;
+  )
 
 (defn history [opts]
   (let [{:keys [user password]} @api-key]
-    (info "loing user: " user "pwd: " password)
+    (info "login user: " user "pwd: " password)
     (make-request base-url
                   (merge 
                      {:action "history"
@@ -90,23 +79,25 @@ http://api.kibot.com/?action=history
           })
 
 
-(history {:symbol "SPY"
+(history {:symbol "SIL" ; SIL - ETF
           :interval "daily"
-          :period 10
+          :period 1
           :type "ETF" ; Can be stocks, ETFs forex, futures.
           :timezone "UTC"
           :splitadjusted 1
           })
 
+
 ; futures
 ; http://www.kibot.com/historical_data/Futures_Historical_Tick_with_Bid_Ask_Data.aspx
 
-(history {:symbol "ES"
+(history {:symbol "SIL" ; SIL - FUTURE
           :interval "daily"
-          :period 10
+          :period 1
           :type "futures" ; Can be stocks, ETFs forex, futures.
           :timezone "UTC"
           :splitadjusted 1})
+
 
 
 (comment 
