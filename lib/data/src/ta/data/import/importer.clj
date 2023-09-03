@@ -1,11 +1,11 @@
-(ns ta.warehouse.since-importer
+(ns ta.warehouse.data.import.importer
   (:require
    [taoensso.timbre :refer [info warn error]]
    [tech.v3.dataset :as tds]
    [tablecloth.api :as tablecloth]
    [ta.warehouse :as wh]
    [ta.helper.print :as h]
-   [ta.data.helper :as data-helper]))
+   [ta.data.api.helper :as data-helper]))
 
 ; init symbols - download complete timeseries once and save to disk.
 

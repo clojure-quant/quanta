@@ -4,7 +4,9 @@
    [clojure.java.io :as java-io]
    [clojure.edn :as edn]
    [taoensso.timbre :refer [debug info warnf error]]
-   [modular.config :refer [get-in-config] :as config]))
+   [modular.config :refer [get-in-config] :as config]
+   [ta.warehouse.symbol-db :as db]
+   ))
 
 (defn get-lists []
   (get-in-config [:ta :warehouse :lists]))
@@ -44,8 +46,12 @@
        (apply concat)))
 
 
-(defn load-lists-from-config []
-  (load-lists-full (get-in-config [:ta :warehouse :lists])))
+(defn add-lists-to-db []
+  (let [symbols (load-lists-full (get-in-config [:ta :warehouse :lists]))]
+    (doall (map db/add symbols))
+    
+    ))
+  
 
 
 

@@ -1,4 +1,4 @@
-(ns ta.data.alphavantage
+(ns ta.data.api.alphavantage
   (:require
    [taoensso.timbre :refer [info warn error]]
    [clj-http.client :as client]

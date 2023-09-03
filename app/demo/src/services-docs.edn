@@ -11,10 +11,14 @@
     ;  :ns-require {:start (modular.require/require-namespaces
     ;                      (:ns-clj (deref (clip/ref :config))))}
 
-  :alphavantage {:start (ta.data.alphavantage/set-key!
+  
+  :symbol-lists {:start (ta.warehouse.symbollist/add-lists-to-db)
+                 }
+
+  :alphavantage {:start (ta.data.api.alphavantage/set-key!
                          (:alphavantage (clip/ref :secrets)))}
   
-  :quandl {:start (ta.data.quandl/set-key!
+  :quandl {:start (ta.data.api.quandl/set-key!
                   (:quandl (clip/ref :secrets)))}
 
 ; goldly service returns {:ns-clj :webly           ; this are used to start clj-require and webly

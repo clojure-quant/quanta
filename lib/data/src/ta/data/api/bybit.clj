@@ -1,4 +1,4 @@
-(ns ta.data.bybit
+(ns ta.data.api.bybit
   (:require
    [taoensso.timbre :refer [info]]
    [clj-http.client :as http]

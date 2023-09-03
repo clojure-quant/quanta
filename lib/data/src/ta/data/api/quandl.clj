@@ -1,4 +1,4 @@
-(ns ta.data.quandl
+(ns ta.data.api.quandl
   (:require
    [clojure.string :as str]
    [clojure.set]
@@ -58,7 +58,7 @@
   (let [data (->> (load-cfutures-csv "../resources/cfutures.csv")
                   (map convert-instrument-spec)
                   (into []))]
-    (spit "../resources/symbollist/cfutures.edn" data)))
+    (spit "../resources/symbollist/futures-quandl.edn" data)))
 
 (comment
   (write-symbollist)
@@ -154,7 +154,7 @@
 (def quandl-symbol-dict (atom {}))
 
 (defn load-db []
-  (->> (slurp "../resources/symbollist/cfutures.edn")
+  (->> (slurp "../resources/symbollist/futures-quandl.edn")
       (edn/read-string)
       (map (fn [row]
              [(:symbol row) (:Quandl-Code row)]))

@@ -69,6 +69,8 @@
  :ta {:warehouse {:list "../resources/symbollist/"
                   :series  {:crypto "../../output/db/crypto/"
                             :stocks "../../output/db/stocks/"
+                            :fx "../../output/db/fx/"
+                            :futures "../../output/db/futures/"
                             :random "../../output/db/random/"
                             :shuffled  "../../output/db/shuffled/"}
                   :lists ["crypto"
@@ -81,7 +83,9 @@
                           "equity-region-country"
                           "equity-sector-industry"
                           "equity-style"
-                          "test"]}
+                          "test"
+                          "futures-kibot"
+                          ]}
       :tradingview {:charts-path   "../../output/tradingview-charts/"
                     :template-path "../resources/tradingview-templates/"
                     :marks-path "../../data/"}}

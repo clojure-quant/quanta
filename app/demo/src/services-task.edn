@@ -17,5 +17,7 @@
   
   :quandl {:start (ta.data.quandl/set-key!
                   (:quandl (clip/ref :secrets)))}
+  
+  :symbol-lists {:start  (ta.warehouse.symbollist/add-lists-from-config-to-db)}
 ;
   }}

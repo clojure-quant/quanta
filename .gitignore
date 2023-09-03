@@ -40,6 +40,7 @@ app/demo/certs
 /output/db/random/*.nippy.gz
 /output/db/shuffled/*.nippy.gz
 /output/tradingview-charts
+/output/
 .clj-kondo
 *~
 \#*\#

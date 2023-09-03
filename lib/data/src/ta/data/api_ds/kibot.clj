@@ -1,12 +1,11 @@
-(ns ta.data-ds.kibot
+(ns ta.data.api-ds.kibot
   (:require
    [clojure.java.io :as io]
    [tick.core :as t]
    [tech.v3.dataset :as tds]
    [tablecloth.api :as tc]
-   [ta.data.kibot :as kibot]
-   [ta.warehouse :as wh]
-   [ta.warehouse.since-importer :as since-importer]))
+   [ta.data.api.kibot :as kibot]
+   [ta.warehouse.symbol-db :as db]))
 
 (defn string->stream [s]
   (io/input-stream (.getBytes s "UTF-8")))
@@ -47,3 +46,53 @@
  
  ;
 )
+
+(def category-mapping
+  {:equity "stocks"
+   :etf "ETF"
+   :future "futures"
+   :fx "forex"})
+
+(defn symbol->provider [symbol]
+  (let [{:keys [category kibot] :as instrument} (db/instrument-details symbol)
+        type (get category-mapping category)
+        symbol (if kibot kibot symbol)
+        ]
+    {:type type
+     :symbol symbol}))
+
+(def interval-mapping
+   {"D" "daily"})
+
+
+(defn get-series [symbol interval range opts]
+  (let [symbol-map (symbol->provider symbol)
+        period (get interval-mapping interval)
+        ]
+    (-> (merge symbol-map
+               {:interval period
+                :period 1
+                :timezone "UTC"
+                :splitadjusted 1})
+        (kibot/history) 
+        (kibot-result->dataset))))
+
+
+(comment 
+    (symbol->provider "MSFT")
+
+    (get-series "MSFT"
+                "D"
+                {:from "2000"}
+                {})
+  
+  
+  (symbol->provider "IBM")
+  
+  (get-series "IBM"
+              "D"
+              {:from "2000"}
+              {})
+  
+  )
+

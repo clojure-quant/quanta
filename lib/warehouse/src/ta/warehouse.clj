@@ -2,6 +2,7 @@
   (:require
    [clojure.java.io :as java-io]
    [taoensso.timbre :refer [debug info warnf error]]
+   [babashka.fs :refer [create-dirs]]
    [tech.v3.io :as io]
    ;[taoensso.nippy :as nippy]
    [tablecloth.api :as tc]
@@ -15,7 +16,10 @@
     (str p symbol ".nippy.gz")))
 
 (defn save-ts [wkw ds name]
-  (let [s (io/gzip-output-stream! (filename-ts wkw name))]
+  (let [dir (get-in-config [:ta :warehouse :series wkw]) 
+        _ (do ;(info "creating dir: " dir)
+              (create-dirs dir))
+        s (io/gzip-output-stream! (filename-ts wkw name))]
     (info "saving series " name " count: " (tc/row-count ds))
     (io/put-nippy! s ds)))
 

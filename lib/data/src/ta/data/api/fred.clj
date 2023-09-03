@@ -1,4 +1,4 @@
-(ns ta.data.fred
+(ns ta.data.api.fred
   (:require
    [clj-http.client :as client]
    [cheshire.core] ; JSON Encoding

@@ -9,7 +9,7 @@
    [tech.v3.datatype.functional :as dfn]
    [ta.helper.date :refer [parse-date now-datetime]]
    [ta.warehouse :refer [exists-symbol? load-symbol]]
-   [ta.warehouse.symbol-db :refer [determine-wh]]
+   [ta.data.settings :refer [determine-wh]]
    [ta.gann.box :refer [get-boxes-in-window make-root-box zoom-out zoom-in]]
    [ta.gann.db :refer [get-root-box]]))
 

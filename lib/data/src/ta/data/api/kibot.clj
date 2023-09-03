@@ -1,15 +1,12 @@
-(ns ta.data.kibot
+(ns ta.data.api.kibot
   (:require
    [clojure.string :as str]
    [clojure.set]
    [taoensso.timbre :refer [info warn error]]
-   [charred.api :as charred]
    [clojure.edn :as edn]
    [clj-http.client :as http]
    [cheshire.core :as cheshire] ; JSON Encoding
-   [throttler.core]
-   [ta.helper.date :refer [parse-date]]
-   [ta.data.helper :refer [str->float]]))
+   [throttler.core]))
 
 
 ;; ApiKey Management
@@ -73,38 +70,41 @@
                       opts)
                   )))
 
-(history {:symbol "AAPL"
-          :interval "daily"
-          :period 10
-          })
-
-
-(history {:symbol "SIL" ; SIL - ETF
-          :interval "daily"
-          :period 1
-          :type "ETF" ; Can be stocks, ETFs forex, futures.
-          :timezone "UTC"
-          :splitadjusted 1
-          })
-
-
-; futures
-; http://www.kibot.com/historical_data/Futures_Historical_Tick_with_Bid_Ask_Data.aspx
-
-(history {:symbol "SIL" ; SIL - FUTURE
-          :interval "daily"
-          :period 1
-          :type "futures" ; Can be stocks, ETFs forex, futures.
-          :timezone "UTC"
-          :splitadjusted 1})
 
 
 
 (comment 
+  
+   (history {:symbol "AAPL"
+             :interval "daily"
+             :period 10})
+
+
+   (history {:symbol "SIL" ; SIL - ETF
+             :interval "daily"
+             :period 1
+             :type "ETF" ; Can be stocks, ETFs forex, futures.
+             :timezone "UTC"
+             :splitadjusted 1})
+
+   ; futures
+   ; http://www.kibot.com/historical_data/Futures_Historical_Tick_with_Bid_Ask_Data.aspx
+
+   (history {:symbol "SIL" ; SIL - FUTURE
+             :interval "daily"
+             :period 1
+             :type "futures" ; Can be stocks, ETFs forex, futures.
+             :timezone "UTC"
+             :splitadjusted 1})
+
+
    (-> (slurp "../resources/symbollist/futures-kibot.edn")
        (edn/read-string)
        count)
    ;; => 83
+  
+
+
 
 ;  
   )

@@ -4,7 +4,7 @@
    [tech.v3.datatype.functional :as fun]
    [tablecloth.api :as tc]
    [ta.warehouse :as wh]
-   [ta.warehouse.symbol-db :refer [determine-wh ]]
+   [ta.data.settings :refer [determine-wh ]]
    [ta.helper.ago :refer [xf-future]]
    [ta.backtest.signal :refer [trade-signal]]
    [ta.backtest.position-pl :refer [position-pl]]))

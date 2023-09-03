@@ -1,37 +1,27 @@
 (ns ta.warehouse.symbol-db
   (:require
    [clojure.string :refer [includes? lower-case blank?]]
-   [taoensso.timbre :refer [trace debug info warnf error]]
-   [ta.warehouse.symbollist :refer [load-lists-from-config]]))
+   [taoensso.timbre :refer [trace debug info warnf error]]))
 
-(defn symbollist->dict [l]
-  (let [s-name (juxt :symbol identity)
-        dict (into {} (map s-name l))]
-    dict))
-
-(comment
-    (->  (ta.warehouse.symbollist/load-lists-full ["fidelity-select" "bonds"])
-       (symbollist->dict))
-;
-)
+(defonce db (atom {}))
 
 (defn sanitize-name [{:keys [symbol] :as instrument}]
   (update instrument :name (fn [name] (if (or (nil? name)
                                               (blank? name))
-                                          (str "Unknown: " symbol)
+                                        (str "Unknown: " symbol)
                                         name))))
-
-(comment 
-    (sanitize-name {:symbol "a"})
-    (sanitize-name {:symbol "a" :name nil})
-    (sanitize-name {:symbol "a" :name ""})
-    (sanitize-name {:symbol "a" :name "test"}) 
+(comment
+  (sanitize-name {:symbol "a"})
+  (sanitize-name {:symbol "a" :name nil})
+  (sanitize-name {:symbol "a" :name ""})
+  (sanitize-name {:symbol "a" :name "test"})
   ;
   )
 
+
 (defn sanitize-category [instrument]
   (update instrument :category (fn [category] (if (nil? category)
-                                                 :equity
+                                                :equity
                                                 category))))
 
 (comment
@@ -42,14 +32,13 @@
   )
 
 
-
 (defn sanitize-exchange [{:keys [category] :as instrument}]
   (update instrument :exchange (fn [exchange] (if (or (nil? exchange)
-                                              (blank? exchange))
-                                           (if (= category :crypto) 
-                                               "BB"
-                                               "SG")
-                                           exchange))))
+                                                      (blank? exchange))
+                                                (if (= category :crypto)
+                                                  "BB"
+                                                  "SG")
+                                                exchange))))
 
 (comment
   (sanitize-exchange {:symbol "a"})
@@ -59,23 +48,34 @@
   ;
   )
 
-(defn load-lists []
-  (->> (load-lists-from-config)
-       (map sanitize-name)
-       (map sanitize-category)
-       (map sanitize-exchange)
-       ))
+
+(defn add [{:keys [symbol] :as instrument}]
+  (let [instrument (-> instrument 
+                       sanitize-name
+                       sanitize-category
+                       sanitize-exchange)]
+   (swap! db assoc symbol instrument)))
+
+
+(comment 
+   (add {:symbol "MSFT" :name "Microsoft"})
+   (add {:symbol "IBM" :name "IBM"})  
+ ; 
+  )
+
+(defn get-instruments []
+  (-> @db vals))
+
 
 (comment 
   (require '[clojure.pprint :refer [print-table]])
-  (-> (load-lists)  
+  (-> (get-instruments)  
       print-table
    )
   ;
   )
 
-(def get-instruments
-  (memoize load-lists))
+
 
 (defn symbols-available [category]
   (->> (get-instruments)
@@ -112,29 +112,9 @@
   )
 
 (defn instrument-details [s]
-  (let [l (get-instruments)
-        d (symbollist->dict l)]
-    (get d s)))
+  (get @db s))
 
-(defn determine-wh [s]
-  (let [{:keys [symbol name category]} (instrument-details s)]
-    (case category
-      :crypto :crypto
-      :equity :stocks
-      :fx :stocks
-      :stocks
-      )))
 
-(comment
- 
-  (determine-wh "BTCUSD")
-  (determine-wh "ETHUSD")
-  (determine-wh "SPY")
-  (determine-wh "QQQ")
-   ; not existing:
-  (determine-wh "BAD")
 
-;   
-  )
 
 
