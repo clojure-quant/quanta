@@ -71,7 +71,7 @@
         ]
     (-> (merge symbol-map
                {:interval period
-                :period 1
+                :period 1000
                 :timezone "UTC"
                 :splitadjusted 1})
         (kibot/history) 

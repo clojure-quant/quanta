@@ -1,14 +1,10 @@
-(ns ta.tradingview.db-instrument)
-
-(def categories
-  {:crypto "Crypto"
-   :etf "ETF"
-   :mutualfund "MutualFund"
-   :equity "Equity"})
-
+(ns ta.tradingview.db-instrument 
+  (:require 
+    [ta.data.settings :as settings]
+    ))
 
 (defn reverse-lookup []
-  (->> categories
+  (->> settings/category-names
        (map (fn [[k v]]
                [v k]))
        (into {})))
@@ -19,7 +15,7 @@
 (defn inst-type [i]
   ; this dict has to match above the server-config list of supported categories
   (let [c (:category i)]
-    (or (get categories c) "Equity")))
+    (or (get settings/category-names c) "Equity")))
 
 
 (defn category-name->category [c]
@@ -32,6 +28,8 @@
   (category-name->category "Equity")
   (category-name->category nil)
   (category-name->category "Crypto")
+  (category-name->category "Future")
+  
 
  ;
   )

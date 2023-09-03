@@ -61,7 +61,7 @@
 
 (defn history [opts]
   (let [{:keys [user password]} @api-key]
-    (info "login user: " user "pwd: " password)
+    ;(info "login user: " user "pwd: " password)
     (make-request base-url
                   (merge 
                      {:action "history"

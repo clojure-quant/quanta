@@ -5,8 +5,9 @@
      [ta.data.api-ds.kibot :as kibot]
      [ta.data.api-ds.alphavantage :as av]
      [ta.warehouse :as wh]
-     [ta.data.settings :refer [determine-wh]]))
-
+     [ta.data.settings :refer [determine-wh]]
+     [ta.warehouse.symbollist :refer [load-list]]
+    ))
 
 (def dict-provider
   {:kibot kibot/get-series
@@ -25,17 +26,25 @@
       (wh/save-symbol w series-ds interval symbol))))
 
 
-
-#_(defn init-symbols [w fn-get-history-since-as-ds frequency since symbols]
+(defn import-symbols [provider symbols interval range opts]
+  (let [symbols (if (string? symbols) 
+                    (load-list symbols)
+                    symbols)]
   (doall (map
-          (partial init-symbol w fn-get-history-since-as-ds frequency since)
-          symbols)))
+          #(import-series provider % interval range opts)
+          symbols))))
 
 (comment 
   (import-series :alphavantage "MSFT" "D" :full {})
   (import-series :alphavantage "EURUSD" "D" :full {})
   (import-series :alphavantage "BTCUSD" "D" :full {})
   
-  
+  (import-series :kibot "SIL0" "D" :full {})
+
+  (import-symbols :kibot ["SIL0" "NG0" "IBM"] "D" :full {})
+  (import-symbols :kibot "joseph" "D" :full {})
+ 
+  (import-symbols :kibot "futures-kibot" "D" :full {})
+
   ;
   )

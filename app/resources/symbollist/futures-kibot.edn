@@ -64,7 +64,7 @@
 {:symbol "BR0" :kibot "BR" :name  "CONTINUOUS BRAZILIAN REAL CONTRACT" :category :future}
 {:symbol "RY0" :kibot "RY" :name  "CONTINUOUS EURO FX/JAPANESE YEN CONTRACT" :category :future}
 {:symbol "SEK0" :kibot "SEK" :name "CONTINUOUS SWEDISH KRONA CONTRACT" :category :future}
-{:symbol "AJY0" :kibot "AKY" :name "CONTINUOUS AUSTRALIAN $/JAPANESE YEN CONTRACT" :category :future}
+{:symbol "AJY0" :kibot "AJY" :name "CONTINUOUS AUSTRALIAN $/JAPANESE YEN CONTRACT" :category :future}
 {:symbol "NOK0" :kibot "NOK" :name "CONTINUOUS NORWEGIAN KRONE CONTRACT" :category :future}
 {:symbol "PJY0" :kibot "PJY" :name "CONTINUOUS BRITISH PD/JAPANSE YEN CONTRACT" :category :future}
 {:symbol "ECD0" :kibot "ECD" :name "CONTINUOUS EURO FX/CANADIAN DOLLAR CONTRACT" :category :future}

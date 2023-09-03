@@ -16,9 +16,10 @@
    ;[ta.tradingview.db-ts :refer [save-chart-boxed delete-chart load-chart-boxed chart-list now-epoch]]
    [ta.warehouse.symbol-db :refer [search instrument-details]]
    [ta.tradingview.db-instrument :refer [inst-type category-name->category]]
-   [ta.data.settings :refer [determine-wh]]
+   [ta.data.settings :refer [determine-wh category-names]]
    ;[ta.tradingview.db-marks :refer [load-marks convert-marks]]
    ))
+
 (defn server-time []
   (-> (now-datetime) datetime->epoch-second))
 
@@ -29,6 +30,17 @@
 
 ;; CONFIG - Tell TradingView which featurs are supported by server.
 
+(def supported-types 
+  (->> (concat [{:value "" :name "All"}]
+               (map (fn [[k v]]
+                      {:value k :name v}) category-names))
+       (into []) 
+   ))
+
+
+
+
+
 (def server-config
   {:supports_time true  ; we send our server-time
    :supports_search true ;search and individual symbol resolve logic.
@@ -36,14 +48,12 @@
    :supports_timescale_marks false
    :supports_group_request false
    :supported_resolutions ["15" "D"] ; ["1" "5" "15" "30" "60" "1D" "1W" "1M"]
-   :symbols_types [{:value "" :name "All"}
+   :symbols_types supported-types
+                  #_[{:value "" :name "All"}
                    {:value "Crypto" :name "Crypto"}
                    {:value "Equity" :name "Equities"}
                    {:value "Mutualfund" :name "Mutualfund"}
                    {:value "ETF" :name "ETF"}
-                   ;{:value "Corp" :name "Bonds"}
-                   ;{:value "Index" :name "Indices"}
-                   ;{:value "Curncy" :name "Currencies"}
                    ]
    :exchanges [{:value "" :name "All Exchanges" :desc ""}
                {:value "BB" :name "Bybit" :desc ""}
@@ -114,42 +124,37 @@
 ;[{"symbol":"BLK","full_name":"BLK","description":"BlackRock, Inc.","exchange":"NYSE","type":"stock"},
 ;  {"symbol":"BA","full_name":"BA","description":"The Boeing Company","exchange":"NYSE","type":"stock"}]
 
-(defn filter-exchange [exchange list]
-  (if (str/blank? exchange)
-    list
-    (filter #(= exchange (:exchange %)) list)))
 
-(defn filter-category [type list]
-  (if (str/blank? type)
-    list
-    (let [c (category-name->category type)]
-      (filter #(= c (:category %)) list))))
+(defn instrument->tradingview [{:keys [symbol name] :as i}] 
+  {:ticker symbol
+   :symbol symbol ; OUR SYMBOL FORMAT. TV uses exchange:symbol
+   :full_name name
+   :description  (:name i)
+   :exchange (:exchange i)
+   :type (inst-type i)})
 
-(defn symbol-search [query type exchange limit]
-  (let [sr (->> (search query)
-                (filter-exchange exchange)
-                (filter-category type))
-        sr-limit (take limit sr)
-        sr-tv (map (fn [{:keys [symbol name] :as i}]
-                     {:ticker symbol
-                      :symbol symbol ; OUR SYMBOL FORMAT. TV uses exchange:symbol
-                      :full_name symbol
-                      :description  (:name i)
-                      :exchange (:exchange i)
-                      :type (inst-type i)}) sr-limit)]
-    sr-tv))
+
+(defn symbol-search [query category exchange limit]
+  (info "symbol-search q:" query " category: " category "exchange: " exchange "limit: " limit)
+  (let [category (if (and type (string? category) (not (str/blank? category))) 
+                    (keyword category) nil)
+        result (search query category exchange)
+        result (take limit result)
+        result-tv (map instrument->tradingview result)]
+    result-tv))
 
 (defn search-handler [{:keys [query-params] :as req}]
   (info "tv/search: " query-params)
   (let [{:keys [query type exchange limit]} (clojure.walk/keywordize-keys query-params)
         limit (Integer/parseInt limit)
-        sr-tv (symbol-search query type exchange limit)]
-    (res/response sr-tv)))
+        result-tv (symbol-search query type exchange limit)
+        ]
+    (res/response result-tv)))
 
 (comment
-  (-> (search-handler {:query-params {:query "E"
+  (-> (search-handler {:query-params {:query "B"
                                       :type ""
-                                      :exchange "BB"
+                                      :exchange ""
                                       :limit "10"}})
       :body
       ;count

@@ -17,10 +17,10 @@
 
 (defn save-ts [wkw ds name]
   (let [dir (get-in-config [:ta :warehouse :series wkw]) 
-        _ (do ;(info "creating dir: " dir)
+        _ (do (debug "creating dir: " dir)
               (create-dirs dir))
         s (io/gzip-output-stream! (filename-ts wkw name))]
-    (info "saving series " name " count: " (tc/row-count ds))
+    (debug "saving series " name " count: " (tc/row-count ds))
     (io/put-nippy! s ds)))
 
 (defn load-ts [wkw name]

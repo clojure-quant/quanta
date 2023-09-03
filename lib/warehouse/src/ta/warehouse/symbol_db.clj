@@ -93,18 +93,52 @@
   ;
   )
 
-(defn search [q]
-  (let [l (get-instruments)
-        q (lower-case q)]
-    (filter (fn [{:keys [name symbol]}]
-              (or (includes? (lower-case name) q)
-                  (includes? (lower-case symbol) q)))
-            l)))
+(defn q? [q]
+  (fn [{:keys [name symbol]}]
+    (or (includes? (lower-case name) q)
+        (includes? (lower-case symbol) q))))
+  
+(defn =exchange? [e]
+  (fn [{:keys [exchange]}]
+    (= exchange e)))
+
+(defn =category? [c]
+  (fn [{:keys [category]}]
+   (= category c)))
+
+(defn filter-eventually [make-pred target list]
+  (if target
+    (filter (make-pred target) list)
+    list))
+
+(defn search 
+  ([q]
+    (search q nil nil))
+  ([q category]
+   (search q category nil))
+  ([q category exchange]
+   
+  (let [list-full (get-instruments)
+        q (if (or (nil? q) (blank? q)) nil (lower-case q))
+        e (if (or (nil? exchange) (blank? exchange)) nil exchange)
+        c (if (nil? category) nil category)]
+     (info "search q: " q "category: " c " exchange: " e) 
+    (->> list-full
+         (filter-eventually =exchange? e)
+         (filter-eventually =category? c)
+         (filter-eventually q? q)))))
+
 
 (comment 
   ;(search "P")
   (search "Bitc")
   (search "BT")
+
+  (search "BT" :crypto)
+  (search "B" :equity)
+  (search "B" :equity "SG")
+  (search "B" nil nil)
+  (search "B" "" "")
 
   (instrument-details "BTCUSD")
   (instrument-details "EURUSD")

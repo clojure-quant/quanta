@@ -63,6 +63,8 @@
   (def files (file-seq directory))
   (take 10 files)
 
+  (load-list "bonds")
+
   (load-list-full "fidelity-select")
   (load-lists-full ["crypto"
                     "fidelity-select"
