@@ -20,6 +20,7 @@
   (r/atom {:algos []
            :symbols ["TLT" "SPY" "QQQ" "EURUSD"
                      "RIVN" "GOOGL" "FCEL" "NKLA" "INTC" "FRC" "AMZN" "WFC" "PLTR"
+                      "BZ0" "NG0"  "RB0"  "ZC0"  "MES0"  "M2K0"  "MNQ0"  "MYM0" 
                      ]}))
 
 (run-a algo-state [:algos]

@@ -1,7 +1,7 @@
 [
 ;; agriculture
 {:symbol "BO0" :kibot "BO" :name "CONTINUOUS SOYBEAN OIL CONTRACT" :category :future}
-{:symbol "C0"  :kibot "C" :name "CONTINUOUS CORN CONTRACT" :category :future}
+{:symbol "ZC0" #_"ZC instead of C" :kibot "C" :name "CONTINUOUS CORN CONTRACT" :category :future}
 {:symbol "S0"  :kibot "S" :name "CONTINUOUS SOYBEANS CONTRACT" :category :future}
 {:symbol "W0"  :kibot "BO":name "CONTINUOUS WHEAT CONTRACT" :category :future}
 {:symbol "SM0" :kibot "SM" :name "CONTINUOUS SOYBEAN MEAL CONTRACT" :category :future}
@@ -85,10 +85,10 @@
 {:symbol "NKD0" :kibot "NKD" :name "CONTINUOUS NIKKEI 225 DOLLAR INDEX CONTRACT" :category :future}
 
 ;; mini
-{:symbol "ES0" :kibot "ES" :name  "CONTINUOUS E-MINI S&P 500 CONTRACT" :category :future}
-{:symbol "YM0" :kibot "YM" :name  "CONTINUOUS E-MINI DOW JONES $5 CONTRACT" :category :future}
-{:symbol "NQ0" :kibot "NQ" :name  "CONTINUOUS E-MINI NASDAQ 100 CONTRACT" :category :future}
-{:symbol "RTY0" :kibot "RTY" :name "CONTINUOUS E-MINI RUSSELL 2000 CONTRACT" :category :future}
+{:symbol "MES0" #_"MES insted of ES" :kibot "ES" :name  "CONTINUOUS E-MINI S&P 500 CONTRACT" :category :future}
+{:symbol "MYM0" #_"MYM instead of YM":kibot "YM" :name  "CONTINUOUS E-MINI DOW JONES $5 CONTRACT" :category :future}
+{:symbol "MNQ0" #_"MNQ instead of NQ" :kibot "NQ" :name  "CONTINUOUS E-MINI NASDAQ 100 CONTRACT" :category :future}
+{:symbol "M2K0" #_"M2K instead of RTY":kibot "RTY" :name "CONTINUOUS E-MINI RUSSELL 2000 CONTRACT" :category :future}
 {:symbol "EMD0" :kibot "EMD" :name "CONTINUOUS E-MINI S&P MIDCAP 400 CONTRACT" :category :future}
 {:symbol "XAE0" :kibot "XAE" :name "CONTINUOUS E-MINI S&P 500 ENERGY SECTOR CONTRACT" :category :future}
 {:symbol "XAF0" :kibot "XAF" :name "CONTINUOUS E-MINI S&P 500 FINANCIAL SECTOR CONTRACT" :category :future}

@@ -10,6 +10,16 @@
  {:symbol "PLTR" :name "Palantir" :category :equity}
  {:symbol "RIG" :name "Transocean" :category :equity}
  {:symbol "HDRO" :name "Defiance Next Gen H2 ETF" :category :etf}
+ {:symbol "HDRO" :name "Defiance Next Gen H2 ETF" :category :etf}
+ {:symbol "BZ0"  :category :future}
+ {:symbol "NG0"  :category :future}
+ {:symbol "RB0"  :category :future}
+ {:symbol "ZC0"  :category :future}
+ {:symbol "MES0"  :category :future}
+ {:symbol "M2K0"  :category :future}
+ {:symbol "MNQ0"  :category :future}
+ {:symbol "MYM0"  :category :future}
+ ; "DAX0"  --- not supported
  ]
 
  

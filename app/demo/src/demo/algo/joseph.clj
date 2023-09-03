@@ -11,7 +11,6 @@
    ))
 
 
-
 (def d parse-date)
 
 (def trades 
@@ -57,7 +56,7 @@
   (-> (load-trades-demo) count)
    (-> (load-trades) count)
    (->> (load-trades) 
-        (filter #(= :future (:category %))) 
+        ;(filter #(= :future (:category %))) 
         (map :symbol)
         (into #{}) 
         (into []))
