@@ -5,6 +5,7 @@
    [demo.goldly.lib.loader :refer [clj->a]]
    [demo.goldly.lib.ui :refer [link-href]]
    [demo.goldly.view.aggrid :refer [table]]
+   [ui.aggrid :refer [aggrid]]
    ;[demo.goldly.view.tsymbol :refer [symbol-picker]]
    ))
 
@@ -19,7 +20,19 @@
          :loading [:p "loading"]
          :error [:p "error!"]
          :data [:div.w-full.h-full 
-                [table (:data @trades)]]
+                [aggrid {:data (:data @trades)
+                         :columns [{:field :symbol}
+                                   {:field :direction}
+                                   {:field :entry-date}
+                                   {:field :exit-date}
+                                   {:field :entry-price}
+                                   {:field :exit-price}
+                                   {:field :qty}
+                                   {:field :pl}]
+                         :box :fl
+                         :pagination :false
+                         :paginationAutoPageSize true}]
+                ]
          [:p "unknown: status:" (pr-str @trades)])])))
 
 
