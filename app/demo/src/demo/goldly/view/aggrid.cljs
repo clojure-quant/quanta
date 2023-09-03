@@ -75,6 +75,22 @@
                :paginationAutoPageSize true}]]]
     [:div "no data"]))
 
+(defn bars-table [bars]
+  (if bars
+    [:div.w-full.h-full
+     ;[:div.bg-red-500 (pr-str data)]
+     [:div {:style {:width "100%" ;"40cm"
+                    :height "100%" ;"70vh" ;  
+                    :background-color "blue"}}
+      [aggrid {:data bars
+               :columns (concat [{:field "date"}]
+                                bar-cols)
+               :box :fl
+               :pagination :true
+               :paginationAutoPageSize true}]]]
+    [:div "no bars available"]))
+
+
 (defn table [data]
   [aggrid {:data data
            :box :lg

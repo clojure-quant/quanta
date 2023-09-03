@@ -23,7 +23,7 @@
 (defn server-time []
   (-> (now-datetime) datetime->epoch-second))
 
-(defn time-handler []
+(defn time-handler [_req]
   (info "tv/time")
   (let [now-epoch (server-time)]
     (res/response (str now-epoch))))

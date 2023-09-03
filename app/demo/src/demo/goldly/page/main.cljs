@@ -44,15 +44,17 @@
     [link-href "/algo/backtest" "backtester"]
 
     [:p.text-blue.text-xl "warehouse"]
-    [link-href "/warehouse" "warehouse"]]
-
+    [link-href "/warehouse" "warehouse"]
+    [link-href "/series" "series"]]
+    
    ; trateg demos
    [:div.bg-blue-300.m-5
     [:h1.text-xl.text-red-600 "gann tools"]
-    [link-href "/gann" "gann chart"]]
+    [link-href "/gann" "gann chart"]
+    [link-href "/joseph" "joseph"]]
 
    [:div.bg-blue-300.m-5
-    [:p.text-blue.text-xl "ui component tests"]
+    [:p.text-blue.text-xl.bg-yellow-300 "ui component tests"]
     [:div.w-64
      [symbol-picker symbol-atom [:symbol]]]]
 

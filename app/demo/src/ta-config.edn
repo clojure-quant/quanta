@@ -25,12 +25,14 @@
           :routes {:app {"" :user/main
 ;warehouse
                          "warehouse" :user/warehouse
+                         "series" :user/series
 ;backtest
                          "algo/backtest" :algo/backtest
                          "algo/tv" :algo/tv
 ; gann
                          "tradingview" :tradingview
                          "gann" :gann
+                         "joseph" :joseph/trades
 ; devtools
                          "devtools/pages" :pages
                          "devtools/help" :devtools
@@ -95,6 +97,8 @@
                           ta.warehouse.symbollist/get-lists
                           ta.warehouse.symbollist/load-list
                           ta.warehouse.overview/overview-map
+                          ; data
+                          ta.data.load/load-series
                           ; algo
                           ta.algo.manager/algo-names
                           ta.algo.manager/algo-info
@@ -113,6 +117,8 @@
                           ta.gann.db/save-gann
                           ta.gann.svg-plot/gann-svg-web
                           ta.gann.svg-plot/get-boxes
+                          ; joseph
+                          demo.algo.joseph/load-trades
                           ; testing
                           ta.helper.date/now-datetime]
                 :permission  #{}}
