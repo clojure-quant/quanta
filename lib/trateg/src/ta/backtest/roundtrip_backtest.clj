@@ -1,5 +1,6 @@
 (ns ta.backtest.roundtrip-backtest
   (:require
+   [taoensso.timbre :refer [trace debug info warnf error]]
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as fun]
    [tablecloth.api :as tc]
@@ -7,7 +8,10 @@
    [ta.data.settings :refer [determine-wh ]]
    [ta.helper.ago :refer [xf-future]]
    [ta.backtest.signal :refer [trade-signal]]
-   [ta.backtest.position-pl :refer [position-pl]]))
+   [ta.backtest.position-pl :refer [position-pl]]
+   [clojure.edn :as edn]
+   [try-let :refer [try-let]]
+   ))
 
 
 (defn- bar->roundtrip-partial [ds]
@@ -32,6 +36,17 @@
     (> chg-p 0)
     false))
 
+(defn isNaN [x]
+ (== ##NaN x))
+
+
+(defn get-last-not-nil [ds kw]
+  (let [vec (get ds kw)
+        vec-no-nil (remove nil? vec)]
+    (last vec-no-nil)))
+
+; (get-last-nan {:close [1 2 3 nil]} :close)
+
 (defn aggregate-bars-to-roundtrip [{:keys [entry-cols]
                                     :or {entry-cols []}} ds]
   ;(println "agg with rows: " (tc/row-count ds))
@@ -40,9 +55,9 @@
                   :date-open  (->> ds :date-open first)
                   :price-open  (->> ds :price-open first)
                   ; close
-                  :index-close  (->> ds :index-close last)
-                  :date-close  (->> ds :date-close last)
-                  :price-close  (->> ds :price-close last)
+                  :index-close  (get-last-not-nil ds :index-close)
+                  :date-close  (get-last-not-nil ds :date-close)
+                  :price-close  (get-last-not-nil ds :price-close)
                   ; trade
                   :position (->> ds :position first)
                   :bars  (->> ds :index-open count)
@@ -103,18 +118,34 @@
 ;  
   )
 
+(defn calc-study [algo ds-bars algo-options]
+ (algo ds-bars algo-options))
+
+
 (defn backtest-ds
   "algo has to create :position column
    creates roundtrips based on this column"
   [ds-bars algo options]
-  (let [algo-options (dissoc options :w :symbol :frequency :entry-cols)
-        ds-study (-> ds-bars
-                     (algo algo-options)
-                     trade-signal)]
-    (if (:signal ds-study)
-      {:ds-study ds-study
-       :ds-roundtrips (calc-roundtrips ds-study options)}
-      {:ds-study ds-study})))
+  (try-let [algo-options (dissoc options :w :symbol :frequency :entry-cols)
+            ds-study (calc-study algo ds-bars algo-options)]
+      (if (:signal ds-study)       
+        (try-let [ds-study-position (trade-signal ds-study)
+                  roundtrips (calc-roundtrips ds-study-position options)]
+           {:ds-study ds-study-position
+            :ds-roundtrips roundtrips} 
+          (catch Exception e
+            (error "backtest-ds exception in rountrip-calculation: " e)
+            {:error "backtest roundtrip calculation exception"
+             :ds-study ds-study}))
+        ; the algo is not setup to calculate :signal olumn
+        {:ds-study ds-study}) 
+     (catch Exception e
+       (error "exception in calculating study: " e)
+      {:ds-study ds-bars
+       :error "could not calculate study"})))
+       
+
+
 
 (defn run-backtest
   "algo has to create :position column
@@ -137,4 +168,12 @@
                   (assoc :ds-roundtrips (tc/set-dataset-name (:ds-roundtrips r) m)))]
         r))))
 
+
+(comment 
+  
+  (determine-wh "GOOGL")
+  (wh/load-symbol :stocks "D" "GOOGL")
+   
+  ;
+  )
 

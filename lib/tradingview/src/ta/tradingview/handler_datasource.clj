@@ -65,10 +65,12 @@
                ;{:value "LN" :name "London" :desc ""}
                ]})
 
-(defn get-server-config []
+(defn get-server-config [] 
+  ; used by websocket
     server-config)
 
 (defn config-handler [_]
+  ; used by udf
   (info "tv/config")
   (res/response server-config))
 

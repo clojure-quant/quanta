@@ -36,7 +36,8 @@
        (xf result)))))
 
 (defn xf-future [xf]
-  (let [first (atom true)]
+  (let [first (atom true)
+        last (atom nil)]
     (fn
       ;; SET-UP
       ([]
@@ -44,6 +45,8 @@
        (xf))
      	;; PROCESS
       ([result input]
+         (when-not (nil? input)
+           (reset! last input))
          (if @first
            (do (reset! first false)
                result) ; unchanged collection for first element
@@ -52,7 +55,7 @@
       ;; TEAR-DOWN
       ([result]
        (when-not @first
-         (xf result nil))
+         (xf result @last))
          (xf result)))))
 
 
@@ -68,5 +71,6 @@
   (into [] xf-ago-pair [3 4 5 6 7])
 
   (into [] xf-future [3 4 5 6 7])
+  (into [] xf-future [4 5 6])
 ;  
   )

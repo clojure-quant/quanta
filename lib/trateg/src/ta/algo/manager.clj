@@ -1,5 +1,6 @@
 (ns ta.algo.manager
   (:require
+   [taoensso.timbre :refer [trace debug info warnf error]]
    [tech.v3.datatype :as dtype]
    [tech.v3.dataset :as tds]
    [tablecloth.api :as tc]
@@ -27,7 +28,7 @@
   (get @algos name))
 
 (defn algo-info [name]
-  (if-let [algo (get-algo name)]
+  (when-let [algo (get-algo name)]
     (let [charts (or (:charts algo) [])
           options (or (:options algo) {})]
       (-> algo
@@ -97,12 +98,12 @@
 
 ; 
 
-(defn algo-run [name user-options]
-  (if-let [{:keys [algo options charts]} (get-algo name)]
+(defn algo-run [algo-name user-options]
+  (if-let [{:keys [algo options charts]} (get-algo algo-name)]
     (let [options (merge options user-options)
           {:keys [ds-study ds-roundtrips] :as backtest} (run-backtest algo options)]
       (merge
-       {:name name
+       {:name algo-name
         :options options
         :charts charts
         :study-extra-cols (study-extra-cols ds-study)}
@@ -114,7 +115,7 @@
        {:highchart (highchart ds-study (:axes-spec options))}
          ; {})
        ))
-    {:name name
+    {:name algo-name
      :error "Algo not found."}))
 
 (defn epoch
@@ -164,14 +165,14 @@
   (let [ds (algo-run-window name symbol frequency options epoch-start epoch-end)]
     (ds->map ds)))
 
-(defn algo-marks [name symbol frequency user-options epoch-start epoch-end]
-  (if-let [{:keys [marks options]} (get-algo name)]
+(defn algo-marks [algo-name user-options epoch-start epoch-end]
+  (if-let [{:keys [marks options]} (get-algo algo-name)]
     (if marks
       (let [options (merge options user-options)]
-        (marks symbol frequency options epoch-start epoch-end))
-      (do (println "NO MARKS - " name "does not define a marks fn.")
+        (marks symbol options epoch-start epoch-end))
+      (do (info "NO MARKS - " algo-name "does not define a marks fn.")
           []))
-    (do  (println "NO MARKS - algo not found: " name)
+    (do  (info "NO MARKS - algo not found: " algo-name)
          [])))
 
 (defn algo-shapes [algo-name user-options epoch-start epoch-end]
@@ -179,11 +180,11 @@
     (if shapes
       (let [options (merge options user-options)
             data (shapes options epoch-start epoch-end)]
-        (println "SHAPE [" (count data) "]" algo-name (:symbol options) epoch-start epoch-end)
+        (info "SHAPE [" (count data) "]" algo-name (:symbol options) epoch-start epoch-end)
         data)
-      (do (println "NO SHAPES - " algo-name "does not define a shapes fn.")
+      (do (info "NO SHAPES - " algo-name "does not define a shapes fn.")
           []))
-    (do  (println "NO SHAPES - algo not found: " algo-name)
+    (do  (info "NO SHAPES - algo not found: " algo-name)
          [])))
 
 (comment
@@ -221,6 +222,29 @@
   (-> (algo-shapes "moon" "SPY" "D" {:show-moon true} epoch-start epoch-end)
       ;count
       )
+  
+  (algo-run-browser "moon" {:symbol "SPY" :frequency "D"})
+
+
+  (algo-run-browser "moon" {:symbol "GOOGL" :frequency "D"})
+  (algo-run "moon" {:symbol "GOOGL" :frequency "D"})
+  (run-backtest "moon" {:symbol "GOOGL" :frequency "D"})
+  
+
+
+
+  (require '[ta.warehouse :as wh])
+  (require ' [ta.backtest.signal :refer [trade-signal]])
+  (let [ds-bars (wh/load-symbol :stocks "D" "GOOGL")
+        {:keys [algo]} (get-algo "moon")
+        ds-algo (algo ds-bars {:symbol "GOOGL" :frequency "D"})]
+    
+    (trade-signal ds-algo)
+    
+  )
+
+  
+
   (->> ;(algo-run an {:symbol "SPY"})
    (algo-run-browser an {:symbol "TLT"})
   ; :stats

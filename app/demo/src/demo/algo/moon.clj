@@ -2,20 +2,17 @@
   (:require
    [tablecloth.api :as tc]
    [tech.v3.datatype :as dtype]
-   [ta.algo.manager :refer [add-algo]]
+   [ta.algo.manager :refer [add-algo] :as am]
    [astro.moon :refer [inst->moon-phase-kw phase->text]]
    [ta.tradingview.chart.shape :as shapes] 
    [ta.tradingview.chart.plot :refer [plot-type]]
    [ta.tradingview.chart.color :refer [color]]
-   ))
+ ))
 
-(defn add-moon-indicator [ds-bars _]
-  (tc/add-column
-   ds-bars
-   :phase
-   (dtype/emap inst->moon-phase-kw :object (:date ds-bars))))
+(defn moon-phase [col-date]
+   (dtype/emap inst->moon-phase-kw :object col-date))
 
-(defn calc-moon-signal [phase]
+(defn moon-phase->signal [phase]
   (if phase
     (case phase
       :i1 :flat
@@ -23,23 +20,28 @@
       :hold)
     :hold))
 
+(defn moon-signal [moon-phase]
+  (dtype/emap moon-phase->signal :object moon-phase))
+
 (defn buy-signal->text [signal]
   (if (= signal :buy)
     1.0
     nil))
 
-(defn add-buy-signal-bool [ds-bars]
-  (tc/add-column
-   ds-bars
-   :signal-text
-   (dtype/emap buy-signal->text :bool (:signal ds-bars))))
+(defn signal-text [signal]
+  (dtype/emap buy-signal->text :object signal))
 
-(defn moon-signal [ds-bars options]
-  (let [ds-study (add-moon-indicator ds-bars options)
-        signal (into [] (map calc-moon-signal (:phase ds-study)))]
-    (-> ds-study
-        (tc/add-columns {:signal signal})
-        (add-buy-signal-bool))))
+(defn moon-study [ds-bars options]
+  (let [col-date (:date ds-bars)
+        col-moon-phase (moon-phase col-date)
+        col-moon-signal (moon-signal col-moon-phase)
+        col-signal-text (signal-text col-moon-signal)]
+    (-> ds-bars
+        (tc/add-columns {:moon-phase col-moon-phase
+                         :signal col-moon-signal
+                         :signal-text col-signal-text
+                         })
+       )))
 
 ;; SHAPES 
 
@@ -71,7 +73,7 @@
 (add-algo
  {:name "moon"
   :comment "very good - 2:1"
-  :algo moon-signal
+  :algo moon-study
   :charts [;nil ; {:trade "flags"}
            ;{:trade "chars" #_"arrows"}
            {:signal-text {:type "chars" 
@@ -84,3 +86,52 @@
   :options {:symbol "SPY"
             :frequency "D"}})
 
+
+(comment 
+  
+ (require '[ta.helper.date :refer [parse-date]])  
+ (def ds
+   (tc/dataset [{:date (parse-date "2023-01-01")
+                 :b 2 
+                 :c 3} 
+                {:date (parse-date "2023-01-01")
+                 :b 5 
+                  :c 6}]))
+  
+  (def phase (moon-phase (:date ds)))
+  (def signal (moon-signal phase))
+  (def ds-demo (tc/add-columns
+                ds
+                {:phase phase
+                 :signal signal})
+    )
+  
+   (require '[ta.warehouse :as wh]) 
+   (require '[ta.data.settings :refer [determine-wh]])
+   (require '[tablecloth.api :as tc])
+
+   (def w (determine-wh "GOOGL"))
+   (def ds-bars (wh/load-symbol :stocks "D" "SPY")) 
+   (tc/info ds-bars)
+  
+  (require '[ta.backtest.signal :refer [trade-signal]])
+  (require '[ta.backtest.roundtrip-backtest :refer [calc-roundtrips]])   
+  (trade-signal ds-demo)
+
+  (-> (trade-signal ds-demo)
+      (calc-roundtrips {})
+      )
+
+  (trade-signal ds-bars)
+
+
+     
+   (am/algo-run "moon" {:symbol "SPY" :frequency "D"})
+   (am/algo-run "moon" {:symbol "GOOGL" :frequency "D"})
+   
+  
+     
+ ; 
+     )
+
+ 

@@ -21,7 +21,7 @@
  
  ;Large-Cap All
  ;{:cap :large :style :all :name "Diamond Trust Series 1" :symbol "DIA"}
- ;{:cap :large :style :all :name "NASDAQ 100 Index Tracking Stock" :symbol "QQQ"}
+ {:cap :large :style :all :name "NASDAQ 100 Index Tracking Stock" :symbol "QQQ"}
  ;{:cap :large :style :all :name "IShares S&P 100" :symbol "OEF"}
  {:cap :large :style :all :name "IShares S&P 500" :symbol "IVV" :category :etf}
  ;{:cap :large :style :all :name "IShares NYSE 100" :symbol "NY"}
