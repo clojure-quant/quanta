@@ -5,12 +5,13 @@
    [goldly.page :as page]
    [ui.highcharts :refer [highstock]]
    [input]
-   [ta.tradingview.goldly.tradingview :refer [ tradingview-chart]]
+   [ta.tradingview.goldly.tradingview :refer [tradingview-chart]]
    [ta.tradingview.goldly.interact :refer [tv-widget-atom ]]
    [ta.tradingview.goldly.interact2 :refer [set-symbol chart-active wrap-chart-ready add-shape]]
+   [ta.tradingview.goldly.view.aggrid :refer [study-table]]
    [demo.goldly.lib.ui :refer [link-href]]
    [demo.goldly.view.backtest :refer [navs-chart navs-view roundtrips-view metrics-view]]
-   [demo.goldly.view.aggrid :refer [study-table]]
+   
    ))
 
 (defonce algo-state

@@ -20,7 +20,7 @@
  :goldly {:lazy true
           :src-dir "src"
 ; runtime
-          :autoload-cljs-dir ["ta/tradingview/goldly"
+          :autoload-cljs-dir ["ta/tradingview/goldly/page"
                               "demo/goldly/page"]
           :routes {:app {"" :user/main
 ;warehouse
@@ -28,9 +28,9 @@
                          "series" :user/series
 ;backtest
                          "algo/backtest" :algo/backtest
-                         "algo/tv" :algo/tv
+                         "algo/tradingview" :tradingview/algo
 ; gann
-                         "tradingview" :tradingview
+                         "tradingview" :tradingview/udf
                          "gann" :gann
                          "joseph" :joseph/trades
 ; devtools

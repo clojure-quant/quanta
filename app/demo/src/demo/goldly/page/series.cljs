@@ -2,9 +2,9 @@
   (:require
    [reagent.core :as r]
    [goldly.page :as page]
+   [ta.tradingview.goldly.view.aggrid :refer [bars-table]]
    [demo.goldly.lib.loader :refer [clj->a]]
    [demo.goldly.lib.ui :refer [link-href]]
-   [demo.goldly.view.aggrid :refer [bars-table]]
    [demo.goldly.view.tsymbol :refer [symbol-picker]]
    ))
 

@@ -3,7 +3,7 @@
    [goldly.page :as page]
    [demo.goldly.lib.loader :refer [clj->p]]
    [demo.goldly.lib.ui :refer [link-href]]
-   [demo.goldly.view.aggrid :refer [table]]))
+   [ta.tradingview.goldly.view.aggrid :refer [table]]))
 
 (defn warehouse-overview-view [wh f]
   (let [wh-overview (clj->p 'ta.warehouse.overview/overview-map wh f)]

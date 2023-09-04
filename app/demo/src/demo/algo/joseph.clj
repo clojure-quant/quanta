@@ -65,8 +65,6 @@
 
   )
 
-
-
 (defn trade-filter-symbol [symbol trades]
   (filter #(= (:symbol %) symbol) trades))
 

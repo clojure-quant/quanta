@@ -37,8 +37,8 @@
     [:h1.text-xl.text-red-600 "trateg "]
 
     [:p.text-blue.text-xl "tradingview"]
-    [link-dispatch [:bidi/goto :algo/tv] "tradingview-algo"]
-    [link-dispatch [:bidi/goto :tradingview] "tradingview-udf"]
+    [link-dispatch [:bidi/goto :tradingview/algo] "tradingview-algo"]
+    [link-dispatch [:bidi/goto :tradingview/udf] "tradingview-udf"]
 
     [:p.text-blue.text-xl "backtest"]
     [link-href "/algo/backtest" "backtester"]

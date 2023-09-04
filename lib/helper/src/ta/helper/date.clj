@@ -50,6 +50,17 @@
     (catch Exception _
       nil)))
 
+(comment 
+   (require '[tick.core :as tick])
+   (tick/format (tick/formatter "yyyy-MM-dd")
+               (parse-date "2013-01-08"))  
+  
+  
+  )
+
+
+
+
 ;; epoch conversion
 
 (defn datetime->epoch-second [dt]
