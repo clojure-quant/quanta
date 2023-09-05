@@ -10,6 +10,7 @@
      [ta.data.api-ds.alphavantage :as av]
      [ta.data.api-ds.bybit :as bybit]
     ))
+    
 
 (def dict-provider
   {:kibot kibot/get-series
