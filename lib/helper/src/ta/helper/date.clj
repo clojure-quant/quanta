@@ -54,11 +54,8 @@
    (require '[tick.core :as tick])
    (tick/format (tick/formatter "yyyy-MM-dd")
                (parse-date "2013-01-08"))  
-  
-  
+  ;
   )
-
-
 
 
 ;; epoch conversion
@@ -70,6 +67,7 @@
   (-> dt
       (t/at (t/time "13:00:06"))
       datetime->epoch-second))
+      (t/epoch)
 
  ;(tick/at (tick/date "2021-06-20") (tick/time "13:00:06"))
 (defn ->epoch-second [dt]
