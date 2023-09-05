@@ -6,7 +6,7 @@
         techascent/tech.viz {:mvn/version "6.00-beta-16-2"}
       ;  com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.1.0"}
         com.taoensso/timbre {:mvn/version "6.2.2"} ; clj/cljs logging
-        org.pinkgorilla/reval {:mvn/version "0.5.134"}
+        org.pinkgorilla/reval {:mvn/version "0.5.137"}
         ; ta
         ta/trateg {:local/root "../../lib/trateg" :deps/manifest :deps}
         ta/data {:local/root "../../lib/data" :deps/manifest :deps}
@@ -14,6 +14,7 @@
         ta/indicator {:local/root "../../lib/indicator" :deps/manifest :deps}
         ta/astro {:local/root "../../lib/astro" :deps/manifest :deps}
         ta/gann {:local/root "../../lib/gann" :deps/manifest :deps}
+        joseph/joseph {:local/root "../../lib/joseph" :deps/manifest :deps}
         ;;
         }
  :aliases
@@ -27,7 +28,7 @@
   ; example: clojure -X:run :task ':bybit-import' :symbol-list "currency-spot"
   ; see README.md for available tasks
 
-  :run {:extra-deps {org.pinkgorilla/modular {:mvn/version "0.0.37"}
+  :run {:extra-deps {org.pinkgorilla/modular {:mvn/version "0.0.38"}
                      com.fzakaria/slf4j-timbre {:mvn/version "0.4.0"}}
         :extra-paths ["cli"]
         :exec-fn modular.system/start!
@@ -38,7 +39,7 @@
         }
 
   :docs ; RUN SERVICES (keep running)
-  {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.608"}
+  {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.611"}
                 com.fzakaria/slf4j-timbre {:mvn/version "0.4.0"}}
    :extra-paths ["target/webly" ; to include the sci-bindings info
                  "node_modules"

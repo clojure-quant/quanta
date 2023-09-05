@@ -1,8 +1,9 @@
-{:paths ["src"]
+{:paths ["src"
+         "resources" ; extension data
+         ]
  :deps
  {org.clojure/clojure    {:mvn/version "1.11.1"}
-  ephemeris/ephemeris {:mvn/version "0.0.1"}
-  org.pinkgorilla/modular {:mvn/version "0.0.38"}}
+  }
  :aliases
  {:test {:extra-paths ["test"]
          :extra-deps {io.github.cognitect-labs/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
@@ -10,7 +11,6 @@
          :main-opts ["-m" "cognitect.test-runner"]
          :exec-fn cognitect.test-runner.api/test}
 
-  :astro-test {:exec-fn astro/astro-test
-               :exec-args {:name "equity-region"}}}
+  }
 ;
 }

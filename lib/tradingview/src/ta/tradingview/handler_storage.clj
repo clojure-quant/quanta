@@ -6,7 +6,6 @@
    [ring.util.response :as res]
    [ring.middleware.multipart-params :refer [wrap-multipart-params]]
    [modular.webserver.middleware.api :refer [wrap-api-handler]]
-   [modular.webserver.handler.registry :refer [add-ring-handler]]
    [ta.tradingview.db-ts :refer [save-chart-boxed delete-chart load-chart-boxed chart-list now-epoch]]))
 
 ;; chart handler
@@ -51,10 +50,10 @@
         (res/response {:status "ok" :data chart-list})
         (res/response {:status "error" :error "chart-list for user failed."})))))
 
-(add-ring-handler :tv-db/save-chart   (wrap-multipart-params (wrap-api-handler save-chart-handler)))
-(add-ring-handler :tv-db/modify-chart  (wrap-multipart-params (wrap-api-handler modify-chart-handler)))
-(add-ring-handler :tv-db/delete-chart (wrap-api-handler delete-chart-handler))
-(add-ring-handler :tv-db/load-chart (wrap-api-handler load-chart-handler))
+(def wrapped-save-chart-handler (wrap-multipart-params (wrap-api-handler save-chart-handler)))
+(def wrapped-modify-chart-handler (wrap-multipart-params (wrap-api-handler modify-chart-handler)))
+(def wrapped-delete-chart-handler (wrap-api-handler delete-chart-handler))
+(def wrapped-load-chart-handler (wrap-api-handler load-chart-handler))
 
 (comment
   {"status" "ok"
@@ -131,7 +130,6 @@
     (res/response {:status "ok"
                    :id id})))
 
-(add-ring-handler :tv-db/load-template (wrap-api-handler load-template-handler))
-(add-ring-handler :tv-db/save-template (wrap-multipart-params (wrap-api-handler save-template-handler)))
-
+(def wrapped-load-template-handler (wrap-api-handler load-template-handler))
+(def wrapped-save-template-handler (wrap-multipart-params (wrap-api-handler save-template-handler)))
 

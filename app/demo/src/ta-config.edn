@@ -14,8 +14,7 @@
                     :jetty-ws {"/api/chsk" :ws/chsk-get}}
 
  :ns-clj [demo.goldly.reval ; for techml rendering (no need to require namespace)
-          demo.env.algos
-          ta.tradingview.server]
+          demo.env.algos]
 
  :goldly {:lazy true
           :src-dir "src"
@@ -40,24 +39,7 @@
                          "devtools/viewer" :viewer
                          "devtools/environment" :environment
                          "devtools/theme" :theme}
-                   :api {"arrow" :dataset/arrow
-                         "rdocument/ns" :rdocument/ns
-                         "rdocument/files" :rdocument/files
-                         ["rdocument/file/" :ns "/" :name] :rdocument/file ; http://localhost:8000/api/viewer/file/demo.playground.cljplot/vega-spec.edn
-                         "tv/" {:get  {"config" :tv/config
-                                       "time" :tv/time
-                                       "search" :tv/search
-                                       "symbols" :tv/symbols
-                                       "history" :tv/history
-                                       "marks" :tv/marks}
-                                "storage/1.1/" {"charts" {:get  :tv-db/load-chart
-                                                          :post :tv-db/save-chart
-                                                          :put  :tv-db/modify-chart
-                                                          :delete  :tv-db/delete-chart}
-                                                "study_templates" {:get :tv-db/load-template
-                                                                   :post :tv-db/save-template
-;:put :tv-db/modify-template
-                                                                   :delete :tv-db/delete-template}}}}}}
+                   :api {"arrow" :dataset/arrow}}}
 
  :reval {:rdocument  {:storage-root "../../output/rdocument/"
                       :url-root "/api/rdocument/file/"}

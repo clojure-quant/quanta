@@ -7,8 +7,8 @@
         nano-id/nano-id {:mvn/version "1.0.0"}
         differ/differ {:mvn/version "0.3.3"}
         babashka/fs {:mvn/version "0.4.19"}
-        org.pinkgorilla/modular {:mvn/version "0.0.37"} ; persistence
-        org.pinkgorilla/webly {:mvn/version "0.4.623"} ; web handlers
+        org.pinkgorilla/modular {:mvn/version "0.0.38"} ; persistence
+        org.pinkgorilla/webly {:mvn/version "0.4.629"} ; web handlers
         ta/trateg {:local/root "../.." :deps/manifest :deps}
         ta/data {:local/root "../data" :deps/manifest :deps}
         ta/warehouse {:local/root "../warehouse" :deps/manifest :deps}}
@@ -21,15 +21,14 @@
 
   :goldly-docs
   {:extra-paths ["resources"]
-   :extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.601"}}
+   :extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.610"}}
    :exec-fn goldly.app/goldly-server-run!
    :exec-args {:profile "jetty"
                :config {:goldly {:lazy true
                                  :src-dir "src"
                                  ; runtime
                                  :autoload-cljs-dir ["src/goldly/page"]
-                                 :autoload-clj-ns [demo.env.config
-                                                   ta.tradingview.server]
+                                 :autoload-clj-ns [demo.env.config]
                                  :routes {:app {;"" :pages
                                                 ; devtools
                                                 "devtools/pages" :pages
@@ -37,24 +36,7 @@
                                                 "devtools/viewer" :viewer
                                                 "devtools/environment" :environment
                                                 "devtools/" :devtools}
-                                          :api {"rdocument/ns" :rdocument/ns
-                                                "rdocument/files" :rdocument/files
-                                                ["rdocument/file/" :ns "/" :name] :rdocument/file ; http://localhost:8000/api/viewer/file/demo.playground.cljplot/vega-spec.edn
-
-                                                "tv/" {:get  {"time" :tv/time
-                                                              "config" :tv/config
-                                                              "search" :tv/search
-                                                              "symbols" :tv/symbols
-                                                              "history" :tv/history
-                                                              "marks" :tv/marks}
-                                                       "storage/1.1/" {"charts" {:get  :tv-db/load-chart
-                                                                                 :post :tv-db/save-chart
-                                                                                 :put  :tv-db/modify-chart
-                                                                                 :delete  :tv-db/delete-chart}
-                                                                       "study_templates" {:get :tv-db/load-template
-                                                                                          :post :tv-db/save-template
-                                                                                      ;:put :tv-db/modify-template
-                                                                                          :delete :tv-db/delete-template}}}}}}
+                                          :api {}}}
 
                         :devtools {:rdocument  {:storage-root "../../rdocument/"
                                                 :url-root "/api/rdocument/file/"}

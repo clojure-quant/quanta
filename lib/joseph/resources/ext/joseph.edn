@@ -1,0 +1,7 @@
+{:name "joseph"
+ ; runtime
+ :api-routes {"joseph/" {:post  {"upload" joseph.upload/wrapped-save-file}
+                     
+                     }
+              }}
+

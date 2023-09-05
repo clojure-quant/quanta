@@ -9,7 +9,6 @@
    [tech.v3.dataset :as tds]
    [tablecloth.api :as tc]
    [modular.webserver.middleware.api :refer [wrap-api-handler]]
-   [modular.webserver.handler.registry :refer [add-ring-handler]]
    [ta.helper.date :refer [now-datetime datetime->epoch-second epoch-second->datetime]]
    [ta.warehouse :refer [load-symbol]]
    [ta.warehouse.tml :refer [filter-date-range]]
@@ -310,9 +309,10 @@
 ;
   )
 
-(add-ring-handler :tv/time (wrap-api-handler time-handler))
-(add-ring-handler :tv/config (wrap-api-handler config-handler))
-(add-ring-handler :tv/symbols (wrap-api-handler symbols-handler))
-(add-ring-handler :tv/search (wrap-api-handler search-handler))
-(add-ring-handler :tv/history (wrap-api-handler history-handler))
-(add-ring-handler :tv/marks (wrap-api-handler marks-handler))
+
+(def wrapped-time-handler (wrap-api-handler time-handler))
+(def wrapped-config-handler (wrap-api-handler config-handler))
+(def wrapped-symbols-handler (wrap-api-handler symbols-handler))
+(def wrapped-search-handler (wrap-api-handler search-handler))
+(def wrapped-history-handler (wrap-api-handler history-handler))
+(def wrapped-marks-handler (wrap-api-handler marks-handler))

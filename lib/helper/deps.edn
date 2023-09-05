@@ -4,7 +4,7 @@
   tick/tick              {:mvn/version "0.6.2"}
   org.ta4j/ta4j-core     {:mvn/version "0.14"}   ; ta4j java technical indicator library
   scicloj/tablecloth {:mvn/version "7.000-beta-51"} ; brings techml-dataset
-  org.pinkgorilla/modular {:mvn/version "0.0.37"} ; logging
+  org.pinkgorilla/modular {:mvn/version "0.0.38"} ; logging
   }
 ;
  }

@@ -3,7 +3,7 @@
  {org.clojure/clojure    {:mvn/version "1.11.1"}
   com.taoensso/nippy {:mvn/version "3.1.1"}
   techascent/tech.io {:mvn/version "4.13"}
-  org.pinkgorilla/modular {:mvn/version "0.0.37"}
+  org.pinkgorilla/modular {:mvn/version "0.0.38"}
   ta/helper {:local/root "../helper" :deps/manifest :deps}}
  :aliases
  {:test {:extra-paths ["test"]
