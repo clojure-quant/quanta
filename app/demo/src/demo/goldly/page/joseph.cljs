@@ -14,6 +14,9 @@
    [ta.tradingview.goldly.algo.context :as c]
    [ta.tradingview.goldly.algo.tradingview :refer [tradingview-algo]]
    [ta.tradingview.goldly.page.tradingview-algo :refer []]
+
+   [ta.tradingview.goldly.interact :refer [tv-widget-atom]]
+   [ta.tradingview.goldly.interact2 :refer [goto-date!]]
    ))
 
  
@@ -49,7 +52,7 @@
     (println "symbol:" symbol "entry-epoch: " (datetime->epoch-second entry-date))
 
     (swap! input assoc-in [:opts :symbol]  symbol)
-
+    (goto-date! @tv-widget-atom (datetime->epoch-second entry-date))
 
     ))
 
