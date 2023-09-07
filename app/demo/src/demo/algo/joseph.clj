@@ -41,7 +41,7 @@
    ])
 
 (defn load-trades []
-  (->> (slurp "../resources/trades.edn")
+  (->> (slurp "../resources/trades-upload.edn")
        (edn/read-string)
        ;(filter #(= :equity (:category %)))
        (map #(update % :entry-date parse-date))
