@@ -56,7 +56,7 @@
   
   :scheduler {:start (ta.data.scheduler/start!
                       (clip/ref :timbre))
-              :stop (crb.service.scheduler/stop! this)}
+              :stop (ta.data.scheduler/stop! this)}
 
 ;
   }}
