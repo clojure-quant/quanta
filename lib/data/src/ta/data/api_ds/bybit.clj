@@ -25,7 +25,7 @@
   (if (= range :full)
       {:start start-date-bybit}
       range))
-Can be stocks, ETFs forex, futures.
+
 (defn get-series [symbol interval range _opts]
   (let [symbol (symbol->provider symbol)
         range-bybit (range->parameter range)]

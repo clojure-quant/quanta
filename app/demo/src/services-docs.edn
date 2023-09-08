@@ -53,6 +53,10 @@
   :clj-services {:start (goldly.service.expose/start-services
                          (:clj-services (deref (clip/ref :config))))
                  :stop (goldly.service.expose/stop-services this)}
+  
+  :scheduler {:start (ta.data.scheduler/start!
+                      (clip/ref :timbre))
+              :stop (crb.service.scheduler/stop! this)}
 
 ;
   }}

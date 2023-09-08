@@ -4,4 +4,5 @@
         clj-http/clj-http      {:mvn/version "3.12.3"} ; http requests (bybit)
         cheshire/cheshire      {:mvn/version "5.11.0"} ; json for bybit
         throttler/throttler    {:mvn/version "1.0.1"}  ; api rate-limits
+        jarohen/chime {:mvn/version "0.3.3"} ; scheduler
         ta/helper {:local/root "../helper" :deps/manifest :deps}}}
