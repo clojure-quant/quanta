@@ -17,6 +17,10 @@
    :fx av/get-daily-fx
    :crypto av/get-daily-crypto})
 
+(defn get-category-download-fn [category]
+  (let [fun (get category-fn category)]
+    (or fun av/get-daily)))
+
 
 (defn symbol->provider [symbol]
    symbol)
@@ -43,7 +47,7 @@
   (let [{:keys [category] :as instrument} (db/instrument-details symbol)
         symbol (symbol->provider symbol)
         period (get interval-mapping interval)
-        av-get-data (get category-fn category)]
+        av-get-data (get-category-download-fn category)]
     (-> (av-get-data (range->parameter range) symbol)
         (alphavantage-result->dataset)
         (filter-rows-after-date (:start range))
@@ -59,5 +63,13 @@
                :mode :append} 
               {})
       (tc/info))
+  
+  (get-series "FSDCX" "D"
+             {:start (parse-date "2023-01-01")
+             :mode :append}
+            {})
+  
+
+  
   ;
   )

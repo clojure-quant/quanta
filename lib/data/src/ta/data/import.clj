@@ -4,7 +4,7 @@
     [tablecloth.api :as tc]
     [ta.warehouse.symbollist :refer [load-list]]
      ; import
-    [ta.data.import.warehouse :refer [save-symbol]]
+    [ta.data.import.warehouse :refer [save-symbol has-symbol]]
     [ta.warehouse.symbol-db :as db]
     [ta.data.import.append :as append]
      ; providers
@@ -68,6 +68,7 @@
         provider (case category
                    :crypto :bybit
                    :future :kibot
+                   :mutualfund :alphavantage
                    :kibot)]
     (cond
       (= range :full) 
@@ -80,12 +81,15 @@
       (info "no import task for range: " range))
     ))
 
+(defn missing-symbols [interval]
+  (let [all (db/get-symbols)]
+    (remove #(has-symbol % interval) all)))
 
 (comment 
   (-> (db/get-symbols) count)
+  (missing-symbols "D")
 ;  
   )
-
 
 
 (defn import-list
@@ -93,6 +97,7 @@
    (let [symbols (cond 
                    (string? symbols) (load-list symbols)
                    (= symbols :all) (db/get-symbols)
+                   (= symbols :missing) (missing-symbols interval)
                    :else symbols)]
      (doall (map
              #(import-one % interval range)
@@ -129,6 +134,8 @@
   (import-list ["SIL0" "NG0" "IBM"] "D" :append)
 
   (import-list :all "D" :append)
+
+  (import-list :missing "D" :full)
   
   ;
   )

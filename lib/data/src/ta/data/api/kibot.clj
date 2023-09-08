@@ -8,6 +8,19 @@
    [cheshire.core :as cheshire] ; JSON Encoding
    [throttler.core]))
 
+; available symbols:
+
+; us etf:
+; http://www.kibot.com/Files/2/All_ETFs_Intraday.txt
+
+; us stocks:
+; http://www.kibot.com/Files/2/All_Stocks_Intraday.txt
+
+; us futures
+; http://www.kibot.com/Files/2/Futures_tickbidask.txt
+
+; forex
+; http://www.kibot.com/Files/2/Forex_tickbidask.txt
 
 ;; ApiKey Management
 
@@ -128,7 +141,7 @@
 
    (history {:type "forex", 
              :symbol "EURUSD", 
-             :startdate "2023-09-07", 
+             :startdate "2023-09-01", 
              :interval "daily", 
              :timezone "UTC", 
              :splitadjusted 1})

@@ -101,8 +101,18 @@
                 {:start (parse-date "2023-09-06")}
                 {})
   
+    (symbol->provider "EURUSD")
+    (get-series "EURUSD"
+              "D"
+              {:start (parse-date "2023-09-01")}
+              {})
   
-  (symbol->provider "IBM")
+   (symbol->provider "IJH")
+  (get-series "IJH"
+              "D"
+              {:start (parse-date "2023-09-01")}
+              {})
+  
   
   (get-series "IBM"
               "D"

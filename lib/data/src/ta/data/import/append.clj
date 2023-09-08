@@ -29,13 +29,9 @@
    (tc/dataset [{:date (t/instant "1999-12-31T00:00:00Z")}
                 {:date (t/instant "2000-12-31T00:00:00Z")}])
    (t/instant "2001-12-31T00:00:00Z"))
-
-
+;
   )
  
-
-
-
 
 (defn append-symbol [get-series symbol interval opts]
   (if (has-symbol symbol interval)
@@ -59,4 +55,5 @@
         (error "no existing series for " symbol interval "SKIPPING APPEND.")))
     (error "no series for " symbol " " interval " .. skipping append")
     ))
+
 
