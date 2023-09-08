@@ -40,6 +40,12 @@
        (into #{})
        (into [])))
 
+(defn accounts [trades]
+  (->> trades
+       (map :account)
+       (into #{})
+       (into [])))
+
 (defn on-click [args]
   (let [args-clj (js->clj args)
         data (get args-clj "data")
@@ -73,17 +79,30 @@
            :pagination :false
            :paginationAutoPageSize true}])
 
-(defn filter-trades [trades symbol]
-  (if (= symbol "*")
+(defn filter-symbol [trades symbol]
+  (if (or (nil? symbol) (= symbol "*"))
     trades
     (filter #(= symbol (:symbol %)) trades)))
 
+(defn filter-account [trades account]
+  (if (or (nil? account) (= account "*"))
+    trades
+    (filter #(= account (:account %)) trades)))
+
+(defn filter-trades [trades symbol account]
+  (-> trades
+      (filter-account account)
+      (filter-symbol symbol)))
+
 (defn trade-ui [_trades]
-  (let [state-internal (r/atom {:symbol "*"})]
+  (let [state-internal (r/atom {:symbol "*"
+                                :account "*"})]
     (fn [trades]
       (let [active-symbols (symbols trades)
             active-symbols (concat ["*"] active-symbols)
-            trades-filtered (filter-trades trades (:symbol @state-internal))
+            active-accounts (accounts trades)
+            active-accounts (concat ["*"] active-accounts)
+            trades-filtered (filter-trades trades (:symbol @state-internal) (:account @state-internal))
             ]
         [:div.flex.flex-col.w-full.h-full
          [:div 
@@ -94,9 +113,12 @@
                           :max-width "4cm"}}
              [input/select {:nav? false
                             :items active-symbols}
-              state-internal [:symbol]] 
-            ]
-           
+              state-internal [:symbol]]]
+           [:div {:style {:width "4cm"
+                          :max-width "4cm"}}
+            [input/select {:nav? false
+                           :items active-accounts}
+             state-internal [:account]]]
           ]
           
            [trade-table trades-filtered]   
