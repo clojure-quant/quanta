@@ -21,18 +21,39 @@
   nil ; Important not to return by chance the key, as this would be shown in the repl.
   )
 
+; 
+
+(defn extract-error [body]
+  (if-let [match (re-matches #"^(\d\d\d)\s(.*)\r\n(.*)" body)]
+    (let [[full error-code error-title error-message] match]
+      {:code error-code
+       :title error-title
+       :message error-message})
+    nil))
+
+(comment 
+  
+  (extract-error "asdfasdfasdf")
+  (extract-error "405 Data Not Found.\r\nNo data found for the specified period for EURUSD.")
+  
+  
+ ; 
+  )
+
 
 (defn make-request [url query-params]
-  (let [result (-> (http/get url
-                             {:accept :json
-                              :query-params query-params
-                              :socket-timeout 3000 
-                              :connection-timeout 3000
-                              })
-                   (:body)
-                   ;(cheshire/parse-string true)
-                   )]
-    result
+  (let [result (http/get url
+                         {:accept :json
+                          :query-params query-params
+                          :socket-timeout 3000 
+                          :connection-timeout 3000})
+        body (:body result)
+        error (extract-error body)]
+    ;(info "status:" (:status result))  
+    ;(info "headers: " (:headers result))
+    (if error
+        {:error error}
+      body)
     ;  (throw (ex-info (:retMsg result) result))
     ))
 
@@ -62,6 +83,7 @@
 (defn history [opts]
   (let [{:keys [user password]} @api-key]
     ;(info "login user: " user "pwd: " password)
+    (info "kibot history: " opts)
     (make-request base-url
                   (merge 
                      {:action "history"
@@ -91,11 +113,29 @@
    ; http://www.kibot.com/historical_data/Futures_Historical_Tick_with_Bid_Ask_Data.aspx
 
    (history {:symbol "SIL" ; SIL - FUTURE
+             :type "futures" ; Can be stocks, ETFs forex, futures.
              :interval "daily"
              :period 1
-             :type "futures" ; Can be stocks, ETFs forex, futures.
              :timezone "UTC"
              :splitadjusted 1})
+   
+   (history {:symbol "SIL" ; SIL - FUTURE
+             :type "futures" ; Can be stocks, ETFs forex, futures.
+             :interval "daily"
+             :startdate "2023-09-01"
+             :timezone "UTC"
+             :splitadjusted 1})
+
+   (history {:type "forex", 
+             :symbol "EURUSD", 
+             :startdate "2023-09-07", 
+             :interval "daily", 
+             :timezone "UTC", 
+             :splitadjusted 1})
+   ;; => "405 Data Not Found.\r\nNo data found for the specified period for EURUSD."
+
+   
+   
 
 
    (-> (slurp "../resources/symbollist/futures-kibot.edn")

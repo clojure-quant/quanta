@@ -2,12 +2,17 @@
   (:require
    [tick.core :as tick] ; tick uses cljc.java-time
    [tech.v3.dataset :as tds]
+   [tablecloth.api :as tc]
    [ta.data.api.bybit :as bybit]))
    
+(defn sort-ds [ds]
+  (tc/order-by ds [:date] [:asc]))
 
 (defn bybit-result->dataset [response]
   (-> response
-      (tds/->dataset)))
+      (tds/->dataset)
+      (sort-ds) ; bybit returns last date in first row.
+      ))
 
 
 (defn symbol->provider [symbol]
@@ -16,10 +21,17 @@
 
 (def start-date-bybit (tick/date-time "2018-11-01T00:00:00"))
 
-(defn get-series [symbol interval _range _opts]
-  (let [symbol (symbol->provider symbol)]
-    (-> (bybit/get-history {:symbol symbol
-                            :start start-date-bybit
-                            :interval interval})
+(defn range->parameter [range]
+  (if (= range :full)
+      {:start start-date-bybit}
+      range))
+
+(defn get-series [symbol interval range _opts]
+  (let [symbol (symbol->provider symbol)
+        range-bybit (range->parameter range)]
+    (-> (bybit/get-history (merge 
+                            {:symbol symbol
+                             :interval interval}
+                              range-bybit))
         (bybit-result->dataset))))
 

@@ -22,6 +22,7 @@
           :autoload-cljs-dir ["ta/tradingview/goldly/page"
                               "demo/goldly/page"]
           :routes {:app {"" :user/main
+                         "test" :user/test
 ;warehouse
                          "warehouse" :user/warehouse
                          "series" :user/series

@@ -66,6 +66,9 @@
 (defn get-instruments []
   (-> @db vals))
 
+(defn get-symbols []
+  (->> @db vals (map :symbol)))
+
 
 (comment 
   (require '[clojure.pprint :refer [print-table]])

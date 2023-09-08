@@ -120,7 +120,7 @@
           {:symbol "BTCUSD"
            :start 1669852800000
            :interval "D"
-           :limit 200})
+           :limit 3})
        (count))
 
   (-> (get-history-request

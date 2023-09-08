@@ -1,8 +1,11 @@
 (ns ta.data.api-ds.alphavantage
   (:require
-   [tech.v3.dataset :as tds]
-   [ta.data.api.alphavantage :as av]
-   [ta.warehouse.symbol-db :as db]))
+    [taoensso.timbre :refer [info warn error]]
+    [tick.core :as t]
+    [tech.v3.dataset :as tds]
+    [tablecloth.api :as tc]
+    [ta.data.api.alphavantage :as av]
+    [ta.warehouse.symbol-db :as db]))
 
 (defn alphavantage-result->dataset [response]
   (-> response
@@ -21,11 +24,40 @@
 (def interval-mapping
   {"D" "daily"})
 
+(defn range->parameter [{:keys [start mode] :as range}]
+  (if (= range :full) 
+    "full"
+    (if (= mode :append)
+      "compact"
+      "full"
+      )))
+
+(defn filter-rows-after-date [ds-bars dt]
+  ;(info "filtering after date: " dt)
+  (if dt
+    (tc/select-rows ds-bars  (fn [row]
+                               (t/>= (:date row) dt)))
+    ds-bars))
 
 (defn get-series [symbol interval range opts]
   (let [{:keys [category] :as instrument} (db/instrument-details symbol)
         symbol (symbol->provider symbol)
         period (get interval-mapping interval)
         av-get-data (get category-fn category)]
-    (-> (av-get-data "full" symbol)
-        (alphavantage-result->dataset))))
+    (-> (av-get-data (range->parameter range) symbol)
+        (alphavantage-result->dataset)
+        (filter-rows-after-date (:start range))
+        )))
+
+
+(comment 
+  (require '[ta.helper.date :refer [parse-date]])
+  (parse-date "2023-09-01")
+  
+  (-> (get-series "EURUSD" "D" 
+              {:start (parse-date "2023-09-01")
+               :mode :append} 
+              {})
+      (tc/info))
+  ;
+  )

@@ -230,7 +230,7 @@
            :datatype "json"}
           (fn [response]
             ;(println "response: " response)
-            (println "information: " (:Information response))
+            ;(println "information: " (:Information response))
             (convert-bars- symbol :daily response))))
 
 (defn get-daily-adjusted
@@ -241,7 +241,7 @@
            :outputsize (name size)
            :datatype "json"}
           (fn [response]
-            (println "response: " response)
+            ;(println "response: " response)
              (let [{:keys [meta series] :as result} (convert-bars- symbol :adjusted response)]
               (when (= 0 (count series))
                 (warn "no data returned for: " symbol)
@@ -266,8 +266,8 @@
   "size: compact=last 100 days. full=entire history"
   [size symbol]
   (get-av {:function "DIGITAL_CURRENCY_DAILY"
-           :symbol symbol
-           :market "USD"
+           :symbol (subs symbol 0 3) 
+           :market (subs symbol 3)
            :outputsize (name size)
            :datatype "json"}
           (fn [response]
