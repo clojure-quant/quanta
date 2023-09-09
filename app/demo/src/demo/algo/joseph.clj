@@ -1,9 +1,9 @@
 (ns demo.algo.joseph
   (:require
-   [clojure.edn :as edn]
    [tablecloth.api :as tc]
    [tick.core :as t]
    [ta.helper.date :refer [parse-date epoch-second->datetime ->epoch-second ]]
+   [joseph.trades :refer [load-trades]]
    [ta.algo.manager :refer [add-algo]]
    [ta.tradingview.chart.plot :refer [plot-type linestyle]]
    [ta.tradingview.chart.shape :as shapes2] 
@@ -11,59 +11,6 @@
    ))
 
 
-(def d parse-date)
-
-(def trades 
-  [{:symbol "QQQ"
-    :direction :long
-    :entry-date (d "2021-03-15")
-    :exit-date (d "2021-05-12")
-    :entry-price 300.50
-    :exit-price 320.10}
-   {:symbol "QQQ"
-    :direction :long
-    :entry-date (d "2022-03-15")
-    :exit-date (d "2022-05-12")
-    :entry-price 300.50
-    :exit-price 320.10}
-   {:symbol "QQQ"
-    :direction :long 
-    :entry-date (d "2023-03-15")
-    :exit-date (d "2023-05-12")
-    :entry-price 300.50
-    :exit-price 320.10}
-   {:symbol "QQQ"
-    :direction :short
-    :entry-date (d "2023-06-15")
-    :exit-date (d "2023-07-12")
-    :entry-price 400.50
-    :exit-price 420.10}
-   ])
-
-(defn load-trades []
-  (->> (slurp "../resources/trades-upload.edn")
-       (edn/read-string)
-       ;(filter #(= :equity (:category %)))
-       (map #(update % :entry-date parse-date))
-       (map #(update % :exit-date parse-date))
-      ))
-
-
-(defn load-trades-demo []
-  trades)
-
-(comment 
-  (-> (load-trades-demo) count)
-   (-> (load-trades) count)
-   (->> (load-trades) 
-        ;(filter #(= :future (:category %))) 
-        (map :symbol)
-        (into #{}) 
-        (into []))
-   ;; => ["ZC" "DAX" "M2K" "MNQ" "BZ" "RB" "MYM" "MES" "NG"]
-   ;; => ["RIVN" "GOOGL" "FCEL" "NKLA" "INTC" "FRC" "AMZN" "WFC" "PLTR"]
-
-  )
 
 (defn trade-filter-symbol [symbol trades]
   (filter #(= (:symbol %) symbol) trades))
@@ -79,14 +26,17 @@
 (defn trade-filter-window [window-start window-end trades]
    (filter #(trade-in-window % window-start window-end) trades))
 
-(->> trades
-     (trade-filter-symbol "QQQ")
-     (trade-filter-window (d "2021-01-01") (d "2023-05-30"))
-     count
-    )
+(comment 
+  
+  (->> (load-trades)
+       (trade-filter-symbol "PLTR")
+       (trade-filter-window (parse-date "2021-01-01") (parse-date "2023-05-30"))
+       count)
 
-(->> trades (trade-filter-symbol "QQQ") count)
-(->> trades (trade-filter-symbol "SPY") count)
+  (->> (load-trades) (trade-filter-symbol "QQQ") count)
+  (->> (load-trades) (trade-filter-symbol "SPY") count)
+;
+)
 
 #(defn calc-joseph-signal []
     :hold)
