@@ -1,7 +1,11 @@
 {:name "joseph"
  ; runtime
- :api-routes {"joseph/" {:post  {"upload" joseph.upload/wrapped-save-file}
-                     
-                     }
-              }}
+ :api-routes {"joseph/" {:post  {"upload" joseph.upload/wrapped-save-file}}}
+ :clj-services {:name "joseph"
+                :permission #{:dev}
+                :symbols [joseph.nav/calc-nav
+                          joseph.trades/load-trades]}
+
+ :autoload-cljs-dir ["joseph/page"]
+ }
 

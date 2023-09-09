@@ -15,6 +15,15 @@
                                                ; :put ta.tradingview.handler-storage/ 
                                                ; :delete ta.tradingview.handler-storage/
                                                }}}}
+ :clj-services {:name "tradingview"
+                :permission #{}
+                :symbols [; tradingview api (via websocket)
+                          ta.tradingview.handler-datasource/get-server-config
+                          ta.tradingview.handler-datasource/symbol-info
+                          ta.tradingview.handler-datasource/symbol-search
+                          ta.tradingview.handler-datasource/server-time]}
  
+ :autoload-cljs-dir ["ta/tradingview/goldly/page"]
+
 
 }

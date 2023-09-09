@@ -1,0 +1,22 @@
+{; runtime
+ :clj-services {:name "trateg services"
+                :permission  #{}
+                :symbols [; warehouse
+                          ta.warehouse.symbollist/get-lists
+                          ta.warehouse.symbollist/load-list
+                          ta.warehouse.overview/overview-map
+                          ; data
+                          ta.data.load/load-series
+                          ; algo
+                          ta.algo.manager/algo-names
+                          ta.algo.manager/algo-info
+                          ta.algo.manager/tradingview-algo-chart-specs
+                          ta.algo.manager/algo-run-window-browser
+                          ta.algo.manager/algo-run-browser
+                          ta.algo.manager/algo-marks
+                          ta.algo.manager/algo-shapes
+                          ; testing
+                          ta.helper.date/now-datetime]}
+
+
+}

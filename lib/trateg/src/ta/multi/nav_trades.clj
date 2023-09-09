@@ -277,13 +277,7 @@
   (portfolio (take 400 trades))
   (portfolio trades)
 
-  
-       ;count
-  (portfolio-stats)
-  )
-  
 
-    
-  
-  
+ ; 
   )
+  

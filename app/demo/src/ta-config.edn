@@ -19,8 +19,7 @@
  :goldly {:lazy true
           :src-dir "src"
 ; runtime
-          :autoload-cljs-dir ["ta/tradingview/goldly/page"
-                              "demo/goldly/page"]
+          :autoload-cljs-dir ["demo/goldly/page"]
           :routes {:app {"" :user/main
                          "test" :user/test
 ;warehouse
@@ -48,7 +47,7 @@
                        :studies [:clj "notebook/studies/"]
                        :datascience [:clj "notebook/datascience/"]
                        :playground [:clj "notebook/playground/"]
-                       :demo [:clj "demo/notebook/"]
+                       ;:demo [:clj "demo/notebook/"]
                        :test [:cljs "demo/goldly/view/"]}}
 
  :ta {:warehouse {:list "../resources/symbollist/"
@@ -75,36 +74,6 @@
                     :template-path "../resources/tradingview-templates/"
                     :marks-path "../../data/"}}
 
- :clj-services {:name "trateg services"
-                :symbols [; warehouse
-                          ta.warehouse.symbollist/get-lists
-                          ta.warehouse.symbollist/load-list
-                          ta.warehouse.overview/overview-map
-                          ; data
-                          ta.data.load/load-series
-                          ; algo
-                          ta.algo.manager/algo-names
-                          ta.algo.manager/algo-info
-                          ta.algo.manager/tradingview-algo-chart-specs
-                          ta.algo.manager/algo-run-window-browser
-                          ta.algo.manager/algo-run-browser
-                          ta.algo.manager/algo-marks
-                          ta.algo.manager/algo-shapes
-                          ; tradingview api (via websocket)
-                          ta.tradingview.handler-datasource/get-server-config
-                          ta.tradingview.handler-datasource/symbol-info
-                          ta.tradingview.handler-datasource/symbol-search
-                          ta.tradingview.handler-datasource/server-time
-                          ; gann
-                          ta.gann.db/load-gann
-                          ta.gann.db/save-gann
-                          ta.gann.svg-plot/gann-svg-web
-                          ta.gann.svg-plot/get-boxes
-                          ; joseph
-                          demo.algo.joseph/load-trades
-                          ; testing
-                          ta.helper.date/now-datetime]
-                :permission  #{}}
 
  :demo {:gann-data-file "../resources/gann.edn"}
 ;

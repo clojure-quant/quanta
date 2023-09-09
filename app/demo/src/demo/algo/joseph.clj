@@ -3,14 +3,12 @@
    [tablecloth.api :as tc]
    [tick.core :as t]
    [ta.helper.date :refer [parse-date epoch-second->datetime ->epoch-second ]]
-   [joseph.trades :refer [load-trades]]
    [ta.algo.manager :refer [add-algo]]
    [ta.tradingview.chart.plot :refer [plot-type linestyle]]
    [ta.tradingview.chart.shape :as shapes2] 
    [ta.tradingview.chart.color :refer [color]]
+   [joseph.trades :refer [load-trades]]
    ))
-
-
 
 (defn trade-filter-symbol [symbol trades]
   (filter #(= (:symbol %) symbol) trades))

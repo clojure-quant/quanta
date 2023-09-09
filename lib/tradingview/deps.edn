@@ -1,5 +1,5 @@
 {:paths ["src"
-         "resources" ; tradingview javascript library
+         "resources" ; tradingview javascript library +  extension data
          ]
  :deps {org.clojure/clojure    {:mvn/version "1.11.1"}
         tick/tick {:mvn/version "0.6.2"}
