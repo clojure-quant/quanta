@@ -21,7 +21,7 @@
 
   :goldly-docs
   {:extra-paths ["resources"]
-   :extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.610"}}
+   :extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.615"}}
    :exec-fn goldly.app/goldly-server-run!
    :exec-args {:profile "jetty"
                :config {:goldly {:lazy true
@@ -29,13 +29,7 @@
                                  ; runtime
                                  :autoload-cljs-dir ["src/goldly/page"]
                                  :autoload-clj-ns [demo.env.config]
-                                 :routes {:app {;"" :pages
-                                                ; devtools
-                                                "devtools/pages" :pages
-                                                "devtools/scratchpad" :scratchpad
-                                                "devtools/viewer" :viewer
-                                                "devtools/environment" :environment
-                                                "devtools/" :devtools}
+                                 :routes {:app {}
                                           :api {}}}
 
                         :devtools {:rdocument  {:storage-root "../../rdocument/"

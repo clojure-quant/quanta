@@ -18,12 +18,13 @@
               :value [2,2]}})
 
 (defn vega-nav-plot [data]
+  ^:R
   [:div.w-full.h-full
    [vegalite
     {:box :fl ; :lg
      :spec {;:width "1000"
-            :width "100%"
-            :height "100%"
+            :width "500" ;"100%"
+            :height "500" ;"100%"
             :description "NAV Plot"
             :data {:values data} ;data
             :mark "line"
@@ -39,3 +40,7 @@
   [{:nav 100.0 :index 1}
    {:nav 120.0 :index 2}
    {:nav 150.0 :index 3}])
+
+(vega-nav-plot vega-nav-plot-test-data)
+
+

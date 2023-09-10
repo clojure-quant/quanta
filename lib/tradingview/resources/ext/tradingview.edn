@@ -25,5 +25,8 @@
  
  :autoload-cljs-dir ["ta/tradingview/goldly/page"]
 
+ :cljs-routes {"algo/tradingview" :tradingview/algo
+               "tradingview" :tradingview/udf}
+                         
 
 }

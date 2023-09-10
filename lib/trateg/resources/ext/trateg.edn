@@ -17,6 +17,10 @@
                           ta.algo.manager/algo-shapes
                           ; testing
                           ta.helper.date/now-datetime]}
-
+  :cljs-routes {;warehouse
+                "warehouse" :user/warehouse
+                "series" :user/series
+                ;backtest
+                "algo/backtest" :algo/backtest}
 
 }

@@ -39,15 +39,16 @@
         }
 
   :docs ; RUN SERVICES (keep running)
-  {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.614"}
+  {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.616"}
                 com.fzakaria/slf4j-timbre {:mvn/version "0.4.0"}}
    :extra-paths ["target/webly" ; to include the sci-bindings info
                  "node_modules"
                  "resources"]
    :exec-fn modular.system/start!
    :exec-args {:profile "jetty"
-               :services "services-docs.edn" ; "goldly/services.edn"
-               :config  ["webly/config.edn" "goldly/config.edn" "goldly/docs-config.edn"
+               :services "services-docs.edn"
+               :config  ["webly/config.edn" "goldly/config.edn" 
+                         ;"goldly/docs-config.edn"
                          "ta-config.edn"]}}
 
   ; clj -T:tree2
