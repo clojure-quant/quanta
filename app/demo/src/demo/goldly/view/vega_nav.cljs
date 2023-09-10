@@ -36,11 +36,3 @@
                        ;:color "blue"
                         }}}]])
 
-(def vega-nav-plot-test-data
-  [{:nav 100.0 :index 1}
-   {:nav 120.0 :index 2}
-   {:nav 150.0 :index 3}])
-
-(vega-nav-plot vega-nav-plot-test-data)
-
-

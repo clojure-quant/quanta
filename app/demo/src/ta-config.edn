@@ -30,7 +30,7 @@
                        :studies [:clj "notebook/studies/"]
                        :datascience [:clj "notebook/datascience/"]
                        :playground [:clj "notebook/playground/"]
-                       :test [:cljs "demo/goldly/view/"]
+                       :ui-test [:cljs "demo/goldly/ui_test/"]
                        ;:demo [:clj "demo/notebook/"]
                        ;:demo-cljs [:cljs "demo/notebook/"]
                        }}
