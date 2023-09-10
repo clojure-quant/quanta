@@ -3,10 +3,13 @@
  :api-routes {"joseph/" {:post  {"upload" joseph.upload/wrapped-save-file}}}
  :clj-services {:name "joseph"
                 :permission #{:dev}
-                :symbols [joseph.nav/calc-nav
+                :symbols [joseph.nav/calc-nav-browser
                           joseph.trades/load-trades]}
 
  :autoload-cljs-dir ["joseph/page"]
- :cljs-routes {"joseph" :joseph/trades}
+ :cljs-routes {"joseph" {"" :joseph/trades
+                         "/nav" :joseph/nav}
+               
+               }
  }
 

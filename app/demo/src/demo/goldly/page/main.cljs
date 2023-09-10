@@ -28,7 +28,9 @@
    [:div.bg-blue-300.m-5
     [:h1.text-xl.text-red-600 "gann tools"]
     [link-href "/gann" "gann chart"]
-    [link-href "/joseph" "joseph"]]
+    [link-href "/joseph" "joseph-tradingview"]
+    [link-dispatch [:bidi/goto :joseph/nav]  "joseph-nav"]
+    ]
 
    ; goldly developer tools
    [:div.bg-blue-300.m-5

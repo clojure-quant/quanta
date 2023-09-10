@@ -102,6 +102,7 @@ basic-group
 (def gh 600)
 
 (defn gann-box [c gw gh]
+  ^:R
   [(a-1-1 c gw gh)
    (a-2-1 c gw gh)
    (a-3-1 c gw gh)
@@ -127,8 +128,8 @@ basic-group
   (-> (gann-box c gw gh)
       (tf/translate [(* no-t gw) (* no-p gh)])))
 
-(show!
- (into [:svg  {:width (* 2 gw)
+
+ (into ^:R [:svg  {:width (* 2 gw)
                :height (* 2 gh)}
         #_(-> (el/rect gw gh)
               (tf/translate [(/ gw 2) (/ gh 2)])
@@ -150,7 +151,7 @@ basic-group
         ;(gann "green" gw gh 1 0)
         ;(gann "green" gw gh 1 1)
         ;(gann "green" gw gh 0 1)
-        )))
+        ))
 
 (-> (gann-box "blue" gw gh)
     (tf/translate [gw 0]))
@@ -173,7 +174,7 @@ basic-group
  (into [:svg  {:width gw
                :height gh}]))
 
-(show!
+^:R
  [:svg  {:width gw
          :height gh}
   (-> (el/rect 20 20) (tf/translate [100 0]))
@@ -188,7 +189,7 @@ basic-group
         (tf/style {:stroke
                    (str "green")
                    :stroke-width "2px"
-                   :fill "none"}))])
+                   :fill "none"}))]
 
 (defn draw-box [])
 

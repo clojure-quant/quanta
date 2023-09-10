@@ -21,7 +21,7 @@
 
   :goldly-docs
   {:extra-paths ["resources"]
-   :extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.615"}}
+   :extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.616"}}
    :exec-fn goldly.app/goldly-server-run!
    :exec-args {:profile "jetty"
                :config {:goldly {:lazy true
