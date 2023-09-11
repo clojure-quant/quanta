@@ -1,4 +1,4 @@
-(ns demo.goldly.page.test
+(ns demo.goldly.page.test.test
   (:require
    [reagent.core :as r]
    [goldly.page :as page]
@@ -38,4 +38,4 @@
 
 
 
-(page/add test-page :user/test)
+(page/add test-page :test/test)

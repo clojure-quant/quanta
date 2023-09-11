@@ -34,12 +34,17 @@
     :exit-price 420.10}])
 
 
+(defn entry-vol [{:keys [entry-price qty direction]}]
+  (* entry-price qty))
+
 (defn load-trades []
   (->> (slurp "../resources/trades-upload.edn")
        (edn/read-string)
        ;(filter #(= :equity (:category %)))
        (map #(update % :entry-date parse-date))
-       (map #(update % :exit-date parse-date))))
+       (map #(update % :exit-date parse-date))
+       (map #(assoc % :entry-vol (entry-vol %)))
+       ))
 
 (def cutoff-date (parse-date "2022-01-01"))
 

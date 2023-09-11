@@ -7,21 +7,29 @@
 
 (defn calc-nav [symbol]
   (let [trades (load-trades-valid)
+        symbols (->> trades (map :symbol) (into #{}) (into []))
+        accounts (->> trades (map :account) (into #{}) (into []))
         trades (if (or (nil? symbol) (str/blank? symbol))
                  trades
                  (filter #(= symbol (:symbol %)) trades))
         ds-nav (portfolio trades)]
     {:nav ds-nav
-     :trades trades}))
+     :trades trades
+     :symbols symbols
+     :accounts accounts
+     }))
 
 
 (defn calc-nav-browser [symbol]
-  (let [{:keys [nav trades]} (calc-nav symbol)]
-    {:nav (ds->map nav)
-     :trades trades}))
+  (let [{:keys [nav] :as data} (calc-nav symbol)]
+    (merge data
+           {:nav (ds->map nav)})))
 
 
 (comment 
+  (-> (calc-nav nil)
+      :symbols)
+
   (-> (calc-nav nil) 
       :nav)
 
@@ -33,6 +41,11 @@
   (-> (calc-nav-browser nil) 
       :nav)
   
+  (-> (calc-nav-browser nil)
+      :symbols)
+  
+  (-> (calc-nav-browser nil)
+      :accounts)
 ;
   )
 

@@ -40,9 +40,6 @@
                      #(map inc (% :position/trades-open))})
   ))
 
-(defn idxs-last [idxs]
-  (let [v (last idxs)]
-    [v]))
 
 (defn set-col-win [ds win col val]
   ;(println "set-col val: " val)
@@ -91,8 +88,8 @@
      ))
 
 (defn trade-effect [ds-bars {:keys [qty direction 
-                                    entry-price entry-date
-                                    exit-price exit-date] :as trade}]
+                                    entry-date exit-date] 
+                             :as trade}]
   (assert entry-date "trade does not have entry-dt")
   (assert exit-date "trade does not have entry-dt")
   (assert direction "trade does not have side")
@@ -100,19 +97,28 @@
   ;(info "calculating trade-effect " trade)
   (let [full# (tc/row-count ds-bars)
         ds-eff (no-effect full#)
+        idxs-exit (argops/argfilter #(t/= exit-date %) (:date ds-bars))
         idxs-win (if (t/= entry-date exit-date)
-                    (argops/argfilter #(t/= entry-date %) (:date ds-bars))
-                    (argops/argfilter #(t/<= entry-date % exit-date) (:date ds-bars)))
-        idxs-exit (idxs-last idxs-win)
-        ds-w (tc/select-rows ds-bars idxs-win)
-        price-w (:close ds-w)
-        w# (tc/row-count ds-w)]
-    (if (= w# 0)
-      (do (warn "cannot calculate effect for trade: " trade)
-          ds-eff)
-      (do (trade-unrealized-effect ds-eff idxs-win price-w w# trade)
-          (trade-realized-effect ds-eff idxs-exit trade)
-          ds-eff))))
+                    nil
+                    (argops/argfilter #(and (t/<= entry-date %)
+                                            (t/< % exit-date))
+                                      (:date ds-bars)))]
+    ; unrealized effect
+    (when idxs-win 
+      (let [ds-w (tc/select-rows ds-bars idxs-win)
+            price-w (:close ds-w)
+            w# (tc/row-count ds-w)]
+        (if (= w# 0)
+          (warn "cannot calculate unrealized effect for trade: " trade)
+          (trade-unrealized-effect ds-eff idxs-win price-w w# trade)))) 
+    ; realized effect
+    (let [ds-x (tc/select-rows ds-bars idxs-exit)
+          x# (tc/row-count ds-x)]
+      (if (= x# 0)
+        (warn "cannot calculate REALIZED effect for trade: " trade)
+        (trade-realized-effect ds-eff idxs-exit trade)))
+    ; return
+    ds-eff))
 
 (defn effects+ [a b]
   (tc/dataset
@@ -153,14 +159,14 @@
         ds  (reduce effects+
                     (no-effect (tc/row-count (:calendar calendar)))
                     (map calc-symbol symbols))
-        
-        ]  
-      (tc/add-columns ds {:date (-> calendar :calendar :date)
-                          :pl-r-cum (dfn/cumsum (:pl-r ds))
-                          })
-     ))
-
-
+        ; result
+        pl-r-cum (dfn/cumsum (:pl-r ds))] 
+    
+    (tc/add-columns 
+     ds 
+     {:date (-> calendar :calendar :date)
+      :pl-r-cum pl-r-cum
+      :pl-cum (dfn/+ (:pl-u ds) pl-r-cum)})))
 
 
 (comment 
@@ -190,14 +196,9 @@
 
   (tc/select-rows ds1 [0 5])
 
-  (require '[joseph.trades :refer [load-trades]])
-  (def cutoff-date (parse-date "2022-01-01"))
-  (defn invalid-date [{:keys [entry-date exit-date]}]
-    (or (t/<= entry-date cutoff-date)
-        (t/<= exit-date cutoff-date)))
-  (def trades 
-    (->> (load-trades)
-         (remove invalid-date)))
+  (require '[joseph.trades :refer [load-trades-valid]])
+  
+  (def trades (load-trades-valid))
   (count trades)
 
   (def trades-googl 

@@ -32,9 +32,17 @@
     [link-dispatch [:bidi/goto :joseph/nav]  "joseph-nav"]
     ]
 
+   ; test
+   [:div.bg-blue-300.m-5
+     [:p.text-blue.text-xl "test"]
+     [link-dispatch [:bidi/goto :test/test] "test-page"]
+     [link-dispatch [:bidi/goto :test/layout1] "layout-1"]
+     [link-dispatch [:bidi/goto :test/layout2] "layout-2"]
+    
+   ]
    ; goldly developer tools
    [:div.bg-blue-300.m-5
-     [link-dispatch [:bidi/goto :user/test] "test-page"]
+     
     [:p.text-blue.text-xl "goldly developer tools"]
     [link-dispatch [:bidi/goto :viewer :query-params {}] "notebook viewer"]
     [link-dispatch [:bidi/goto :scratchpad] "scratchpad"]
