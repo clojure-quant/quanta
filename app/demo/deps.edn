@@ -16,7 +16,7 @@
         ta/gann {:local/root "../../lib/gann" :deps/manifest :deps}
         joseph/joseph {:local/root "../../lib/joseph" :deps/manifest :deps}
 
-        com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.1.0"}
+        ;com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.1.0"}
         ;;
         }
  :aliases
