@@ -102,35 +102,46 @@
                     nil
                     (argops/argfilter #(and (t/<= entry-date %)
                                             (t/< % exit-date))
-                                      (:date ds-bars)))]
+                                      (:date ds-bars)))
+        warnings (atom [])
+        ]
     ; unrealized effect
     (when idxs-win 
       (let [ds-w (tc/select-rows ds-bars idxs-win)
             price-w (:close ds-w)
             w# (tc/row-count ds-w)]
         (if (= w# 0)
-          (warn "cannot calculate unrealized effect for trade: " trade)
+          (do (warn "cannot calculate unrealized effect for trade: " trade)
+              (swap! warnings conj (assoc trade :warning :unrealized)))
           (trade-unrealized-effect ds-eff idxs-win price-w w# trade)))) 
     ; realized effect
     (let [ds-x (tc/select-rows ds-bars idxs-exit)
           x# (tc/row-count ds-x)]
       (if (= x# 0)
-        (warn "cannot calculate REALIZED effect for trade: " trade)
+        (do (warn "cannot calculate REALIZED effect for trade: " trade)
+            (swap! warnings conj (assoc trade :warning :realized)))
         (trade-realized-effect ds-eff idxs-exit trade)))
     ; return
-    ds-eff))
+    {:eff ds-eff
+     :warnings @warnings}
+    ))
 
 (defn effects+ [a b]
-  (tc/dataset
-    {:open# (dfn/+ (:open# a) (:open# b))
-     :long$ (dfn/+ (:long$ a) (:long$ b))
-     :short$ (dfn/+ (:short$ a) (:short$ b))
-     :net$ (dfn/+ (:net$ a) (:net$ b))
-     :pl-u (dfn/+ (:pl-u a) (:pl-u b))
-     :pl-r (dfn/+ (:pl-r a) (:pl-r b))}))
+  (let [warnings (concat (:warnings a) (:warnings b))
+        a (:eff a)
+        b (:eff b)]
+  {:warnings warnings
+   :eff (tc/dataset
+          {:open# (dfn/+ (:open# a) (:open# b))
+           :long$ (dfn/+ (:long$ a) (:long$ b))
+           :short$ (dfn/+ (:short$ a) (:short$ b))
+           :net$ (dfn/+ (:net$ a) (:net$ b))
+           :pl-u (dfn/+ (:pl-u a) (:pl-u b))
+           :pl-r (dfn/+ (:pl-r a) (:pl-r b))})}))
 
 (defn effects-sum [effects]
-   (let [empty (no-effect (tc/row-count (first effects)))]
+   (let [empty {:eff (no-effect (tc/row-count (:eff (first effects))))
+                :warnings []}]
      (reduce effects+ empty effects)))
 
 (defn effects-symbol [symbol calendar trades]
@@ -156,17 +167,18 @@
                      (filter exists-series?)
                      (into #{})
                      (into []))
-        ds  (reduce effects+
-                    (no-effect (tc/row-count (:calendar calendar)))
-                    (map calc-symbol symbols))
+        {:keys [eff warnings]} (reduce effects+
+                                 {:eff (no-effect (tc/row-count (:calendar calendar)))
+                                  :warnings []}
+                                  (map calc-symbol symbols))
         ; result
-        pl-r-cum (dfn/cumsum (:pl-r ds))] 
-    
-    (tc/add-columns 
-     ds 
-     {:date (-> calendar :calendar :date)
-      :pl-r-cum pl-r-cum
-      :pl-cum (dfn/+ (:pl-u ds) pl-r-cum)})))
+        pl-r-cum (dfn/cumsum (:pl-r eff))] 
+    {:warnings warnings 
+     :eff (tc/add-columns 
+           eff
+           {:date (-> calendar :calendar :date)
+            :pl-r-cum pl-r-cum
+            :pl-cum (dfn/+ (:pl-u eff) pl-r-cum)})}))
 
 
 (comment 
@@ -203,8 +215,7 @@
 
   (def trades-googl 
     (filter #(= "GOOGL" (:symbol %)) trades))
-  
-  trades
+  (count trades-googl)
   
   (print-table [:entry-date :exit-date :symbol ] trades)
   (print-table [:entry-date :exit-date :symbol] trades-googl)
@@ -241,7 +252,7 @@
        "GOOGL" 
        (daily-calendar (parse-date "2022-10-01")
                        (parse-date "2023-04-01"))
-        trades)
+        trades-googl)
       (print-range :all))
   
   (exists-series "MSFT")
@@ -269,6 +280,7 @@
 
   (portfolio (take 1 trades))
   (portfolio (take 5 trades))
+
   (portfolio (take 10 trades))
   (portfolio (take 20 trades))
   (portfolio (take 50 trades))
@@ -277,6 +289,13 @@
   (portfolio (take 300 trades))
   (portfolio (take 400 trades))
   (portfolio trades)
+
+  
+  (->> (portfolio trades)
+       :warnings
+       (print-table [:warning :symbol :direction :exit-date])
+   )
+
 
 
  ; 

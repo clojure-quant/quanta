@@ -15,8 +15,9 @@
         trades (if (or (nil? account) (str/blank? account))
                  trades
                  (filter #(= account (:account %)) trades))
-        ds-nav (portfolio trades)]
-    {:nav ds-nav
+        nav (portfolio trades)]
+    {:nav (:eff nav)
+     :warnings (:warnings nav)
      :trades trades
      :symbols symbols
      :accounts accounts
