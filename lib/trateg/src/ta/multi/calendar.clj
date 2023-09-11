@@ -19,6 +19,7 @@
   (let [dt (atom start)]
     #(swap! dt next-date)))
 
+
 (defn weekend? [dt]
    (let [weekday (t/day-of-week dt)]
      (or (= t/SATURDAY weekday)
@@ -43,6 +44,31 @@
      }))
      
 
+(defn next-date-sunday-included [dt-current]
+  (let [weekday (t/day-of-week dt-current)]
+    (t/>> dt-current
+          (cond ; case does not work
+            (= t/FRIDAY weekday) days2
+            ;(= t/SATURDAY weekday) day
+            :else  day))))
+
+(defn counter-sunday-included [start]
+  (let [dt (atom start)]
+    #(swap! dt next-date-sunday-included)))
+
+(defn daily-calendar-sunday-included [start end]
+  (let [start (t/<< start days3)
+        end (t/>> end days3)
+        tick (counter-sunday-included start)
+        dt-seq (repeatedly tick)
+        dt-seq (if (weekday? start)
+                 (conj dt-seq start)
+                 dt-seq)]
+    {:interval "D"
+     :start start
+     :end end
+     :calendar (tc/dataset
+                {:date (take-while #(t/< % end) dt-seq)})}))
 
 (comment 
   (require '[ta.helper.date :refer [parse-date]])

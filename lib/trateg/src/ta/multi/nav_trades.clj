@@ -9,7 +9,7 @@
    [ta.warehouse :as wh]
    [ta.data.settings :refer [determine-wh]]
    [ta.multi.aligned :refer [load-aligned-filled]]
-   [ta.multi.calendar :refer [daily-calendar]]
+   [ta.multi.calendar :refer [daily-calendar daily-calendar-sunday-included]]
    ))
 
 (defn filter-range [ds-bars {:keys [start end]}]
@@ -157,7 +157,8 @@
 (defn portfolio [trades]
   (let [start-dt (apply t/min (map :entry-date trades))
         end-dt (apply t/max (map :exit-date trades))
-        calendar (daily-calendar start-dt end-dt)
+        ;calendar (daily-calendar start-dt end-dt)
+        calendar (daily-calendar-sunday-included start-dt end-dt)
         trades-symbol (fn [symbol]
                         (filter #(= symbol (:symbol %)) trades))
         calc-symbol (fn [symbol]
@@ -292,7 +293,8 @@
   (->> 
    (portfolio trades)
    :warnings
-   (print-table [:warning :symbol :direction :exit-date]))
+   ;(print-table [:warning :symbol :direction :exit-date])
+   )
   
   
   (require '[ta.multi.aligned :refer [load-symbol-window]])
