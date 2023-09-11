@@ -31,24 +31,24 @@
 
 
 (comment 
-  (-> (calc-nav nil)
+  (-> (calc-nav nil nil)
       :symbols)
 
-  (-> (calc-nav nil) 
+  (-> (calc-nav nil nil) 
       :nav)
 
-  (-> (calc-nav "GOOGL")
+  (-> (calc-nav "GOOGL" "")
       :trades)
-  (-> (calc-nav "GOOGL")
+  (-> (calc-nav "GOOGL" "")
       :nav)
 
-  (-> (calc-nav-browser nil) 
+  (-> (calc-nav-browser nil nil) 
       :nav)
   
-  (-> (calc-nav-browser nil)
+  (-> (calc-nav-browser nil nil)
       :symbols)
   
-  (-> (calc-nav-browser nil)
+  (-> (calc-nav-browser nil nil)
       :accounts)
 ;
   )
