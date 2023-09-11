@@ -246,8 +246,6 @@
   (effects-sum [(trade-effect ds-bars trade)
                 (trade-effect ds-bars trade)])
   
-   
-
   (-> (effects-symbol 
        "GOOGL" 
        (daily-calendar (parse-date "2022-10-01")
@@ -291,11 +289,25 @@
   (portfolio trades)
 
   
-  (->> (portfolio trades)
-       :warnings
-       (print-table [:warning :symbol :direction :exit-date])
-   )
-
+  (->> 
+   (portfolio trades)
+   :warnings
+   (print-table [:warning :symbol :direction :exit-date]))
+  
+  
+  (require '[ta.multi.aligned :refer [load-symbol-window]])
+  
+  (-> 
+  (load-symbol-window "BZ0" "D" 
+                      #time/date-time "2022-08-01T00:00"
+                      #time/date-time "2023-08-01T00:00")
+  
+   (print-range :all))
+; |   :realized |     BZ0 |     :short | 2023-07-16T00:00 |
+; | :unrealized |     BZ0 |     :short | 2022-10-03T00:00 |
+; |   :realized |     BZ0 |      :long | 2022-11-27T00:00 |
+; |   :realized |     BZ0 |     :short | 2023-07-16T00:00 |
+; | :unrealized |     NG0 |     :short | 2022-08-08T00:00 |
 
 
  ; 
