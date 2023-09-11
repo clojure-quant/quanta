@@ -52,9 +52,18 @@
   (or (t/<= entry-date cutoff-date)
       (t/<= exit-date cutoff-date)))
 
+(defn symbol= [s]
+  (fn [{:keys [symbol]}]
+    (= symbol s)))
+
 (defn load-trades-valid []
   (->> (load-trades)
-       (remove invalid-date)))
+       (remove invalid-date)
+       (remove (symbol= "DAX0"))
+       ;(remove (symbol= "BZ0"))
+       ;(remove (symbol= "MNQ0"))
+       ;(remove (symbol= "MYM0"))
+       ))
 
 (defn load-trades-demo []
   trades)
@@ -69,4 +78,8 @@
        (into []))
    ;; => ["ZC" "DAX" "M2K" "MNQ" "BZ" "RB" "MYM" "MES" "NG"]
    ;; => ["RIVN" "GOOGL" "FCEL" "NKLA" "INTC" "FRC" "AMZN" "WFC" "PLTR"]
+  
+  (load-trades-valid)
+  (-> (load-trades-valid) count)
+
   )

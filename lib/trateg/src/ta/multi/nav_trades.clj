@@ -51,16 +51,16 @@
                                        exit-price exit-date] :as trade}]
   ;(info "calculate trade-un-realized..")
   (let [long? (= :long direction)
-        qty2 (if long? qty (- 0 qty))
+        qty2 (if long? (+ 0.0 qty) (- 0.0 qty))
         open# (vec-const w# 1.0)
         long$ (if long?
-                (dfn/* price-w qty)
+                (dfn/* price-w qty2)
                 (vec-const w# 0.0))
         short$  (if long?
                   (vec-const w# 0.0)
-                  (dfn/* price-w qty))
-        net$ (dfn/- long$ short$)
-        open$ (* qty entry-price)
+                  (dfn/* price-w qty2))
+        net$ (dfn/+ long$ short$)
+        open$ (* qty2 entry-price)
         pl-u (dfn/- open$ net$) ]
     ;(println "idxs-win: " idxs-win)
     ;(println "win-size: " w#)

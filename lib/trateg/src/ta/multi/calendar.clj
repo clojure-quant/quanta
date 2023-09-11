@@ -28,7 +28,9 @@
   (not (weekend? dt)))
 
 (defn daily-calendar [start end]
-  (let [tick (counter start)
+  (let [start (t/<< start days3)
+        end (t/>> end days3)
+        tick (counter start)
         dt-seq (repeatedly tick)
         dt-seq (if (weekday? start)
                  (conj dt-seq start)
@@ -39,6 +41,8 @@
      :calendar (tc/dataset
                  {:date (take-while #(t/< % end) dt-seq)})
      }))
+     
+
 
 (comment 
   (require '[ta.helper.date :refer [parse-date]])
