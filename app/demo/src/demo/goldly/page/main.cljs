@@ -26,10 +26,15 @@
     
    ; trateg demos
    [:div.bg-blue-300.m-5
+     [:h1.text-xl.text-red-600 "joseph"]
+     [link-href "/joseph" "tradingview"]
+     [link-dispatch [:bidi/goto :joseph/nav]  "nav"]
+     [link-dispatch [:bidi/goto :joseph/live]  "live"]]
+
+   [:div.bg-blue-300.m-5
     [:h1.text-xl.text-red-600 "gann tools"]
     [link-href "/gann" "gann chart"]
-    [link-href "/joseph" "joseph-tradingview"]
-    [link-dispatch [:bidi/goto :joseph/nav]  "joseph-nav"]
+    
     ]
 
    ; test

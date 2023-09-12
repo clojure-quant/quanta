@@ -24,6 +24,12 @@
 (defn trade-filter-window [window-start window-end trades]
    (filter #(trade-in-window % window-start window-end) trades))
 
+(defn live-trade? [{:keys [exit-date]}]
+  (nil? exit-date))
+
+(defn trade-filter-closed [trades]
+  (remove live-trade? trades))
+
 (comment 
   
   (->> (load-trades)
@@ -44,20 +50,20 @@
     )
 
 
-(defn shapes-for-trade [{:keys [direction entry-date exit-date entry-price exit-price] :as trade}]
-  [(shapes2/line-vertical entry-date {:text (str direction)
-                                      :linecolor (if (= direction :long)
+(defn shapes-for-trade [{:keys [side entry-date exit-date entry-price exit-price] :as trade}]
+  [(shapes2/line-vertical entry-date {:text (str side)
+                                      :linecolor (if (=  :long)
                                                      (color :lightgreen)
                                                      (color :lightsalmon))}) 
    (shapes2/line-vertical exit-date {:text "close"
                                      :linecolor (color :lightslategray)})
    (shapes2/trend-line {:time entry-date :price entry-price}
                        {:time exit-date :price exit-price}
-                       {:linecolor (if (= direction :long)
+                       {:linecolor (if (= side :long)
                                      (color :lightgreen)
                                      (color :lightsalmon))
                         :linestyle (linestyle :dashed)
-                        :text (str direction)
+                        :text (str side)
                         :showLabel true
                         :leftEnd 1
                         :rightEnd 1}
@@ -69,6 +75,7 @@
         start (epoch-second->datetime epoch-start)
         end   (epoch-second->datetime epoch-end)
         trades (->> trades
+                    (trade-filter-closed)
                     (trade-filter-symbol (:symbol options))
                     (trade-filter-window start end))
         trade-shapes (->> (mapcat shapes-for-trade trades)

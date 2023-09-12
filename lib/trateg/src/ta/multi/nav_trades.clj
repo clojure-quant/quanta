@@ -46,11 +46,11 @@
   (dtt/mset! (dtt/select (col ds) win) val))
 
 (defn trade-unrealized-effect [ds-eff idxs-win price-w w# 
-                               {:keys [qty direction
+                               {:keys [qty side
                                        entry-price entry-date
                                        exit-price exit-date] :as trade}]
   ;(info "calculate trade-un-realized..")
-  (let [long? (= :long direction)
+  (let [long? (= :long side)
         qty2 (if long? (+ 0.0 qty) (- 0.0 qty))
         open# (vec-const w# 1.0)
         long$ (if long?
@@ -72,12 +72,12 @@
     (set-col-win ds-eff idxs-win  :pl-u pl-u)))
 
 (defn trade-realized-effect [ds-eff idxs-exit 
-                            {:keys [qty direction
-                                    entry-price entry-date
-                                    exit-price exit-date] :as trade}]
+                            {:keys [qty side
+                                    entry-price
+                                    exit-price] :as trade}]
    ;(info "calculate trade-realized..")
    (let [; derived values of trade parameter
-         long? (= :long direction) 
+         long? (= :long side) 
          qty2 (if long? qty (- 0 qty))
          pl-realized (* qty2 (- exit-price entry-price))
          ; columns [row-count window-size]
@@ -87,26 +87,34 @@
      (set-col-win ds-eff idxs-exit :pl-r pl-r)
      ))
 
-(defn trade-effect [ds-bars {:keys [qty direction 
-                                    entry-date exit-date] 
-                             :as trade}]
+(defn trade-effect [ds-bars has-series?
+                    {:keys [qty side 
+                            entry-date exit-date] 
+                     :as trade}]
   (assert entry-date "trade does not have entry-dt")
-  (assert exit-date "trade does not have entry-dt")
-  (assert direction "trade does not have side")
+  ;(assert exit-date "trade does not have entry-dt")
+  (assert side "trade does not have side")
   (assert qty "trade does not have qty")
   ;(info "calculating trade-effect " trade)
   (let [full# (tc/row-count ds-bars)
         ds-eff (no-effect full#)
-        idxs-exit (argops/argfilter #(t/= exit-date %) (:date ds-bars))
-        idxs-win (if (t/= entry-date exit-date)
-                    nil
-                    (argops/argfilter #(and (t/<= entry-date %)
-                                            (t/< % exit-date))
-                                      (:date ds-bars)))
         warnings (atom [])
-        ]
+        idxs-win (cond 
+                   ; open trade
+                   (nil? exit-date) 
+                   (argops/argfilter #(t/<= entry-date %)
+                                      (:date ds-bars))
+                   ; closed trade with same date entry/exit
+                   (t/= entry-date exit-date)
+                    nil
+                   
+                   ; closed trade over multiple bars
+                   :else
+                   (argops/argfilter #(and (t/<= entry-date %)
+                                            (t/< % exit-date))
+                                      (:date ds-bars)))]
     ; unrealized effect
-    (when idxs-win 
+    (when (and idxs-win has-series?)
       (let [ds-w (tc/select-rows ds-bars idxs-win)
             price-w (:close ds-w)
             w# (tc/row-count ds-w)]
@@ -115,12 +123,14 @@
               (swap! warnings conj (assoc trade :warning :unrealized)))
           (trade-unrealized-effect ds-eff idxs-win price-w w# trade)))) 
     ; realized effect
-    (let [ds-x (tc/select-rows ds-bars idxs-exit)
-          x# (tc/row-count ds-x)]
-      (if (= x# 0)
-        (do (warn "cannot calculate REALIZED effect for trade: " trade)
-            (swap! warnings conj (assoc trade :warning :realized)))
-        (trade-realized-effect ds-eff idxs-exit trade)))
+    (when exit-date
+      (let [idxs-exit (argops/argfilter #(t/= exit-date %) (:date ds-bars))
+            ds-x (tc/select-rows ds-bars idxs-exit)
+            x# (tc/row-count ds-x)]
+        (if (= x# 0)
+          (do (warn "cannot calculate REALIZED effect for trade: " trade)
+              (swap! warnings conj (assoc trade :warning :realized)))
+          (trade-realized-effect ds-eff idxs-exit trade))))
     ; return
     {:eff ds-eff
      :warnings @warnings}
@@ -144,10 +154,16 @@
                 :warnings []}]
      (reduce effects+ empty effects)))
 
+
+(defn empty-series [calendar]
+  (:calendar calendar))
+
 (defn effects-symbol [symbol calendar trades]
   ;(info "calculating " symbol)
   (let [ds-bars (load-aligned-filled symbol calendar)
-        effects (map #(trade-effect ds-bars %) trades)]
+        has-series? ds-bars
+        ds-bars (or ds-bars (empty-series calendar))
+        effects (map #(trade-effect ds-bars has-series? %) trades)]
     (effects-sum effects)))
 
 (defn exists-series? [s ]
@@ -156,7 +172,8 @@
 
 (defn portfolio [trades]
   (let [start-dt (apply t/min (map :entry-date trades))
-        end-dt (apply t/max (map :exit-date trades))
+        end-dt (apply t/max (->> (map :exit-date trades)
+                                 (remove nil?)))
         ;calendar (daily-calendar start-dt end-dt)
         calendar (daily-calendar-sunday-included start-dt end-dt)
         trades-symbol (fn [symbol]
@@ -165,7 +182,7 @@
                       (effects-symbol symbol calendar (trades-symbol symbol)))
         symbols (->> trades 
                      (map :symbol) 
-                     (filter exists-series?)
+                     ;(filter exists-series?)
                      (into #{})
                      (into []))
         {:keys [eff warnings]} (reduce effects+
@@ -259,7 +276,7 @@
 
   (def trades-test 
     [{:symbol "GOOGL" 
-      :direction :long
+      :side :long
       :qty 1000.0
       :entry-date #time/date-time "2023-03-06T00:00"
       :entry-price 94.78
@@ -269,13 +286,19 @@
   (portfolio trades-googl)
 
   (portfolio [{:symbol "BZ0"
-               :direction :long
+               :side :long
                :qty 1000.0
                :entry-date #time/date-time "2022-11-27T00:00"
                :entry-price 80.96
                :exit-date #time/date-time "2022-11-27T00:00"
                :exit-price 82.18}])
   
+  (def trades-dax
+    (filter #(= "DAX0" (:symbol %)) trades))
+  
+  (count trades-dax)
+
+  (portfolio trades-dax)
 
   (portfolio (take 1 trades))
   (portfolio (take 5 trades))
@@ -293,7 +316,7 @@
   (->> 
    (portfolio trades)
    :warnings
-   ;(print-table [:warning :symbol :direction :exit-date])
+   ;(print-table [:warning :symbol :side :exit-date])
    )
   
   

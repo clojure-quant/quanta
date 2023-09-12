@@ -35,10 +35,13 @@
       (tc/set-dataset-name (-> bars meta :name))))
 
 (defn load-series [symbol {:keys [interval start end calendar]}]
-  (let [ds-bars (load-symbol-window symbol interval start end)
-        ds-bars (tc/drop-columns ds-bars [:symbol])
-        ds-bars-aligned (align-to-calendar calendar ds-bars)]
-    ds-bars-aligned))
+  (let [w (determine-wh symbol)
+        has-series? (wh/exists-symbol? w interval symbol)]
+    (when has-series?
+        (let [ds-bars (load-symbol-window symbol interval start end)
+              ds-bars (tc/drop-columns ds-bars [:symbol])
+              ds-bars-aligned (align-to-calendar calendar ds-bars)]
+      ds-bars-aligned))))
 
 (defn set-col! [ds col idx val]
   ;(println "set-close! idx: " idx " val: " val)
@@ -86,9 +89,8 @@
         (tc/rename-columns {:close2 :close}))))
 
 (defn load-aligned-filled [symbol calendar]
-   (-> (load-series symbol calendar)
-       fill-missing-close))
-
+   (when-let [ds-bars (load-series symbol calendar)]
+     (fill-missing-close ds-bars)))
 
 
 (comment
@@ -106,6 +108,8 @@
   (load-symbol-window "GOOGL" "D" (parse-date "2023-09-01")
                                   (parse-date "2023-10-01"))
   (load-series "GOOGL" calendar)
+
+  (load-series "DAX0" calendar)
 
 
   (-> (load-series "GOOGL" calendar)
