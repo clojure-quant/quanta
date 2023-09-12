@@ -37,10 +37,13 @@
 (defn entry-vol [{:keys [entry-price qty direction]}]
   (* entry-price qty))
 
+(defn live-trade? [{:keys [exit-date]}]
+  (nil? exit-date))
+
 (defn load-trades []
   (->> (slurp "../resources/trades-upload.edn")
        (edn/read-string)
-       ;(filter #(= :equity (:category %)))
+       (remove live-trade?)
        (map #(update % :entry-date parse-date))
        (map #(update % :exit-date parse-date))
        (map #(assoc % :entry-vol (entry-vol %)))
