@@ -5,7 +5,10 @@
                 :permission #{:dev}
                 :symbols [joseph.nav/calc-nav-browser
                           joseph.trades/load-trades
-                          joseph.realtime/realtime-snapshot]}
+                          joseph.realtime/realtime-snapshot
+                          joseph.realtime/realtime-snapshot-stocks
+                          joseph.realtime/daily-snapshot-futures
+                          ]}
 
  :autoload-cljs-dir ["joseph/page"]
  :cljs-routes {"joseph" {"" :joseph/trades
