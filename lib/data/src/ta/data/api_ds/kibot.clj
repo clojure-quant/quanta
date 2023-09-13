@@ -1,5 +1,6 @@
 (ns ta.data.api-ds.kibot
   (:require
+    [clojure.string :as str]
     [taoensso.timbre :refer [info warn error]]
     [clojure.java.io :as io]
     [tick.core :as t]
@@ -70,10 +71,17 @@
    (t/format (t/formatter "YYYY-MM-dd") dt))
 
 (defn range->parameter [{:keys [start] :as range}]
-  (if (= range :full)
+  (cond 
+    (= range :full)
     {:period 100000}
+
+    (= range 1)
+    {:period 1}
+
+    :else
     {:startdate (fmt-yyyymmdd start)} ;  :startdate "2023-09-01"
     ))
+
 
 (defn get-series [symbol interval range opts]
   (let [symbol-map (symbol->provider symbol)
@@ -89,8 +97,70 @@
               nil)
           (kibot-result->dataset result))))
 
+(defn symbols->str [symbols]
+  (->> (interpose "," symbols)
+       (apply str)))
+
+(defn provider->symbol [provider-symbol]
+  (if-let [inst (db/get-instrument-by-provider :kibot provider-symbol)]
+    (:symbol inst)
+    provider-symbol))
+
+(comment
+  (symbol->provider "MES0")
+  ;; => {:type "futures", :symbol "ES"}
+  (provider->symbol "ES")
+
+  (symbols->str ["MSFT" "ORCL"])
+  (symbols->str ["ES"]))
+
+
+; 
+
+(defn symbol-conversion [col-symbol]
+  (map provider->symbol col-symbol)
+  )
+
+(defn kibot-snapshot-result->dataset [csv]
+  (-> (tds/->dataset (string->stream csv)
+                     {:file-type :csv
+                      :header-row? true
+                      :key-fn (comp keyword str/lower-case )
+                      :dataset-name "kibot-snapshot"})
+      (tc/update-columns {:symbol symbol-conversion})
+      (tc/rename-columns {(keyword ":404 symbol not foundsymbol")
+                          :symbol
+                          })
+      ;(tc/convert-types :date [[:local-date-time date->localdate]])
+      ))
+
+(defn get-snapshot [symbol]
+  (let [symbols-kibot (->> symbol 
+                          (map symbol->provider)
+                          (map :symbol))
+        result (kibot/snapshot {:symbol (symbols->str symbols-kibot)})]
+    (if-let [error? (:error result)]
+      (do (error "kibot request error: " error?)
+          nil)
+      (kibot-snapshot-result->dataset result))))
+
+
 
 (comment 
+  
+    (get-snapshot ["AAPL"])
+    (get-snapshot ["NG0"])
+    (get-snapshot ["CL0"])
+    (get-snapshot ["MES0"])
+    (get-snapshot ["RIVN" "AAPL" "MYM0"])
+  
+
+"RIVN" "MYM0" "RB0" "GOOGL" "FCEL"
+"NKLA" "M2K0" "INTC" "MES0" "RIG"
+"ZC0" "FRC" "AMZN" "HDRO" "MNQ0"
+"BZ0" "WFC" "DAX0" "PLTR" "NG0"
+  
+
     (symbol->provider "MSFT")
 
     (require '[ta.helper.date :refer [parse-date]])

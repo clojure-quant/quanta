@@ -4,7 +4,8 @@
  :clj-services {:name "joseph"
                 :permission #{:dev}
                 :symbols [joseph.nav/calc-nav-browser
-                          joseph.trades/load-trades]}
+                          joseph.trades/load-trades
+                          joseph.realtime/realtime-snapshot]}
 
  :autoload-cljs-dir ["joseph/page"]
  :cljs-routes {"joseph" {"" :joseph/trades

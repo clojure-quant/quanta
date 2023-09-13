@@ -21,6 +21,9 @@
   :quandl {:start (ta.data.api.quandl/set-key!
                   (:quandl (clip/ref :secrets)))}
 
+  :kibot {:start (ta.data.api.kibot/set-key!
+                   (:kibot (clip/ref :secrets)))}
+
 ; goldly service returns {:ns-clj :webly           ; this are used to start clj-require and webly
   ;                         :ws-watch :cljs-watch}   ; this is used when stopping goldly
   :goldly {:start (goldly.app.run/start-goldly

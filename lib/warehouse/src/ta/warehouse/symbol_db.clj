@@ -153,5 +153,24 @@
 
 
 
+(defn get-instrument-by-provider [provider s]
+  (some (fn [instrument]
+            (let [ps (provider instrument)]
+              (when (= ps s)
+                instrument
+                )))
+          (vals @db)))
+
+
+(comment 
+  (instrument-details "NG0")
+
+  (vals @db)
+  (get-instrument-by-provider :kibot "NG")
+  (get-instrument-by-provider :kibot "XXXXXX")
+  
+  )
+
+
 
 

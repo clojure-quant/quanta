@@ -22,6 +22,21 @@
 ; forex
 ; http://www.kibot.com/Files/2/Forex_tickbidask.txt
 
+
+; dividends/splits:
+; Request URL
+; http://api.kibot.com?action=adjustments&symbol=[symbol]&startdate=[startdate]&enddate=[enddate]&splitsonly=[splitsonly]&dividendsonly=[dividendsonly]&symbolsonly=[symbolsonly]
+;
+; Response
+;The server returns TAB separated values with the first line defining the fields and their order. Here is an example:
+; Date Symbol Company Action Description
+; 2/16/2010 MSFT Microsoft Corp. 0.1300 Dividend
+; 5/18/2010 MSFT Microsoft Corp. 0.1300 Dividend
+
+; ftp://hoertlehner%40gmail.com:PWD@ftp.kibot.com/
+
+
+
 ;; ApiKey Management
 
 (defonce api-key (atom {:user "guest" :password "guest"}))
@@ -29,7 +44,7 @@
 (defn set-key!
   "to use api, call at least once set-key! api-key"
   [key]
-  (info "setting kibot key..")
+  (warn "setting kibot key..")
   (reset! api-key key)
   nil ; Important not to return by chance the key, as this would be shown in the repl.
   )
@@ -108,6 +123,46 @@
 
 
 
+(defn snapshot [opts]
+  (let [{:keys [user password]} @api-key]
+    ;(info "login user: " user "pwd: " password)
+    (info "kibot snapshot: " opts)
+    (make-request base-url
+                  (merge
+                   {:action "snapshot"
+                    :user user
+                    :password password}
+                   opts))))
+
+; This example will work even if you do not have a subscription:
+; http://api.kibot.com/?action=snapshot&symbol=$NDX,AAPL
+; return format: Symbol,Date,Time,LastPrice,LastVolume,Open,High,Low,Close,Volume,ChangePercent,TimeZone.
+
+(comment 
+  
+  (snapshot {:symbol ["$NDX" "AAPL"]})
+  
+  (snapshot {:type "future"
+             :symbol "ESZ23"})
+
+  (snapshot {:type "future"
+             :symbol "JYZ23"})
+  
+
+  (snapshot {:symbol ["$NDX" 
+                      "AAPL" 
+                      "FCEL"
+                      "MSFT" 
+                      #_"BZ0"]})
+
+  (snapshot {:symbol ["AAPL" "DAX0" "MSFT"]})
+
+  ;
+  )
+
+
+
+
 (comment 
   
    (history {:symbol "AAPL"
@@ -131,6 +186,14 @@
              :period 1
              :timezone "UTC"
              :splitadjusted 1})
+   
+(history {:symbol "SIL" ; SIL - FUTURE
+          :type "futures" ; Can be stocks, ETFs forex, futures.
+          :interval "daily"
+          :period 1
+          :timezone "UTC"
+          :splitadjusted 1})
+
    
    (history {:symbol "SIL" ; SIL - FUTURE
              :type "futures" ; Can be stocks, ETFs forex, futures.
