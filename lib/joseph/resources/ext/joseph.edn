@@ -13,7 +13,9 @@
  :autoload-cljs-dir ["joseph/page"]
  :cljs-routes {"joseph" {"" :joseph/trades
                          "/nav" :joseph/nav
-                         "/live" :joseph/live}
+                         "/live" :joseph/live
+                         "/live2" :joseph/live2
+                         }
                
                }
  }

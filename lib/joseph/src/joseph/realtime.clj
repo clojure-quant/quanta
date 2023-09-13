@@ -59,11 +59,11 @@
 
 
 (defn daily-snapshot-futures [symbols]
-    (-> symbols
-      (daily-snapshot-futures-raw)
-      (ds->map)))
-
-
+  (if (empty? symbols)
+      []
+      (-> symbols
+          (daily-snapshot-futures-raw)
+          (ds->map))))
 
 (comment 
   
@@ -98,7 +98,9 @@
       (daily-snapshot-futures-raw)   
       (print-range :all))
 
-
+  (daily-snapshot-futures-raw [])
+  (daily-snapshot-futures-raw ["NG0"])
+  (daily-snapshot-futures ["NG0"])
 
   (kibot/get-snapshot  
      ["$NDX"

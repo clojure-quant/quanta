@@ -3,7 +3,7 @@
     [reagent.core :as r]
     [promesa.core :as p]
     [goldly.service.core :refer [clj]]
-   ))
+    ))
 
 
 (defn clj->p [fun & args]
