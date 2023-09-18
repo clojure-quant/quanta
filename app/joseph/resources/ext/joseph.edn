@@ -1,0 +1,32 @@
+{:name "joseph"
+ ; runtime
+ :api-routes {"joseph/" {:post  {"upload" joseph.upload/wrapped-save-file}}}
+ :clj-services {:name "joseph"
+                :permission #{:dev}
+                :symbols [joseph.nav/calc-nav-browser
+                          joseph.trades/load-trades
+                          joseph.realtime/realtime-snapshot
+                          joseph.realtime/realtime-snapshot-stocks
+                          joseph.realtime/daily-snapshot-futures]}
+
+ :cljs-routes {"joseph" {"" joseph.page.tradingview/tradingview-trades-page
+                         "/nav" joseph.page.nav/page-joseph-nav
+                         "/live" joseph.page.live/page-joseph-live
+                         "/live2" joseph.page.live2/page-live-trading}}
+   
+  :sci-cljs-ns [; lib
+                joseph.lib.live-pl
+                joseph.lib.loader
+                joseph.lib.quote-table
+                joseph.lib.select
+                joseph.lib.trade-filter
+                joseph.lib.viz-filter
+                ; root
+                joseph.upload
+                ; page
+                joseph.page.live
+                joseph.page.live2
+                joseph.page.nav
+                joseph.page.tradingview]
+ }
+

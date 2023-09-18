@@ -1,8 +1,7 @@
 (ns demo.goldly.page.test.test
   (:require
    [reagent.core :as r]
-   [goldly.page :as page]
-   [demo.goldly.view.tsymbol :refer [symbol-picker]]
+   [ta.viz.view.tsymbol :refer [symbol-picker]]
    [joseph.upload :refer [upload-file-ui]]
    ))
 
@@ -34,8 +33,3 @@
     [symbol-picker symbol-atom [:symbol]]
     [upload-file-ui]
     ]])
-
-
-
-
-(page/add test-page :test/test)

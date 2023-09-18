@@ -22,11 +22,33 @@
                           ta.tradingview.handler-datasource/symbol-info
                           ta.tradingview.handler-datasource/symbol-search
                           ta.tradingview.handler-datasource/server-time]}
- 
- :autoload-cljs-dir ["ta/tradingview/goldly/page"]
 
- :cljs-routes {"algo/tradingview" :tradingview/algo
-               "tradingview" :tradingview/udf}
-                         
+ :cljs-routes {"algo/tradingview" ta.tradingview.goldly.page.tradingview-algo/tvalgo-page
+               "tradingview" ta.tradingview.goldly.page.tradingview-udf/tradingview-page}
+ :sci-cljs-ns [; algo
+               ta.tradingview.goldly.algo.context
+               ta.tradingview.goldly.algo.indicator-config
+               ta.tradingview.goldly.algo.indicator
+               ta.tradingview.goldly.algo.interaction
+               ta.tradingview.goldly.algo.tradingview
+               ; feed
+               ta.tradingview.goldly.feed.algo2
+               ta.tradingview.goldly.feed.random
+               ta.tradingview.goldly.feed.udf
+               ; indicator
+               ta.tradingview.goldly.indicator.bar-colorer
+               ; root
+               ta.tradingview.goldly.dialog
+               ta.tradingview.goldly.helper
+               ta.tradingview.goldly.interact
+               ta.tradingview.goldly.interact2
+               ta.tradingview.goldly.tradingview
+               ; view
+               ta.tradingview.goldly.view.aggrid
+               ; page
+               ta.tradingview.goldly.page.tradingview-algo
+               ta.tradingview.goldly.page.tradingview-udf
+               
+               ]                       
 
 }

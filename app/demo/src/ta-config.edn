@@ -21,10 +21,10 @@
           ; runtime
           :autoload-cljs-dir ["demo/goldly/page"
                               "demo/goldly/page/test"]
-          :routes {:app {"" :user/main
-                         "test/" {"test" :test/test
-                                  "layout1" :test/layout1
-                                  "layout2" :test/layout2
+          :routes {:app {"" demo.goldly.page.main/main-page
+                         "test/" {"test" demo.goldly.page.test.test/test-page
+                                  "layout1" demo.goldly.page.test.layout/page-layout-1
+                                  "layout2" demo.goldly.page.test.layout/page-layout-2
                                   }}
                    :api {"arrow" :dataset/arrow}}}
 

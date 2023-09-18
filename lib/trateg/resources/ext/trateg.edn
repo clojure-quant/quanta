@@ -18,9 +18,13 @@
                           ; testing
                           ta.helper.date/now-datetime]}
   :cljs-routes {;warehouse
-                "warehouse" :user/warehouse
-                "series" :user/series
-                ;backtest
-                "algo/backtest" :algo/backtest}
+                "warehouse" ta.viz.page.warehouse/warehouse-page
+                "series" ta.viz.page.series/series-page
+                "algo/backtest" ta.viz.page.backtest/algo-backtest-page}
+
+  :sci-cljs-ns [; viz
+                ta.viz.nav-table
+                ta.viz.nav-vega
+                ta.viz.trades-table]
 
 }
