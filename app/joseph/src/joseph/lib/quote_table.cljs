@@ -12,19 +12,19 @@
 (defn quote-table [quotes]
   [aggrid {:box :fl
            :data quotes
-           :columns [{:field :symbol :width 50}
-                     {:field :date :width 50}
-                     {:field :time :width 50}
+           :columns [{:field :symbol :width 80}
+                     {:field :date :width 100}
+                     {:field :time :width 80}
                      ;{:field :timezone}
-                     {:field :open :width 50}
-                     {:field :high :width 50}
-                     {:field :low :width 50}
-                     {:field :close :width 50}
-                     {:field :volume :width 50}
-                     {:field :changepercent :width 50}
+                     {:field :open :width 70 :type "rightAligned"}
+                     {:field :high :width 70 :type "rightAligned"}
+                     {:field :low :width 70 :type "rightAligned"}
+                     {:field :close :width 70 :type "rightAligned"}
+                     {:field :volume :width 80 :type "rightAligned"}
+                     {:field :changepercent :width 50 :type "rightAligned"}
                      ;{:field :lastprice}
                      ;{:field :lastvolume}
                     ]
-
+           :autosize-columns false
            :pagination :false
            :paginationAutoPageSize false}])

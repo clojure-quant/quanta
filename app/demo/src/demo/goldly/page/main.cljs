@@ -27,8 +27,7 @@
      [:h1.text-xl.text-red-600 "joseph"]
      [link-href "/joseph" "tradingview"]
      [link-dispatch [:bidi/goto 'joseph.page.nav/page-joseph-nav]  "nav"]
-     [link-dispatch [:bidi/goto 'joseph.page.live/page-joseph-live]  "live"]
-     [link-dispatch [:bidi/goto 'joseph.page.live2/page-live-trading]  "live v2"]]
+     [link-dispatch [:bidi/goto 'joseph.page.live2/page-live-trading]  "live"]]
 
    [:div.bg-blue-300.m-5
     [:h1.text-xl.text-red-600 "gann tools"]

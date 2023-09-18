@@ -11,8 +11,7 @@
 
  :cljs-routes {"joseph" {"" joseph.page.tradingview/tradingview-trades-page
                          "/nav" joseph.page.nav/page-joseph-nav
-                         "/live" joseph.page.live/page-joseph-live
-                         "/live2" joseph.page.live2/page-live-trading}}
+                         "/live" joseph.page.live2/page-live-trading}}
    
   :sci-cljs-ns [; lib
                 joseph.lib.live-pl

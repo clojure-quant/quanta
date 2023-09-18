@@ -1,10 +1,8 @@
 (ns joseph.realtime
   (:require
     [taoensso.timbre :refer [trace debug info warnf error]]
-    ;[ta.helper.date :refer [parse-date]]
-    ;[tick.core :as t]
-   [tablecloth.api :as tc]
-   [ ta.warehouse.symbol-db :as db]
+    [tablecloth.api :as tc]
+    [ta.warehouse.symbol-db :as db]
     [ta.data.api-ds.kibot :as kibot]
     [ta.helper.ds :refer [ds->map]]))
 
@@ -12,18 +10,17 @@
   (let [data (kibot/get-snapshot symbols)
         data-ok (if data
                   (ds->map data)
-                  [{:symbol "DAX0" :close 17000.0}
-                   {:symbol "INTC" :close 40.0}])
-        ]
+                  [])]
     (info "realtime snapshot symbols: " (map :symbol data-ok))
     data-ok))
 
 
 (defn get-last-daily [symbol]
   (info "get-last-daily: " symbol)
- (-> (kibot/get-series symbol "D" 1 {})
-     (tc/add-column :symbol symbol)
-     ))
+  (-> (kibot/get-series symbol "D" 3 {})
+      (tc/add-column :symbol symbol)
+      (tc/select-rows [-1])))
+
 
 (defn get-last-daily-snapshot [symbols]
   (let [[symbol-first & symbols-rest] symbols
@@ -49,8 +46,7 @@
 
 (defn realtime-snapshot-stocks [symbols]
   (let [stocks (filter stock? symbols)]
-    (realtime-snapshot stocks)
-  ))
+    (realtime-snapshot stocks)))
 
 (defn daily-snapshot-futures-raw [symbols]
   (let [futures (remove stock? symbols)
@@ -98,6 +94,7 @@
       (daily-snapshot-futures-raw)   
       (print-range :all))
 
+  (kibot/get-series "NG0" "D" 2 {})
   (daily-snapshot-futures-raw [])
   (daily-snapshot-futures-raw ["NG0"])
   (daily-snapshot-futures ["NG0"])

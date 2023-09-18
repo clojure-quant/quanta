@@ -75,8 +75,8 @@
     (= range :full)
     {:period 100000}
 
-    (= range 1)
-    {:period 1}
+    (int? range)
+    {:period range}
 
     :else
     {:startdate (fmt-yyyymmdd start)} ;  :startdate "2023-09-01"
@@ -170,7 +170,10 @@
                 "D"
                 {:start (parse-date "2023-09-06")}
                 {})
-  
+    
+    (get-series "MSFT" "D" 10 {})
+    (get-series "NG0" "D" 3 {})
+      
     (symbol->provider "EURUSD")
     (get-series "EURUSD"
               "D"
