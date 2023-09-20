@@ -1,45 +1,15 @@
 (ns demo.data-import.import-alphavantage
   (:require
-   [tech.v3.dataset :as tds]
-   [ta.warehouse :as wh]
-   [ta.warehouse.since-importer :as since-importer]
-   [ta.data.alphavantage :as av]))
+   [ta.data.import :refer [import-series import-list]]))
 
-; stocks
 
-(defn alphavantage-get-since-ds [_ #_frequency _ #_since symbol]
-  (-> (av/get-daily "full" symbol) ; (av/get-daily-adjusted "full" symbol)
-      :series
-      (tds/->dataset)))
+  ; alphavantage has different api for stocks and fx
+  ; so test both
+  (import-series :alphavantage "MSFT" "D" :full)
+  (import-series :alphavantage "EURUSD" "D" :full)
 
-(defn get-alphavantage-daily [symbols]
-  (let  [start-date-dummy nil]
-    (since-importer/init-symbols
-     :stocks alphavantage-get-since-ds "D"
-     start-date-dummy symbols)))
-
-; fx
-
-(defn alphavantage-get-fx-since-ds [_ #_frequency _ #_since symbol]
-  (-> (av/get-daily-fx "full" symbol)
-      :series
-      (tds/->dataset)))
-
-(defn get-alphavantage-fx-daily [symbols]
-  (let  [start-date-dummy nil]
-    (since-importer/init-symbols
-     :stocks alphavantage-get-fx-since-ds "D"
-     start-date-dummy symbols)))
-
-; ********************************************************************************************+
-(comment
-
-  (av/get-daily-adjusted "compact" "MSFT")
-  (av/get-daily-adjusted "full" "MSFT")
-
-  (def symbols (wh/load-list "test"))
-
-  (get-alphavantage-daily ["QQQ" "SPY" "TLT"])
-  (get-alphavantage-fx-daily ["EURUSD"])
-;
-  )
+  
+  ; import lists of symbols
+  ; test is a symbol list (see app/resources/symbollist)
+  (import-list ["MSFT" "EURUSD"] "D" :full)
+  (import-list "test" "D" :full)

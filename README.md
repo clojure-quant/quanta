@@ -50,16 +50,14 @@ Alphavantage needs an api key (you can get it free and fast on their website)
 The creds file in `app/vault/trateg/creds.edn` has to contain your alphavantage api key: `{:alphavantage "your-alphavantage-api-key"}`
 Alphavantage can download 5 symbols a minute. We have 40 demo symbols, so this will take a while.
 
-*import*
+*import single series*
 
-- alphavantage: `cd app/demo && clojure -X:run :task :alphavantage-import :symbol "test"` or
-                `bb run alphavantage-import all-stocks`
-- bybit:  `clj -X:run :task :bybit-import :symbol "crypto"` or
-          `bb run bybit-import test`
+MYVAULT environment variable needs to be set.
 
-*append*
-- bybit: `cd app/demo && clojure -X:run :task :bybit-append :symbol "crypto"`
-- alphavantage: Appending is not supported by Alphavantage (only has full-fetch feature)
+- alphavantage: `cd app/demo && clj -X:run :task :import-series :symbols "MSFT" :provider :alphavantage` 
+- bybit:  `clj -X:run :task :import-series :symbols "BTCUSD" :provider :bybit`
+- kibot:  `clj -X:run :task :import-series :symbols "NG" :provider :kibot`
+
 
 
 ## GoldlyDocs Web app

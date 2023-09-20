@@ -7,44 +7,36 @@
    [ta.warehouse.overview :refer [warehouse-overview]]
    ;[ta.gann.gann :refer [gann-symbols]]
    [ta.gann.chartmaker :refer [make-boxes-all-individual]]
-   [demo.data-import.import-alphavantage :as av]
-   [demo.data-import.import-bybit :as bybit]
+   [ta.data.import :refer [import-series import-list]]
    [demo.data-import.create-random :as rr]
    [demo.goldly.reval] ; side-effects
-   [demo.data-import.demo-bybit]))
+   ))
 
 ;; tasks (for cli use)
 
-(defn run  [{:keys [task symbol]}]
+(defn run  [{:keys [task symbols provider]}]
   (case task
 
-    :bybit-test
-    (demo.data-import.demo-bybit/demo-bybit)
+    :import-series
+    (let [provider (or provider :alphavantage)
+          symbols (or symbols "MSFT")]
+      (info "import symbol: " symbols)
+      (import-series provider symbols "D" :full))
 
-    :alphavantage-import
-    (let [symbol (or symbol "fidelity-select")
-          _ (info "alphavantage-import list: " symbol)
-          symbols (load-list symbol)
-          _ (info "symbols: " (pr-str symbols))
-          _ (info "alphavantage-import list: " symbol "nr symbols: " (count symbols))]
-      (av/get-alphavantage-daily symbols))
+    :import
+    (let [symbols (or symbols "fidelity-select")]
+      (info "import list: " symbols)
+      (import-list symbols "D" :full))
 
-    :bybit-import
-    (let [symbol (or symbol "crypto")
-          _ (info "bybit-import list: " symbol)
-          symbols (load-list symbol)
-          _ (info "symbols: " (pr-str symbols))
-          _ (info "bybit-import list: " symbol "nr symbols: " (count symbols))]
-      (bybit/init-bybit-daily symbols)
-      (bybit/init-bybit-15 symbols))
+    :import-15
+    (let [symbols (or symbols "crypto")
+          _ (info "import 15 min bars for list: " symbols)]
+      (import-list symbols "15" :full))
 
-    :bybit-append
-    (let [symbol (or symbol "crypto")
-          _ (info "bybit-append list: " symbol)
-          symbols (load-list symbol)
-          _ (info "bybit-append list: " symbol "nr symbols: " (count symbols))]
-      (bybit/append-bybit-daily symbols)
-      (bybit/append-bybit-15 symbols))
+    :append
+    (let [symbols (or symbols "crypto")
+          _ (info "bybit-append list: " symbols)]
+      (import-list symbols "D" :full))
 
     :warehouse
     (do (info "warehouse summary:")

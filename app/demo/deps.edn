@@ -49,7 +49,7 @@
                  "resources"]
    :exec-fn modular.system/start!
    :exec-args {:profile "jetty"
-               :services "services-docs.edn"
+               :services "services-docs.edn" ; see demo/src/services-docs.edn
                :config  ["webly/config.edn" "goldly/config.edn" 
                          ;"goldly/docs-config.edn"
                          "ta-config.edn"]}}
