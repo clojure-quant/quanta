@@ -33,6 +33,13 @@ warehouses. Bybit goes to :crypto. Alphavantage goes to :stocks.
 
 This reads the :crypto warehouse, shuffles the returns and creates the :random warehouse.
 
+## VAULT
+
+Datafeeds require api credentials. In `app/vault` there is `trateg/creds.edn`.
+Modify this file to use your credentials. Then set the environment variable *MYVAULT*
+so that it points to *app/vault* , example:
+`export MYVAULT=/home/awb99/repo/trateg/myvault/app/vault`
+
 ##  data import 
 
 *Bybit Feed*
@@ -40,8 +47,7 @@ Bybit feed does not need credentials. It has data since 2018-11 for BTC and ETH.
 
 *Alphavantage Feed*
 Alphavantage needs an api key (you can get it free and fast on their website)
-The creds file in `profiles/demo/creds.edn` has to contain your alphavantage api key:
-`{:alphavantage "your-alphavantage-api-key"}`
+The creds file in `app/vault/trateg/creds.edn` has to contain your alphavantage api key: `{:alphavantage "your-alphavantage-api-key"}`
 Alphavantage can download 5 symbols a minute. We have 40 demo symbols, so this will take a while.
 
 *import*
@@ -56,11 +62,12 @@ Alphavantage can download 5 symbols a minute. We have 40 demo symbols, so this w
 - alphavantage: Appending is not supported by Alphavantage (only has full-fetch feature)
 
 
-
 ## GoldlyDocs Web app
 
+ - MYVAULT environment variable needs to be set.
  - run: `cd app/demo && clojure -X:docs`
  - in webbrowser go to localhost:8080 
+ - you connect nrepl to port 8080 (clj repl)
 
 ## Notebook Eval
 

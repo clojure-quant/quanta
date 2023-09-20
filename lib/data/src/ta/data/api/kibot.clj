@@ -8,19 +8,6 @@
    [cheshire.core :as cheshire] ; JSON Encoding
    [throttler.core]))
 
-; available symbols:
-
-; us etf:
-; http://www.kibot.com/Files/2/All_ETFs_Intraday.txt
-
-; us stocks:
-; http://www.kibot.com/Files/2/All_Stocks_Intraday.txt
-
-; us futures
-; http://www.kibot.com/Files/2/Futures_tickbidask.txt
-
-; forex
-; http://www.kibot.com/Files/2/Forex_tickbidask.txt
 
 
 ; dividends/splits:
@@ -102,9 +89,16 @@
     (make-request base-url
                   {:action "status"}))
 
+
+
+
+
 (comment 
   (login)
   (status) 
+
+ 
+
   ;
   )
 
@@ -223,6 +217,40 @@
 
 
 ;  
+  )
+
+; available symbols:
+(def symbollist-url
+  {:etf "http://www.kibot.com/Files/2/All_ETFs_Intraday.txt"
+   :stocks "http://www.kibot.com/Files/2/All_Stocks_Intraday.txt"
+   :futures "http://www.kibot.com/Files/2/Futures_tickbidask.txt"
+   :forex "http://www.kibot.com/Files/2/Forex_tickbidask.txt"
+   })
+
+
+(defn make-request-url [url]
+  (let [result (http/get url
+                         {:socket-timeout 3000
+                          :connection-timeout 3000})
+        body (:body result)
+        error (extract-error body)]
+    ;(info "status:" (:status result))  
+    ;(info "headers: " (:headers result))
+    (if error
+      {:error error}
+      body)
+    ;  (throw (ex-info (:retMsg result) result))
+    ))
+
+(defn download-symbollist [category]
+   (make-request-url (category symbollist-url)))
+
+
+(comment 
+  
+  (download-symbollist :etf)
+  
+  ;
   )
 
 

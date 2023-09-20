@@ -191,6 +191,84 @@
               "D"
               {:start (parse-date "2023-09-07")}
               {})
+  )
+
+
+;; symbollist 
+
+(defn kibot-symbollist->dataset [tsv skip col-mapping]
+  (-> 
+    (tds/->dataset (string->stream tsv)
+                     {:file-type :tsv
+                      :header-row? true
+                      :n-initial-skip-rows skip
+                      :dataset-name "kibot-symbollist"})
+     (tc/rename-columns col-mapping )
   
+  ))
+
+
+
+(def list-mapping
+  {:stocks {:url "http://www.kibot.com/Files/2/All_Stocks_Intraday.txt"
+            :skip 5
+            :cols {"column-0" "#"
+                   "column-1" :symbol
+                   "column-2" :date-start
+                   "column-3" :size-mb
+                   "column-4" :desc
+                   "column-5" :exchange
+                   "column-6" :industry
+                   "column-7" :sector}}
+   :etf {:url  "http://www.kibot.com/Files/2/All_ETFs_Intraday.txt"
+         :skip 5
+         :cols {"column-0" "#"
+                "column-1" :symbol
+                "column-2" :date-start
+                "column-3" :size-mb
+                "column-4" :desc
+                "column-5" :exchange
+                "column-6" :industry
+                "column-7" :sector}}
+   :futures {:url "http://www.kibot.com/Files/2/Futures_tickbidask.txt"
+             :skip 4
+             :cols {"column-0" "#"
+                    "column-1" :symbol
+                    "column-2" :symbol-base
+                    "column-3" :date-start
+                    "column-4" :size-mb
+                    "column-5" :desc
+                    "column-6" :exchange}}
+   :forex {:url "http://www.kibot.com/Files/2/Forex_tickbidask.txt"
+           :skip 3
+           :cols {"column-0" "#"
+                  "column-1" :symbol
+                  "column-2" :date-start
+                  "column-3" :size-mb
+                  "column-4" :desc}}})
+
+ (defn parse-list [t tsv]
+  (let [{:keys [skip cols]} (t list-mapping)]
+    (kibot-symbollist->dataset tsv skip cols)))
+
+
+(comment 
+  
+(def tsv-etf (kibot/download-symbollist :etf))
+(def tsv-stocks (kibot/download-symbollist :stocks))
+(def tsv-futures (kibot/download-symbollist :futures))
+(def tsv-forex (kibot/download-symbollist :forex))
+
+(parse-list :stocks tsv-stocks)
+
+  (-> (parse-list :etf tsv-etf)
+      (tc/select-rows)
+      )
+  
+
+(parse-list :futures tsv-futures)
+(parse-list :forex tsv-forex)
+
+;  
   )
 
