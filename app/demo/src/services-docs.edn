@@ -53,9 +53,9 @@
                   :handler cider.nrepl/cider-nrepl-handler)
           :stop (.close this)}
   
-  :scheduler {:start (ta.data.scheduler/start!
+  :scheduler {:start (demo.env.scheduler/start!
                       (clip/ref :timbre))
-              :stop (ta.data.scheduler/stop! this)}
+              :stop (demo.env.scheduler/stop! this)}
 
 ;
   }}

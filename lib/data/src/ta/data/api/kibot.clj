@@ -219,15 +219,7 @@
 ;  
   )
 
-; available symbols:
-(def symbollist-url
-  {:etf "http://www.kibot.com/Files/2/All_ETFs_Intraday.txt"
-   :stocks "http://www.kibot.com/Files/2/All_Stocks_Intraday.txt"
-   :futures "http://www.kibot.com/Files/2/Futures_tickbidask.txt"
-   :forex "http://www.kibot.com/Files/2/Forex_tickbidask.txt"
-   })
-
-
+; url request only (used in symbol-list)
 (defn make-request-url [url]
   (let [result (http/get url
                          {:socket-timeout 3000
@@ -242,13 +234,12 @@
     ;  (throw (ex-info (:retMsg result) result))
     ))
 
-(defn download-symbollist [category]
-   (make-request-url (category symbollist-url)))
+
 
 
 (comment 
   
-  (download-symbollist :etf)
+ 
   
   ;
   )

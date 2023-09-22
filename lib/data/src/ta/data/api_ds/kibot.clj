@@ -5,6 +5,7 @@
     [clojure.java.io :as io]
     [tick.core :as t]
     [tech.v3.dataset :as tds]
+    [tech.v3.datatype.argops :as argops]
     [tablecloth.api :as tc]
     [ta.data.api.kibot :as kibot]
     [ta.warehouse.symbol-db :as db]))
@@ -83,9 +84,9 @@
     ))
 
 
-(defn get-series [symbol interval range opts]
+(defn get-series [{:keys [symbol frequency]} range opts]
   (let [symbol-map (symbol->provider symbol)
-        period (get interval-mapping interval)
+        period (get interval-mapping frequency)
         range-kibot (range->parameter range)
         result (kibot/history (merge symbol-map
                                      range-kibot
@@ -212,7 +213,7 @@
 (def list-mapping
   {:stocks {:url "http://www.kibot.com/Files/2/All_Stocks_Intraday.txt"
             :skip 5
-            :cols {"column-0" "#"
+            :cols {"column-0" :#
                    "column-1" :symbol
                    "column-2" :date-start
                    "column-3" :size-mb
@@ -222,7 +223,7 @@
                    "column-7" :sector}}
    :etf {:url  "http://www.kibot.com/Files/2/All_ETFs_Intraday.txt"
          :skip 5
-         :cols {"column-0" "#"
+         :cols {"column-0" :#
                 "column-1" :symbol
                 "column-2" :date-start
                 "column-3" :size-mb
@@ -232,7 +233,7 @@
                 "column-7" :sector}}
    :futures {:url "http://www.kibot.com/Files/2/Futures_tickbidask.txt"
              :skip 4
-             :cols {"column-0" "#"
+             :cols {"column-0" :#
                     "column-1" :symbol
                     "column-2" :symbol-base
                     "column-3" :date-start
@@ -241,33 +242,65 @@
                     "column-6" :exchange}}
    :forex {:url "http://www.kibot.com/Files/2/Forex_tickbidask.txt"
            :skip 3
-           :cols {"column-0" "#"
+           :cols {"column-0" :#
                   "column-1" :symbol
                   "column-2" :date-start
                   "column-3" :size-mb
                   "column-4" :desc}}})
 
- (defn parse-list [t tsv]
-  (let [{:keys [skip cols]} (t list-mapping)]
-    (kibot-symbollist->dataset tsv skip cols)))
+ (defn download-symbollist [category]
+   (kibot/make-request-url (-> list-mapping category :url)))
 
+
+ (defn row-delisted [ds-data]
+   (-> (argops/argfilter #(= "Delisted:" %) (:# ds-data))
+       first))
+ 
+
+ (defn filter-delisted-rows [ds-data]
+   (let [idx-delisted (row-delisted ds-data)]
+     (if idx-delisted 
+        (tc/select-rows ds-data (range idx-delisted))  
+        ds-data)))
+ 
+
+  (defn filter-empty-rows [ds-data]
+    (tc/select-rows ds-data (comp #(not (nil? %)) :#)))
+ 
+ 
+
+ (defn parse-list [t tsv]
+  (let [{:keys [skip cols]} (t list-mapping)
+        ds-data (kibot-symbollist->dataset tsv skip cols)
+        ]
+    (-> ds-data
+        filter-delisted-rows
+        filter-empty-rows
+        )))
+ 
+
+ (defn symbol-list [t]
+   (let [tsv (download-symbollist t)]
+     (parse-list t tsv)))
+
+  
 
 (comment 
   
-(def tsv-etf (kibot/download-symbollist :etf))
-(def tsv-stocks (kibot/download-symbollist :stocks))
-(def tsv-futures (kibot/download-symbollist :futures))
-(def tsv-forex (kibot/download-symbollist :forex))
+  (def tsv-etf (download-symbollist :etf))
+  (def ds-etf (parse-list :etf tsv-etf))  
+  ds-etf  
+  (:date-start ds-etf)
 
-(parse-list :stocks tsv-stocks)
-
-  (-> (parse-list :etf tsv-etf)
-      (tc/select-rows)
-      )
+(tc/row-count ds-etf)
+  ; max #: 1667
+  ; listed:    2889
+  ; delisted:  1667
+  ; all        4556
+  ; row-count: 4562
+  ; diff          6
   
-
-(parse-list :futures tsv-futures)
-(parse-list :forex tsv-forex)
+  (symbol-list :etf)
 
 ;  
   )

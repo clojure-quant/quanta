@@ -1,8 +1,10 @@
-(ns ta.data.scheduler
+(ns demo.env.scheduler
   (:require
    [taoensso.timbre :as timbre :refer [info warn error]]
    [chime.core :as chime]
-   [ta.data.import :refer [import-list]])
+   [ta.data.import :refer [import-list]]
+   [demo.env.provider :refer [instrument-category->provider]]
+   )
   (:import
    [java.time Instant Duration LocalTime ZonedDateTime ZoneId Period]))
 
@@ -81,7 +83,8 @@
 
 (defn import-new-data [time]
   (info "importing new data time: " time)
-  (import-list :all "D" :append))
+  (import-list instrument-category->provider 
+               :all {:frequency "D"} :append))
 
 
 (defn start! [& args] ; make it compatible with clip
@@ -103,6 +106,7 @@
 (comment
 
   (import-new-data "test")
+  
 
  ; 
   )

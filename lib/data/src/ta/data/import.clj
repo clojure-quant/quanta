@@ -4,7 +4,8 @@
     [tablecloth.api :as tc]
     [ta.warehouse.symbollist :refer [load-list]]
      ; import
-    [ta.data.import.warehouse :refer [save-symbol has-symbol]]
+    [ta.warehouse :refer [load-series exists-series?]]
+    [ta.data.import.warehouse :refer [save-series]]
     [ta.warehouse.symbol-db :as db]
     [ta.data.import.append :as append]
      ; providers
@@ -18,124 +19,158 @@
    :bybit bybit/get-series
    })
 
-(defn import-series 
-  ([provider symbol interval range]
-    (import-series provider symbol interval range {}))
-  ([provider symbol interval range opts]
-  (info "import provider: " provider " symbol: " symbol " range: " range)
-  (let [get-series (get dict-provider provider)
-        series-ds (get-series symbol interval range opts)
-        c  (tc/row-count series-ds)]
-    (info "imported " symbol " - " c "bars.")
-    (when (> c 0)
-      (save-symbol symbol interval series-ds)))))
+(defn get-provider 
+  "gets the get-sreies fn for the specified provider
+   provider can be a keyword (so a fixed provider)
+   provider can also be (fn [s]) to get-series depending on the symbol passed"
+  [p symbol]
+   (if (fn? p)
+       (p symbol)
+        p))
 
+(defn get-provider-fn
+  "gets the get-sreies fn for the specified provider
+   provider can be a keyword (so a fixed provider)
+   provider can also be (fn [s]) to get-series depending on the symbol passed"
+  [p symbol]
+  (let [p (get-provider p symbol)]
+    (get dict-provider p)))
+
+(defn import-series 
+  "downloads timeseries from provider and saves it to warehouse
+   potentially existing series will be replaced"
+  ([provider series-opts range]
+    (import-series provider series-opts range {}))
+  ([provider series-opts range opts]
+    (let [provider-kw (get-provider provider (:symbol series-opts))
+          _ (info "import provider: " provider-kw " symbol: " (:symbol series-opts) " range: " range)      
+          get-series (get-provider-fn provider (:symbol series-opts))
+          series-ds (get-series series-opts range opts)
+          c  (tc/row-count series-ds)]
+      (info "imported " (:symbol series-opts) " - " c "bars.")
+      (when (> c 0)
+        (save-series series-opts series-ds)))))
 
 (defn append-series 
-  ([provider symbol interval]  
-   (append-series provider symbol interval {}))
-  ([provider symbol interval opts]
-   (info "append provider: " provider " symbol: " symbol " interval: " interval)
-   (let [get-series (get dict-provider provider)]
-     (append/append-symbol get-series symbol interval opts))))
+   "downloads timeseries from provider and appends it to the existing series in the  warehouse"
+  ([provider series-opts]  
+   (append-series provider series-opts {}))
+  ([provider series-opts opts]
+   (let [provider-kw (get-provider provider (:symbol series-opts))
+         _ (info "append provider: " provider-kw " symbol: " (:symbol series-opts) " interval: " (:frequency series-opts))
+         get-series (get-provider-fn provider (:symbol series-opts))]
+     (append/append-series get-series series-opts opts))))
 
+(defn import-one
+  [provider series-opts range]
+  (cond
+    (= range :full)
+    (import-series provider series-opts :full)
 
-(defn import-symbols 
-  ([provider symbols interval range]
-   (import-symbols provider symbols interval range {}))
- ([provider symbols interval range opts]
-  (let [symbols (if (string? symbols) 
-                    (load-list symbols)
-                    symbols)]
-  (doall (map
-          #(import-series provider % interval range opts)
-          symbols)))))
+    (= range :append)
+    (append-series provider series-opts)
 
-(defn get-category [symbol]
-  (-> symbol db/instrument-details :category))
+    :else
+    (info "no import task for range: " range)))
 
 (comment 
-  (db/instrument-details "MSFT")
-  (get-category "MSFT")
-  (get-category "MSFT2")  
+   ;; import -full
+  (import-series :alphavantage {:symbol "MSFT" :frequency "D"} :full)
+  (import-series :alphavantage {:symbol "EURUSD":frequency "D"} :full) 
+  (import-series :alphavantage {:symbol "BTCUSD" :frequency"D"} :full) 
+  (import-series :alphavantage {:symbol "FSDCX" :frequency "D"} :full) 
+  (import-series :alphavantage {:symbol "FSDCX" :frequency "D"} :append) 
+  
+  (import-series :kibot {:symbol "SIL0":frequency "D"} :full)
+  (import-series :bybit {:symbol "BTCUSD" :frequency "D"} :full)
+
+
+  ; append 
+  (append-series :alphavantage {:symbol "MSFT" :frequency "D"} )
+  (append-series :alphavantage {:symbol "EURUSD" :frequency "D"} )
+  (append-series :alphavantage {:symbol "QQQ" :frequency "D"} )
+  (append-series :alphavantage {:symbol "FSDCX" :frequency "D"})
+  (append-series :alphavantage {:symbol "FMCDX" :frequency "D"})
+  (append-series :bybit {:symbol "BTCUSD" :frequency "D"} )
+  (append-series :bybit {:symbol "LTCUSD" :frequency "D"} )
+  (append-series :kibot {:symbol "SIL0" :frequency "D"})
+  (append-series :kibot {:symbol "EURUSD" :frequency "D"} )
+  
+
+
+
  ; 
   )
 
+;; LIST 
 
-(defn import-one
-  [symbol interval range]
-  (let [category (get-category symbol)
-        provider (case category
-                   :crypto :bybit
-                   :future :kibot
-                   :mutualfund :alphavantage
-                   :kibot)]
-    (cond
-      (= range :full) 
-      (import-series provider symbol interval :full)  
-
-      (= range :append)
-      (append-series provider symbol interval)  
-
-      :else 
-      (info "no import task for range: " range))
-    ))
-
-(defn missing-symbols [interval]
+(defn missing-symbols [frequency]
   (let [all (db/get-symbols)]
-    (remove #(has-symbol % interval) all)))
+    (remove #(exists-series? {:symbol % :frequency frequency}) all)))
 
-(comment 
+(comment
   (-> (db/get-symbols) count)
   (missing-symbols "D")
+  (missing-symbols "30")
 ;  
   )
 
-
 (defn import-list
-   [symbols interval range]
+   [provider symbols series-opts range]
    (let [symbols (cond 
                    (string? symbols) (load-list symbols)
                    (= symbols :all) (db/get-symbols)
-                   (= symbols :missing) (missing-symbols interval)
+                   (= symbols :missing) (missing-symbols (:frequency series-opts))
                    :else symbols)]
      (doall (map
-             #(import-one % interval range)
+             #(import-one provider (assoc series-opts :symbol %) range)
              symbols))))
 
 
 (comment 
-  ;; import -full
-  (import-series :alphavantage "MSFT" "D" :full)
-  (import-series :alphavantage "EURUSD" "D" :full) 
-  (import-series :alphavantage "BTCUSD" "D" :full) 
-  (import-series :kibot "SIL0" "D" :full)
-  (import-series :bybit "BTCUSD" "D" :full)
-
-
-  ; append 
-  (append-series :alphavantage "MSFT" "D")
-  (append-series :alphavantage "EURUSD" "D")
-  (append-series :alphavantage "QQQ" "D")
-  (append-series :bybit "BTCUSD" "D")
-  (append-series :bybit "LTCUSD" "D")
-  (append-series :kibot "SIL0" "D")
-  (append-series :kibot "EURUSD" "D")
+ 
 
   ; symbol list
-  (import-symbols :kibot ["SIL0" "NG0" "IBM"] "D" :full {})
-  (import-symbols :kibot "joseph" "D" :full {})
-  (import-symbols :kibot "futures-kibot" "D" :full {})
-  (import-symbols :bybit "crypto" "D" :full {}) 
+  (import-list :kibot ["SIL0" "NG0" "IBM"] {:frequency "D"}  :full)
+  (import-list :kibot "joseph" {:frequency "D"} :full)
+  (import-list :kibot "futures-kibot" {:frequency "D"} :full)
+  (import-list :bybit "crypto" {:frequency "D"} :full) 
 
 
-  (import-list "crypto" "D" :append)
-  (import-list "joseph" "D" :append)
-  (import-list ["SIL0" "NG0" "IBM"] "D" :append)
+  (import-list :bybit "crypto" {:frequency "D"} :append)
+  (import-list :kibot "joseph" {:frequency "D"} :append)
+  (import-list :kibot ["SIL0" "NG0" "IBM"] {:frequency "D"} :append)
 
-  (import-list :all "D" :append)
+  (import-list :kibot :all {:frequency "D"} :append)
 
-  (import-list :missing "D" :full)
+  (import-list :kibot :missing {:frequency "D"} :full)
   
+
+  (require '[demo.env.provider :refer [instrument-category->provider]])
+
+  (get-provider instrument-category->provider "IBM")
+  (get-provider instrument-category->provider "BTCUSD")
+  (get-provider instrument-category->provider "EURUSD")
+
+  (import-list instrument-category->provider 
+               ["SIL0" "NG0" "IBM" "FSDCX" "FMCDX"
+                                           "XME"
+                                           "EU0"
+                                           "QG0"] 
+               {:frequency "D"} 
+               :append)
+  
+  (import-list instrument-category->provider
+               ["FSDCX" "FMCDX" "XME" "EU0" "QG0"]
+               {:frequency "D"}
+               :append)
+
+
+ (import-list instrument-category->provider
+             :all
+             {:frequency "D"}
+             :append)
+
+
   ;
   )

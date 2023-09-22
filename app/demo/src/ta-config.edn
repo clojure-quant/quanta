@@ -14,7 +14,9 @@
                     :jetty-ws {"/api/chsk" :ws/chsk-get}}
 
  :ns-clj [demo.goldly.reval ; for techml rendering (no need to require namespace)
-          demo.env.algos]
+          demo.env.algos
+          demo.env.wh ; default-warehose
+          ]
 
  :goldly {:lazy true
           :src-dir "src"
@@ -40,12 +42,15 @@
                        }}
 
  :ta {:warehouse {:list "../resources/symbollist/"
-                  :series  {:crypto "../../output/db/crypto/"
+                  :series  {:default "../../output/db/default/"
+                            :crypto "../../output/db/crypto/"
                             :stocks "../../output/db/stocks/"
                             :fx "../../output/db/fx/"
                             :futures "../../output/db/futures/"
                             :random "../../output/db/random/"
-                            :shuffled  "../../output/db/shuffled/"}
+                            :shuffled  "../../output/db/shuffled/"
+                            :seasonal "../../output/db/seasonal/"
+                            }
                   :lists ["crypto"
                           "fidelity-select"
                           "bonds"

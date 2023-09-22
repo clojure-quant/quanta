@@ -36,6 +36,15 @@
 ;(def row-date-format-
 ;  (fmtick/formatter "yyyy-MM-dd")) ; 2019-08-09
 
+(defn parse-date-only [s]
+  (try
+    (-> s
+        (ld/parse date-fmt)
+        )
+    (catch Exception _
+      nil)))
+
+
 (defn parse-date [s]
   (try
     (-> s

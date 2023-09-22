@@ -43,10 +43,10 @@
                                (t/>= (:date row) dt)))
     ds-bars))
 
-(defn get-series [symbol interval range opts]
+(defn get-series [{:keys [symbol frequency]} range opts]
   (let [{:keys [category] :as instrument} (db/instrument-details symbol)
         symbol (symbol->provider symbol)
-        period (get interval-mapping interval)
+        period (get interval-mapping frequency)
         av-get-data (get-category-download-fn category)]
     (-> (av-get-data (range->parameter range) symbol)
         (alphavantage-result->dataset)
@@ -58,16 +58,17 @@
   (require '[ta.helper.date :refer [parse-date]])
   (parse-date "2023-09-01")
   
-  (-> (get-series "EURUSD" "D" 
-              {:start (parse-date "2023-09-01")
-               :mode :append} 
-              {})
+  (-> (get-series {:symbol "EURUSD"  :frequency "D"} 
+                  {:start (parse-date "2023-09-01")
+                   :mode :append} 
+                  {})
       (tc/info))
   
-  (get-series "FSDCX" "D"
-             {:start (parse-date "2023-01-01")
+  (get-series {:symbol "FMCDX"  :frequency "D"}
+             {:start (parse-date "2023-09-21")
              :mode :append}
             {})
+  
   
 
   

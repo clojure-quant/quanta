@@ -81,6 +81,43 @@
          (filter #(= frequency (:frequency %)))
          (map :symbol))))
 
+
+
+(def  ^:dynamic *default-warehouse* nil)
+
+
+(defn wh [w symbol]
+  (let [w (or w *default-warehouse*)]
+    (if (fn? w)
+      (w symbol)
+      w)))
+
+
+(defn load-series
+  "warehouse can either be specified, 
+   or can use default-warehouse
+   or can be calculated by a fn that gets the symbol"
+  [{:keys [warehouse symbol frequency] :as options}]
+  (let [w (wh warehouse symbol)]
+    (load-symbol w frequency symbol)))
+
+(defn save-series
+  "warehouse can either be specified, 
+   or can use default-warehouse
+   or can be calculated by a fn that gets the symbol"
+  [{:keys [warehouse symbol frequency] :as options} ds]
+  (let [w (wh warehouse symbol)]
+    (save-symbol w ds frequency symbol)))
+
+(defn exists-series?
+  "warehouse can either be specified, 
+   or can use default-warehouse
+   or can be calculated by a fn that gets the symbol"
+  [{:keys [warehouse symbol frequency] :as options}]
+  (let [w (wh warehouse symbol)]
+    (exists-symbol? w frequency symbol)))
+
+
 (comment
 
   (get-in-config [:ta])
@@ -96,6 +133,15 @@
 
   (symbols-available :crypto "D")
   (load-symbol :crypto "D" "ETHUSD")
+
+
+  (load-series {:symbol "MSFT" :frequency "D"})
+  (exists-series? {:symbol "MSFT" :frequency "D"})
+
+  (let [ds (load-series {:symbol "MSFT" :frequency "D"})]
+    (save-series {:symbol "MSFT2" :frequency "D"} ds)
+    )
+
 
  ;
   )

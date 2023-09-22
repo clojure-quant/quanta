@@ -1,3 +1,0 @@
-(ns notebook.studies.seasonality
-  
-  )

@@ -26,12 +26,12 @@
       {:start start-date-bybit}
       range))
 
-(defn get-series [symbol interval range _opts]
+(defn get-series [{:keys [symbol frequency]} range _opts]
   (let [symbol (symbol->provider symbol)
         range-bybit (range->parameter range)]
     (-> (bybit/get-history (merge 
                             {:symbol symbol
-                             :interval interval}
+                             :interval frequency}
                               range-bybit))
         (bybit-result->dataset))))
 
