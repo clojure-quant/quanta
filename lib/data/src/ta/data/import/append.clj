@@ -73,7 +73,7 @@
 
   (get-in (tc/last (load-series {:symbol "FMCDX"  :frequency "D"})) [:date 0])
    (av/get-series {:symbol "FMCDX"  :frequency "D"} 
-                  {:start 4 :mode :append})
+                  {:start 4 :mode :append}
                     {})
 
  ; 

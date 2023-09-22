@@ -31,8 +31,8 @@ ds-etf-since
 ;;; This size-mb difference is huge; better check if
 ;;; both symbols have sufficient daily bars 
 
-(import-series :kibot "AFK" "D" :full) ; 3818 bars
-(import-series :kibot "AGG" "D" :full) ; 5028 bars
+(import-series :kibot {:symbol "AFK" :frequency "D"}  :full) ; 3818 bars
+(import-series :kibot {:symbol "AGG" :frequency "D"} :full) ; 5028 bars
 ;;; 5 years of data = 200*5 = 1000. 
 ;;; this explains difference between AFK and AGG
 
@@ -43,5 +43,5 @@ ds-etf-since
 (import-list :kibot
              (:symbol ds-etf-since)
              {:frequency "D"
-              :w :seasonality}
+              :warehouse :seasonal}
              :full)
