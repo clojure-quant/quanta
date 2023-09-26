@@ -1,5 +1,6 @@
 (ns notebook.studies.seasonality
   (:require 
+   [clojure.string :as str]
    [tick.core :as t]
    [tablecloth.api :as tc]
    [tech.v3.dataset :as tds]
@@ -14,7 +15,9 @@
    [ta.helper.date-ds :as h]
    [ta.nippy :as nippy]
    [ta.multi.nav-trades :refer [portfolio]]
-   [demo.math :as math]))
+   [demo.math :as math]
+   [tech.v3.dataset.print :refer [print-range]]
+   ))
 
 ;;; we will calculate seasonality by month.
 ;;; to calculate seasonality statistics we need a lot of years, since
@@ -33,6 +36,30 @@
 
 ds-etf-since
 
+(defn ultra? [row]
+  (.contains (or (:desc row) "") "Ultra"))
+
+(defn leveraged? [row]
+  (.contains (or (:sector row) "") "Leveraged"))
+
+(defn inverse? [row]
+  (.contains (or (:sector row) "") "Inverse"))
+
+
+(defn filter-sane [ds-data]
+  (tc/select-rows ds-data (fn [row] 
+                            (and (not (ultra? row))
+                                 (not (inverse? row))
+                                 (not (leveraged? row))))))
+
+(def ds-etf (filter-sane ds-etf-since))
+
+(-> ds-etf
+    (print-range :all)
+ )
+
+
+
 
 ;;; AGG has :size-mb 72.00 :date-start 2003-09-29 
 ;;; AFG has :size-mb 4.89  :date-start 2008-07-14
@@ -45,7 +72,7 @@ ds-etf-since
 ;;; this explains difference between AFK and AGG
 
 
-(def symbols (:symbol ds-etf-since))
+(def symbols (:symbol ds-etf))
 (first symbols)
 ;; => "AAXJ"
 (last symbols)
@@ -92,11 +119,11 @@ ds-etf-since
 (defn returns [ds]
   (let [chg (dfn/- (:close ds) (:open ds))
         chg-p (dfn// chg (:open ds))
-        chg-p (dfn/* chg 100.0)]
+        chg-p (dfn/* chg-p 100.0)]
     chg-p))
 
 (defn goodness [ds]
-  (let [stddev-n (dfn/* (:stddev ds) 0.1)]
+  (let [stddev-n (dfn/* (:stddev ds) 0.25)]
     (dfn/- (:mean ds) stddev-n)))
 
 
@@ -143,7 +170,7 @@ ds-etf-since
     ))
   
 
- (require '[tech.v3.dataset.print :refer [print-range]])
+ 
 
 (defn calc-stats-symbol [symbol] 
   ;(println "calculating stats for: " symbol)
@@ -198,6 +225,10 @@ ds-etf-since
     (nippy/save-ds "../../output/seasonal/all.nippy"))
 
 
+(calc-stats-all ["DIA" "TLT"])
+
+
+
 ;Every month. Rebalance to best 10 seasonalities.
 
 ;; roundtrips
@@ -215,7 +246,10 @@ ds-stats
                        (and (= year (:year row))
                             (= month (:month row)))))
      (tc/select-rows (fn [row]
-                       (> (:goodness row) 0.0)))
+                       (and (> (:goodness row) 0.0)
+                            (< (:goodness row) 20.0))
+                       
+                       ))
      (tc/order-by :goodness :desc)
      (tc/head nr-trades)
      ))
@@ -302,22 +336,16 @@ trades
       (tc/group-by [group])
       (tc/aggregate {:pl (fn [ds]
                            (-> ds :pl math/sum))
-                     :nr (fn [ds] (-> ds :pl count))})
-      (tc/order-by :nr :desc)
+                     :nr (fn [ds] (-> ds :pl count))
+                     :goodness (fn [ds] (-> ds :goodness math/mean))
+                     })
+      (tc/order-by :pl :desc)
       (print-range :all)))
 
 (print-trades-by trades :month)
 
 (print-trades-by trades :symbol)
 
-
-
-
-(def trades-edn
-  (tc/map-rows (fn [{:keys [entry-price exit-price qty] :as trade}]
-         (let [entry-vol (* entry-price qty)
-               exit-vol (* exit-price qty)]
-           (assoc trade :entry-vol entry-vol :pl (- exit-vol entry-vol)))) trades-edn))
 
 
 (def trades-edn 
@@ -341,13 +369,6 @@ nav
 (with-meta (:nav nav-browser)
   {:render-fn 'ta.viz.nav-vega/nav-vega})
 
-
-(def trades-edn 
-  (map (fn [{:keys [entry-price exit-price qty] :as trade}]
-         (let [entry-vol (* entry-price qty)
-               exit-vol (* exit-price qty)]
-           (assoc trade :entry-vol entry-vol :pl (- exit-vol entry-vol))
-           )) trades-edn ))
 
 (with-meta 
    trades-edn 
