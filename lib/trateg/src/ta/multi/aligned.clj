@@ -1,13 +1,13 @@
 (ns ta.multi.aligned
   (:require
+   [taoensso.timbre :refer [trace debug info warn error]]
    [tick.core :as t]
    [tablecloth.api :as tc]
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as dfn]
    [tech.v3.datatype.argops :as argops]
    [tech.v3.tensor :as dtt]
-   [ta.warehouse :as wh]
-   [ta.data.settings :refer [determine-wh]]))
+   [ta.warehouse :as wh]))
 
 (defn filter-range [ds-bars {:keys [start end]}]
   (tc/select-rows
@@ -18,14 +18,10 @@
         (or (not start) (t/>= date start))
         (or (not end) (t/<= date end)))))))
 
-(defn load-symbol-full [symbol interval]
-  (let [w (determine-wh symbol)
-        ds-bars (wh/load-symbol w interval symbol)]
-    ds-bars))
 
-(defn load-symbol-window [symbol interval date-start date-end]
-  (let [w (determine-wh symbol)
-        ds-bars (wh/load-symbol w interval symbol)]
+
+(defn load-symbol-window [opts date-start date-end]
+  (let [ds-bars (wh/load-series opts)]
     (-> ds-bars
         (filter-range {:start date-start :end date-end}))))
 
@@ -34,11 +30,13 @@
       (tc/order-by [:date] [:asc])
       (tc/set-dataset-name (-> bars meta :name))))
 
-(defn load-series [symbol {:keys [interval start end calendar]}]
-  (let [w (determine-wh symbol)
-        has-series? (wh/exists-symbol? w interval symbol)]
+(defn load-series [symbol warehouse {:keys [interval start end calendar]}]
+  (let [load-opts {:symbol symbol 
+                   :warehouse warehouse 
+                   :frequency interval}
+        has-series? (wh/exists-series? load-opts)]
     (when has-series?
-        (let [ds-bars (load-symbol-window symbol interval start end)
+        (let [ds-bars (load-symbol-window load-opts start end)
               ds-bars (tc/drop-columns ds-bars [:symbol])
               ds-bars-aligned (align-to-calendar calendar ds-bars)]
       ds-bars-aligned))))
@@ -83,13 +81,13 @@
      (set-col! ds-bars-aligned :close2
            [idx] 
            (get-close-idx idx))))
-    
     (-> ds-bars-aligned
         (tc/drop-columns [:close col-date-symbol])
         (tc/rename-columns {:close2 :close}))))
 
-(defn load-aligned-filled [symbol calendar]
-   (when-let [ds-bars (load-series symbol calendar)]
+(defn load-aligned-filled [symbol warehouse calendar]
+  (info "load-aligned-filled" symbol " " warehouse)
+   (when-let [ds-bars (load-series symbol warehouse calendar)]
      (fill-missing-close ds-bars)))
 
 
@@ -98,15 +96,17 @@
   (require '[tech.v3.dataset.print :refer [print-range]])
   (require '[ta.multi.calendar :refer [daily-calendar]])
 
-  (load-symbol-full "GOOGL" "D")
-  (meta (load-symbol-full "GOOGL" "D"))
+  (wh/load-series {:symbol "GOOGL" :frequency "D"})
+  (meta  (wh/load-series {:symbol "GOOGL" :frequency "D"}))
 
   (def calendar 
     (daily-calendar (parse-date "2023-09-01")
                     (parse-date "2023-10-01")))
 
-  (load-symbol-window "GOOGL" "D" (parse-date "2023-09-01")
-                                  (parse-date "2023-10-01"))
+  (load-symbol-window {:symbol "GOOGL" :frequency "D"}
+                      (parse-date "2023-09-01")
+                      (parse-date "2023-10-01"))
+  
   (load-series "GOOGL" calendar)
 
   (load-series "DAX0" calendar)
@@ -143,7 +143,10 @@
      ; (:GOOGL.date)
       (print-range :all)
       )
-   (load-aligned-filled "GOOGL" calendar)
+   
+   (load-aligned-filled "GOOGL" nil calendar)
+   (load-aligned-filled "GOOGL" :seasonal calendar)
+
 
 
  ; 

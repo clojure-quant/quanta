@@ -6,9 +6,7 @@
    [tech.v3.datatype.functional :as dfn]
    [tech.v3.datatype.argops :as argops]
    [tech.v3.tensor :as dtt]
-   [ta.warehouse :as wh]
-   [ta.data.settings :refer [determine-wh]]
-   [ta.multi.aligned :refer [load-aligned-filled]]
+   [ta.multi.aligned :refer [load-aligned-filled load-symbol-window]]
    [ta.multi.calendar :refer [daily-calendar daily-calendar-sunday-included]]
    ))
 
@@ -27,11 +25,11 @@
 (defn no-effect [size]
    (tc/dataset
        {:open# (vec-const size 0)
-         :long$ (vec-const size 0.0)
-         :short$ (vec-const size 0.0)
-         :net$ (vec-const size 0.0)
-         :pl-u (vec-const size 0.0)
-         :pl-r (vec-const size 0.0)}))
+        :long$ (vec-const size 0.0)
+        :short$ (vec-const size 0.0)
+        :net$ (vec-const size 0.0)
+        :pl-u (vec-const size 0.0)
+        :pl-r (vec-const size 0.0)}))
 
 (defn trade-stats [ds-bars {:keys [date-entry date-exit qty]}]
   (let [ds-trade (filter-range ds-bars {:start date-entry :end date-exit})]
@@ -158,19 +156,16 @@
 (defn empty-series [calendar]
   (:calendar calendar))
 
-(defn effects-symbol [symbol calendar trades]
+(defn effects-symbol [symbol warehouse calendar trades]
   ;(info "calculating " symbol)
-  (let [ds-bars (load-aligned-filled symbol calendar)
+  (let [ds-bars (load-aligned-filled symbol warehouse calendar)
         has-series? ds-bars
         ds-bars (or ds-bars (empty-series calendar))
         effects (map #(trade-effect ds-bars has-series? %) trades)]
     (effects-sum effects)))
 
-(defn exists-series? [s ]
-  (let [w (determine-wh s)]
-     (wh/exists-symbol? w "D" s)))
 
-(defn portfolio [trades]
+(defn portfolio [trades {:keys [warehouse]}]
   (let [start-dt (apply t/min (map :entry-date trades))
         end-dt (apply t/max (->> (map :exit-date trades)
                                  (remove nil?)))
@@ -179,7 +174,7 @@
         trades-symbol (fn [symbol]
                         (filter #(= symbol (:symbol %)) trades))
         calc-symbol (fn [symbol]
-                      (effects-symbol symbol calendar (trades-symbol symbol)))
+                      (effects-symbol symbol warehouse calendar (trades-symbol symbol)))
         symbols (->> trades 
                      (map :symbol) 
                      ;(filter exists-series?)
@@ -192,6 +187,7 @@
         ; result
         pl-r-cum (dfn/cumsum (:pl-r eff))] 
     {:warnings warnings 
+     :warehouse warehouse
      :eff (tc/add-columns 
            eff
            {:date (-> calendar :calendar :date)
@@ -238,7 +234,7 @@
   (print-table [:entry-date :exit-date :symbol ] trades)
   (print-table [:entry-date :exit-date :symbol] trades-googl)
 
-  (def trade (last trades))
+  (def trade (last trades-googl))
   trade
 
   (defn in-range? [entry-date exit-date date]
@@ -254,25 +250,37 @@
   (in-range? entry-date exit-date (parse-date "2022-03-07"))
 
 
-
-  (def ds-bars 
-    (load-symbol "GOOGL" "D" (parse-date "2023-03-01")
-                 (parse-date "2023-03-20")))
-  ds-bars
-  (trade-effect ds-bars trade)
   
-  (effects-sum [(trade-effect ds-bars trade)
-                (trade-effect ds-bars trade)])
+  (load-aligned-filled 
+   "GOOGL" 
+   nil
+   (daily-calendar (parse-date "2022-10-01")
+                   (parse-date "2023-04-01")))
+  
+  (def ds-bars 
+    (load-symbol-window {:symbol "GOOGL" 
+                         :frequency "D"
+                         :warehouse nil
+                         } 
+                    (parse-date "2023-03-01")
+                    (parse-date "2023-03-20")))
+  ds-bars
+  (trade-effect ds-bars true trade)
+  
+  (effects-sum [(trade-effect ds-bars true trade)
+                (trade-effect ds-bars true trade)])
   
   (-> (effects-symbol 
        "GOOGL" 
+       nil
        (daily-calendar (parse-date "2022-10-01")
                        (parse-date "2023-04-01"))
         trades-googl)
-      (print-range :all))
+      :eff
+      (print-range :all)
+      )
   
-  (exists-series "MSFT")
-  (exists-series "DAX0")
+
 
   (def trades-test 
     [{:symbol "GOOGL" 
@@ -283,7 +291,9 @@
       :exit-date #time/date-time "2023-03-16T00:00"
       :exit-price 96.92}])
 
-  (portfolio trades-googl)
+  (portfolio trades-googl {:warehouse nil})
+
+  (portfolio trades-googl {:warehouse :seasonal})
 
   (portfolio [{:symbol "BZ0"
                :side :long
@@ -291,14 +301,16 @@
                :entry-date #time/date-time "2022-11-27T00:00"
                :entry-price 80.96
                :exit-date #time/date-time "2022-11-27T00:00"
-               :exit-price 82.18}])
+               :exit-price 82.18}]
+             {:warehouse :seasonal2}
+             )
   
   (def trades-dax
     (filter #(= "DAX0" (:symbol %)) trades))
   
   (count trades-dax)
 
-  (portfolio trades-dax)
+  (portfolio trades-dax {:warehouse :s2})
 
   (portfolio (take 1 trades))
   (portfolio (take 5 trades))

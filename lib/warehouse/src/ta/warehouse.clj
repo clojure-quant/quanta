@@ -97,7 +97,7 @@
   "warehouse can either be specified, 
    or can use default-warehouse
    or can be calculated by a fn that gets the symbol"
-  [{:keys [warehouse symbol frequency] :as options}]
+  [{:keys [warehouse symbol frequency]}]
   (let [w (wh warehouse symbol)]
     (load-symbol w frequency symbol)))
 
@@ -105,7 +105,7 @@
   "warehouse can either be specified, 
    or can use default-warehouse
    or can be calculated by a fn that gets the symbol"
-  [{:keys [warehouse symbol frequency] :as options} ds]
+  [{:keys [warehouse symbol frequency]} ds]
   (let [w (wh warehouse symbol)]
     (save-symbol w ds frequency symbol)))
 
@@ -113,7 +113,7 @@
   "warehouse can either be specified, 
    or can use default-warehouse
    or can be calculated by a fn that gets the symbol"
-  [{:keys [warehouse symbol frequency] :as options}]
+  [{:keys [warehouse symbol frequency]}]
   (let [w (wh warehouse symbol)]
     (exists-symbol? w frequency symbol)))
 

@@ -204,6 +204,8 @@ ds-etf-since
 
 (def ds-stats (nippy/load-ds "../../output/seasonal/30.nippy"))
 
+(def ds-stats (nippy/load-ds "../../output/seasonal/all.nippy"))
+
 ds-stats
 ; :month :open :close :symbol :year :goodness 
 
@@ -250,15 +252,23 @@ ds-stats
 
 
 
-(defn row->trade [position-size {:keys [year month symbol open close]}]
+(defn row->trade [position-size {:keys [year month symbol open close goodness]}]
+  (let [qty (int (/ position-size open))
+        entry-vol (* open qty)
+        exit-vol  (* close qty)]
   {:symbol symbol
    :side :long
-   :qty (int (/ position-size open))
+   :qty qty
    :entry-date (date-entry year month)
    :exit-date (date-exit year month)
    :entry-price open
    :exit-price close
-   })
+   :goodness goodness
+   :month month
+   :entry-vol entry-vol
+   :exit-vol exit-vol
+   :pl (int (- exit-vol entry-vol))
+   }))
 
 (defn stats->trades [ds-stats year month number-trades]
   (let [position-size (/ 100000.0 (+ 0.0 number-trades))]
@@ -266,8 +276,11 @@ ds-stats
       (tc/map-rows (partial row->trade position-size))
       (tc/select-columns [:symbol :side :qty 
                           :entry-date :exit-date 
-                          :entry-price :exit-price]))
-  ))
+                          :entry-price :exit-price
+                          :goodness :month
+                          :entry-vol :exit-vol
+                          :pl
+                          ]))))
 
 (stats->trades ds-stats 2023 01 10)
     
@@ -279,9 +292,32 @@ ds-stats
        (stats->trades ds-stats year month number-trades))))
 
 (def trades 
-   (all-stats->trades ds-stats 10))
+   (all-stats->trades ds-stats 25))
 
 trades
+
+
+(defn print-trades-by [trades group]
+  (-> trades
+      (tc/group-by [group])
+      (tc/aggregate {:pl (fn [ds]
+                           (-> ds :pl math/sum))
+                     :nr (fn [ds] (-> ds :pl count))})
+      (tc/order-by :nr :desc)
+      (print-range :all)))
+
+(print-trades-by trades :month)
+
+(print-trades-by trades :symbol)
+
+
+
+
+(def trades-edn
+  (tc/map-rows (fn [{:keys [entry-price exit-price qty] :as trade}]
+         (let [entry-vol (* entry-price qty)
+               exit-vol (* exit-price qty)]
+           (assoc trade :entry-vol entry-vol :pl (- exit-vol entry-vol)))) trades-edn))
 
 
 (def trades-edn 
@@ -290,7 +326,9 @@ trades
  
 (storage/save :edn "../../output/seasonal/trades.edn" trades-edn)
 
-(def nav (portfolio trades-edn))
+(def trades-edn (storage/loadr :edn "../../output/seasonal/trades.edn"))
+
+(def nav (portfolio trades-edn {:warehouse :seasonal}))
 
 nav
 
@@ -304,3 +342,23 @@ nav
   {:render-fn 'ta.viz.nav-vega/nav-vega})
 
 
+(def trades-edn 
+  (map (fn [{:keys [entry-price exit-price qty] :as trade}]
+         (let [entry-vol (* entry-price qty)
+               exit-vol (* exit-price qty)]
+           (assoc trade :entry-vol entry-vol :pl (- exit-vol entry-vol))
+           )) trades-edn ))
+
+(with-meta 
+   trades-edn 
+   {:render-fn 'ta.viz.trades-table/trades-table-lg})
+
+
+(-> (wh/load-series {:symbol "SSG"
+                     :frequency "D"
+                     :warehouse :seasonal})
+    (print-range :all))
+ 
+ 
+
+ 
