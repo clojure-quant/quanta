@@ -1,0 +1,2 @@
+const FIREBASE_CONF={apiKey:"AIzaSyBFvs2sV4DsScCBb00x-LcERF1RFFRMaig",authDomain:"myfxbook-website.firebaseapp.com",projectId:"myfxbook-website",storageBucket:"myfxbook-website.appspot.com",messagingSenderId:"395291815751",appId:"1:395291815751:web:74dc231d6f8f2c53e86662"}
+const DEFAULT_CALENDAR_FILTER={importances:[0,1,2,3],countries:[],currencies:["AUD","CAD","CHF","CNY","EUR","GBP","JPY","NZD","USD"]};const DEFAULT_NEWS_FILTER={newsProviderCompanyOids:"1,2,6,7,10,11,16",AjaxUtilsnewsProviderLanguagesOids:1};
