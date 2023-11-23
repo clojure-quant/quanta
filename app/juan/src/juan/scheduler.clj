@@ -85,6 +85,7 @@
 (defn start! [& args] ; make it compatible with clip
   (info "Juan Start .. ")
   ; we dont download series; as this could take a long time. Worst case we use out of day series
+  (app/task-day)
   (app/task-hour)
   (app/task-minute)
   (start-pusher!)
