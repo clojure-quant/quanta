@@ -107,6 +107,24 @@
 (defn pivot-map->table [pivots]
   (map (fn [[k v]] {:name k :price v}) pivots))
 
+(defn nearby-pivot-table-ui [data]
+  [rtable {:class "table-head-fixed padding-sm table-blue table-striped table-hover"
+           :style {:width "10cm" ; "100vw" ;"50vw"
+                   :height "5cm" ; "100vh" ;"40vh"
+                   :border "3px solid green"}}
+   [{:path :side :header "Pivot Side"}
+    {:path :name :header "Pivot Name"}
+    {:path :price :header "Pivot Price"}
+    {:path :diff :header "PriceDiff" :format fmt-digits }
+    {:path :pip-diff :header "PipDiff" :format fmt-0digits}
+    ] data])
+
+
+(defn data->pivot-table [{:keys [pivot-short pivot-long] :as data}]
+  [ (assoc pivot-long :side :long) 
+   (assoc pivot-short :side :short) 
+   ])
+
 
 (defn detail-view []
   (let [s @detail-symbol
@@ -121,6 +139,7 @@
        [:div
         [:p.m-5 "Details for: symbol: " s " data: " (pr-str data-no-pivots)]
         [pivot-table-ui pivots]
+        [nearby-pivot-table-ui (data->pivot-table data)]
         ;[:p "Pivot data: " (pr-str pivots)]
         ]
        [:p "Click on a symbol to show details!"])

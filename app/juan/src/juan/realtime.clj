@@ -1,8 +1,17 @@
 (ns juan.realtime
   (:require
+   [taoensso.timbre :as log :refer [tracef debug debugf info infof warn error errorf]]
    [juan.data :refer [settings]]
-   [juan.pivot :refer [pivot-trigger]]))
+   [juan.pivot :refer [pivot-trigger]]
+   [clojure.edn :as edn]))
 
+
+(defn pivot-trigger-safe [pivot symbol side price]
+  (try 
+    (pivot-trigger pivot symbol side price)
+    (catch Exception e
+      (error "error calculating pivot-triggers for: " symbol)
+      nil)))
 
 
 (defn calc-realtime-symbol [fxcm-last-price {:keys [symbol close atr sentiment-signal pivots] :as core}]
@@ -26,6 +35,8 @@
         pivot-nearby (when setup-signal
                        (pivot-trigger pivots symbol setup-signal price))
 
+        pivot-long (pivot-trigger-safe pivots symbol :long price)
+        pivot-short (pivot-trigger-safe pivots symbol :short price)
         #_{:price 18.654,
            :name :p1-high,
            :diff 0.14602975463867196,
@@ -46,7 +57,10 @@
            :spike-signal spike-signal
            :setup-signal setup-signal
            :pivot-nearby pivot-nearby
-           :pivot-signal pivot-signal)))
+           :pivot-signal pivot-signal
+           :pivot-long pivot-long
+           :pivot-short pivot-short)))
+
 
 (defn calc-realtime [get-core fxcm-last-price]
   (map #(calc-realtime-symbol fxcm-last-price %) (get-core)))
