@@ -58,7 +58,12 @@
               :stop (demo.env.scheduler/stop! this)}
   
    :juan  {:start (juan.scheduler/start!
-                    (clip/ref :timbre))
+                    (clip/ref :timbre)
+                    (clip/ref :kibot) ; make sure kibot is configured first.
+                   (clip/ref :ns-require) ; make sure kibot is configured first.
+                   (clip/ref :goldly)
+                   (clip/ref :symbol-lists)
+                   )
            :stop (juan.scheduler/stop! this)}
 
 ;
