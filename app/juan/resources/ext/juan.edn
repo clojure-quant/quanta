@@ -1,0 +1,7 @@
+{:name "juan"
+ ; runtime
+ :cljs-routes {"juan" juan.ui/juan-page}
+ :sci-cljs-ns [juan.ui/juan-page]
+
+ }
+

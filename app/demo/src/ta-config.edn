@@ -50,6 +50,7 @@
                             :random "../../output/db/random/"
                             :shuffled  "../../output/db/shuffled/"
                             :seasonal "../../output/db/seasonal/"
+                            :juan "../../output/db/juan/"
                             }
                   :lists ["crypto"
                           "fidelity-select"

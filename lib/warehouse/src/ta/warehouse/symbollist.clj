@@ -47,6 +47,7 @@
 
 
 (defn add-lists-to-db []
+  ; used in the services config. builds instrument db on start.
   (let [symbols (load-lists-full (get-in-config [:ta :warehouse :lists]))]
     (doall (map db/add symbols))
     

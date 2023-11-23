@@ -1,12 +1,29 @@
-[{:name "EURUSD" :symbol "EURUSD" :category :fx}
- {:name "USDJPY" :symbol "USDJPY" :category :fx}
- {:name "EURJPY" :symbol "EURJPY" :category :fx}
+[; USD pairs
+ {:name "EURUSD" :symbol "EURUSD" :category :fx}
+ {:name "USDCHF" :symbol "USDCHF" :category :fx}
  {:name "GBPUSD" :symbol "GBPUSD" :category :fx}
- {:name "GBPJPY" :symbol "GBPJPY" :category :fx}
-
+ {:name "USDNOK" :symbol "USDNOK" :category :fx}
+ {:name "USDSEK" :symbol "USDSEK" :category :fx}
+ {:name "USDCAD" :symbol "USDCAD" :category :fx}
+ {:name "USDJPY" :symbol "USDJPY" :category :fx}
  {:name "AUDUSD" :symbol "AUDUSD" :category :fx}
  {:name "NZDUSD" :symbol "NZDUSD" :category :fx}
-
+ ; USD pairs emerging
+  {:name "BRLUSD" :symbol "BRLUSD" :category :fx}
+  {:name "ZARUSD" :symbol "ZARUSD" :category :fx}
+  {:name "USDMXN" :symbol "USDMXN" :category :fx}
+  {:name "USDRUB" :symbol "USDRUB" :category :fx}
+  {:name "USDZAR" :symbol "USDZAR" :category :fx}
+  {:name "NZDUSD" :symbol "NZDUSD" :category :fx}
+; EUR pairs
+ {:name "EURJPY" :symbol "EURJPY" :category :fx}
+ {:name "EURAUD" :symbol "EURAUD" :category :fx}
+ {:name "EURCAD" :symbol "EURCAD" :category :fx}
+ {:name "EURCHF" :symbol "EURCHF" :category :fx}
+ {:name "EURGBP" :symbol "EURGBP" :category :fx}
+ ; GBP pairs
+ {:name "GBPJPY" :symbol "GBPJPY" :category :fx}
+  
 ]
 
 

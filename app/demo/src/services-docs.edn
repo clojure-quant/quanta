@@ -2,7 +2,7 @@
  :components
  {:config {:start (modular.config/load-config! (:config #ref [:modular]))}
   :secrets {:start (clojure.edn/read-string
-                    (slurp #envf ["%s/trateg/creds.edn" "MYVAULT"]))}
+                    (slurp #envf ["%s/goldly/trateg.edn" "MYVAULT"]))}
 
   :timbre {:start (modular.log/timbre-config!
                    (:timbre/clj (deref (clip/ref :config))))}
@@ -56,6 +56,10 @@
   :scheduler {:start (demo.env.scheduler/start!
                       (clip/ref :timbre))
               :stop (demo.env.scheduler/stop! this)}
+  
+   :juan  {:start (juan.scheduler/start!
+                    (clip/ref :timbre))
+           :stop (juan.scheduler/stop! this)}
 
 ;
   }}

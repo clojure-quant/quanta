@@ -1,7 +1,10 @@
 (ns ta.warehouse.symbol-db
   (:require
    [clojure.string :refer [includes? lower-case blank?]]
-   [taoensso.timbre :refer [trace debug info warnf error]]))
+   [taoensso.timbre :refer [trace debug info warnf error]]
+   [ta.warehouse.futures :refer [is-future? future-symbol]]
+   
+   ))
 
 (defonce db (atom {}))
 
@@ -149,7 +152,10 @@
   )
 
 (defn instrument-details [s]
-  (get @db s))
+  (if-let [f (is-future? s)]
+    (let [data (get @db (:symbol-root f))]
+      (future-symbol f data))
+     (get @db s)))
 
 
 
@@ -164,6 +170,9 @@
 
 (comment 
   (instrument-details "NG0")
+  ;; => {:symbol "NG0", :kibot "NG", :name "CONTINUOUS NATURAL GAS CONTRACT", :category :future, :exchange "SG"}
+  (instrument-details "NG1223")
+  ;; => {:symbol "NG1223", :kibot "NGZ23", :name "CONTINUOUS NATURAL GAS CONTRACT", :category :future, :exchange "SG"}
 
   (vals @db)
   (get-instrument-by-provider :kibot "NG")

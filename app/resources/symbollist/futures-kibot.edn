@@ -49,27 +49,29 @@
 
 ;; currencies
 {:symbol "EU0" :kibot "EU" :name  "CONTINUOUS EURO FX CONTRACT" :category :future}
-{:symbol "JY0" :kibot "JY" :name  "CONTINUOUS JAPANESE YEN CONTRACT" :category :future}
-{:symbol "BP0" :kibot "BP" :name  "CONTINUOUS BRITISH POUND CONTRACT" :category :future}
-{:symbol "AD0" :kibot "AD" :name  "CONTINUOUS AUSTRALIAN DOLLAR CONTRACT" :category :future}
-{:symbol "CD0" :kibot "CD" :name  "CONTINUOUS CANADIAN DOLLAR CONTRACT" :category :future}
-{:symbol "SF0" :kibot "SF" :name  "CONTINUOUS SWISS FRANC CONTRACT" :category :future}
-{:symbol "PX0" :kibot "PX" :name  "CONTINUOUS MEXICAN PESO CONTRACT" :category :future}
-{:symbol "NE0" :kibot "NE" :name  "CONTINUOUS NEW ZEALAND DOLLAR CONTRACT" :category :future}
 {:symbol "RF0" :kibot "RF" :name  "CONTINUOUS EURO FX/SWISS FRANC CONTRACT" :category :future}
+{:symbol "RP0" :kibot "RP" :name  "CONTINUOUS EURO FX/BRITISH POUND CONTRACT" :category :future}
+{:symbol "ECD0" :kibot "ECD" :name "CONTINUOUS EURO FX/CANADIAN DOLLAR CONTRACT" :category :future}
+{:symbol "EAD0" :kibot "EAD" :name "CONTINUOUS EURO FX/AUSTRALIAN $ CONTRACT" :category :future}
+{:symbol "RY0" :kibot "RY" :name  "CONTINUOUS EURO FX/JAPANESE YEN CONTRACT" :category :future}
+
+{:symbol "BP0" :kibot "BP" :name  "CONTINUOUS BRITISH POUND CONTRACT" :category :future}
+{:symbol "PJY0" :kibot "PJY" :name "CONTINUOUS BRITISH PD/JAPANSE YEN CONTRACT" :category :future}
+
+{:symbol "SF0" :kibot "SF" :name  "CONTINUOUS SWISS FRANC CONTRACT" :category :future}
+{:symbol "SEK0" :kibot "SEK" :name "CONTINUOUS SWEDISH KRONA CONTRACT" :category :future}
+{:symbol "NOK0" :kibot "NOK" :name "CONTINUOUS NORWEGIAN KRONE CONTRACT" :category :future}
+{:symbol "CD0" :kibot "CD" :name  "CONTINUOUS CANADIAN DOLLAR CONTRACT" :category :future}
+{:symbol "JY0" :kibot "JY" :name  "CONTINUOUS JAPANESE YEN CONTRACT" :category :future}
+{:symbol "AJY0" :kibot "AJY" :name "CONTINUOUS AUSTRALIAN $/JAPANESE YEN CONTRACT" :category :future}
+{:symbol "AD0" :kibot "AD" :name  "CONTINUOUS AUSTRALIAN DOLLAR CONTRACT" :category :future}
+{:symbol "NE0" :kibot "NE" :name  "CONTINUOUS NEW ZEALAND DOLLAR CONTRACT" :category :future}
+{:symbol "PX0" :kibot "PX" :name  "CONTINUOUS MEXICAN PESO CONTRACT" :category :future}
 {:symbol "SIR0" :kibot "SIR" :name "CONTINUOUS INR/USD STANDARD CONTRACT" :category :future}
 {:symbol "RU0" :kibot "RU" :name  "CONTINUOUS RUSSIAN RUBLE CONTRACT" :category :future}
 {:symbol "RA0" :kibot "RA" :name  "CONTINUOUS SOUTH AFRICAN RAND CONTRACT" :category :future}
-{:symbol "RP0" :kibot "RP" :name  "CONTINUOUS EURO FX/BRITISH POUND CONTRACT" :category :future}
 {:symbol "BR0" :kibot "BR" :name  "CONTINUOUS BRAZILIAN REAL CONTRACT" :category :future}
-{:symbol "RY0" :kibot "RY" :name  "CONTINUOUS EURO FX/JAPANESE YEN CONTRACT" :category :future}
-{:symbol "SEK0" :kibot "SEK" :name "CONTINUOUS SWEDISH KRONA CONTRACT" :category :future}
-{:symbol "AJY0" :kibot "AJY" :name "CONTINUOUS AUSTRALIAN $/JAPANESE YEN CONTRACT" :category :future}
-{:symbol "NOK0" :kibot "NOK" :name "CONTINUOUS NORWEGIAN KRONE CONTRACT" :category :future}
-{:symbol "PJY0" :kibot "PJY" :name "CONTINUOUS BRITISH PD/JAPANSE YEN CONTRACT" :category :future}
-{:symbol "ECD0" :kibot "ECD" :name "CONTINUOUS EURO FX/CANADIAN DOLLAR CONTRACT" :category :future}
-{:symbol "EAD0" :kibot "EAD" :name "CONTINUOUS EURO FX/AUSTRALIAN $ CONTRACT" :category :future}
-;; mini
+;; mini / micro
 {:symbol "ME0" :kibot "ME" :name  "CONTINUOUS E-MINI EURO FX CONTRACT" :category :future}
 {:symbol "JE0" :kibot "JE" :name  "CONTINUOUS E-MINI JAPANESE YEN CONTRACT" :category :future}
 {:symbol "M6E0" :kibot "M6E" :name "CONTINUOUS E-MICRO EUR/USD CONTRACT" :category :future}

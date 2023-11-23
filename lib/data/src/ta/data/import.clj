@@ -29,7 +29,7 @@
         p))
 
 (defn get-provider-fn
-  "gets the get-sreies fn for the specified provider
+  "returns the get-series fn for the specified provider
    provider can be a keyword (so a fixed provider)
    provider can also be (fn [s]) to get-series depending on the symbol passed"
   [p symbol]

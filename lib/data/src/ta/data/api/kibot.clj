@@ -9,6 +9,13 @@
    [throttler.core]))
 
 
+;; KIBOT FTP:
+;; ftp.kibot.com   (same user+password as for api)
+;; guix install filezilla  (ftp client)
+;; .exe files are rar files.
+;; unrar e  /home/florian/20231120.rar
+;; guix install unrar
+;; rar file contains a lot of txt files
 
 ; dividends/splits:
 ; Request URL
@@ -46,12 +53,12 @@
        :message error-message})
     nil))
 
-(comment 
-  
+(comment
+
   (extract-error "asdfasdfasdf")
   (extract-error "405 Data Not Found.\r\nNo data found for the specified period for EURUSD.")
-  
-  
+
+
  ; 
   )
 
@@ -60,14 +67,14 @@
   (let [result (http/get url
                          {:accept :json
                           :query-params query-params
-                          :socket-timeout 3000 
+                          :socket-timeout 3000
                           :connection-timeout 3000})
         body (:body result)
         error (extract-error body)]
     ;(info "status:" (:status result))  
     ;(info "headers: " (:headers result))
     (if error
-        {:error error}
+      {:error error}
       body)
     ;  (throw (ex-info (:retMsg result) result))
     ))
@@ -79,25 +86,25 @@
 
 (defn login []
   (let [{:keys [user password]} @api-key]
-     (info "loing user: " user "pwd: " password)
-     (make-request base-url 
-                 {:action "login"
-                 :user user
-                 :password password})))
-  
-(defn status []
+    (info "loing user: " user "pwd: " password)
     (make-request base-url
-                  {:action "status"}))
+                  {:action "login"
+                   :user user
+                   :password password})))
+
+(defn status []
+  (make-request base-url
+                {:action "status"}))
 
 
 
 
 
-(comment 
+(comment
   (login)
-  (status) 
+  (status)
 
- 
+
 
   ;
   )
@@ -107,12 +114,11 @@
     ;(info "login user: " user "pwd: " password)
     (info "kibot history: " opts)
     (make-request base-url
-                  (merge 
-                     {:action "history"
-                      :user user
-                      :password password} 
-                      opts)
-                  )))
+                  (merge
+                   {:action "history"
+                    :user user
+                    :password password}
+                   opts))))
 
 
 
@@ -132,21 +138,21 @@
 ; http://api.kibot.com/?action=snapshot&symbol=$NDX,AAPL
 ; return format: Symbol,Date,Time,LastPrice,LastVolume,Open,High,Low,Close,Volume,ChangePercent,TimeZone.
 
-(comment 
-  
+(comment
+
   (snapshot {:symbol ["$NDX" "AAPL"]})
-  
+
   (snapshot {:type "future"
              :symbol "ESZ23"})
 
   (snapshot {:type "future"
              :symbol "JYZ23"})
-  
 
-  (snapshot {:symbol ["$NDX" 
-                      "AAPL" 
+
+  (snapshot {:symbol ["$NDX"
+                      "AAPL"
                       "FCEL"
-                      "MSFT" 
+                      "MSFT"
                       #_"BZ0"]})
 
   (snapshot {:symbol ["AAPL" "DAX0" "MSFT"]})
@@ -157,62 +163,81 @@
 
 
 
-(comment 
-  
-   (history {:symbol "AAPL"
-             :interval "daily"
-             :period 10})
+(comment
+
+  (history {:symbol "AAPL"
+            :interval "daily"
+            :period 10})
 
 
-   (history {:symbol "SIL" ; SIL - ETF
-             :interval "daily"
-             :period 1
-             :type "ETF" ; Can be stocks, ETFs forex, futures.
-             :timezone "UTC"
-             :splitadjusted 1})
+  (history {:symbol "SIL" ; SIL - ETF
+            :interval "daily"
+            :period 1
+            :type "ETF" ; Can be stocks, ETFs forex, futures.
+            :timezone "UTC"
+            :splitadjusted 1})
 
    ; futures
    ; http://www.kibot.com/historical_data/Futures_Historical_Tick_with_Bid_Ask_Data.aspx
 
-   (history {:symbol "SIL" ; SIL - FUTURE
-             :type "futures" ; Can be stocks, ETFs forex, futures.
-             :interval "daily"
-             :period 1
-             :timezone "UTC"
-             :splitadjusted 1})
-   
-(history {:symbol "SIL" ; SIL - FUTURE
-          :type "futures" ; Can be stocks, ETFs forex, futures.
-          :interval "daily"
-          :period 1
-          :timezone "UTC"
-          :splitadjusted 1})
+  (history {:symbol "SIL" ; SIL - FUTURE
+            :type "futures" ; Can be stocks, ETFs forex, futures.
+            :interval "daily"
+            :period 1
+            :timezone "UTC"
+            :splitadjusted 1})
 
-   
-   (history {:symbol "SIL" ; SIL - FUTURE
-             :type "futures" ; Can be stocks, ETFs forex, futures.
-             :interval "daily"
-             :startdate "2023-09-01"
-             :timezone "UTC"
-             :splitadjusted 1})
+  (history {:symbol "SIL" ; SIL - FUTURE
+            :type "futures" ; Can be stocks, ETFs forex, futures.
+            :interval "daily"
+            :period 1
+            :timezone "UTC"
+            :splitadjusted 1})
 
-   (history {:type "forex", 
-             :symbol "EURUSD", 
-             :startdate "2023-09-01", 
-             :interval "daily", 
-             :timezone "UTC", 
-             :splitadjusted 1})
+
+  (history {:symbol "SIL" ; SIL - FUTURE
+            :type "futures" ; Can be stocks, ETFs forex, futures.
+            :interval "daily"
+            :startdate "2023-09-01"
+            :timezone "UTC"
+            :splitadjusted 1})
+
+  (history {:type "forex"
+            :symbol "EURUSD"
+            :startdate "2023-09-01"
+            :interval "daily"
+            :timezone "UTC"})
    ;; => "405 Data Not Found.\r\nNo data found for the specified period for EURUSD."
 
-   
-   
+  (history {:symbol "JY"
+            :type "futures" ; Can be stocks, ETFs forex, futures.
+            :interval "daily" ; 5 ; 5 minute bars
+            :period 1 ; number of days going back
+            :timezone "UTC"})
+
+  (history {:symbol "JY"
+            :type "futures" ; Can be stocks, ETFs forex, futures.
+            :interval "1" ; 1 ; 5 ; 5 minute bars
+            :period 1 ; number of days going back
+            :timezone "UTC"})
 
 
-   (-> (slurp "../resources/symbollist/futures-kibot.edn")
-       (edn/read-string)
-       count)
+  (history {:type "forex",
+            :symbol "EURUSD",
+             ;:startdate "2023-09-01",
+            :period 1
+            :interval 1 ; "daily"
+            :timezone "UTC"})
+
+
+
+
+
+  (-> (slurp "../resources/symbollist/futures-kibot.edn")
+      (edn/read-string)
+      count)
    ;; => 83
-  
+
 
 
 
@@ -237,10 +262,10 @@
 
 
 
-(comment 
-  
- 
-  
+(comment
+
+
+
   ;
   )
 
