@@ -14,8 +14,10 @@
       nil)))
 
 
-(defn calc-realtime-symbol [fxcm-last-price {:keys [symbol close atr sentiment-signal pivots] :as core}]
-  (let [price (fxcm-last-price symbol)
+(defn calc-realtime-symbol [fxcm-data-for-symbol {:keys [symbol close atr sentiment-signal pivots] :as core}]
+  (let [fxcm (fxcm-data-for-symbol symbol)
+        price (:Bid fxcm)
+        time (:Time fxcm)
         change (when (and price close)
                  (- price close))
         spike-atr-min-prct (:spike-atr-min-prct settings)
@@ -52,6 +54,7 @@
     ;(println "pivot max pip distance: " pivot-max-pip-distance)
     (assoc core
            :price price
+           :time time
            :change change
            :change-atr-prct change-atr-prct
            :spike-signal spike-signal
@@ -62,22 +65,22 @@
            :pivot-short pivot-short)))
 
 
-(defn calc-realtime [get-core fxcm-last-price]
-  (map #(calc-realtime-symbol fxcm-last-price %) (get-core)))
+(defn calc-realtime [get-core fxcm-data-for-symbol]
+  (map #(calc-realtime-symbol fxcm-data-for-symbol %) (get-core)))
 
 
 (comment
 
-  (require '[juan.app :refer [get-core fxcm-last-price]])
+  (require '[juan.app :refer [get-core fxcm-data-for-symbol]])
   (get-core)
-  (fxcm-last-price "EURNOK")
+  (fxcm-data-for-symbol "EURNOK")
 
-  (calc-realtime get-core fxcm-last-price)
+  (calc-realtime get-core fxcm-data-for-symbol)
 
   (require '[clojure.pprint :refer [print-table]])
 
-  (->> (calc-realtime get-core fxcm-last-price)
-       (print-table [:symbol :close :change-atr-prct
+  (->> (calc-realtime get-core fxcm-data-for-symbol)
+       (print-table [:symbol :close :time :change-atr-prct
                      :spike-signal :sentiment-signal :setup-signal :pivot-signal]))
 
 

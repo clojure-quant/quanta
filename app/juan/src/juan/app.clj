@@ -19,6 +19,10 @@
       (into {})
       (reset! fxcm-dict)))
 
+(defn fxcm-data-for-symbol [s]
+  (get @fxcm-dict s))
+      
+
 (defn fxcm-last-price [s]
   (when-let [data (get @fxcm-dict s)]
     (:Bid data)))
@@ -52,7 +56,7 @@
 (defonce realtime-seq (atom []))
 
 (defn calculate-realtime []
-  (->> (calc-realtime get-core fxcm-last-price)
+  (->> (calc-realtime get-core fxcm-data-for-symbol)
        (reset! realtime-seq)))
 
 (defn get-realtime []
@@ -80,7 +84,8 @@
   
   (refresh-fxcm-dict)
   (fxcm-last-price "AUDJPY")
-
+  (fxcm-data-for-symbol "AUDJPY")
+  
   (refresh-sentiment-dict)
   (get-sentiment "EURNOK")
 

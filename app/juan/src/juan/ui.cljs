@@ -4,6 +4,7 @@
    [re-frame.core :as rf]
    [goog.string]
    [spaces]
+   [tick.goldly :refer [dt-format]]
    [rtable.rtable :refer [rtable]]))
 
 (defonce juan-table (r/atom []))
@@ -35,6 +36,26 @@
     (if (string? nr)
       nr
       (goog.string/format "%.1f" nr))))
+
+(defn dt-yyyymmdd [dt]
+  ;(println "dt-yyyymmdd: " dt)
+  (if (nil? dt)
+    ""
+    (if (string? dt)
+      dt
+      (dt-format "YYYY-MM-dd" dt)
+      ;(str dt)
+      )))
+
+(defn dt-yyyymmdd-hhmm [dt]
+  ;(println "dt-yyyymmdd: " dt)
+  (if (nil? dt)
+    ""
+    (if (string? dt)
+      dt
+      (dt-format "YYYY-MM-dd HH:mm" dt)
+      ;(str dt)
+      )))
 
 (defn format-signal [s]
   (println "format-signal: " (pr-str s))
@@ -71,9 +92,10 @@
                      :border "3px solid green"}}
      [{:path :symbol :header "Symbol" :format format-symbol}
       {:path :close :header "PClose"}
-      {:path :price :header "PCurrent"
-     ;:format icon
-       }
+      {:path :close-dt :header "PClose" :format dt-yyyymmdd}
+      
+      {:path :price :header "PCurrent"}
+      {:path :time :header "PTime"}
       {:path :change :header "chg" :format fmt-digits}
       {:path :change-atr-prct :header "chg-atr%" :format fmt-0digits}
       {:path :sentiment-long-prct :header "SentLong%"}
@@ -132,7 +154,7 @@
                (->> (filter #(= s (:symbol %)) @juan-table)
                     first))
         pivots (when data
-                 (-> data :pivots pivot-map->table))
+                 (->> data :pivots pivot-map->table (sort-by :price) reverse))
         data-no-pivots (when data (dissoc data :pivots))]
     [:div
      (if s

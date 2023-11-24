@@ -25,7 +25,7 @@
    ; usd pairs emerging   
    ;{:fx "BRLUSD" :future "BR"} ; no sentiment numbers
    {:fx "USDMXN" :future "PX" :pip 0.01} 
-   {:fx "USDRUB" :future "RU" :pip 0.1} 
+   ;{:fx "USDRUB" :future "RU" :pip 0.1} ; no fxcm data
    {:fx "USDZAR" :future "RA" :pip 0.01} 
    ; eur pairs
    {:fx "EURAUD" :future "EAD" :pip 0.001}
