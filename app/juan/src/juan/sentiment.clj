@@ -1,9 +1,18 @@
 (ns juan.sentiment
   (:require
+   [taoensso.timbre :as timbre :refer [info warn error]]
    [clojure.string :as str]
    [clj-http.client :as http]
    [hickory.core :as hc]
-   [hickory.select :as s]))
+   [hickory.select :as s]
+   [ring.util.response :as response]
+   [ring.middleware.multipart-params :refer [wrap-multipart-params]]
+   [modular.webserver.middleware.api :refer [wrap-api-handler]]
+    [ring.util.request :refer  [body-string]]
+   ;[modular.webserver.middleware.cors :refer [wrap-allow-cross-origin]]
+   [ring.middleware.cors :refer [wrap-cors]]
+   ))
+
 
 ;; download 
 
@@ -120,12 +129,33 @@
   (let [s (calc-sentiment data)]
     (into {} (map (juxt :symbol identity) s))))
 
+(defn sentiment-cookies [{:keys [query-params form-params params] :as req}]
+  (let [s (body-string req)]
+   (info "sentiment cookies: " s)
+   (info "sentiment form-params: " form-params)
+   (info "req: " req)
+   (response/content-type
+       {:status 200
+        :body "<html> hi </html"}
+       "text/html")))
+
+(def sentiment-cookies-wrapped 
+  (-> sentiment-cookies
+      (wrap-cors :access-control-allow-origin [#"http://localhost:8080"]
+                 :access-control-allow-methods [:get :put :post :delete])
+      (wrap-multipart-params)
+      (wrap-api-handler)))
+
 
 (comment
 
   (-> (http/get "https://www.myfxbook.com/community/outlook"
                 {:accept :html})
+
+
       (:body))
+
+
     
   (download-sentiment)
 

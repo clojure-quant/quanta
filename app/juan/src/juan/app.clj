@@ -1,27 +1,29 @@
 (ns juan.app
-  (:require 
-     [juan.data :refer [settings]]
-     [juan.fxcm :as fxcm]
-     [juan.sentiment :as sentiment]
-     [juan.series :as series]
-     [juan.core :refer [calc-core]]
-     [juan.realtime :refer [calc-realtime]]
-   ))
+  (:require
+   [taoensso.timbre :refer [info warn error]]
+   [juan.data :refer [settings]]
+   [juan.fxcm :as fxcm]
+   [juan.sentiment :as sentiment]
+   [juan.series :as series]
+   [juan.core :refer [calc-core]]
+   [juan.realtime :refer [calc-realtime]]))
 
 ;; fxcm 
 
 (defonce fxcm-dict (atom {}))
 
 (defn refresh-fxcm-dict []
+  (info "fxcm data refreshing ..")
   (->> (fxcm/fxcm-download)
-      fxcm/fxcm-parse  
-      (map (juxt :Symbol identity))
-      (into {})
-      (reset! fxcm-dict)))
+       fxcm/fxcm-parse
+       (map (juxt :Symbol identity))
+       (into {})
+       (reset! fxcm-dict))
+  (info "fxcm data refresh finished!"))
 
 (defn fxcm-data-for-symbol [s]
   (get @fxcm-dict s))
-      
+
 
 (defn fxcm-last-price [s]
   (when-let [data (get @fxcm-dict s)]
@@ -32,9 +34,12 @@
 (defonce sentiment-dict (atom {}))
 
 (defn refresh-sentiment-dict []
+  (info "sentiment data refresh ..")
   (->> (sentiment/download-sentiment)
        (sentiment/sentiment-dict)
-       (reset! sentiment-dict)))
+       (reset! sentiment-dict))
+  (info "sentiment data refresh finished!")
+  )
 
 (defn get-sentiment [s]
   (get @sentiment-dict s))
@@ -49,7 +54,7 @@
        (reset! core-seq)))
 
 (defn get-core []
-  @core-seq )
+  @core-seq)
 
 ;; realtime 
 
@@ -71,21 +76,19 @@
 
 (defn task-hour [& args]
   (refresh-sentiment-dict)
-  (refresh-core)
-  )
+  (refresh-core))
 
 (defn task-minute [& args]
   (refresh-fxcm-dict)
-  (calculate-realtime)
-  )
+  (calculate-realtime))
 
 
-(comment 
-  
+(comment
+
   (refresh-fxcm-dict)
   (fxcm-last-price "AUDJPY")
   (fxcm-data-for-symbol "AUDJPY")
-  
+
   (refresh-sentiment-dict)
   (get-sentiment "EURNOK")
 
@@ -98,9 +101,9 @@
   (task-day)
   (task-hour)
   (task-minute)
-  
 
-  
-  
+
+
+
  ; 
   )

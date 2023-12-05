@@ -1,0 +1,10 @@
+[{"domain":"www.myfxbook.com",
+  "hostOnly":true,
+  "httpOnly":true,
+  "name":"JSESSIONID",
+  "path":"/",
+  "sameSite":"unspecified",
+  "secure":true,
+  "session":true,
+  "storeId":"0",
+  "value":"9228F3A0DC8EF903A86120C00771D34A"}]

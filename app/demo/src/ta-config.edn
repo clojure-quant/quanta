@@ -28,7 +28,10 @@
                                   "layout1" demo.goldly.page.test.layout/page-layout-1
                                   "layout2" demo.goldly.page.test.layout/page-layout-2
                                   }}
-                   :api {"arrow" :dataset/arrow}}}
+                   :api {"arrow" :dataset/arrow
+                         "sentiment" juan.sentiment/sentiment-cookies-wrapped
+                         
+                         }}}
 
  :reval {:rdocument  {:storage-root "../../output/rdocument/"
                       :url-root "/api/rdocument/file/"}

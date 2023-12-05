@@ -1,0 +1,20 @@
+{:paths ["src"
+         ;"classes"
+         ]
+ :deps {org.clojure/clojure  {:mvn/version "1.11.1"}
+        
+        ;;
+        }
+ :aliases
+ {:outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}
+                          com.fzakaria/slf4j-timbre {:mvn/version "0.4.0"}}
+             :main-opts ["-m" "antq.core"]}
+  :cljfmt {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
+           :main-opts ["-m" "cljfmt.main"
+                       "--indents" "cljfmt.edn"]}
+
+
+
+ 
+;
+  }}

@@ -11,18 +11,17 @@
     ;  :ns-require {:start (modular.require/require-namespaces
     ;                      (:ns-clj (deref (clip/ref :config))))}
 
-  
-  :symbol-lists {:start (ta.warehouse.symbollist/add-lists-to-db)
-                 }
+
+  :symbol-lists {:start (ta.warehouse.symbollist/add-lists-to-db)}
 
   :alphavantage {:start (ta.data.api.alphavantage/set-key!
                          (:alphavantage (clip/ref :secrets)))}
-  
+
   :quandl {:start (ta.data.api.quandl/set-key!
-                  (:quandl (clip/ref :secrets)))}
+                   (:quandl (clip/ref :secrets)))}
 
   :kibot {:start (ta.data.api.kibot/set-key!
-                   (:kibot (clip/ref :secrets)))}
+                  (:kibot (clip/ref :secrets)))}
 
 ; goldly service returns {:ns-clj :webly           ; this are used to start clj-require and webly
   ;                         :ws-watch :cljs-watch}   ; this is used when stopping goldly
@@ -52,19 +51,18 @@
                   :middleware cider.nrepl.middleware/cider-middleware
                   :handler cider.nrepl/cider-nrepl-handler)
           :stop (.close this)}
-  
+
   :scheduler {:start (demo.env.scheduler/start!
                       (clip/ref :timbre))
               :stop (demo.env.scheduler/stop! this)}
-  
-   :juan  {:start (juan.scheduler/start!
-                    (clip/ref :timbre)
-                    (clip/ref :kibot) ; make sure kibot is configured first.
-                   (clip/ref :ns-require) ; make sure kibot is configured first.
-                   (clip/ref :goldly)
-                   (clip/ref :symbol-lists)
-                   )
-           :stop (juan.scheduler/stop! this)}
+
+  :juan  {:start (juan.scheduler/start!
+                  (clip/ref :timbre)
+                  (clip/ref :kibot) ; make sure kibot is configured first.
+                  (clip/ref :ns-require) ; make sure kibot is configured first.
+                  (clip/ref :goldly)
+                  (clip/ref :symbol-lists))
+          :stop (juan.scheduler/stop! this)}
 
 ;
   }}

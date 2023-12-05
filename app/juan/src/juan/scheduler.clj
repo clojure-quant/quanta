@@ -86,10 +86,10 @@
   (info "Juan Start .. ")
   ; awb99: we dont download series; as this could take a long time. Worst case we use out of day series
   ; awb99: had to downlaod series, as otherwise calc errors woudl fuck up quant site.
-  (app/task-day)
-  (app/task-hour)
-  (app/task-minute)
-  (start-pusher!)
+  ;(app/task-day)
+  ;(app/task-hour)
+  ;(app/task-minute)
+  ;(start-pusher!)
   (info "Starting Juan Chime Scheduler.. ")
   (let [chimes [(chime/chime-at (daily-at-hour 20) app/task-day {:on-finished log-finished :error-handler log-error})
                 (chime/chime-at (every-hour) app/task-hour {:on-finished log-finished :error-handler log-error})

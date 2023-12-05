@@ -67,8 +67,8 @@
   (let [result (http/get url
                          {:accept :json
                           :query-params query-params
-                          :socket-timeout 3000
-                          :connection-timeout 3000})
+                          :socket-timeout 30000
+                          :connection-timeout 30000})
         body (:body result)
         error (extract-error body)]
     ;(info "status:" (:status result))  
@@ -207,13 +207,24 @@
             :startdate "2023-09-01"
             :interval "daily"
             :timezone "UTC"})
-   ;; => "405 Data Not Found.\r\nNo data found for the specified period for EURUSD."
+
+   (history {:type "forex",
+            :symbol "EURUSD",
+               ;:startdate "2023-09-01",
+            :period 1
+            :interval 1 ; "daily"
+            :timezone "UTC"})
 
   (history {:symbol "JY"
             :type "futures" ; Can be stocks, ETFs forex, futures.
             :interval "daily" ; 5 ; 5 minute bars
-            :period 1 ; number of days going back
+            :period 5 ; number of days going back
             :timezone "UTC"})
+  ;; the following error happens if we want 1 day back, but 1 day back is a holiday.
+  ;; => {:error {:code "405", :title "Data Not Found.", :message "No data found for the specified period for JY."}}
+  ;; => "11/20/2023,0.0067125,0.006782,0.0066965,0.006772,245135\r\n11/21/2023,0.0067695,0.0068235,0.006757,0.0067695,234151\r\n11/22/2023,0.006769,0.0067805,0.0067015,0.006709,219589\r\n"
+
+  
 
   (history {:symbol "JY"
             :type "futures" ; Can be stocks, ETFs forex, futures.
@@ -222,12 +233,7 @@
             :timezone "UTC"})
 
 
-  (history {:type "forex",
-            :symbol "EURUSD",
-             ;:startdate "2023-09-01",
-            :period 1
-            :interval 1 ; "daily"
-            :timezone "UTC"})
+ 
 
 
 

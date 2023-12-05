@@ -1,5 +1,15 @@
 
 
+juan.scheduler:79] - exception running scheduled chime-fn:  #error {                       
+ :cause "clj-http: status 403"  
+We are doing a quick upgrade! This usually takes no more than 10 minutes, so please come ba
+ck later.<br/>\nIn case of an urgent issue, we are reachable as always at
+
+kibot 1 min link:
+12/01/2023,12:10,0.66614,0.66635,0.66602,0.66634,204
+panama time: 14:35
+=> delay is 25 minutes.
+
 
 ; H24  MARCH 2024
 ; Z23 DECEMBER 2023
