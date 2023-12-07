@@ -6,7 +6,7 @@
    [ta.tickerplant.calendar :as c]))
 
 (defn- create-bar! [db symbol]
-  (let [bar {:symbol symbol}]
+  (let [bar {:symbol symbol :epoch 1}]
     (swap! db assoc symbol bar)
     bar))
 
@@ -20,9 +20,10 @@
   (swap! db assoc symbol bar))
 
 (defn- empty-bar [db {:keys [symbol] :as bar}]
-  (swap! db dissoc bar :open :high :low :close :volume :ticks))
+  (swap! db update-in [symbol] dissoc :open :high :low :close :volume :ticks)  
+  (swap! db update-in [symbol :epoch] inc))
 
-(defn- aggregate-tick [{:keys [open high low _close volume ticks] :as bar} {:keys [price size]}]
+(defn- aggregate-tick [{:keys [open high low _close volume ticks epoch] :as bar} {:keys [price size]}]
   (merge bar
          (if (empty-bar? bar)
            {:open price
@@ -36,8 +37,7 @@
             :low (min low price)
             :close price
             :volume (+ volume size)
-            :ticks (inc ticks)}
-          )))
+            :ticks (inc ticks)})))
 
 
 (defn process-tick [{:keys [db] :as state} {:keys [symbol] :as tick}]
@@ -69,7 +69,7 @@
           symbols (map :symbol bars)]
     (info "bar-generator finish bar: " time "# instruments: " (count bars) "# bars: " (count bars-with-data))
     (on-bars-finished (current-bars db))
-    (map #(switch-bar db %) symbols))))
+    (doall (map #(switch-bar db %) symbols)))))
 
 (defn- log-finished []
   (warn "bar-generator chime Schedule finished!"))
