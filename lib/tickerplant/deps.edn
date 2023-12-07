@@ -2,7 +2,8 @@
          ;"classes"
          ]
  :deps {org.clojure/clojure  {:mvn/version "1.11.1"}
-        
+        com.taoensso/timbre {:mvn/version "6.2.2"} ; clj/cljs logging
+        jarohen/chime {:mvn/version "0.3.3"} ; scheduler
         ;;
         }
  :aliases

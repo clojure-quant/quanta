@@ -63,6 +63,16 @@
                   (clip/ref :goldly)
                   (clip/ref :symbol-lists))
           :stop (juan.scheduler/stop! this)}
+  
+  :bargenerator {:start (ta.tickerplant.bar-generator/bargenerator-start
+                        {} ta.tickerplant.bar-generator/print-finished-bars)
+                :stop (ta.tickerplant.bar-generator/bargenerator-stop this)
+                }  
+
+  :quote-harvester {:start (juan.fix/start-harvesting)}
+                       
+
+  
 
 ;
   }}
