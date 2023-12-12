@@ -14,6 +14,9 @@
 ;; guix install filezilla  (ftp client)
 ;; .exe files are rar files.
 ;; unrar e  /home/florian/20231120.rar
+;; op<path>      Set the output path for extracted files
+;;  unrar e -op./csv/stock ./stock/20230711.exe
+
 ;; guix install unrar
 ;; rar file contains a lot of txt files
 
@@ -263,16 +266,11 @@
       {:error error}
       body)
     ;  (throw (ex-info (:retMsg result) result))
-    ))
-
-
-
-
-(comment
-
-
-
-  ;
+    )
+  
+;  
   )
+
+
 
 
