@@ -72,6 +72,9 @@
   ;:quote-harvester {:start (juan.fix/start-harvesting)}
                        
 
+:duckdb {:start (ta.warehouse.duckdb/duckdb-start "../../output/duckdb/bars")
+         :stop (ta.warehouse.duckdb/duckdb-stop this)
+         }
   
 
 ;

@@ -69,7 +69,7 @@
 ;; AXIS
 
 (def ohlc-height 600)
-(def other-height 200)
+(def other-height 10) 
 
 (def default-axis
   [{:resize {:enabled true}

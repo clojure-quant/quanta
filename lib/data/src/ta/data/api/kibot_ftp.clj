@@ -10,6 +10,9 @@
    :user "hoertlehner@gmail.com"
    :password "282m2fhgh"})
 
+;; categories and intervals 
+;; reflect how ftp://ftp.kibot.com is organized
+
 (def categories 
   {:etf "ETFs"
    :stock "Stocks"
@@ -45,6 +48,7 @@
                  :password (:password config)
                  :local-data-connection-mode :active
                  :control-keep-alive-reply-timeout-ms 7000
+                 :default-timeout-ms 30000
                  ]
     ;(ftp/client-get client "20231208.exe" "20231207.exe")
     (let [file-names (ftp/client-file-names client)]
@@ -58,10 +62,15 @@
                  :username (:user config)
                  :password (:password config)
                  :local-data-connection-mode :active
-                 :file-type :binary]
-    (let [file-local (str (local-dir category interval :rar) file-remote)]
-      (println "downloading " file-remote " ==> " file-local)
-       (ftp/client-get client file-remote file-local))))
+                 :file-type :binary
+                 :default-timeout-ms 30000]
+    (let [file-local (str (local-dir category interval :rar) file-remote)
+          _ (println "downloading " file-remote " ==> " file-local)
+          download-result (ftp/client-get client file-remote file-local)
+          ]
+        (println "rar download result: " download-result)
+        download-result
+       )))
 
 (defn download-day [category interval day]
   (download-file category interval (str day ".exe")))

@@ -60,7 +60,7 @@ highest-close
 
 (def sma-cross-options {:w :crypto
                         :symbol "ETHUSD"
-                        :freqzency "D"
+                        :frequency "D"
                         :sma-length-st  4  ; (1h = 4* 15 min)
                         :sma-length-lt 24  ; (6h = 24* 15 min)
                         })

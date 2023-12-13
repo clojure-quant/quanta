@@ -60,7 +60,12 @@
 
    ;; task
   (download-missing-files :stock :daily-unadjusted)
+  (download-missing-files :etf :daily-unadjusted)
+
+  ; etf rar problems
+  ; 20230626.exe
   
+
   
 ;  
   )
