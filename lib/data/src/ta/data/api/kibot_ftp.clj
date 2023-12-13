@@ -16,27 +16,31 @@
    :future "Futures"
    :fx "Forex"})
 
-(defn local-dir-category [category]
-  (let [dir (str (:local-dir config) (name category) "/")]
+(def intervals
+  {:daily "Daily"
+   :daily-unadjusted "Daily%20-%20Unadjusted"
+   :weekly "Weekly"
+   :monthly "Monthly"
+   })
+
+
+(defn local-dir [category interval type]
+  (let [dir (str (:local-dir config) (name category) "/" (name interval) "/" (name type) "/")]
     (fs/create-dirs dir)
     dir))
 
-(defn rar-directory-category [category]
-  (str (:local-dir config) "rar/" (name category))
-  
-  )
 
-(defn existing-rar-files [category]
-  (->> (fs/list-dir (rar-directory-category category)  "**{.exe}")
+(defn existing-rar-files [category interval]
+  (->> (fs/list-dir (local-dir category interval :rar)  "**{.exe}")
        (map fs/file-name)))
 
-(defn ftp-path-category [category]
-  (str "/Updates/All%20" (category categories) "/Daily"))
+(defn ftp-path-category [category interval]
+  (str "/Updates/All%20" (category categories) "/" (interval intervals)))
 
 
-(defn download-overview [category]
+(defn download-overview [category interval]
   (ftp/with-ftp [client ;(str "ftp://ftp.kibot.com/Updates/All%20Stocks/Daily")
-                 (str "ftp://ftp.kibot.com" (ftp-path-category category))
+                 (str "ftp://ftp.kibot.com" (ftp-path-category category interval))
                  :username (:user config)
                  :password (:password config)
                  :local-data-connection-mode :active
@@ -48,77 +52,62 @@
       file-names)))
 
 
-(defn download-file [category file-remote]
+(defn download-file [category interval file-remote]
   (ftp/with-ftp [client ;(str "ftp://ftp.kibot.com/Updates/All%20Stocks/Daily")
-                        (str "ftp://ftp.kibot.com" (ftp-path-category category)) 
+                        (str "ftp://ftp.kibot.com" (ftp-path-category category interval)) 
                  :username (:user config)
                  :password (:password config)
                  :local-data-connection-mode :active
                  :file-type :binary]
-    (let [file-local (str (local-dir-category category) file-remote)]
+    (let [file-local (str (local-dir category interval :rar) file-remote)]
       (println "downloading " file-remote " ==> " file-local)
        (ftp/client-get client file-remote file-local))))
 
-(defn download-day [category day]
-  (download-file category (str day ".exe")))
+(defn download-day [category interval day]
+  (download-file category interval (str day ".exe")))
 
-(defn files-missing-locally [category]
-  (let [remote (->> category download-overview (into #{}))
-        local (->> category existing-rar-files (into #{}))
-        missing (set/difference remote local)]
-    (into [] missing)))
+(defn files-missing-locally [category interval]
+  (let [remote (->> (download-overview category interval)  (into #{}))
+        local (->> (existing-rar-files category interval) (into #{}))
+        missing (set/difference remote local)
+        missing (into [] missing)]
+    (sort missing)
+    
+    ))
 
 ;; rar extraction
 
-(defn local-csv-dir-category [category]
-  (let [dir (str (:local-dir config) "csv/" (name category) "/")]
-    (fs/create-dirs dir)
-    dir))
-
-(defn extract-rar [category day]
-  (let [rar-filename (str (local-dir-category category) day ".exe")
-        path-csv (str (local-csv-dir-category category) day "/")]
+(defn extract-rar [category interval day]
+  (let [rar-filename (str (local-dir category interval :rar) day ".exe")
+        path-csv (str (local-dir category interval :csv) day "/")]
     (println "extracting rar " rar-filename " to : " path-csv)
     (fs/create-dirs path-csv)
     (shell "unrar" "e" (str "-op" path-csv) rar-filename)))
 
-;; task
-
-(defn download-and-extract [category file-name]
-  (download-file category file-name)
-  (extract-rar category (subs file-name 0 (- (count file-name) 4)))
-  )
-
-(defn download-missing-files [category]
-  (let [missing-files (files-missing-locally category)]
-    ;(doall (map #(download-file category %) missing-files))
-    (doall (map #(download-and-extract category %) missing-files))
-    ))
-
-;; 6 months of daily files
-;; each day is 1MB - 26MB
-;; circa 200 files * 5MB = 1 GIG compressed.
+;
 
 (comment 
   
-  (local-dir-category :stock)
+  (local-dir :stock :daily :rar)
+  (local-dir :stock :daily-unadjusted :csv)
+  (existing-rar-files :stock :daily)
+  
+  (ftp-path-category :stock :daily)
+  (ftp-path-category :stock :daily-unadjusted)
+  (download-overview :stock :daily)
+  
 
-  (download-overview :stock)
-  (rar-directory-category :stock)
-  (existing-rar-files :stock)
+  (download-day :stock :daily "20231207")
+  (download-day :stock :daily "20231208")
+  (download-day :stock :daily "20231206")
+ 
 
-  (download-day :stock "20231207")
-  (download-day :stock "20231208")
-  (download-day :stock "20231206")
+  (extract-rar :stock :daily "20231207")
 
-  (ftp-path-category :stock)
-  (existing-rar-files :stock)
+  (count (files-missing-locally :stock :daily))
+  (count (files-missing-locally :stock :daily-unadjusted))
 
-  (local-csv-dir-category :stock)
-  (extract-rar :stock "20231207")
-
-  (files-missing-locally :stock)
-  (download-missing-files :stock)
+  
 
   
   ;

@@ -6,22 +6,26 @@
     [tablecloth.api :as tc]
     [ta.data.api.kibot-ftp :as kibot]))
 
-(defn csv-dir-day [category day]
-  (str (kibot/local-csv-dir-category category) day))
+;; csv file => dataset
 
+(defn filename->day [file-name]
+  (subs file-name 0 (- (count file-name) 4)))
 
-(defn csv-assets-day [category day]
-  (let [dir (csv-dir-day category day)]
+(defn csv-dir-day [category interval day]
+  (str (kibot/local-dir category interval :csv) day))
+
+(defn csv-assets-day [category interval day]
+  (let [dir (csv-dir-day category interval day)]
     (->> (fs/list-dir dir "**{.txt}")
          (map fs/file-name)
          (remove #(= "adjusted_files.txt" %))
          (map #(subs % 0 (- (count %) 4)))
          )))
 
-(defn csv-day-asset->dataset [category day asset]
+(defn csv-day-asset->dataset [category interval day asset]
   (let [; csv/stock/20230918/HUN.txt 
         ; 09/18/2023,25.68,26.03,25.24,25.25,2003743
-        filename (str (csv-dir-day category day) "/" asset ".txt")]
+        filename (str (csv-dir-day category interval day) "/" asset ".txt")]
   (-> (tds/->dataset (io/input-stream filename)
                      {:file-type :csv
                       :header-row? false
@@ -37,47 +41,45 @@
       )))
 
 
-(defn create-asset-aggregator [category day]
+(defn create-asset-aggregator [category interval day]
   (fn [combined-ds asset] 
-    (let [next-ds (csv-day-asset->dataset category day asset)]
+    (let [next-ds (csv-day-asset->dataset category interval day asset)]
       ;(println "next-ds: " next-ds)
       (if combined-ds
        (tc/concat combined-ds next-ds)
         next-ds))))
    
 
-(defn create-ds [category day]
-   (let [assets (csv-assets-day category day)
+(defn create-ds [category interval day]
+   (let [assets (csv-assets-day category interval day)
          ;assets (take 1500 assets)
-         agg (create-asset-aggregator category day)]
+         agg (create-asset-aggregator category interval day)]
      ;(println "assets: " assets)
      (reduce agg nil assets)))
 
-(defn local-dir-ds [category]
-  (let [dir (str (:local-dir kibot/config) "ds/" (name category) "/")]
-    (fs/create-dirs dir)
-    dir))
-
-(defn existing-rar-days [category]
-  (let [files (kibot/existing-rar-files category)]
+(defn existing-rar-days [category interval]
+  (let [files (kibot/existing-rar-files category interval)]
     (map #(subs % 0 (- (count %) 4)) files)))
 
-(comment 
-  (csv-dir-day :stock "20230918")
 
-  (->> (csv-assets-day :stock "20230918")
+
+
+
+(comment 
+  (->> (csv-assets-day :stock :daily "20230918")
       (take 152)
       last
-      )
+       )
   
-  (->> (csv-day-asset->dataset :stock "20230918" "HUN")
+  (->> (csv-day-asset->dataset :stock :daily "20230918" "HUN")
        (tc/columns))
-  
-  (csv-day-asset->dataset :stock "20230918" "AEHL")
+  (csv-day-asset->dataset :stock :daily "20230918" "AEHL")
 
-  (create-ds :stock "20230918")
-  (local-dir-ds :stock)
-  (existing-rar-days :stock)
+  (create-ds :stock :daily "20230918")
+
+ 
+
+
  ; 
   )
 
