@@ -61,7 +61,11 @@
   (let [files (kibot/existing-rar-files category interval)]
     (map #(subs % 0 (- (count %) 4)) files)))
 
-
+(defn existing-ds-files [category interval]
+  (->> (fs/list-dir (kibot/local-dir category interval :ds)  "**{.nippy.gz}")
+       (map fs/file-name)
+       (map #(subs % 0 (- (count %) 9)))
+       ))
 
 
 
@@ -77,7 +81,7 @@
 
   (create-ds :stock :daily "20230918")
 
- 
+  (existing-ds-files :stock :daily-unadjusted)
 
 
  ; 

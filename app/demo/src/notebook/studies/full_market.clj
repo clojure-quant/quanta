@@ -1,11 +1,8 @@
 (ns notebook.studies.full-market
   (:require
-   [tablecloth.api :as tc]
-   [ta.warehouse :as wh]
    [ta.data.api.kibot-ftp :as kibot-raw]
    [ta.data.api-ds.kibot-ftp :as kibot-ds]
-   [ta.nippy :as nippy]
-   ))
+   [ta.nippy :as nippy]))
 
 ;; store one daily-ds
 
@@ -63,6 +60,7 @@
 
    ;; task
   (download-missing-files :stock :daily-unadjusted)
+  
   
 ;  
   )
