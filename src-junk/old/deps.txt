@@ -1,32 +1,5 @@
 
+    [capacitor "0.6.0"]                        ; InfluxDB
+    [clj-statsd "0.4.0"]                       ; statsd reporting
 
-                 ; Database
-                 [nio "1.0.3"]                              ; SQ-Lite
-                 [org.clojure/java.jdbc "0.7.5"]            ; SQ-Lite
-                 [org.xerial/sqlite-jdbc "3.7.2"]           ; SQ-Lite
-                 [com.novemberain/monger "3.1.0" :exclusions [com.google.guava/guava]] ; mongodb
-                 [capacitor "0.6.0"]                        ; InfluxDB
-                 [clj-statsd "0.4.0"]                       ; statsd reporting
-
-               
-
-                 ;Data Science
-                 ;[tulos/bberg-sdk "3.6.1.0"]; Bloomberg
-      
-                 [incanter/incanter-core "1.9.3"]
-                 [incanter/incanter-charts "1.9.3"]
-               
-                 [clj-jgit "0.8.8"]
-                 
-csv parsing is slow.
-perhaps the following libraries have better performance?
-
-
-   [org.clojars.bmabey/csvlib "0.3.6"]
-   [ultra-csv "0.2.2"]
-   [semantic-csv "0.2.1-alpha1"]
-   [incanter/incanter-core "1.9.3"]
-   [incanter/incanter-charts "1.9.3"]
-
-   perhaps look at:
-   https://github.com/appliedsciencestudio/meta-csv
+       

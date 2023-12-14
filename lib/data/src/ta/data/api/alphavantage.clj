@@ -9,6 +9,7 @@
 
 ;; https://www.alphavantage.co/documentation/#
 ;; https://github.com/RomelTorres/alpha_vantage/issues/13
+;; https://github.com/prediqtiv/alpha-vantage-cookbook/blob/master/symbol-lists.md
 
 ; 5 API requests per minute
 ; 500 requests per day

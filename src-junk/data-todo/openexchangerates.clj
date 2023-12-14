@@ -1,3 +1,0 @@
-
-
-; https://openexchangerates.org/signup
