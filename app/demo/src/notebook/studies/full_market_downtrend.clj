@@ -86,7 +86,7 @@
    
    
 
-    (duck/append-dataset db ds)
+    (duck/append-bars db ds)
     (duck/get-bars db "MSFT")
     (duck/delete-bars db)
   
@@ -98,7 +98,7 @@
     (doall (map (fn [day]
                   ;(println "loading ds: " day)
                  (let [ds (load-ds-day :stock :daily-unadjusted day)]
-                   (duck/append-dataset db ds)))
+                   (duck/append-bars db ds)))
                 (kibot-ds/existing-ds-files :stock :daily-unadjusted)))
     
 

@@ -64,17 +64,20 @@
   ;                (clip/ref :symbol-lists))
   ;        :stop (juan.scheduler/stop! this)}
   
-  ;:bargenerator {:start (ta.tickerplant.bar-generator/bargenerator-start
-  ;                      {} ta.tickerplant.bar-generator/print-finished-bars)
-  ;              :stop (ta.tickerplant.bar-generator/bargenerator-stop this)
-  ;              }  
+  :duckdb {:start (ta.warehouse.duckdb/duckdb-start "../../output/duckdb/bars")
+           :stop (ta.warehouse.duckdb/duckdb-stop this)
+           :post-start ta.warehouse.duckdb/init-tables}
 
-  ;:quote-harvester {:start (juan.fix/start-harvesting)}
-                       
+  :bargenerator {:start (ta.tickerplant.bar-generator/bargenerator-start
+                         {} ; calendar
+                         ;ta.tickerplant.bar-generator/print-finished-bars
+                         (partial ta.warehouse.duckdb/append-bars (clip/ref :duckdb))
+                         )
+                 :stop (ta.tickerplant.bar-generator/bargenerator-stop this)
+                } 
 
-:duckdb {:start (ta.warehouse.duckdb/duckdb-start "../../output/duckdb/bars")
-         :stop (ta.warehouse.duckdb/duckdb-stop this)
-         }
+  :quote-harvester {:start (juan.fix/start-harvesting (clip/ref :bargenerator))}
+  ;:quote-printer {:start (juan.fix/start-quote-printing (clip/ref :quote-harvester))}
   
 
 ;

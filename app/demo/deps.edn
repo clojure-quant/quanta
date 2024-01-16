@@ -17,7 +17,7 @@
         ta/astro {:local/root "../../app/astro" :deps/manifest :deps}
         ta/gann {:local/root "../../app/gann" :deps/manifest :deps}
         joseph/joseph {:local/root "../../app/joseph" :deps/manifest :deps}
-        ;juan/juan {:local/root "../../app/juan" :deps/manifest :deps}
+        juan/juan {:local/root "../../app/juan" :deps/manifest :deps}
         ;com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.1.0"}
         ;;
         }

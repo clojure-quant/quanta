@@ -1,27 +1,38 @@
 (ns ta.warehouse.duckdb
   (:require
+    [clojure.java.io :as java-io]
    [tablecloth.api :as tc]
-   [tmducken.duckdb :as duckdb]))
+   [tmducken.duckdb :as duckdb]
+   [tick.core :as tick]
+   ))
 
 ;; https://github.com/techascent/tmducken
 
+
+(defn- exists-db? [path]
+  (.exists (java-io/file path)))
+
 (defn duckdb-start [db-filename]
   (duckdb/initialize! {:duckdb-home "./binaries"})
-  (let [db (duckdb/open-db db-filename)
+  (let [new? (exists-db? db-filename)
+        db (duckdb/open-db db-filename)
         conn (duckdb/connect db)]
     {:db db
-     :conn conn}))
+     :conn conn
+     :new? new?
+     }))
 
 (defn duckdb-stop [{:keys [db conn] :as session}]
   (duckdb/disconnect conn))
 
 ;; work with duckdb
 
-(defn append-dataset
+(defn append-bars
   ([session ds]
-   (append-dataset session ds false))
+   (append-bars session ds false))
   ([session ds create-table?]
    (let [ds (tc/set-dataset-name ds "bars")]
+     (println "append-bars # " (tc/row-count ds))
      (when create-table?
        (duckdb/create-table! (:conn session) ds))
      (duckdb/insert-dataset! (:conn session) ds))))
@@ -46,6 +57,28 @@
 
  ;; CREATE INDEX s_idx ON films (revenue);
 
+
+(defn now []
+  (-> (tick/now)
+      ;(tick/date-time)
+      (tick/instant)
+      ))
+
+(def empty-ds 
+  (-> 
+    (tc/dataset [{:open 0.0 :high 0.0 :low 0.0 :close 0.0
+                  :volume 0 :symbol "000"
+                  :date (now)
+                  :epoch 0 :ticks 0}]) 
+     (tc/set-dataset-name "bars")
+   ))
+
+(defn init-tables [session]
+  (let [exists? (:new? session)]
+    (when (not exists?)
+      (println "init duck-db tables")    
+      (duckdb/create-table! (:conn session) empty-ds))))
+ 
 (comment
 
   (require '[tech.v3.dataset :as ds])
@@ -53,18 +86,35 @@
     (ds/->dataset "https://github.com/techascent/tech.ml.dataset/raw/master/test/data/stocks.csv"
                   {:key-fn keyword
                    :dataset-name :stocks}))
+  stocks
+  (tc/info stocks)
 
   (require '[modular.system])
-  (def session (:duckdb modular.system/system))
 
-  (get-bars session "MSFT")
+  (def db (:duckdb modular.system/system))
+  db
 
 
-  (duckdb/create-table! conn stocks)
+  (get-bars db "MSFT")
 
-  (duckdb/insert-dataset! conn stocks)
-  (ds/head (duckdb/sql->dataset conn "select * from stocks"))
-  (def stmt (duckdb/prepare conn "select * from stocks "))
+  (now)
+  empty-ds
+  (tc/info empty-ds)
+  (init-tables db)
+
+  (duckdb/create-table! (:conn db) empty-ds)
+  (duckdb/insert-dataset! (:conn db) empty-ds)
+    
+  (get-bars db "000")
+
+  (get-bars db "EUR/USD")
+
+  (exists-db?  "../../output/duckdb/bars")
+  
+
+  (duckdb/insert-dataset! db stocks)
+  (ds/head (duckdb/sql->dataset db "select * from stocks"))
+  (def stmt (duckdb/prepare db "select * from stocks "))
   (stmt)
 
   (def r (stmt))

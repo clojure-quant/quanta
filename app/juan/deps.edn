@@ -4,7 +4,7 @@
  :deps
  {org.clojure/clojure    {:mvn/version "1.11.1"}
   org.clj-commons/hickory {:mvn/version "0.7.3"}
-  io.github.clojure-quant/fix-engine {:git/sha "9c8f55051eb3ea8e1b2fd2a4d70b62ac9dbc5823"}
+  io.github.clojure-quant/fix-engine {:git/sha "d25efeefd2db73dee622e826ae86248f74f38273"}
   ta/tickerplant {:local/root "../../lib/tickerplant" :deps/manifest :deps}
   }
  :aliases

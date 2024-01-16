@@ -3,6 +3,8 @@
    [taoensso.timbre :as timbre :refer [info warn error]]
    [clojure.pprint :refer [print-table]]
    [chime.core :as chime]
+   [tick.core :as tick]
+   [tablecloth.api :as tc]
    [ta.tickerplant.calendar :as c]))
 
 (defn- create-bar! [db symbol]
@@ -62,13 +64,21 @@
       (empty-bar db bar))
     bar))
 
+
+
 (defn- make-on-bar-handler [db calendar on-bars-finished]
   (fn [time]
     (let [bars (current-bars db)
           bars-with-data (remove empty-bar? bars)
-          symbols (map :symbol bars)]
+          symbols (map :symbol bars)
+          ; | :symbol | :epoch |    :open |   :high |     :low |   :close | :volume | :ticks |
+          time (tick/instant time)
+          bar-seq (->> (current-bars db)
+                       (map #(assoc % :date time)))
+          bar-ds   (tc/dataset bar-seq)
+         ]
     (info "bar-generator finish bar: " time "# instruments: " (count bars) "# bars: " (count bars-with-data))
-    (on-bars-finished (current-bars db))
+    (on-bars-finished bar-ds)
     (doall (map #(switch-bar db %) symbols)))))
 
 (defn- log-finished []
@@ -101,9 +111,10 @@
 
 
   
-(defn print-finished-bars [bars]
+(defn print-finished-bars [ds-bars]
   (println "bars finished!")
-  (print-table bars))
+  (let [bars (tc/rows ds-bars :as-maps)]
+    (print-table bars)))
 
 (comment 
 
