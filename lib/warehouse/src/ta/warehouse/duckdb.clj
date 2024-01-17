@@ -108,6 +108,8 @@
   (get-bars db "000")
 
   (get-bars db "EUR/USD")
+  (get-bars db "USD/JPY")
+  
 
   (exists-db?  "../../output/duckdb/bars")
   
