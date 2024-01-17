@@ -1,7 +1,7 @@
 (ns ta.calendar.intraday
   (:require
    [tick.core :as t]
-   [ta.calendar.day :refer [day-closed? next-open prior-open]]
+   [ta.calendar.day :refer [day-closed? next-open prior-open prior-close]]
   ))
 
 (defn time-closed? [{:keys [open close] :as calendar} dt]
@@ -26,7 +26,7 @@
         day-prior (t/date dt-prior)]
     (if (or (day-closed? calendar day-prior)
             (time-closed? calendar dt-prior))
-      (prior-open calendar dt)
+      (prior-close calendar dt)
       dt-prior)))
 
 (comment 

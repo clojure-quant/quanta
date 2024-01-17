@@ -64,7 +64,10 @@
    (take 5 (calendar-seq :us :day))
    (take 5 (calendar-seq :eu :day))
    (take 30 (calendar-seq :us :day))
-  
+   (take 100 (calendar-seq :eu :h))
+   (take 100 (calendar-seq-prior :eu :h))
+
+
     (take 5 (calendar-seq :eu :h))
   
   (trailing-window :us :day 5)
