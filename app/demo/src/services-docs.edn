@@ -69,7 +69,8 @@
            :post-start ta.warehouse.duckdb/init-tables}
 
   :bargenerator {:start (ta.tickerplant.bar-generator/bargenerator-start
-                         {} ; calendar
+                         :us ; calendar
+                         :m ; minute bars
                          ;ta.tickerplant.bar-generator/print-finished-bars
                          (partial ta.warehouse.duckdb/append-bars (clip/ref :duckdb))
                          )

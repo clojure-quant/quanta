@@ -5,7 +5,8 @@
    [chime.core :as chime]
    [tick.core :as tick]
    [tablecloth.api :as tc]
-   [ta.tickerplant.calendar :as c]))
+   [ta.calendar.core :refer [calendar-seq-instant]]
+   ))
 
 (defn- create-bar! [db symbol]
   (let [bar {:symbol symbol :epoch 1}]
@@ -65,6 +66,10 @@
     bar))
 
 
+(defn print-finished-bars [ds-bars]
+  (let [bars (tc/rows ds-bars :as-maps)]
+    (print-table bars)))
+
 
 (defn- make-on-bar-handler [db calendar on-bars-finished]
   (fn [time]
@@ -78,7 +83,11 @@
           bar-ds   (tc/dataset bar-seq)
          ]
     (info "bar-generator finish bar: " time "# instruments: " (count bars) "# bars: " (count bars-with-data))
-    (on-bars-finished bar-ds)
+    (try 
+      (on-bars-finished bar-ds)  
+      (catch Exception ex
+         (error "Exception in saving new finished bars to duckdb!")
+         (print-finished-bars bar-ds)))
     (doall (map #(switch-bar db %) symbols)))))
 
 (defn- log-finished []
@@ -88,13 +97,13 @@
   (error "bar-generator chime exception: " ex)
   true)
 
-(defn bargenerator-start [calendar on-bars-finished]
-  (info "bargenerator-start calendar: " calendar)
-  (let [date-seq (c/date-seq calendar)
+(defn bargenerator-start [calendar-kw interval-kw on-bars-finished]
+  (info "bargenerator-start calendar: " calendar-kw "interval: " interval-kw)
+  (let [date-seq (calendar-seq-instant calendar-kw interval-kw)
         db (atom {})]
     {:db db
      :scheduler (chime/chime-at date-seq
-                                (make-on-bar-handler db calendar on-bars-finished)
+                                (make-on-bar-handler db calendar-kw on-bars-finished)
                                 {:on-finished log-finished :error-handler log-error})
      }))
 
@@ -107,14 +116,6 @@
 (defn bargenerator-stop [{:keys [scheduler] :as state}]
   (info "bargenerator-stop! ")
   (stop-chime scheduler))
-
-
-
-  
-(defn print-finished-bars [ds-bars]
-  (println "bars finished!")
-  (let [bars (tc/rows ds-bars :as-maps)]
-    (print-table bars)))
 
 (comment 
 

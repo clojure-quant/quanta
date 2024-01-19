@@ -1,5 +1,6 @@
 (ns ta.calendar.core
   (:require
+   [tick.core :as t]
    [ta.calendar.interval :refer [intervals] :as interval]
    [ta.calendar.calendars :refer [calendars]]))
 
@@ -18,6 +19,8 @@
 (defn prior-close [calendar-kw interval-kw dt]
   (let [calendar (calendar-kw calendars)
         interval (interval-kw intervals)
+        _ (assert calendar)
+        _ (assert interval)
         ;_ (println "calendar: " calendar)
         ;_ (println "interval: " interval)
         prior-close-dt (:prior-close interval)]
@@ -28,6 +31,8 @@
         interval (interval-kw intervals)
         ;_ (println "calendar: " calendar)
         ;_ (println "interval: " interval)
+        _ (assert calendar)
+        _ (assert interval)
         current-close-dt (:current-close interval)]
     (current-close-dt calendar)))
 
@@ -36,6 +41,10 @@
   (let [start (current-close calendar-kw interval-kw)
         next-dt (partial next-close calendar-kw interval-kw)]
   (iterate next-dt start)))
+
+(defn calendar-seq-instant [calendar-kw interval-kw]
+  (->> (calendar-seq calendar-kw interval-kw)
+       (map t/instant)))
 
 (defn calendar-seq-prior [calendar-kw interval-kw]
   (let [end (current-close calendar-kw interval-kw)
@@ -62,6 +71,8 @@
    (current-close :us :m)
   
    (take 5 (calendar-seq :us :day))
+   (take 5 (calendar-seq-instant :us :day))
+  
    (take 5 (calendar-seq :eu :day))
    (take 30 (calendar-seq :us :day))
    (take 100 (calendar-seq :eu :h))
