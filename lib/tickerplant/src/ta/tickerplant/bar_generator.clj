@@ -8,23 +8,23 @@
    [ta.calendar.core :refer [calendar-seq-instant]]
    ))
 
-(defn- create-bar! [db symbol]
-  (let [bar {:symbol symbol :epoch 1}]
-    (swap! db assoc symbol bar)
+(defn- create-bar! [db asset]
+  (let [bar {:asset asset :epoch 1}]
+    (swap! db assoc asset bar)
     bar))
 
 (defn- empty-bar? [{:keys [open] :as bar}]
   (not open))
 
-(defn- get-bar [db symbol]
-  (get @db symbol))
+(defn- get-bar [db asset]
+  (get @db asset))
 
-(defn- update-bar [db {:keys [symbol] :as bar}]
-  (swap! db assoc symbol bar))
+(defn- update-bar [db {:keys [asset] :as bar}]
+  (swap! db assoc asset bar))
 
-(defn- empty-bar [db {:keys [symbol] :as bar}]
-  (swap! db update-in [symbol] dissoc :open :high :low :close :volume :ticks)  
-  (swap! db update-in [symbol :epoch] inc))
+(defn- empty-bar [db {:keys [asset] :as bar}]
+  (swap! db update-in [asset] dissoc :open :high :low :close :volume :ticks)  
+  (swap! db update-in [asset :epoch] inc))
 
 (defn- aggregate-tick [{:keys [open high low _close volume ticks epoch] :as bar} {:keys [price size]}]
   (merge bar
@@ -43,24 +43,24 @@
             :ticks (inc ticks)})))
 
 
-(defn process-tick [{:keys [db] :as state} {:keys [symbol] :as tick}]
+(defn process-tick [{:keys [db] :as state} {:keys [asset] :as tick}]
   ;(info "process tick...")
-  (let [bar (or (get-bar db symbol)
-                (create-bar! db symbol))
+  (let [bar (or (get-bar db asset)
+                (create-bar! db asset))
         bar-new (aggregate-tick bar tick)]
     ;(info "bar: " bar)
     ;(info "bar-new: " bar-new)
     (update-bar db bar-new)
     bar-new))
 
-(defn active-instruments [db]
-  (keys @db))
+(defn active-instruments [state]
+  (keys @(:db state)))
 
-(defn current-bars [db]
-  (vals @db))
+(defn current-bars [state]
+  (vals @(:db state)))
 
-(defn- switch-bar [db symbol]
-  (let [bar (get-bar db symbol)]
+(defn- switch-bar [db asset]
+  (let [bar (get-bar db asset)]
     (when-not (empty-bar? bar)
       (empty-bar db bar))
     bar))
@@ -73,22 +73,23 @@
 
 (defn- make-on-bar-handler [db calendar on-bars-finished]
   (fn [time]
-    (let [bars (current-bars db)
+    (let [state {:db db}
+          bars (current-bars state)
           bars-with-data (remove empty-bar? bars)
-          symbols (map :symbol bars)
-          ; | :symbol | :epoch |    :open |   :high |     :low |   :close | :volume | :ticks |
+          assets (map :asset bars)
+          ; | :asset | :epoch |    :open |   :high |     :low |   :close | :volume | :ticks |
           time (tick/instant time)
-          bar-seq (->> (current-bars db)
+          bar-seq (->> (current-bars state)
                        (map #(assoc % :date time)))
           bar-ds   (tc/dataset bar-seq)
          ]
     (info "bar-generator finish bar: " time "# instruments: " (count bars) "# bars: " (count bars-with-data))
     (try 
-      (on-bars-finished bar-ds)  
+      (on-bars-finished {:time time :ds-bars bar-ds})  
       (catch Exception ex
          (error "Exception in saving new finished bars to duckdb!")
          (print-finished-bars bar-ds)))
-    (doall (map #(switch-bar db %) symbols)))))
+    (doall (map #(switch-bar (:db state) %) assets)))))
 
 (defn- log-finished []
   (warn "bar-generator chime Schedule finished!"))
@@ -97,7 +98,7 @@
   (error "bar-generator chime exception: " ex)
   true)
 
-(defn bargenerator-start [calendar-kw interval-kw on-bars-finished]
+(defn bargenerator-start [[calendar-kw interval-kw] on-bars-finished]
   (info "bargenerator-start calendar: " calendar-kw "interval: " interval-kw)
   (let [date-seq (calendar-seq-instant calendar-kw interval-kw)
         db (atom {})]
@@ -117,32 +118,19 @@
   (info "bargenerator-stop! ")
   (stop-chime scheduler))
 
+
+;; in demo see notebook.live.bar-generator
+
 (comment 
-
-  (def calendar {})
   
- (def state 
-   (bargenerator-start calendar print-finished-bars))
-
-  state
-
-  (get-bar (:db state) "MSFT")
-  (get-bar (:db state) "EURUSD")
-  (get-bar (:db state) "IBM")
-  (create-bar! (:db state) "QQQ")
-  (create-bar! (:db state) "IBM")
-  (current-bars (:db state))
-  (print-finished-bars (current-bars (:db state)))
-
-  (process-tick state {:symbol "MSFT" :price 98.20 :size 100})
-  (process-tick state {:symbol "EURUSD" :price 1.0910 :size 100})
-  (process-tick state {:symbol "EURUSD" :price 1.0920 :size 100})
-
-  (bargenerator-stop state)
- ; 
+  
+   ;(get-bar (:db state) "MSFT")
+  ;(get-bar (:db state) "EURUSD")
+  ;(get-bar (:db state) "IBM")
+  ;(create-bar! (:db state) "QQQ")
+  ;(create-bar! (:db state) "IBM") 
+  
+;  
   )
-
-
-
     
  

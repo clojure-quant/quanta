@@ -46,15 +46,17 @@
   (->> (calendar-seq calendar-kw interval-kw)
        (map t/instant)))
 
-(defn calendar-seq-prior [calendar-kw interval-kw]
-  (let [end (current-close calendar-kw interval-kw)
-        end-dt (prior-close calendar-kw interval-kw end)
-        prior-dt (partial prior-close calendar-kw interval-kw)]
+(defn calendar-seq-prior [calendar-kw interval-kw end-dt]
+  (let [prior-dt (partial prior-close calendar-kw interval-kw)]
     (iterate prior-dt end-dt)))
 
 (defn trailing-window 
-  ([calendar-kw interval-kw n] ; dt-end
-    (take n (calendar-seq-prior calendar-kw interval-kw))))
+  ([calendar-kw interval-kw n end-dt] ; dt-end
+    (take n (calendar-seq-prior calendar-kw interval-kw end-dt)))
+  ([calendar-kw interval-kw n] 
+   (let [end (current-close calendar-kw interval-kw)
+         end-dt (prior-close calendar-kw interval-kw end)]
+     (take n (calendar-seq-prior calendar-kw interval-kw end-dt)))))
 
 (comment 
    (now-calendar :us)

@@ -1,4 +1,4 @@
-(ns notebook.data.duckdb
+(ns notebook.live.duckdb
   (:require
    [modular.system]
    [ta.warehouse.duckdb :refer [get-bars]]))

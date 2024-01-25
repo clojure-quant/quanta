@@ -68,16 +68,27 @@
            :stop (ta.warehouse.duckdb/duckdb-stop this)
            :post-start ta.warehouse.duckdb/init-tables}
 
-  :bargenerator {:start (ta.tickerplant.bar-generator/bargenerator-start
-                         :us ; calendar
-                         :m ; minute bars
-                         ;ta.tickerplant.bar-generator/print-finished-bars
-                         (partial ta.warehouse.duckdb/append-bars (clip/ref :duckdb))
-                         )
-                 :stop (ta.tickerplant.bar-generator/bargenerator-stop this)
-                } 
+  :feed {:start    (ta.quote.fix/start-fix-feed-autoconnect :ctrader-tradeviewmarkets-quote)
+                   ; not connected feed: 
+                   ;(ta.quote.fix/create-quotefeed-fix :ctrader-tradeviewmarkets-quote)
+         }
 
-  :quote-harvester {:start (juan.fix/start-harvesting (clip/ref :bargenerator))}
+  :live {:start (ta.env.live-bargenerator/create-live-environment
+                 (clip/ref :feed)
+                 (clip/ref :duckdb))}
+  
+  :dummy-strategy {:start (notebook.live.live-dummy-strategy/run-dummy-strategy (clip/ref :live))}
+
+  ;:bargenerator {:start (ta.tickerplant.bar-generator/bargenerator-start
+  ;                       :us ; calendar
+  ;                       :m ; minute bars
+  ;                       ;ta.tickerplant.bar-generator/print-finished-bars
+  ;                       (partial ta.warehouse.duckdb/append-bars (clip/ref :duckdb))
+  ;                       )
+  ;               :stop (ta.tickerplant.bar-generator/bargenerator-stop this)
+  ;              } 
+
+  ;:quote-harvester {:start (juan.fix/start-harvesting (clip/ref :bargenerator))}
   ;:quote-printer {:start (juan.fix/start-quote-printing (clip/ref :quote-harvester))}
   
 

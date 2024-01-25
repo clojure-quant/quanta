@@ -1,8 +1,10 @@
-(ns ta.algo.manager2
+(ns ta.algo.core
   (:require
    [taoensso.timbre :refer [trace debug info warnf error]]
    [tablecloth.api :as tc]
-   [ta.viz.study-highchart :refer [study-highchart] :as hc]))
+   [ta.viz.study-highchart :refer [study-highchart] :as hc]
+   [ta.calendar.core :refer [trailing-window]]
+   ))
 
 (defn- get-symbol [algo-ns algo-symbol]
   (require [algo-ns])
@@ -15,8 +17,9 @@
    :algo-opts-default (var-get (get-symbol algo-ns "algo-opts-default"))
    :algo-charts (get-symbol algo-ns "algo-charts")})
 
-(defn run-algo [{:keys [get-series] :as env} {:keys [algo-ns algo-opts]
-                                              :or {algo-opts {}}}]
+(defn run-algo [{:keys [get-series] :as env} 
+                {:keys [algo-ns algo-opts]
+                :or {algo-opts {}}}]
   (let [{:keys [asset calendar]} algo-opts
         {:keys [algo-calc algo-opts-default algo-charts]} (get-algo algo-ns)
         opts (merge algo-opts-default algo-opts)
@@ -58,6 +61,15 @@
       
       })))
 
+(defn calculate-algo-trailing-window 
+  "returns ds-strategy for the current bar-close-time"
+  [env
+   {:keys [asset opts window] :as algo}
+   time]
+  (let [{:keys [calendar interval n]} window
+        ds-time (trailing-window calendar interval n time)
+        ds-algo (run-algo env algo)]
+    ds-algo))
 
 
 (comment

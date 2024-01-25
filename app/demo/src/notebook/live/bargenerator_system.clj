@@ -1,4 +1,4 @@
-(ns notebook.data.bargenerator
+(ns notebook.live.bargenerator-system
   (:require
    [modular.system]
    [clojure.pprint :refer [print-table]]

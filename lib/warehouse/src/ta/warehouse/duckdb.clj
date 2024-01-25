@@ -1,10 +1,10 @@
 (ns ta.warehouse.duckdb
   (:require
+    [taoensso.timbre :as timbre :refer [info warn error]]
     [clojure.java.io :as java-io]
-   [tablecloth.api :as tc]
-   [tmducken.duckdb :as duckdb]
-   [tick.core :as tick]
-   ))
+    [tablecloth.api :as tc]
+    [tmducken.duckdb :as duckdb]
+    [tick.core :as tick]))
 
 ;; https://github.com/techascent/tmducken
 
@@ -32,22 +32,22 @@
    (append-bars session ds false))
   ([session ds create-table?]
    (let [ds (tc/set-dataset-name ds "bars")]
-     (println "append-bars # " (tc/row-count ds))
+     (info "duckdb append-bars # " (tc/row-count ds))
      (when create-table?
        (duckdb/create-table! (:conn session) ds))
      (duckdb/insert-dataset! (:conn session) ds))))
 
-(defn get-bars [session symbol]
+(defn get-bars [session asset]
   (-> (duckdb/sql->dataset
        (:conn session)
-       (str "select * from bars where symbol = '" symbol "' order by date"))
+       (str "select * from bars where asset = '" asset "' order by date"))
       (tc/rename-columns {"date" :date
                           "open" :open
                           "high" :high
                           "low" :low
                           "close" :close
                           "volume" :volume
-                          "symbol" :symbol})))
+                          "asset" :asset})))
 
 
 (defn delete-bars [session]
@@ -67,7 +67,7 @@
 (def empty-ds 
   (-> 
     (tc/dataset [{:open 0.0 :high 0.0 :low 0.0 :close 0.0
-                  :volume 0 :symbol "000"
+                  :volume 0 :asset "000"
                   :date (now)
                   :epoch 0 :ticks 0}]) 
      (tc/set-dataset-name "bars")
