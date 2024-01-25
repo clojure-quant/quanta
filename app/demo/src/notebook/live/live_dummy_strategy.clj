@@ -11,12 +11,17 @@
 ;; add two instruments with algo-dummy
 ;; this will trigger subscription of the assets
 
+
+;(def bar-category [:forex :m])
+
+(def bar-category [:crypto :m])
+
 (defn run-dummy-strategy [live]
-   (env/add live [:us :m] {:algo algo-dummy
+   (env/add live bar-category {:algo algo-dummy
                            :algo-opts {:asset "EUR/USD"}})
 
-   (env/add live [:us :m] {:algo algo-dummy
-                           :algo-opts {:asset "USD/JPY"}})
+   (env/add live bar-category {:algo algo-dummy
+                   :algo-opts {:asset "USD/JPY"}})
   
   
   

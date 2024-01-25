@@ -1,4 +1,4 @@
-(ns notebook.live.random-quotes
+(ns notebook.live.quotefeed-random
   (:require
    [taoensso.timbre :as timbre :refer [info warn error]]
    [manifold.stream :as s]

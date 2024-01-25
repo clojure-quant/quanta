@@ -32,8 +32,8 @@ live
 
 (-> live env/quote-snapshot print-table)
 
-(env/unfinished-bar-snapshot live [:us :m])
-(-> live (env/unfinished-bar-snapshot [:us :m]) print-table)
+(env/unfinished-bar-snapshot live [:crypto :m])
+(-> live (env/unfinished-bar-snapshot [:crypto :m]) print-table)
 
 
 
