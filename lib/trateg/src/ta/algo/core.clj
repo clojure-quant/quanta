@@ -12,10 +12,13 @@
     ;(println "resolve: " s)
     (resolve s)))
 
-(defn- get-algo [algo-ns]
+(defn get-algo [algo-ns]
   {:algo-calc (get-symbol algo-ns "algo-calc")
    :algo-opts-default (var-get (get-symbol algo-ns "algo-opts-default"))
    :algo-charts (get-symbol algo-ns "algo-charts")})
+
+(defn get-algo-calc [algo-ns]
+  (:algo-calc (get-algo algo-ns)))
 
 (defn run-algo [{:keys [get-series] :as env} 
                 {:keys [algo-ns algo-opts]
@@ -74,6 +77,7 @@
 
 (comment
   (get-algo 'demo.algo.sma3)
+  (get-algo-calc 'demo.algo.sma3)
 
   (require '[modular.system])
   (def session (:duckdb modular.system/system))

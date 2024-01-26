@@ -13,6 +13,7 @@
 ;(def live (env/create-live-environment feed duckdb))
 
 (def live (modular.system/system :live))
+
 live
 
 (def bar-category [:crypto :m])

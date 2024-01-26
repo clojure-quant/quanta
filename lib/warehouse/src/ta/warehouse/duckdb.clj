@@ -1,13 +1,12 @@
 (ns ta.warehouse.duckdb
   (:require
-    [taoensso.timbre :as timbre :refer [info warn error]]
-    [clojure.java.io :as java-io]
-    [tablecloth.api :as tc]
-    [tmducken.duckdb :as duckdb]
-    [tick.core :as tick]))
+   [taoensso.timbre :as timbre :refer [info warn error]]
+   [clojure.java.io :as java-io]
+   [tablecloth.api :as tc]
+   [tmducken.duckdb :as duckdb]
+   [tick.core :as tick]))
 
 ;; https://github.com/techascent/tmducken
-
 
 (defn- exists-db? [path]
   (.exists (java-io/file path)))
@@ -19,36 +18,73 @@
         conn (duckdb/connect db)]
     {:db db
      :conn conn
-     :new? new?
-     }))
+     :new? new?}))
 
 (defn duckdb-stop [{:keys [db conn] :as session}]
   (duckdb/disconnect conn))
 
+;; bar-category
+
+(defn bar-category->table-name [[calendar interval]]
+  (str (name calendar) "_" (name interval)))
+
 ;; work with duckdb
 
-(defn append-bars
-  ([session ds]
-   (append-bars session ds false))
-  ([session ds create-table?]
-   (let [ds (tc/set-dataset-name ds "bars")]
-     (info "duckdb append-bars # " (tc/row-count ds))
-     (when create-table?
-       (duckdb/create-table! (:conn session) ds))
-     (duckdb/insert-dataset! (:conn session) ds))))
+(defn append-bars [session bar-category ds]
+  (let [table-name (bar-category->table-name bar-category)
+        ds (tc/set-dataset-name ds table-name)]
+    (info "duckdb append-bars # " (tc/row-count ds))
+    (duckdb/insert-dataset! (:conn session) ds)))
 
-(defn get-bars [session asset]
-  (-> (duckdb/sql->dataset
-       (:conn session)
-       (str "select * from bars where asset = '" asset "' order by date"))
-      (tc/rename-columns {"date" :date
-                          "open" :open
-                          "high" :high
-                          "low" :low
-                          "close" :close
-                          "volume" :volume
-                          "asset" :asset})))
+(defn keywordize-columns [ds]
+  (tc/rename-columns
+   ds
+   {"date" :date
+    "open" :open
+    "high" :high
+    "low" :low
+    "close" :close
+    "volume" :volume
+    "asset" :asset
+    "epoch" :epoch
+    "ticks" :ticks}))
 
+(defn sql-query-bars-for-asset [bar-category asset]
+  (let [table-name (bar-category->table-name bar-category)]
+    (str "select * from " table-name " where asset = '" asset "' order by date")
+  ))
+
+
+(defn get-bars [session bar-category asset]
+    (let [query (sql-query-bars-for-asset bar-category asset)]
+    (-> (duckdb/sql->dataset (:conn session) query)
+        (keywordize-columns))))
+
+(defn sql-query-bars-for-asset-since [bar-category asset since]
+  (let [table-name (bar-category->table-name bar-category)]
+    (str "select * from " table-name 
+         " where asset = '" asset "'" 
+         " and date > '" since "'"
+         " order by date")))
+
+(defn get-bars-since [session bar-category asset since]
+    (let [query (sql-query-bars-for-asset-since bar-category asset since)]
+      (-> (duckdb/sql->dataset (:conn session) query)
+          (keywordize-columns))))
+  
+
+(defn sql-query-bars-for-asset-window [bar-category asset dstart dend]
+  (let [table-name (bar-category->table-name bar-category)]
+    (str "select * from " table-name
+         " where asset = '" asset "'"
+         " and date >= '" dstart "'"
+         " and date <= '" dend "'"
+         " order by date")))
+
+(defn get-bars-window [session bar-category asset dstart dend]
+  (let [query (sql-query-bars-for-asset-window bar-category asset dstart dend)]
+    (-> (duckdb/sql->dataset (:conn session) query)
+        (keywordize-columns))))
 
 (defn delete-bars [session]
   (duckdb/sql->dataset
@@ -61,25 +97,39 @@
 (defn now []
   (-> (tick/now)
       ;(tick/date-time)
-      (tick/instant)
-      ))
+      (tick/instant)))
 
-(def empty-ds 
-  (-> 
-    (tc/dataset [{:open 0.0 :high 0.0 :low 0.0 :close 0.0
-                  :volume 0 :asset "000"
-                  :date (now)
-                  :epoch 0 :ticks 0}]) 
-     (tc/set-dataset-name "bars")
-   ))
+(defn empty-ds [bar-category]
+  (let [table-name (bar-category->table-name bar-category)]
+    (-> (tc/dataset [{:open 0.0 :high 0.0 :low 0.0 :close 0.0
+                      :volume 0 :asset "000"
+                      :date (now)
+                      :epoch 0 :ticks 0}])
+        (tc/set-dataset-name table-name))))
+
+(defn create-table [session bar-category]
+  (let [ds (empty-ds bar-category)]
+    (duckdb/create-table! (:conn session) ds)))
 
 (defn init-tables [session]
   (let [exists? (:new? session)]
     (when (not exists?)
-      (println "init duck-db tables")    
-      (duckdb/create-table! (:conn session) empty-ds))))
- 
+      (println "init duck-db tables")
+      (doall (map (partial create-table session)
+                  [[:us :m]
+                   [:us :h]
+                   [:us :d]])))))
+
 (comment
+  (require '[modular.system])
+  (def db (:duckdb modular.system/system))
+  db
+
+  (bar-category->table-name [:us :m])
+  (create-table db [:us :m])
+  (create-table db [:us :h])
+
+
 
   (require '[tech.v3.dataset :as ds])
   (def stocks
@@ -89,13 +139,38 @@
   stocks
   (tc/info stocks)
 
-  (require '[modular.system])
 
-  (def db (:duckdb modular.system/system))
-  db
+  (get-bars db [:us :m] "EUR/USD")
 
 
-  (get-bars db "MSFT")
+  (sql-query-bars-for-asset-since 
+   [:us :m] "EUR/USD" "2024-01-26T19:35:00Z") 
+
+  (require '[tick.core :as t])
+  (def dt (t/instant "2024-01-26T19:35:00Z"))
+  dt
+  
+  (get-bars-since db [:us :m] "EUR/USD" "2024-01-26T19:35:00Z" )
+  (get-bars-since db [:us :m] "EUR/USD" "2024-01-26 19:35:00")
+  (get-bars-since db [:us :m] "EUR/USD" dt)
+
+
+  (def dt2 (t/instant "2024-01-26T16:35:00Z"))
+  (get-bars-since db [:us :m] "EUR/USD" dt2)
+
+
+  (get-bars-window db [:us :m] "EUR/USD" 
+                   "2024-01-26T19:35:00Z"
+                   "2024-01-26T19:45:00Z")
+
+    (get-bars-since duckdb [:us :m] "EUR/USD" time)
+  (get-bars-since duckdb [:us :m] "EUR/USD" (str time))
+  (t/inst time)
+  (format-date time)
+  
+  (str time)
+  
+  (t/inst "2023-01-01 0:0:0")
 
   (now)
   empty-ds
@@ -104,15 +179,15 @@
 
   (duckdb/create-table! (:conn db) empty-ds)
   (duckdb/insert-dataset! (:conn db) empty-ds)
-    
+
   (get-bars db "000")
 
   (get-bars db "EUR/USD")
   (get-bars db "USD/JPY")
-  
+
 
   (exists-db?  "../../output/duckdb/bars")
-  
+
 
   (duckdb/insert-dataset! db stocks)
   (ds/head (duckdb/sql->dataset db "select * from stocks"))

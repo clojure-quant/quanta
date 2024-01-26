@@ -86,7 +86,7 @@
    
    
 
-    (duck/append-bars db ds)
+    (duck/append-bars db [:us :d] ds)
     (duck/get-bars db "MSFT")
     (duck/delete-bars db)
   

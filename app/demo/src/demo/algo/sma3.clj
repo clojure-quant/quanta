@@ -13,8 +13,6 @@
    :sma-length-st 20
    :sma-length-lt 200})
 
-
-
 (defn- add-sma-indicator
   [ds {:keys [sma-length-st sma-length-lt] #_:as #_options}]
   (-> ds
@@ -29,7 +27,7 @@
       :else :hold)
     :hold))
 
-(defn algo-calc [ctx ds-bars options]
+(defn algo-calc [ds-bars options]
   (let [ds-study (add-sma-indicator ds-bars options)
         sma-st (:sma-st ds-study)
         sma-lt (:sma-lt ds-study)

@@ -79,6 +79,11 @@
   
   :dummy-strategy {:start (notebook.live.live-dummy-strategy/run-dummy-strategy (clip/ref :live))}
 
+  :sma-strategy {:start (notebook.live.live-sma-strategy/add-sma-strategy (clip/ref :live))}
+  
+  :result-printer {:start (notebook.live.result-printer/start-print-results (clip/ref :live))}
+
+  
   ;:bargenerator {:start (ta.tickerplant.bar-generator/bargenerator-start
   ;                       :us ; calendar
   ;                       :m ; minute bars

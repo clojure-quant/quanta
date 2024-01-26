@@ -25,14 +25,15 @@
    [ta.warehouse.duckdb :as duck]
    [ta.tickerplant.bar-generator :as bg]
    [ta.quote.core :refer [subscribe quote-stream]]
-   [ta.env.last-msg-summary :as summary]))
+   [ta.env.last-msg-summary :as summary]
+   [ta.env.live.trailing-window-algo :refer [trailing-window-algo]]
+   ))
 
 (defn create-live-environment [feed duckdb]
   {:feed feed
    :duckdb duckdb
    :bar-categories (atom {})
-   :env {:get-series (fn [asset bar-category]
-                       (duck/get-bars duckdb asset))}
+   :env {:get-series (partial duck/get-bars-window duckdb)}
    :live-results-stream (s/stream)
    :summary-quote (summary/create-last-summary (quote-stream feed) :asset)})
 
@@ -76,17 +77,39 @@
 (defn add-algo-to-bar-category [state bar-category algo]
   (swap! (:bar-categories state) update-in [bar-category :algos] conj algo))
 
-(defn valid-ds [ds-bars]
-  (let [c (tc/row-count ds-bars)]
-    (> c 0)))
+(defn select-valid-bars-ds [ds-bars]
+  (when ds-bars
+    (tc/select-rows ds-bars  #(:close %))))
+
+(defn ds-has-rows [ds-bars]
+  (if ds-bars
+    (let [c (tc/row-count ds-bars)]
+      (> c 0))
+    false))
+
+(comment 
+    (def ds
+    (-> {:close [10.0 20.0 nil]
+         :asset ["MSFT" "QQQ" "SPX"]}
+        tc/dataset))
+  ds
+  (select-valid-bars-ds ds)
+  (select-valid-bars-ds nil)
+  
+  (ds-has-rows ds)
+  (ds-has-rows nil)
+;
+  )
+  
 
 (defn save-finished-bars [duckdb]
   (fn [{:keys [time category ds-bars] :as msg}]
     (try
       (info "save finished bars " time category " ... ")
-      (if (valid-ds ds-bars)
-        (duck/append-bars duckdb ds-bars)
-        (warn "not saving finished bars - ds-bars is not valid!"))
+      (let [ds-bars (select-valid-bars-ds ds-bars)]
+        (if (ds-has-rows ds-bars)
+          (duck/append-bars duckdb category ds-bars)
+          (warn "not saving finished bars - ds-bars is not valid!")))
       (catch Exception ex
         (error "generated bars save exception!")
         (error "bars that could not be saved: " ds-bars)
@@ -164,14 +187,19 @@
   (or (get-existing-bar-category state bar-category)
       (create-bar-category state bar-category)))
 
-(defn add [state bar-category algo]
-  (get-bar-category state bar-category)
-  (add-algo-to-bar-category state bar-category algo)
-  (if-let [asset (get-in algo [:algo-opts :asset])]
+(defn add [state algo-wrapped]
+  (let [{:keys [algo-opts _algo]} algo-wrapped
+        {:keys [bar-category asset]} algo-opts]
+    (get-bar-category state bar-category)
+    (add-algo-to-bar-category state bar-category algo-wrapped)
+  (if asset
     (let [feed (get-feed state)]
       (info "added algo with asset [" asset "] .. subscribing..")
       (subscribe feed asset))
-    (warn "added algo without asset .. not subscribing!")))
+    (warn "added algo without asset .. not subscribing!"))))
+
+(defn add-bar-strategy [state algo-bar-strategy-wrapped]
+  (add state (trailing-window-algo algo-bar-strategy-wrapped)))
 
 ;; see in demo notebook.live.live-bargenerator
 
