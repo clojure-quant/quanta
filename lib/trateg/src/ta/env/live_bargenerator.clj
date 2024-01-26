@@ -18,25 +18,23 @@
    - 
 
    "
-  (:require 
+  (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [manifold.stream :as s]
    [tablecloth.api :as tc]
    [ta.warehouse.duckdb :as duck]
    [ta.tickerplant.bar-generator :as bg]
    [ta.quote.core :refer [subscribe quote-stream]]
-   [ta.env.last-msg-summary :as summary]
-   ))
+   [ta.env.last-msg-summary :as summary]))
 
 (defn create-live-environment [feed duckdb]
   {:feed feed
    :duckdb duckdb
    :bar-categories (atom {})
    :env {:get-series (fn [asset bar-category]
-                 (duck/get-bars duckdb asset))}
+                       (duck/get-bars duckdb asset))}
    :live-results-stream (s/stream)
-   :summary-quote (summary/create-last-summary (quote-stream feed) :asset)
-   })
+   :summary-quote (summary/create-last-summary (quote-stream feed) :asset)})
 
 (defn get-feed [state]
   (:feed state))
@@ -64,6 +62,11 @@
 (defn category-result-stream [state bar-category]
   (get-in @(:bar-categories state) [bar-category :results-stream]))
 
+
+(defn category-bar-time-stream [state bar-category]
+  (get-in @(:bar-categories state) [bar-category :bar-close-stream]))
+
+
 (defn category-onbar-stream [state bar-category]
   (get-in @(:bar-categories state) [bar-category :bars-finished-stream]))
 
@@ -77,41 +80,51 @@
   (let [c (tc/row-count ds-bars)]
     (> c 0)))
 
-(defn save-finished-bars [duckdb bars-finished-stream]
-  (fn [{:keys [time ds-bars]}]
+(defn save-finished-bars [duckdb]
+  (fn [{:keys [time category ds-bars] :as msg}]
     (try
+      (info "save finished bars " time category " ... ")
       (if (valid-ds ds-bars)
-         (duck/append-bars duckdb ds-bars)    
-         (warn "not saving finished bars - ds-bars is not valid!"))
+        (duck/append-bars duckdb ds-bars)
+        (warn "not saving finished bars - ds-bars is not valid!"))
       (catch Exception ex
         (error "generated bars save exception!")
         (error "bars that could not be saved: " ds-bars)
-        (bg/print-finished-bars ds-bars)
-        (s/put! bars-finished-stream time)))))
+        (bg/print-finished-bars msg)))
+     msg))
 
 (defn calc-algo [env {:keys [algo algo-opts]} time]
-  (try 
-    (info "calculating algo: " algo " time: " time)
+  (try
+    (debug "calculating algo: " algo " time: " time)
     (let [result (algo env algo-opts time)]
-       (info "calculating algo: " algo " time: " time " result: " result)
-       result)
+      (debug "calculating algo: " algo " time: " time " result: " result)
+      result)
     (catch Exception ex
-       (error "algo-calc exception " algo time ex)  
-       nil)))
+      (error "algo-calc exception " algo time ex)
+      nil)))
 
-
-(defn calculate-on-bar-close [{:keys [env] :as state} 
-                              bar-category
-                              time]
+(defn calculate-on-bar-close
+  "input: time-msg 
+   output: bar-done-msg
+   side effect: calculates algos and puts results to result steam"
+  [{:keys [env] :as state}
+   bar-category
+   {:keys [time category ds-bars] :as msg}]
   (info "calculate-on-bar-close " bar-category time)
-  (let [result-stream (category-result-stream state bar-category)
-        algos (category-algos state bar-category)] 
-    (info "algos: " algos)
-    (doall (map (fn [algo] 
-                  (let [result (calc-algo env algo time)]
-                    (when result 
-                       (s/put! result-stream result))))
-                algos))))
+  (try
+    (let [result-stream (category-result-stream state bar-category)
+          algos (category-algos state bar-category)]
+      (info "algos: " algos)
+      (doall (map (fn [algo]
+                    (let [result (calc-algo env algo time)]
+                      (when result
+                        (debug "putting result to result stream: " result)
+                        (s/put! result-stream result))))
+                  algos)))
+      (catch Exception ex
+        (error "exception calculate-on-bar-close " bar-category)
+        (error "ex: " ex)))
+  msg)
 
 (defn connect-feed-with-bargenerator [bargen feed]
   (info "connecting feed with bargenerator")
@@ -123,38 +136,39 @@
                        )]
     (s/consume process-tick stream)))
 
-(defn add-new-bar-category [{:keys [duckdb feed env] :as state} bar-category]
+(defn create-bar-category [{:keys [duckdb feed] :as state} 
+                            bar-category]
   (info "add new bar category: " bar-category)
-  (let [bars-finished-stream (s/stream) 
+  (let [bargen (bg/bargenerator-start bar-category)
+        bar-close-stream (bg/bar-close-stream bargen)
+        bars-finished-stream (s/map (save-finished-bars duckdb) bar-close-stream)
+        ;results-stream (s/map (partial calculate-on-bar-close env bar-category)
+        ;                      bars-finished-stream)
         results-stream (s/stream)
-        bargen (bg/bargenerator-start bar-category
-                                     (save-finished-bars duckdb bars-finished-stream))
         data {:bargenerator bargen
               :calc-fns []
               :bar-category bar-category
+              :bar-close-stream bar-close-stream
               :bars-finished-stream bars-finished-stream
               :results-stream results-stream}
         live-results-stream (get-result-stream state)]
     (swap! (:bar-categories state) assoc bar-category data)
-    (info "connecting streams...")
-    (s/consume (partial calculate-on-bar-close env bar-category) bars-finished-stream)
-    ;  (s/map (partial calculate-on-bar-close env bar-category)
-    ;                          bars-finished-stream)
+    ;(info "connecting streams...")
+    (s/consume (partial calculate-on-bar-close state bar-category) bars-finished-stream)
     (connect-feed-with-bargenerator bargen feed)
-    ;(s/connect bars-finished-stream results-stream)
     (s/connect results-stream live-results-stream)
-    (info "connecting streams... done!")
+    ;(info "connecting streams... done!")
     data))
 
 (defn get-bar-category [state bar-category]
   (or (get-existing-bar-category state bar-category)
-      (add-new-bar-category state bar-category)))
+      (create-bar-category state bar-category)))
 
 (defn add [state bar-category algo]
   (get-bar-category state bar-category)
   (add-algo-to-bar-category state bar-category algo)
   (if-let [asset (get-in algo [:algo-opts :asset])]
-    (let [feed (get-feed state)] 
+    (let [feed (get-feed state)]
       (info "added algo with asset [" asset "] .. subscribing..")
       (subscribe feed asset))
     (warn "added algo without asset .. not subscribing!")))
@@ -162,88 +176,70 @@
 ;; see in demo notebook.live.live-bargenerator
 
 
-(comment 
+(comment
   (require '[modular.system])
-  (def live (modular.system/system :live)) 
-  live  
+  (def live (modular.system/system :live))
+
+  live
 
   ;(def bar-category [:forex :m])
   ;(def bar-category [:us :m])
-  (def bar-category [:eu :m])
+  ;(def bar-category [:eu :m])
+  (def bar-category [:crypto :m])
 
   ; add (create) a calculation category.
-  (get-bar-category live bar-category)
+  ;(get-bar-category live bar-category)
 
   (category-algos live bar-category)
 
-  ; force calculation at the end of a simulated bar
-  (def onbar-stream (category-onbar-stream live bar-category))
-  onbar-stream
-  (s/put! onbar-stream :right-now)
+  ;; simulate a bargenerator event
+  (def time-stream (category-bar-time-stream live bar-category))
+  time-stream
+  (s/put! time-stream {:time :now
+                       :category bar-category
+                       :ds-bars nil})
 
 
-  (defn algo-const [_env opts time]
-    {:time time
-     :v 42})
-  
-  (add live bar-category {:algo algo-const
-                          :algo-opts {:asset "EUR/USD"}})
+  (def c-result-stream (category-result-stream live bar-category))
+  (s/put! c-result-stream {:result :test})
 
-  
+  (category-bar-time-stream live bar-category)
+
+
+
+
+
+
   (calculate-on-bar-close live bar-category :now)
 
 
   (get-result-stream live)
-  
+
   (get-bar-categories live)
-  
+
   (get-feed live)
 
-   (let [feed (get-feed live)]
-  (subscribe feed "USD/JPY"))
+  (let [feed (get-feed live)]
+    (subscribe feed "USD/JPY"))
+
+
+  (-> (get-bar-category live bar-category)
+      :bar-close-stream 
+      (s/take!))
+  
+
+  (-> (get-bar-category live bar-category)
+      :bar-close-stream
+      (s/put! {:time :now
+               :category bar-category
+               :ds-bars nil}))
+  
+
 
   
-(-> live env/quote-snapshot print-table)
-
-
-@(:bar-categories live)
-
-(get-in @(:bar-categories live) [[:eu :m] :results-stream])
-
-(get-in @(:bar-categories live) [[:eu :m] :bars-finished-stream])
-
-(def eu-m-finished-bars-stream
-  (get-in @(:bar-categories live) [[:eu :m] :bars-finished-stream]))
-
-
-(s/put! eu-m-finished-bars-stream :right-now)
-
-eu-m-finished-bars-stream
-
-(s/take! eu-m-finished-bars-stream)
-
-
-(def forex-result-stream (category-result-stream  live [:forex :m]))
-
-forex-result-stream
-
-(s/take! forex-result-stream)
-
-(s/put! forex-result-stream {:r 123})
-
-
-
-(env/add-calc-fn-to-bar-category live [:forex :m] algo-const)
-
-(calculate-on-bar-close live [:us :m] :now)
-
-
-(get-bar-category live [:us :m])
-
-(get-bar-category live [:us :m])
-
-(get-bar-category live [:eu :m])
-
+  (category-result-stream live bar-category)
+  (category-algos live bar-category)
+  
 
  ; 
   )

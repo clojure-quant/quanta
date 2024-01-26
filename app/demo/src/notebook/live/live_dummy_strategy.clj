@@ -13,8 +13,9 @@
 
 
 ;(def bar-category [:forex :m])
+;(def bar-category [:crypto :m])
 
-(def bar-category [:crypto :m])
+(def bar-category [:us :m])
 
 (defn run-dummy-strategy [live]
    (env/add live bar-category {:algo algo-dummy

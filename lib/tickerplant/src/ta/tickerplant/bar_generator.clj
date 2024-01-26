@@ -6,7 +6,7 @@
    [tick.core :as tick]
    [tablecloth.api :as tc]
    [ta.calendar.core :refer [calendar-seq-instant]]
-   ))
+   [manifold.stream :as s]))
 
 (defn- create-bar! [db asset]
   (let [bar {:asset asset :epoch 1}]
@@ -23,7 +23,7 @@
   (swap! db assoc asset bar))
 
 (defn- empty-bar [db {:keys [asset] :as bar}]
-  (swap! db update-in [asset] dissoc :open :high :low :close :volume :ticks)  
+  (swap! db update-in [asset] dissoc :open :high :low :close :volume :ticks)
   (swap! db update-in [asset :epoch] inc))
 
 (defn- aggregate-tick [{:keys [open high low _close volume ticks epoch] :as bar} {:keys [price size]}]
@@ -66,30 +66,36 @@
     bar))
 
 
-(defn print-finished-bars [ds-bars]
+(defn print-finished-bars [{:keys [time category ds-bars]}]
   (let [bars (tc/rows ds-bars :as-maps)]
+    (println "bars finished category: " category "time: " time)
     (print-table bars)))
 
 
-(defn- make-on-bar-handler [db calendar on-bars-finished]
+(defn- make-on-bar-handler [db bar-category bar-close-stream]
   (fn [time]
-    (let [state {:db db}
-          bars (current-bars state)
-          bars-with-data (remove empty-bar? bars)
-          assets (map :asset bars)
+    (try
+      (let [state {:db db}
+            bars (current-bars state)
+            bars-with-data (remove empty-bar? bars)
+            assets (map :asset bars)
           ; | :asset | :epoch |    :open |   :high |     :low |   :close | :volume | :ticks |
-          time (tick/instant time)
-          bar-seq (->> (current-bars state)
-                       (map #(assoc % :date time)))
-          bar-ds   (tc/dataset bar-seq)
-         ]
-    (info "bar-generator finish bar: " time "# instruments: " (count bars) "# bars: " (count bars-with-data))
-    (try 
-      (on-bars-finished {:time time :ds-bars bar-ds})  
+            time (tick/instant time)
+            bar-seq (->> (current-bars state)
+                         (map #(assoc % :date time)))
+            bar-ds   (tc/dataset bar-seq)]
+        (info "bar-generator finish: " bar-category " @ " time "# instruments: " (count bars) "# bars: " (count bars-with-data))
+        (doall (map #(switch-bar (:db state) %) assets))
+        (try
+          (s/put! bar-close-stream  {:time time
+                                     :category bar-category
+                                     :ds-bars bar-ds})
+          (catch Exception ex
+            (error "Exception in putting data to on-bars stream!")
+            (print-finished-bars bar-ds))))
       (catch Exception ex
-         (error "Exception in saving new finished bars to duckdb!")
-         (print-finished-bars bar-ds)))
-    (doall (map #(switch-bar (:db state) %) assets)))))
+        (error "Exception in on-bar-handler")
+        (error "exception: " ex)))))
 
 (defn- log-finished []
   (warn "bar-generator chime Schedule finished!"))
@@ -98,15 +104,20 @@
   (error "bar-generator chime exception: " ex)
   true)
 
-(defn bargenerator-start [[calendar-kw interval-kw] on-bars-finished]
-  (info "bargenerator-start calendar: " calendar-kw "interval: " interval-kw)
-  (let [date-seq (calendar-seq-instant calendar-kw interval-kw)
-        db (atom {})]
+(defn bargenerator-start [bar-category]
+  (info "bargenerator-start : " bar-category)
+  (let [[calendar-kw interval-kw] bar-category
+        date-seq (calendar-seq-instant calendar-kw interval-kw)
+        db (atom {})
+        bar-close-stream (s/stream)]
     {:db db
+     :bar-close-stream bar-close-stream
      :scheduler (chime/chime-at date-seq
-                                (make-on-bar-handler db calendar-kw on-bars-finished)
-                                {:on-finished log-finished :error-handler log-error})
-     }))
+                                (make-on-bar-handler db bar-category bar-close-stream)
+                                {:on-finished log-finished :error-handler log-error})}))
+
+(defn bar-close-stream [state]
+  (:bar-close-stream state))
 
 (defn- stop-chime [c]
   (try
@@ -121,15 +132,15 @@
 
 ;; in demo see notebook.live.bar-generator
 
-(comment 
-  
-  
+(comment
+
+
    ;(get-bar (:db state) "MSFT")
   ;(get-bar (:db state) "EURUSD")
   ;(get-bar (:db state) "IBM")
   ;(create-bar! (:db state) "QQQ")
   ;(create-bar! (:db state) "IBM") 
-  
+
 ;  
   )
     

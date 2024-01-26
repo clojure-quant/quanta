@@ -30,7 +30,7 @@
 
 (defn gen-current-close [align-fn next-fn]
   (fn [calendar]
-    (println "current-close for calendar: " calendar)
+    ;(println "current-close for calendar: " calendar)
     (let [now (now-calendar calendar)
           now-aligned (align-fn now)
           dt-next (next-fn calendar now-aligned)]
