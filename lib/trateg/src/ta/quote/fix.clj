@@ -51,14 +51,6 @@
     feed))
 
 
-#_(defn start-harvesting [bar-generator]
-  (let [client (fix-api/connect :ctrader-tradeviewmarkets-quote)]
-    (doall (map #(fix-api/subscribe client {:symbol %}) symbols))
-    ; tickerplant
-    (fix-api/on-quote client (make-on-quote bar-generator))
-    ;(fix-api/snapshot client)    
-    client))
-
 (comment
   
   ;; in demo see: notebook.live.fix-quotes
