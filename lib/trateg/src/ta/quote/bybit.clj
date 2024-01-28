@@ -1,7 +1,7 @@
 (ns ta.quote.bybit
   "bybit quote feed"
   (:require 
-    [taoensso.timbre :as timbre :refer [info warn error]]
+    [taoensso.timbre :as timbre :refer [debug info warn error]]
     [ta.quote.core :refer [quotefeed create-stream! publish! get-stream connect]]
     [aleph.http :as http]
     [manifold.stream :as s]
@@ -19,7 +19,7 @@
 (defn send-msg! [stream msg]
   (let [msg (assoc msg "req_id" (swap! req-nr inc))
         json (generate-string msg)]
-    (info "sending: " json)
+    (debug "sending: " json)
     (s/put! stream json)))
 
 (defn send-ping! [stream]
@@ -34,7 +34,7 @@
 
 (defn gen-ping-sender [{:keys [state] :as this}]
   (fn []
-    (info "sending bybit ping..")
+    (debug "sending bybit ping..")
     (send-ping! (:client @state))))
 
 ;; RECEIVING
@@ -48,9 +48,9 @@
   (let [{:keys [type data] :as full-msg} (parse-string msg true)]
     (if (= type "snapshot")
       (let [quotes-converted (map bybit-data->tick data)]
-        (info "quote(s) received:" data)
+        (debug "quote(s) received:" data)
         (doall (map (partial s/put! stream-out) quotes-converted)))
-      (info "other msg received: " full-msg))))
+      (debug "other msg received: " full-msg))))
 
 (defrecord quotefeed-websocket-bybit [opts state]
   quotefeed

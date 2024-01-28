@@ -24,6 +24,14 @@
 (defn add-sma-strategy [live]
   (add-strategies live [eurusd usdjpy]))
 
+(def btc (assoc base :asset "BTCUSDT"))
+
+(def eth (assoc base :asset "ETHUSDT"))
+
+
+(defn add-sma-strategy-crypto [live]
+  (add-strategies live [btc eth]))
+
 
 (comment 
    (require '[modular.system])

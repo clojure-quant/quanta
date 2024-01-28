@@ -13,10 +13,11 @@
 ;(def live (env/create-live-environment feed duckdb))
 
 (def live (modular.system/system :live))
+(def live (modular.system/system :live-crypto))
 
 live
 
-(def bar-category [:crypto :m])
+(def bar-category [:us :m])
 
 ; log all results
 

@@ -68,13 +68,18 @@
            :stop (ta.warehouse.duckdb/duckdb-stop this)
            :post-start ta.warehouse.duckdb/init-tables}
 
-  :feed {:start    (ta.quote.fix/start-fix-feed-autoconnect :ctrader-tradeviewmarkets-quote)
+  :feed-fx {:start    (ta.quote.fix/start-fix-feed-autoconnect :ctrader-tradeviewmarkets-quote)
                    ; not connected feed: 
                    ;(ta.quote.fix/create-quotefeed-fix :ctrader-tradeviewmarkets-quote)
-         }
+           }
 
+  :feed-bybit {:start  (ta.quote.bybit/start-quotefeed-bybit-autoconnect :something)
+                   ; not connected feed: 
+                   ;(ta.quote.fix/create-quotefeed-fix :ctrader-tradeviewmarkets-quote)
+          }
+  
   :live {:start (ta.env.live-bargenerator/create-live-environment
-                 (clip/ref :feed)
+                 (clip/ref :feed-fx)
                  (clip/ref :duckdb))}
   
   :dummy-strategy {:start (notebook.live.live-dummy-strategy/run-dummy-strategy (clip/ref :live))}
@@ -83,7 +88,16 @@
   
   :result-printer {:start (notebook.live.result-printer/start-print-results (clip/ref :live))}
 
-  
+
+  ; crypto
+  :live-crypto {:start (ta.env.live-bargenerator/create-live-environment
+                 (clip/ref :feed-bybit)
+                 (clip/ref :duckdb))}
+  :sma-strategy-crypto {:start (notebook.live.live-sma-strategy/add-sma-strategy-crypto (clip/ref :live-crypto))}
+
+  :result-printer-crypto {:start (notebook.live.result-printer/start-print-results (clip/ref :live-crypto))}
+
+
   ;:bargenerator {:start (ta.tickerplant.bar-generator/bargenerator-start
   ;                       :us ; calendar
   ;                       :m ; minute bars
