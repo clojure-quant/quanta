@@ -94,7 +94,9 @@
     @(http/websocket-client (:live ws-url)))
   client
 
-  (s/consume process-incoming-msg client)
+  (def s-out (s/stream))
+
+  (s/consume (partial process-incoming-msg s-out) client)
   (send-ping! client)
   (send-subscribe! client "ETHUSDT")
 
