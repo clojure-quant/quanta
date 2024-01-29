@@ -79,24 +79,18 @@
           }
   
   :live {:start (ta.env.live-bargenerator/create-live-environment
-                 (clip/ref :feed-fx)
+                 {:fx (clip/ref :feed-fx)
+                  :crypto (clip/ref :feed-bybit)}
                  (clip/ref :duckdb))}
   
   :dummy-strategy {:start (notebook.live.live-dummy-strategy/run-dummy-strategy (clip/ref :live))}
 
-  :sma-strategy {:start (notebook.live.live-sma-strategy/add-sma-strategy (clip/ref :live))}
+  :sma-strategy {:start (ta.env.live-bargenerator/add-bar-strategies (clip/ref :live)
+                         (var-get notebook.algo.sma-crossover/algos-fx))}
   
+  :sma-strategy-crypto {:start (ta.env.live-bargenerator/add-bar-strategies (clip/ref :live)
+
   :result-printer {:start (notebook.live.result-printer/start-print-results (clip/ref :live))}
-
-
-  ; crypto
-  :live-crypto {:start (ta.env.live-bargenerator/create-live-environment
-                 (clip/ref :feed-bybit)
-                 (clip/ref :duckdb))}
-  :sma-strategy-crypto {:start (notebook.live.live-sma-strategy/add-sma-strategy-crypto (clip/ref :live-crypto))}
-
-  :result-printer-crypto {:start (notebook.live.result-printer/start-print-results (clip/ref :live-crypto))}
-
 
   ;:bargenerator {:start (ta.tickerplant.bar-generator/bargenerator-start
   ;                       :us ; calendar

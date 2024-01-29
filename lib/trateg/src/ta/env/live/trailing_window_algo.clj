@@ -3,7 +3,9 @@
    [taoensso.timbre :refer [trace debug info warnf error]]
    [ta.calendar.core :refer [trailing-window]]
    [ta.algo.core :refer [get-algo-calc]]
-   [tick.core :as t]))
+   [tick.core :as t]
+   [tablecloth.api :as tc]
+   ))
 
 (defn run-algo-safe [algo-calc ds-bars opts]
   (try 
@@ -35,7 +37,10 @@
 (let [data (trailing-window-load-bars env opts time)
       {:keys [algo-calc]} opts
       ds-bars (:ds-bars data)
-      result (run-algo-safe algo-calc ds-bars opts)]
+      result (if (> (tc/row-count ds-bars) 0)
+                 (run-algo-safe algo-calc ds-bars opts)
+                 :error/empty-bar-series
+               )]
   (assoc data :result result)))
 
 (defn trailing-window-algo [algo-opts]

@@ -14,10 +14,7 @@
    Todo:
    - unsubscribe-quote
    - remove algo
-   - stop live environment
-   - 
-
-   "
+   - stop live environment"
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [manifold.stream :as s]
@@ -26,19 +23,25 @@
    [ta.tickerplant.bar-generator :as bg]
    [ta.quote.core :refer [subscribe quote-stream]]
    [ta.env.last-msg-summary :as summary]
-   [ta.env.live.trailing-window-algo :refer [trailing-window-algo]]
-   ))
+   [ta.env.live.trailing-window-algo :refer [trailing-window-algo]]))
 
 (defn create-live-environment [feed duckdb]
-  {:feed feed
-   :duckdb duckdb
-   :bar-categories (atom {})
-   :env {:get-series (partial duck/get-bars-window duckdb)}
-   :live-results-stream (s/stream)
-   :summary-quote (summary/create-last-summary (quote-stream feed) :asset)})
+  (let [global-quote-stream (s/stream)
+        feed-handler (vals feed)
+        feed-streams (map quote-stream feed-handler)]
+    (doall
+     (map #(s/connect % global-quote-stream) feed-streams))
+    {:feed feed
+     :duckdb duckdb
+     :bar-categories (atom {})
+     :env {:get-series (partial duck/get-bars-window duckdb)}
+     :live-results-stream (s/stream)
+     :global-quote-stream global-quote-stream
+   ;:summary-quote (summary/create-last-summary (quote-stream feed) :asset)
+     :summary-quote (summary/create-last-summary global-quote-stream :asset)}))
 
-(defn get-feed [state]
-  (:feed state))
+(defn get-feed [state feed]
+  (get (:feed state) feed))
 
 (defn get-result-stream [state]
   (:live-results-stream state))
@@ -87,20 +90,20 @@
       (> c 0))
     false))
 
-(comment 
-    (def ds
+(comment
+  (def ds
     (-> {:close [10.0 20.0 nil]
          :asset ["MSFT" "QQQ" "SPX"]}
         tc/dataset))
   ds
   (select-valid-bars-ds ds)
   (select-valid-bars-ds nil)
-  
+
   (ds-has-rows ds)
   (ds-has-rows nil)
 ;
   )
-  
+
 
 (defn save-finished-bars [duckdb]
   (fn [{:keys [time category ds-bars] :as msg}]
@@ -114,7 +117,7 @@
         (error "generated bars save exception!")
         (error "bars that could not be saved: " ds-bars)
         (bg/print-finished-bars msg)))
-     msg))
+    msg))
 
 (defn calc-algo [env {:keys [algo algo-opts]} time]
   (try
@@ -144,13 +147,13 @@
                         (debug "putting result to result stream: " result)
                         (s/put! result-stream result))))
                   algos)))
-      (catch Exception ex
-        (error "exception calculate-on-bar-close " bar-category)
-        (error "ex: " ex)))
+    (catch Exception ex
+      (error "exception calculate-on-bar-close " bar-category)
+      (error "ex: " ex)))
   msg)
 
-(defn connect-feed-with-bargenerator [bargen feed]
-  (info "connecting feed with bargenerator")
+(defn connect-feed-with-bargenerator [bargen [feed-name feed]]
+  (info "connecting feed with bargenerator: feed-name: " feed-name)
   (let [stream (quote-stream feed)
         process-tick (fn [tick]
                        ;(info "bargen is processing tick: " tick)
@@ -159,8 +162,8 @@
                        )]
     (s/consume process-tick stream)))
 
-(defn create-bar-category [{:keys [duckdb feed] :as state} 
-                            bar-category]
+(defn create-bar-category [{:keys [duckdb feed] :as state}
+                           bar-category]
   (info "add new bar category: " bar-category)
   (let [bargen (bg/bargenerator-start bar-category)
         bar-close-stream (bg/bar-close-stream bargen)
@@ -178,7 +181,9 @@
     (swap! (:bar-categories state) assoc bar-category data)
     ;(info "connecting streams...")
     (s/consume (partial calculate-on-bar-close state bar-category) bars-finished-stream)
-    (connect-feed-with-bargenerator bargen feed)
+    ;(connect-feed-with-bargenerator bargen feed)
+    (doall
+     (map (partial connect-feed-with-bargenerator bargen) feed))
     (s/connect results-stream live-results-stream)
     ;(info "connecting streams... done!")
     data))
@@ -189,17 +194,23 @@
 
 (defn add [state algo-wrapped]
   (let [{:keys [algo-opts _algo]} algo-wrapped
-        {:keys [bar-category asset]} algo-opts]
+        {:keys [bar-category asset feed]} algo-opts]
     (get-bar-category state bar-category)
     (add-algo-to-bar-category state bar-category algo-wrapped)
-  (if asset
-    (let [feed (get-feed state)]
-      (info "added algo with asset [" asset "] .. subscribing..")
-      (subscribe feed asset))
-    (warn "added algo without asset .. not subscribing!"))))
+    (if (and asset feed)
+      (let [f (get-feed state feed)]
+        (info "added algo with asset [" asset "] .. subscribing with feed " feed " ..")
+        (subscribe f asset))
+      (warn "added algo without asset .. not subscribing!"))))
 
 (defn add-bar-strategy [state algo-bar-strategy-wrapped]
   (add state (trailing-window-algo algo-bar-strategy-wrapped)))
+
+(defn add-bar-strategies [state strategies]
+  (info "add bar-strategies: " strategies)
+  (let [add (partial add-bar-strategy state)]
+    (doall
+     (map add strategies))))
 
 ;; see in demo notebook.live.live-bargenerator
 
@@ -252,22 +263,22 @@
 
 
   (-> (get-bar-category live bar-category)
-      :bar-close-stream 
+      :bar-close-stream
       (s/take!))
-  
+
 
   (-> (get-bar-category live bar-category)
       :bar-close-stream
       (s/put! {:time :now
                :category bar-category
                :ds-bars nil}))
-  
 
 
-  
+
+
   (category-result-stream live bar-category)
   (category-algos live bar-category)
-  
+
 
  ; 
   )

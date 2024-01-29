@@ -5,5 +5,6 @@
 
 (def db (:duckdb modular.system/system))
 
-(get-bars db "EUR/USD")
-(get-bars db "USD/JPY")
+(get-bars db [:us :m] "EUR/USD")
+(get-bars db [:us :m] "USD/JPY")
+

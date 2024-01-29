@@ -13,7 +13,6 @@
 ;(def live (env/create-live-environment feed duckdb))
 
 (def live (modular.system/system :live))
-(def live (modular.system/system :live-crypto))
 
 live
 
@@ -38,6 +37,8 @@ live
 
 (env/unfinished-bar-snapshot live bar-category)
 (-> live (env/unfinished-bar-snapshot bar-category) print-table)
+
+
 
 
 

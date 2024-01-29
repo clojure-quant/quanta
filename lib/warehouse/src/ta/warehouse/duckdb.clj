@@ -56,6 +56,7 @@
 
 
 (defn get-bars [session bar-category asset]
+    (info "get-bars " asset)
     (let [query (sql-query-bars-for-asset bar-category asset)]
     (-> (duckdb/sql->dataset (:conn session) query)
         (keywordize-columns))))
@@ -68,6 +69,7 @@
          " order by date")))
 
 (defn get-bars-since [session bar-category asset since]
+    (info "get-bars-since " asset since)
     (let [query (sql-query-bars-for-asset-since bar-category asset since)]
       (-> (duckdb/sql->dataset (:conn session) query)
           (keywordize-columns))))
@@ -82,7 +84,9 @@
          " order by date")))
 
 (defn get-bars-window [session bar-category asset dstart dend]
+  (info "get-bars-window " asset dstart dend)
   (let [query (sql-query-bars-for-asset-window bar-category asset dstart dend)]
+    (info "sql-query: " query)
     (-> (duckdb/sql->dataset (:conn session) query)
         (keywordize-columns))))
 
@@ -102,10 +106,12 @@
 (defn empty-ds [bar-category]
   (let [table-name (bar-category->table-name bar-category)]
     (-> (tc/dataset [{:open 0.0 :high 0.0 :low 0.0 :close 0.0
-                      :volume 0 :asset "000"
+                      :volume 0.0 ; crypto volume is double.
+                      :asset "000"
                       :date (now)
                       :epoch 0 :ticks 0}])
         (tc/set-dataset-name table-name))))
+
 
 (defn create-table [session bar-category]
   (let [ds (empty-ds bar-category)]
@@ -123,6 +129,7 @@
 (comment
   (require '[modular.system])
   (def db (:duckdb modular.system/system))
+  (def db (duckdb-start "../../output/duckdb/bars"))
   db
 
   (bar-category->table-name [:us :m])
@@ -141,7 +148,7 @@
 
 
   (get-bars db [:us :m] "EUR/USD")
-
+  (get-bars db [:us :m] "ETHUSDT")
 
   (sql-query-bars-for-asset-since 
    [:us :m] "EUR/USD" "2024-01-26T19:35:00Z") 
@@ -163,7 +170,17 @@
                    "2024-01-26T19:35:00Z"
                    "2024-01-26T19:45:00Z")
 
-    (get-bars-since duckdb [:us :m] "EUR/USD" time)
+    (get-bars-window db [:us :m] "ETHUSDT"
+                   "2024-01-29T18:56:00Z"
+                   "2024-01-29T19:00:00Z")
+  
+   (get-bars-window db [:us :m] "ETHUSDT"
+                 (tick/instant "2024-01-29T18:56:00Z")
+                 (tick/instant "2024-01-29T19:00:00Z"))
+
+
+
+  (get-bars-since duckdb [:us :m] "EUR/USD" time)
   (get-bars-since duckdb [:us :m] "EUR/USD" (str time))
   (t/inst time)
   (format-date time)

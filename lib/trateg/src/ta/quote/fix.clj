@@ -13,7 +13,8 @@
   ;  :md-entry-price 154.097}
   {:asset (:symbol msg)
    :price (:md-entry-price msg)
-   :size 100})
+   :size 100.0 ; double so that we are compatible with crypto volumes that are double
+   })
           
 (defrecord quotefeed-fix [opts state]
   quotefeed
