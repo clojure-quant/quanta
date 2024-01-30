@@ -17,6 +17,7 @@
    - stop live environment"
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
+   [nano-id.core :refer [nano-id]]
    [manifold.stream :as s]
    [tablecloth.api :as tc]
    [ta.warehouse.duckdb :as duck]
@@ -24,6 +25,10 @@
    [ta.quote.core :refer [subscribe quote-stream]]
    [ta.env.last-msg-summary :as summary]
    [ta.env.live.trailing-window-algo :refer [trailing-window-algo]]))
+
+
+
+
 
 (defn create-live-environment [feed duckdb]
   (let [global-quote-stream (s/stream)
@@ -193,15 +198,21 @@
       (create-bar-category state bar-category)))
 
 (defn add [state algo-wrapped]
-  (let [{:keys [algo-opts _algo]} algo-wrapped
-        {:keys [bar-category asset feed]} algo-opts]
+  (let [id (nano-id 6)
+        {:keys [algo-opts _algo]} algo-wrapped
+        {:keys [bar-category asset feed]} algo-opts
+        algo-wrapped-with-id (assoc algo-wrapped :algo-opts
+                                    (assoc algo-opts :id id))
+        ]
     (get-bar-category state bar-category)
-    (add-algo-to-bar-category state bar-category algo-wrapped)
+    (add-algo-to-bar-category state bar-category algo-wrapped-with-id)
     (if (and asset feed)
       (let [f (get-feed state feed)]
         (info "added algo with asset [" asset "] .. subscribing with feed " feed " ..")
         (subscribe f asset))
-      (warn "added algo without asset .. not subscribing!"))))
+      (warn "added algo without asset .. not subscribing!"))
+    id
+    ))
 
 (defn add-bar-strategy [state algo-bar-strategy-wrapped]
   (add state (trailing-window-algo algo-bar-strategy-wrapped)))

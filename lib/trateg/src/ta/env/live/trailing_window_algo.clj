@@ -4,8 +4,7 @@
    [ta.calendar.core :refer [trailing-window]]
    [ta.algo.core :refer [get-algo-calc]]
    [tick.core :as t]
-   [tablecloth.api :as tc]
-   ))
+   [tablecloth.api :as tc]))
 
 (defn run-algo-safe [algo-calc ds-bars opts]
   (try 
@@ -35,13 +34,13 @@
 
 (defn trailing-window-algo-run [env opts time]
 (let [data (trailing-window-load-bars env opts time)
-      {:keys [algo-calc]} opts
+      {:keys [algo-calc id topic]} opts
       ds-bars (:ds-bars data)
       result (if (> (tc/row-count ds-bars) 0)
                  (run-algo-safe algo-calc ds-bars opts)
                  :error/empty-bar-series
                )]
-  (assoc data :result result)))
+  (assoc data :result result :id id :topic topic)))
 
 (defn trailing-window-algo [algo-opts]
   (let [algo-ns (:algo-ns algo-opts)

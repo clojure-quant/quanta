@@ -89,9 +89,12 @@
                          (var-get notebook.algo.sma-crossover/algos-fx))}
   
   :sma-strategy-crypto {:start (ta.env.live-bargenerator/add-bar-strategies (clip/ref :live)
+                         (var-get notebook.algo.sma-crossover/algos-crypto))}
 
   :result-printer {:start (notebook.live.result-printer/start-print-results (clip/ref :live))}
 
+  :result-monitor {:start (ta.env.live.result-monitor/result-monitor-start (clip/ref :live))}
+  
   ;:bargenerator {:start (ta.tickerplant.bar-generator/bargenerator-start
   ;                       :us ; calendar
   ;                       :m ; minute bars

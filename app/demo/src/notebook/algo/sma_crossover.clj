@@ -3,6 +3,7 @@
    [ta.algo.permutate :refer [->assets]]))
 
 (def base {:algo-ns 'demo.algo.sma3
+           :topic :sma-crossover-1m
            :bar-category [:us :m]
            :asset "EUR/USD"
            :feed :fx
