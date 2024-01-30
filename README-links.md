@@ -104,8 +104,7 @@ FANG %>%
 
 
 
-80,000 stocks. 15 years, 10 usd a month. splitFactor, dividend. fundamentals.
-https://api.tiingo.com/
+
 
 
 https://www.business-science.io/finance/2020/03/04/tidyquant-1.0.0.html

@@ -40,3 +40,7 @@
 ## interactive-brokers IB
 https://github.com/alex314159/ib-re-actor-976-plus
 https://github.com/jjttjj/iboga
+
+# tiingo
+80,000 stocks. 15 years, 10 usd a month. splitFactor, dividend. fundamentals.
+https://api.tiingo.com/
