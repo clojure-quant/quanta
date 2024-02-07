@@ -6,6 +6,6 @@
         cljplot/cljplot {:mvn/version "0.0.3"}
         org.scicloj/wadogo {:mvn/version "1.0.0-SNAPSHOT"}
         org.pinkgorilla/modular {:mvn/version "0.0.38"}
-        ta/trateg {:local/root "../trateg" :deps/manifest :deps}}
+        ta/trateg {:local/root "../../lib/trateg" :deps/manifest :deps}}
 ;
  }
