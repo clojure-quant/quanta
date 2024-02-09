@@ -19,17 +19,20 @@
    [taoensso.timbre :refer [trace debug info warn error]]
    [nano-id.core :refer [nano-id]]
    [manifold.stream :as s]
+   [manifold.bus :as mbus]
    [tablecloth.api :as tc]
    [ta.warehouse.duckdb :as duck]
    [ta.tickerplant.bar-generator :as bg]
    [ta.quote.core :refer [subscribe quote-stream]]
-   [ta.env.last-msg-summary :as summary]
+   [ta.env.tools.last-msg-summary :as summary]
+   [ta.env.tools.id-bus :refer [create-id-bus]]
    ))
 
 (defn create-live-environment [feed duckdb]
   (let [global-quote-stream (s/stream)
         feed-handler (vals feed)
-        feed-streams (map quote-stream feed-handler)]
+        feed-streams (map quote-stream feed-handler)
+        live-results-stream (s/stream)]
     (doall
      (map #(s/connect % global-quote-stream) feed-streams))
     {:feed feed
@@ -37,8 +40,9 @@
      :bar-categories (atom {})
      :algos (atom {})
      :env {:get-series (partial duck/get-bars-window duckdb)}
-     :live-results-stream (s/stream)
+     :live-results-stream live-results-stream
      :global-quote-stream global-quote-stream
+     :id-bus (create-id-bus live-results-stream)
    ;:summary-quote (summary/create-last-summary (quote-stream feed) :asset)
      :summary-quote (summary/create-last-summary global-quote-stream :asset)}))
 
@@ -121,12 +125,16 @@
         (bg/print-finished-bars msg)))
     msg))
 
-(defn calc-algo [env {:keys [algo algo-opts]} time]
+(defn calc-algo [env {:keys [algo algo-opts]} time category]
   (try
     (debug "calculating algo: " algo " time: " time)
     (let [result (algo env algo-opts time)]
       (debug "calculating algo: " algo " time: " time " result: " result)
-      result)
+      {:time time
+       :category category
+       :algo algo 
+       :algo-opts algo-opts
+       :result result})
     (catch Exception ex
       (error "algo-calc exception " algo time ex)
       nil)))
@@ -142,9 +150,9 @@
   (try
     (let [result-stream (category-result-stream state bar-category)
           algos (category-algos state bar-category)]
-      (info "algos: " algos)
+      ; (debug "algos: " algos)
       (doall (map (fn [algo]
-                    (let [result (calc-algo env algo time)]
+                    (let [result (calc-algo env algo time category)]
                       (when result
                         (debug "putting result to result stream: " result)
                         (s/put! result-stream result))))
@@ -199,8 +207,7 @@
         {:keys [algo-opts _algo]} algo-wrapped
         {:keys [bar-category asset feed]} algo-opts
         algo-wrapped-with-id (assoc algo-wrapped :algo-opts
-                                    (assoc algo-opts :id id))
-        ]
+                                    (assoc algo-opts :id id))]
     (get-bar-category state bar-category)
     (add-algo-to-bar-category state bar-category algo-wrapped-with-id)
     (swap! (:algos state) assoc id algo-wrapped-with-id)
@@ -209,10 +216,9 @@
         (info "added algo with asset [" asset "] .. subscribing with feed " feed " ..")
         (subscribe f asset))
       (warn "added algo without asset .. not subscribing!"))
-    id
-    ))
+    id))
 
-(defn add 
+(defn add
   "adds an algo to the live environment.
    if algo is a map, it will add one algo
    otherwise it will add multiple algos"
@@ -222,21 +228,28 @@
     (map #(add-one state %) algo-wrapped)))
 
 
+;; QUERY INTERFACE
+
 (defn algo-ids [state]
   (keys @(:algos state)))
-  
+
 (defn algo-info [state algo-id]
   (get @(:algos state) algo-id))
 
 (defn algos-matching [state opts-key opts-value]
   (let [ids (algo-ids state)
-        all (map #(algo-info state %) ids) 
+        all (map #(algo-info state %) ids)
         pred (fn [{:keys [algo-opts]}]
                (= (get algo-opts opts-key) opts-value))]
-    (filter pred all)
-    
-    ))
-                     
+    (filter pred all)))
+
+(defn get-algo-result-stream [state algo-id]
+  (info "subscribing for results for algo-id: " algo-id)
+   (mbus/subscribe (:id-bus state) algo-id)  
+  )
+
+
+
 
 ;; see in demo notebook.live.live-bargenerator
 
@@ -295,7 +308,7 @@
                :category bar-category
                :ds-bars nil}))
 
-  
+
   (category-result-stream live bar-category)
   (category-algos live bar-category)
 

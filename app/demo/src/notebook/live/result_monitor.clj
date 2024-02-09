@@ -1,7 +1,7 @@
 (ns notebook.live.result-monitor
   (:require
    [modular.system]
-   [ta.env.live.result-monitor :refer [monitor-topic snapshot last-ds-row]]
+   [ta.env.tools.result-monitor :refer [monitor-topic snapshot last-ds-row]]
    ))
  
 

@@ -1,10 +1,10 @@
-(ns ta.env.live.result-monitor
+(ns ta.env.tools.result-monitor
   (:require
    [taoensso.timbre :refer [trace debug info warnf error]]
    [tablecloth.api :as tc]
    [manifold.stream :as s]
    [manifold.bus :as mbus]
-   [ta.env.last-msg-summary :as sum]))
+   [ta.env.tools.last-msg-summary :as sum]))
 
 (defn create-and-link-topic-bus [result-stream]
   (let [bus (mbus/event-bus)]

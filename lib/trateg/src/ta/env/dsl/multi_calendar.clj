@@ -15,10 +15,10 @@
    normalized datastructure that can be used to add 
    it to an environment."
   [v]
-  (println "create-meta-algo ..")
+  ;(println "create-meta-algo ..")
   (let [f (first v)
         f? (map? f)
-        _ (println "f: " f " f?: " f?)
+        ; _ (println "f: " f " f?: " f?)
         opts (if f? f {})
         v' (if f? (rest v) v)
         params (partition 3 v')]

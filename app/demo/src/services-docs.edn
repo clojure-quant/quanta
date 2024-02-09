@@ -105,7 +105,7 @@
 
   :result-printer {:start (notebook.live.result-printer/start-print-results (clip/ref :live))}
 
-  :result-monitor {:start (ta.env.live.result-monitor/result-monitor-start (clip/ref :live))}
+  :result-monitor {:start (ta.env.tools.result-monitor/result-monitor-start (clip/ref :live))}
   
   ;:bargenerator {:start (ta.tickerplant.bar-generator/bargenerator-start
   ;                       :us ; calendar
