@@ -24,11 +24,7 @@
    [ta.tickerplant.bar-generator :as bg]
    [ta.quote.core :refer [subscribe quote-stream]]
    [ta.env.last-msg-summary :as summary]
-   [ta.env.live.trailing-window-algo :refer [trailing-window-algo]]))
-
-
-
-
+   ))
 
 (defn create-live-environment [feed duckdb]
   (let [global-quote-stream (s/stream)
@@ -39,6 +35,7 @@
     {:feed feed
      :duckdb duckdb
      :bar-categories (atom {})
+     :algos (atom {})
      :env {:get-series (partial duck/get-bars-window duckdb)}
      :live-results-stream (s/stream)
      :global-quote-stream global-quote-stream
@@ -197,7 +194,7 @@
   (or (get-existing-bar-category state bar-category)
       (create-bar-category state bar-category)))
 
-(defn add [state algo-wrapped]
+(defn add-one [state algo-wrapped]
   (let [id (nano-id 6)
         {:keys [algo-opts _algo]} algo-wrapped
         {:keys [bar-category asset feed]} algo-opts
@@ -206,6 +203,7 @@
         ]
     (get-bar-category state bar-category)
     (add-algo-to-bar-category state bar-category algo-wrapped-with-id)
+    (swap! (:algos state) assoc id algo-wrapped-with-id)
     (if (and asset feed)
       (let [f (get-feed state feed)]
         (info "added algo with asset [" asset "] .. subscribing with feed " feed " ..")
@@ -214,14 +212,19 @@
     id
     ))
 
-(defn add-bar-strategy [state algo-bar-strategy-wrapped]
-  (add state (trailing-window-algo algo-bar-strategy-wrapped)))
+(defn add 
+  "adds an algo to the live environment.
+   if algo is a map, it will add one algo
+   otherwise it will add multiple algos"
+  [state algo-wrapped]
+  (if (map? algo-wrapped)
+    (add-one state algo-wrapped)
+    (map #(add-one state %) algo-wrapped)))
 
-(defn add-bar-strategies [state strategies]
-  (info "add bar-strategies: " strategies)
-  (let [add (partial add-bar-strategy state)]
-    (doall
-     (map add strategies))))
+(defn algo-info [state algo-id]
+  (get @(:algos state) algo-id))
+
+
 
 ;; see in demo notebook.live.live-bargenerator
 
@@ -256,10 +259,6 @@
   (category-bar-time-stream live bar-category)
 
 
-
-
-
-
   (calculate-on-bar-close live bar-category :now)
 
 
@@ -284,9 +283,7 @@
                :category bar-category
                :ds-bars nil}))
 
-
-
-
+  
   (category-result-stream live bar-category)
   (category-algos live bar-category)
 

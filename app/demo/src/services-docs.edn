@@ -83,13 +83,25 @@
                   :crypto (clip/ref :feed-bybit)}
                  (clip/ref :duckdb))}
   
-  :dummy-strategy {:start (notebook.live.live-dummy-strategy/run-dummy-strategy (clip/ref :live))}
+  ;; LIVE STRATEGIES
 
-  :sma-strategy {:start (ta.env.live-bargenerator/add-bar-strategies (clip/ref :live)
-                         (var-get notebook.algo.sma-crossover/algos-fx))}
+  :dummy-strategy {:start (ta.env.live-bargenerator/add 
+                           (clip/ref :live) 
+                           (var-get notebook.algo-config.raw-dummy/raw-dummy-strategies))}
+
+  :sma-strategy-forex {:start (ta.env.dsl.barstrategy/add-bar-strategies 
+                               (clip/ref :live)
+                               (var-get notebook.algo-config.simple-sma-crossover/algos-fx))}
   
-  :sma-strategy-crypto {:start (ta.env.live-bargenerator/add-bar-strategies (clip/ref :live)
-                         (var-get notebook.algo.sma-crossover/algos-crypto))}
+  :sma-strategy-crypto {:start (ta.env.dsl.barstrategy/add-bar-strategies 
+                                 (clip/ref :live)
+                                 (var-get notebook.algo-config.simple-sma-crossover/algos-crypto))}
+
+  :multicalendar-sma-strategy-forex {:start (ta.env.dsl.multi-calendar/add
+                                             (clip/ref :live)
+                                             (var-get notebook.algo-config.multicalendar-sma/multi-calendar-algo-demo))}
+  
+  ;; LIVE STRATEGY MONITORING
 
   :result-printer {:start (notebook.live.result-printer/start-print-results (clip/ref :live))}
 

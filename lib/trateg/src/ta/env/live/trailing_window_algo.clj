@@ -6,9 +6,9 @@
    [tick.core :as t]
    [tablecloth.api :as tc]))
 
-(defn run-algo-safe [algo-calc ds-bars opts]
+(defn run-algo-safe [algo-calc env opts ds-bars]
   (try 
-     (algo-calc ds-bars opts)
+     (algo-calc env opts ds-bars)
      (catch Exception ex
        (error "exception in running algo.")
        (error "exception: " ex)
@@ -37,7 +37,7 @@
       {:keys [algo-calc id topic]} opts
       ds-bars (:ds-bars data)
       result (if (> (tc/row-count ds-bars) 0)
-                 (run-algo-safe algo-calc ds-bars opts)
+                 (run-algo-safe algo-calc env opts ds-bars)
                  :error/empty-bar-series
                )]
   (assoc data :result result :id id :topic topic)))

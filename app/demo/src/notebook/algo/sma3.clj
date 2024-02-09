@@ -1,4 +1,4 @@
-(ns demo.algo.sma3
+(ns notebook.algo.sma3
   (:require
    [tablecloth.api :as tc]
    [ta.indicator.atr :refer [sma]]))
@@ -27,8 +27,8 @@
       :else :hold)
     :hold))
 
-(defn algo-calc [ds-bars options]
-  (let [ds-study (add-sma-indicator ds-bars options)
+(defn bar-strategy [_env opts ds-bars]
+  (let [ds-study (add-sma-indicator ds-bars opts)
         sma-st (:sma-st ds-study)
         sma-lt (:sma-lt ds-study)
         signal (into [] (map calc-sma-signal sma-st sma-lt))]
