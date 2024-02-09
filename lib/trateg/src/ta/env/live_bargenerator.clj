@@ -221,10 +221,22 @@
     (add-one state algo-wrapped)
     (map #(add-one state %) algo-wrapped)))
 
+
+(defn algo-ids [state]
+  (keys @(:algos state)))
+  
 (defn algo-info [state algo-id]
   (get @(:algos state) algo-id))
 
-
+(defn algos-matching [state opts-key opts-value]
+  (let [ids (algo-ids state)
+        all (map #(algo-info state %) ids) 
+        pred (fn [{:keys [algo-opts]}]
+               (= (get algo-opts opts-key) opts-value))]
+    (filter pred all)
+    
+    ))
+                     
 
 ;; see in demo notebook.live.live-bargenerator
 

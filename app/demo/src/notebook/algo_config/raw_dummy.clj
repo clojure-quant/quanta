@@ -16,12 +16,29 @@
 (def raw-dummy-strategies 
   [{:algo algo-dummy
     :algo-opts {:bar-category bar-category
-                :asset "EUR/USD"}}
+                :asset "EUR/USD"
+                :topic :dummy}}
    {:algo algo-dummy
     :algo-opts {:bar-category bar-category
-                :asset "USD/JPY"}}])
+                :asset "USD/JPY"
+                :topic :dummy
+                }}])
 
+
+(comment
+  (require '[modular.system])
+  (def live (:live modular.system/system))
+  (require '[ta.env.live-bargenerator :as env])
+  (env/add live raw-dummy-strategies)
+  ;; ("T2bRn7" "G8oweV")
+
+
+
+ ; 
+  )
    
+
+
 
 
 

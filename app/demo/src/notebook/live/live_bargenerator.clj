@@ -55,3 +55,17 @@ live
 #_(add-to-scheduler print-time {:window {:calendar :us
                                        :interval :h}
                               :algo-ns 'algo2})
+
+
+
+(count (env/algo-ids live))
+
+
+(map #(env/algo-info live %)
+     (env/algo-ids live))
+
+(count 
+  (env/algos-matching live :topic :sma-crossover-1m)
+ )
+
+  (env/algos-matching live :topic :dummy)
