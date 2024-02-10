@@ -21,7 +21,7 @@
    :category [:us :m]
    :algo "#function[ta.env.dsl.barstrategy/trailing-window-algo-run]",
    :algo-opts {:feed :fx, :sma-length-st 2,
-               :topic :sma-crossover-1m,
+               :label :sma-crossover-1m,
                :algo-calc #'notebook.algo.sma3/bar-strategy,
                :algo-ns 'notebook.algo.sma3,
                :trailing-n 5,

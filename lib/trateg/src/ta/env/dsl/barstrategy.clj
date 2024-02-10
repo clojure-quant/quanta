@@ -17,7 +17,7 @@
 
 (defn trailing-window-algo-run [env opts time]
   (let [ds-bars (trailing-window-load-bars env opts time)
-        {:keys [algo-calc id topic]} opts
+        {:keys [algo-calc _id _label]} opts
         result (if (> (tc/row-count ds-bars) 0)
                  (run-algo-safe algo-calc env opts ds-bars)
                  :error/empty-bar-series)]

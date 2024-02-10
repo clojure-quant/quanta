@@ -4,7 +4,7 @@
  (def multi-calendar-algo-demo
   [{:asset "EUR/USD"
     :feed :fx
-    :topic :multi-calendar}
+    :label :multi-calendar}
    :us :h [{:trailing-n 100
             :sma 30}
            'ta.env.algo.trailing-window/trailing-window-load-bars
@@ -29,7 +29,7 @@
  
  (require '[ta.env.live-bargenerator :as env])
    
-   (env/algos-matching live :topic :multi-calendar)
+   (env/algos-matching live :label :multi-calendar)
  
   ; 
    )

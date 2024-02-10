@@ -25,8 +25,7 @@
    [ta.tickerplant.bar-generator :as bg]
    [ta.quote.core :refer [subscribe quote-stream]]
    [ta.env.tools.last-msg-summary :as summary]
-   [ta.env.tools.id-bus :refer [create-id-bus]]
-   ))
+   [ta.env.tools.id-bus :refer [create-id-bus]]))
 
 (defn create-live-environment [feed duckdb]
   (let [global-quote-stream (s/stream)
@@ -132,7 +131,7 @@
       (debug "calculating algo: " algo " time: " time " result: " result)
       {:time time
        :category category
-       :algo algo 
+       :algo algo
        :algo-opts algo-opts
        :result result})
     (catch Exception ex
@@ -225,7 +224,7 @@
   [state algo-wrapped]
   (if (map? algo-wrapped)
     (add-one state algo-wrapped)
-    (map #(add-one state %) algo-wrapped)))
+    (doall (map #(add-one state %) algo-wrapped))))
 
 
 ;; QUERY INTERFACE
@@ -245,8 +244,7 @@
 
 (defn get-algo-result-stream [state algo-id]
   (info "subscribing for results for algo-id: " algo-id)
-   (mbus/subscribe (:id-bus state) algo-id)  
-  )
+  (mbus/subscribe (:id-bus state) algo-id))
 
 
 

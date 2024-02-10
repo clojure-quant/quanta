@@ -1,6 +1,6 @@
 (ns ta.warehouse.duckdb
   (:require
-   [taoensso.timbre :as timbre :refer [info warn error]]
+   [taoensso.timbre :as timbre :refer [debug info warn error]]
    [clojure.java.io :as java-io]
    [tablecloth.api :as tc]
    [tmducken.duckdb :as duckdb]
@@ -86,7 +86,7 @@
 (defn get-bars-window [session bar-category asset dstart dend]
   (info "get-bars-window " asset dstart dend)
   (let [query (sql-query-bars-for-asset-window bar-category asset dstart dend)]
-    (info "sql-query: " query)
+    (debug "sql-query: " query)
     (-> (duckdb/sql->dataset (:conn session) query)
         (keywordize-columns))))
 

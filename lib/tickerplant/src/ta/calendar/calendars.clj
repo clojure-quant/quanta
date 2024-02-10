@@ -22,8 +22,8 @@
            :close (t/new-time 17 0 0) 
            :week week-5
            :timezone "America/New_York"}
-   :crypto {:open (t/new-time 17 0 0)
-            :close (t/new-time 16 59 59)
+   :crypto {:open (t/new-time 0 0 0)
+            :close (t/new-time 23 59 00)
             :week week-7
             :timezone "America/New_York"}
    :us1 {:open (t/new-time 9 0 0) 

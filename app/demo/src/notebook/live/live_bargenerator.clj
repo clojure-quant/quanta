@@ -13,7 +13,6 @@
 ;(def live (env/create-live-environment feed duckdb))
 
 (def live (modular.system/system :live))
-
 live
 
 (def bar-category [:us :m])
@@ -65,7 +64,7 @@ live
      (env/algo-ids live))
 
 (count 
-  (env/algos-matching live :topic :sma-crossover-1m)
+  (env/algos-matching live :label :sma-crossover-1m)
  )
 
-  (env/algos-matching live :topic :dummy)
+  (env/algos-matching live :label :dummy)

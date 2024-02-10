@@ -15,7 +15,6 @@
            'trailing-window-bars :m
            'juan/juan-algo]])
 
-
 (def fx-assets
   ["EUR/USD" "GBP/USD" "EUR/JPY"
    "USD/JPY" "AUD/USD" "USD/CHF"
@@ -23,4 +22,5 @@
    "EUR/CHF" "NZD/USD" "USD/NOK"
    "USD/ZAR" "USD/SEK" "USD/MXN"])
 
+;; TODO: this permutation does not work, as it is INSIDE a VECTOR!
 (def algos-fx (->assets juan-algo-base fx-assets))
