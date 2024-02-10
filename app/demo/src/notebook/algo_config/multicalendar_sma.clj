@@ -13,8 +13,8 @@
             :sma 20}
            'ta.env.algo.trailing-window/trailing-window-load-bars
            'notebook.algo.sma3/bar-strategy]
-     ; :* :*  [get-current-position
-     ;         all-positions-agree]
+    :* :*  ['ta.env.algo.ds/get-current-positions
+            'ta.env.algo.ds/all-positions-agree]
    ])
 
 

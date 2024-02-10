@@ -247,6 +247,21 @@
   (mbus/subscribe (:id-bus state) algo-id))
 
 
+;; algos without dependency on calendar stream
+
+(defn register-algo [state algo algo-opts]
+   (let [id (nano-id 6)]
+     (swap! (:algos state) 
+            assoc id {:algo algo 
+                      :algo-opts (assoc algo-opts :id id)})
+     id))
+
+   
+(defn publish-algo-result [state id r]
+  (s/put! (get-result-stream state) 
+          {:time :adhoc  
+           :algo-opts {:id id}
+           :result r}))
 
 
 ;; see in demo notebook.live.live-bargenerator
