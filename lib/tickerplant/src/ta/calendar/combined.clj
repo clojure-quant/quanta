@@ -3,15 +3,15 @@
    takes "
   (:require
    [tick.core :as t]
-   [ta.calendar.core :refer [current-close next-close]]))
+   [ta.calendar.core :refer [next-close prior-close]]))
 
 ;; calendar-reader
 
 (defn calendar-seq-reader 
   "returns a reader, a function without arguments that always returns the 
    next date for the sequence"
-  [[calendar-kw interval-kw]]
-  (let [start (current-close calendar-kw interval-kw)
+  [dt-start [calendar-kw interval-kw]]
+  (let [start (prior-close calendar-kw interval-kw dt-start)
         state (atom start)
         read-next (fn []
                     (let [dt (next-close calendar-kw interval-kw @state)]
@@ -19,9 +19,9 @@
                       dt))]
     read-next))
 
-(defn- create-readers [windows]
+(defn- create-readers [dt-start windows]
   ; note: needs to return a vector, as only vectors can be randomly accessed.
-  (->> (map calendar-seq-reader windows)
+  (->> (map #(calendar-seq-reader dt-start %) windows)
        (into [])))
 
 (defn- get-next-date [readers idx]
@@ -58,26 +58,50 @@
     {:window window
      :time dt}))
 
-(defn calendar-seq-combined [windows]
-  (let [readers (create-readers windows)
+(defn calendar-seq-combined [start-dt windows]
+  (let [readers (create-readers start-dt windows)
         state (create-initial-state readers)
         next (fn []
                (get-next-date-state windows readers state))]
     (repeatedly next)))
 
+(defn end-dates [end-dt windows]
+  (map #(next-close (first %) (last %) end-dt) windows)
+  
+  )
+
+
+(defn window
+  [start-dt end-dt windows]
+   (let [end-dts (end-dates end-dt windows)
+         end-dt-max (apply t/max end-dts)
+         seq (calendar-seq-combined start-dt windows)
+         not-end?  (fn [{:keys [window time]}]
+                     (t/<= time end-dt-max))
+         ]
+     (take-while not-end? seq)
+     ;end-dt-max
+     ))
+
 
 (comment 
 
   ;; reader
-
-  (def reader (calendar-seq-reader [:crypto :h]))
+  
+  (def dt-start (t/now))
+  dt-start
+  
+  (def reader (calendar-seq-reader dt-start [:crypto :h]))
   ; reader will return with each call the next date
   (reader)
   
   (def windows [[:crypto :h]
                 [:crypto :m]])
 
-  (def readers (create-readers windows))
+  (end-dates dt-start windows)
+  (window dt-start dt-start windows)
+
+  (def readers (create-readers dt-start windows))
 
   (count readers)
   (get readers 0)
@@ -98,9 +122,9 @@
   (get-next-date-state windows readers state)
 
   ;; combiner
-
-  (def c (calendar-seq-combined [[:crypto :h]
-                                 [:crypto :m]])) 
+  
+  (def c (calendar-seq-combined dt-start [[:crypto :h]
+                                          [:crypto :m]])) 
   
   (take 1 c)
   
@@ -110,7 +134,18 @@
        (print-table))
   
 
+  
+  (def start-dt (t/now))
+  (def end-dt (t/>> start-dt (t/new-duration 10 :days))
+  
+  start-dt
+    end-dt
+    
+  (window start-dt end-dt windows)
 
+  (->> (window start-dt end-dt windows)
+      (print-table)
+   )
 
   
 ;  

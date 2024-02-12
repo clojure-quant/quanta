@@ -1,23 +1,25 @@
 (ns notebook.playground.calendar-combined
   (:require
-   [ta.calendar.combined :refer [calendar-seq-combined]]
+   [tick.core :as t]
+   [ta.calendar.combined :refer [window]]
    [clojure.pprint :refer [print-table]]))
 
+(def start-dt (t/now))
+start-dt
 
-(def c (calendar-seq-combined [[:crypto :h]
-                               [:crypto :m]]))
+(def windows [[:crypto :h]
+              [:crypto :m]])
 
-(take 1 c)
-
-(defn print-n [windows n]
-  (let [c (calendar-seq-combined windows)]
-    (->> (take n c)
+(defn print-n [windows days]
+  (let [end-dt (t/>> start-dt (t/new-duration days :days))
+        c (window start-dt end-dt windows)]
+    (->> c
          (print-table))))
 
 
 (print-n [[:crypto :h]
           [:crypto :m]]
-         1000)
+         3)
 
 
 (print-n [[:eu :d]
