@@ -84,8 +84,8 @@
                  (clip/ref :duckdb))}
   
   ;; LIVE STRATEGIES
-  :dummy-strategy {:start (ta.env.live-bargenerator/add (clip/ref :live) 
-                           (var-get notebook.algo-config.raw-dummy/raw-dummy-strategies))}
+  ;:dummy-strategy {:start (ta.env.live-bargenerator/add (clip/ref :live) 
+  ;                         (var-get notebook.algo-config.raw-dummy/raw-dummy-strategies))}
 
   ;:sma-strategy-forex {:start (ta.env.dsl.barstrategy/add-bar-strategies (clip/ref :live)
   ;                             (var-get notebook.algo-config.simple-sma-crossover/algos-fx))}

@@ -1,6 +1,6 @@
 (ns ta.env.dsl.multi-calendar
   (:require
-    [taoensso.timbre :refer [trace debug info warn error]]
+   [taoensso.timbre :refer [trace debug info warn error]]
    [manifold.stream :as s]
    [ta.env.dsl.chain :refer [make-chain]]
    [ta.env.live-bargenerator :as live-env]
@@ -50,12 +50,10 @@
                    params)
         combined (-> (filter barcategory-combined? chain)
                      first)
-        chain (remove barcategory-combined? chain)
-        ]
+        chain (remove barcategory-combined? chain)]
     {:opts opts
      :chain chain
-     :combined combined
-     }))
+     :combined combined}))
 
 
 ;; CREATE
@@ -69,19 +67,18 @@
 (defn- create [v]
   (let [{:keys [opts chain combined]} (parse v)]
     {:calendar-algos (map #(create-part opts %) chain)
-     :combined-algo combined}
-    ))
+     :combined-algo combined}))
 
 ;; ADD
 
 (defn add [env v]
   (let [{:keys [calendar-algos combined-algo]} (create v)
         ids (map #(live-env/add env %) calendar-algos)
-        id-combined (when combined-algo 
+        id-combined (when combined-algo
                       (add-algo-combiner env (:spec combined-algo) ids))
-        ids (if id-combined 
-                (conj ids id-combined)
-                ids)]
+        ids (if id-combined
+              (conj ids id-combined)
+              ids)]
     ids))
 
 
