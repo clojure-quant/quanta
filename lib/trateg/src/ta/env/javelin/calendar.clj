@@ -1,0 +1,54 @@
+(ns ta.env.javelin.calendar
+  (:require
+   [javelin.core-clj :refer [cell cell=]]))
+
+(defn init [env]
+  (assoc env :calendars (atom {})))
+
+  (defn create-calendar [env calendar]
+    (assert (vector? calendar))
+    (println "creating calendar: " calendar)
+    (let [c (cell nil)] ; (nom/error “not started”)
+      (swap! (:calendars env) assoc calendar c)
+      c))
+
+  (defn get-calendar [env calendar]
+    (or (get @(:calendars env) calendar)
+        (create-calendar env calendar)))
+
+  (defn set-calendar! [env {:keys [calendar time] :as data}]
+    ;(println "set-calendar! cal: " calendar " time: " time "data: " data)
+    (let [c (get-calendar env calendar)]
+      (reset! c time)))
+
+  (defn active-calendars [env]
+    (let [r (keys @(:calendars env))]
+      (if r 
+        r 
+        [])))
+
+(comment 
+  
+  (def env (init {}))
+  env
+
+  (get-calendar env [:us :d])
+  env
+  (active-calendars env)  
+
+  (get-calendar env [:us :h])
+  (active-calendars env)
+
+  (set-calendar! env {:calendar [:us :h] 
+                      :time :now })
+  
+  @(get-calendar env [:us :h])
+  @(get-calendar env [:us :d])
+
+
+  (create-calendar env nil)
+   
+  
+ ; 
+  )
+

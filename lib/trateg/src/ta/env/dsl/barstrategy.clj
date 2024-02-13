@@ -1,32 +1,14 @@
 (ns ta.env.dsl.barstrategy
   (:require
     [taoensso.timbre :refer [trace debug info warn error]]
-    [ta.env.algo.trailing-window :refer [trailing-window-load-bars]]
+    [ta.env.algo.bar-strategy :refer [trailing-window-barstrategy]]
     [ta.algo.core :refer [get-algo-calc]]
-    [tablecloth.api :as tc]
     [ta.env.live-bargenerator :refer [add]]))
-
-(defn run-algo-safe [algo-calc env opts ds-bars]
-  (try
-    (algo-calc env opts ds-bars)
-    (catch Exception ex
-      (error "exception in running algo.")
-      (error "exception: " ex)
-      {:error "Exception!"})))
-
-
-(defn trailing-window-algo-run [env opts time]
-  (let [ds-bars (trailing-window-load-bars env opts time)
-        {:keys [algo-calc _id _label]} opts
-        result (if (> (tc/row-count ds-bars) 0)
-                 (run-algo-safe algo-calc env opts ds-bars)
-                 :error/empty-bar-series)]
-    result))
 
 (defn trailing-window-algo [algo-opts]
   (let [algo-ns (:algo-ns algo-opts)
         algo-calc (get-algo-calc algo-ns)]
-    {:algo trailing-window-algo-run
+    {:algo trailing-window-barstrategy
      :algo-opts (assoc algo-opts :algo-calc algo-calc)}))
 
 
