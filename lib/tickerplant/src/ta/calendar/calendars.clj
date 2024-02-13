@@ -26,10 +26,10 @@
            :close (t/new-time 16 30 0)
            :week week-6-sunday
            :timezone "America/New_York"}
-   :crypto {:open (t/new-time 17 0 0)
-            :close (t/new-time 16 59 59)
+   :crypto {:open (t/new-time 0 0 0)
+            :close (t/new-time 23 59 59)
             :week week-7
-            :timezone "America/New_York"}
+            :timezone "UTC"}
    :us1 {:open (t/new-time 9 0 0) 
         :close (t/new-time 17 0 0) 
         :week week-5
