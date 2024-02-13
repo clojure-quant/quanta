@@ -1,13 +1,48 @@
 (ns ta.calendar.intraday
   (:require
    [tick.core :as t]
-   [ta.calendar.day :refer [day-closed? next-open prior-open prior-close]]
+   [ta.calendar.calendars :refer [intraday? overnight?]]
+   [ta.calendar.day :refer [day-closed? day-open? next-open prior-open prior-close]]
   ))
 
-(defn time-closed? [{:keys [open close] :as calendar} dt]
+(defn time-open? [{:keys [open close] :as calendar} dt]
   (let [time (t/time dt)]
-    (or (t/>= time close)
-        (t/<= time open))))
+    (cond
+      (intraday? calendar) (and (t/>= time open)
+                                (t/<= time close))
+      (overnight? calendar) (let [day-before (t/<< dt (t/new-duration 1 :days))
+                                  day-after (t/>> dt (t/new-duration 1 :days))]
+                              (or (and (t/<= time close) (day-open? calendar day-before))
+                                  (and (t/>= time open) (day-open? calendar day-after)))))))
+
+(defn time-closed? [calendar dt]
+  (not (time-open? calendar dt)))
+
+(defn before-trading-hours? [{:keys [open close] :as calendar} dt]
+  (let [time (t/time dt)
+        day-before (t/<< dt (t/new-duration 1 :days))]
+    (cond
+      (intraday? calendar) (t/< time open)
+      (overnight? calendar) (and (t/< time open)
+                                 (day-open? calendar day-before)))))
+
+(defn after-trading-hours? [{:keys [open close] :as calendar} dt]
+  (let [time (t/time dt)
+        day-after (t/>> dt (t/new-duration 1 :days))]
+    (cond
+      (intraday? calendar) (t/> time close)
+      (overnight? calendar) (and (t/> time close)
+                                 (day-open? calendar day-after)))))
+
+(defn trading-open-time [{:keys [open timezone] :as calendar} dt]
+  (-> dt
+      (t/at open)
+      (t/in timezone)))
+
+(defn trading-close-time [{:keys [close timezone] :as calendar} dt]
+  (-> dt
+      (t/at close)
+      (t/in timezone)))
 
 (defn next-intraday [duration
                      {:keys [open] :as calendar} 

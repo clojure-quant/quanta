@@ -37,17 +37,17 @@
       dt-next)))
 
 
- (defn next-hour [calendar dt]
-   (intraday/next-intraday (t/new-duration 1 :hours) calendar dt))
- 
- (defn next-minute [calendar dt]
+(defn next-hour [calendar dt]
+  (intraday/next-intraday (t/new-duration 1 :hours) calendar dt))
+
+(defn next-minute [calendar dt]
   (intraday/next-intraday (t/new-duration 1 :minutes) calendar dt))
 
-  (defn prior-hour [calendar dt]
-   (intraday/prior-intraday (t/new-duration 1 :hours) calendar dt))
- 
- (defn prior-minute [calendar dt]
-   (intraday/prior-intraday (t/new-duration 1 :minutes) calendar dt))
+(defn prior-hour [calendar dt]
+  (intraday/prior-intraday (t/new-duration 1 :hours) calendar dt))
+
+(defn prior-minute [calendar dt]
+  (intraday/prior-intraday (t/new-duration 1 :minutes) calendar dt))
 
 
 (def intervals

@@ -47,6 +47,7 @@
        (map t/instant)))
 
 (defn calendar-seq-prior [calendar-kw interval-kw end-dt]
+  ; TODO: end-dt has to be checked if it is a trading day
   (let [prior-dt (partial prior-close calendar-kw interval-kw)]
     (iterate prior-dt end-dt)))
 
