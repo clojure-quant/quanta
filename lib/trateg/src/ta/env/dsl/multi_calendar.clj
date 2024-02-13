@@ -2,7 +2,7 @@
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [manifold.stream :as s]
-   [ta.env.dsl.chain :refer [make-chain]]
+   [ta.algo.chain :refer [make-chain]]
    [ta.env.live-bargenerator :as live-env]
    [ta.env.tools.stream-combiner :refer [stream-combiner]]))
 

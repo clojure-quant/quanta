@@ -56,7 +56,7 @@
 
 
 (defn get-bars [session bar-category asset]
-    (info "get-bars " asset)
+    (debug "get-bars " asset)
     (let [query (sql-query-bars-for-asset bar-category asset)]
     (-> (duckdb/sql->dataset (:conn session) query)
         (keywordize-columns))))
@@ -69,7 +69,7 @@
          " order by date")))
 
 (defn get-bars-since [session bar-category asset since]
-    (info "get-bars-since " asset since)
+    (debug "get-bars-since " asset since)
     (let [query (sql-query-bars-for-asset-since bar-category asset since)]
       (-> (duckdb/sql->dataset (:conn session) query)
           (keywordize-columns))))
@@ -84,7 +84,7 @@
          " order by date")))
 
 (defn get-bars-window [session bar-category asset dstart dend]
-  (info "get-bars-window " asset dstart dend)
+  (debug "get-bars-window " asset dstart dend)
   (let [query (sql-query-bars-for-asset-window bar-category asset dstart dend)]
     (debug "sql-query: " query)
     (-> (duckdb/sql->dataset (:conn session) query)

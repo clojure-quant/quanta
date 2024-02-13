@@ -59,7 +59,7 @@
   state
 
   ; 2. subscribe to label with result transformer
-   (require '[ta.env.algo.ds :refer [last-ds-row]])
+   (require '[ta.algo.ds :refer [last-ds-row]])
   (monitor-label state :sma-crossover-1m last-ds-row)
 
   ; 3. get current transformed result.

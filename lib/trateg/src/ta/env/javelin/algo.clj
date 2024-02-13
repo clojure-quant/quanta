@@ -1,15 +1,20 @@
 (ns ta.env.javelin.algo
   (:require
-    [javelin.core-clj :refer [cell cell=]]
-    [ta.env.algo.bar-strategy :refer [trailing-window-barstrategy]]
-    [ta.env.javelin.calendar :refer [get-calendar]]
-   ))
+    [javelin.core-clj :refer [cell=]]
+    [ta.env.algo.bar-strategy :refer [create-trailing-barstrategy]]
+    [ta.env.javelin.calendar :refer [get-calendar]]))
 
-(defn add-bar-strategy [env opts]
-  (let [calendar (:calendar opts)
+(defn add-bar-strategy 
+  "returns a cell that calculates the strategy
+   throws once if required parameters are missing"
+  [env spec]
+  (let [algo (:algo spec)
+        _ (assert algo)
+        calendar (:calendar spec)
         _ (assert calendar)
         time-c (get-calendar env calendar) 
-        bs (cell= (trailing-window-barstrategy env opts time-c))] ; nom/execute
+        calc-fn (create-trailing-barstrategy spec)
+        bs (cell= (calc-fn env spec time-c))] ; nom/execute
    bs))
 
 (defn add-bar-strategies [env strategies]

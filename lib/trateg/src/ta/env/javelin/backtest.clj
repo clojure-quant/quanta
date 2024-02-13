@@ -1,5 +1,6 @@
 (ns ta.env.javelin.backtest
   (:require
+   [taoensso.timbre :refer [trace debug info warn error]]
    [ta.calendar.combined :refer [combined-event-seq]]
    [ta.env.javelin.calendar :as cal]))
 
@@ -7,7 +8,9 @@
 (defn run-backtest [env w]
   (let [cals (cal/active-calendars env)
         event-seq (combined-event-seq w cals)]
+    (info "backtesting window: " w " ..")
     (doall (map #(cal/set-calendar! env %) event-seq))
+    (info "backtesting window: " w "finished!")
     :backtest-finished
     ))
 

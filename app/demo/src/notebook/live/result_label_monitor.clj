@@ -2,7 +2,7 @@
   (:require
    [modular.system]
    [ta.env.tools.label-monitor :refer [monitor-label snapshot]]
-   [ta.env.algo.ds :refer [last-ds-row]]))
+   [ta.algo.ds :refer [last-ds-row]]))
  
 
    ; 1. connect to result monitor

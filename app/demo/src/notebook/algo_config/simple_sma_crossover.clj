@@ -2,16 +2,15 @@
   (:require
    [ta.algo.permutate :refer [->assets]]))
 
-(def base {:algo-ns 'notebook.algo.sma3
+(def base {:algo 'notebook.algo.sma3/bar-strategy
            :label :sma-crossover-1m
            :bar-category [:us :m]
            :calendar [:us :m] ; hack for dsl-javelin
            :asset "EUR/USD"
            :feed :fx
-           :trailing-n 5
-           :sma-length-st 2
-           :sma-length-lt 3})
-
+           :trailing-n 1000
+           :sma-length-st 10
+           :sma-length-lt 59})
 
 (def fx-assets
   ["EUR/USD" "GBP/USD" "EUR/JPY"
