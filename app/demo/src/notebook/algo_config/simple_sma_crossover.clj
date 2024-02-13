@@ -1,9 +1,9 @@
-(ns notebook.algo.sma-crossover
+(ns notebook.algo-config.simple-sma-crossover
   (:require
    [ta.algo.permutate :refer [->assets]]))
 
-(def base {:algo-ns 'demo.algo.sma3
-           :topic :sma-crossover-1m
+(def base {:algo-ns 'notebook.algo.sma3
+           :label :sma-crossover-1m
            :bar-category [:us :m]
            :asset "EUR/USD"
            :feed :fx
@@ -37,9 +37,9 @@
   (def live (:live modular.system/system))
   live
 
-  (require '[ta.env.live-bargenerator :as env])
+  (require '[ta.env.dsl.barstrategy :as dsl])
 
-  (env/add-bar-strategies live algos-fx)
+  (dsl/add-bar-strategies live algos-fx)
 
 
 

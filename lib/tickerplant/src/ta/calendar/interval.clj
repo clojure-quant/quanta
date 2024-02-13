@@ -36,22 +36,32 @@
           dt-next (next-fn calendar now-aligned)]
       dt-next)))
 
+;; hour
 
-(defn next-hour [calendar dt]
-  (intraday/next-intraday (t/new-duration 1 :hours) calendar dt))
+ (defn next-hour [calendar dt]
+   (intraday/next-intraday (t/new-duration 1 :hours) calendar dt))
 
-(defn next-minute [calendar dt]
+ (defn prior-hour [calendar dt]
+    (intraday/prior-intraday (t/new-duration 1 :hours) calendar dt))
+
+;; minute
+ 
+ (defn next-minute [calendar dt]
   (intraday/next-intraday (t/new-duration 1 :minutes) calendar dt))
+ 
+ (defn prior-minute [calendar dt]
+   (intraday/prior-intraday (t/new-duration 1 :minutes) calendar dt))
 
-(defn prior-hour [calendar dt]
-  (intraday/prior-intraday (t/new-duration 1 :hours) calendar dt))
+ ;; minute-30 = half hour
+ (defn next-minute30 [calendar dt]
+  (intraday/next-intraday (t/new-duration 30 :minutes) calendar dt))
 
-(defn prior-minute [calendar dt]
-  (intraday/prior-intraday (t/new-duration 1 :minutes) calendar dt))
+ (defn prior-minute30 [calendar dt]
+  (intraday/prior-intraday (t/new-duration 30 :minutes) calendar dt))
 
 
 (def intervals
-  {:day {:next-close day/next-close
+  {:d {:next-close day/next-close
          :prior-close day/prior-close
          :current-close (gen-current-close align-d day/next-close)}
    :h {:next-close next-hour
@@ -60,6 +70,9 @@
    :m {:next-close next-minute
        :prior-close prior-minute
        :current-close (gen-current-close align-m next-minute)}
+   :m30 {:next-close next-minute30
+         :prior-close prior-minute30
+         :current-close (gen-current-close align-h next-minute)}
    })
 
 

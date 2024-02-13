@@ -13,7 +13,6 @@
 ;(def live (env/create-live-environment feed duckdb))
 
 (def live (modular.system/system :live))
-
 live
 
 (def bar-category [:us :m])
@@ -55,3 +54,17 @@ live
 #_(add-to-scheduler print-time {:window {:calendar :us
                                        :interval :h}
                               :algo-ns 'algo2})
+
+
+
+(count (env/algo-ids live))
+
+
+(map #(env/algo-info live %)
+     (env/algo-ids live))
+
+(count 
+  (env/algos-matching live :label :sma-crossover-1m)
+ )
+
+  (env/algos-matching live :label :dummy)

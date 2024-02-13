@@ -13,7 +13,7 @@
     (resolve s)))
 
 (defn get-algo [algo-ns]
-  {:algo-calc (get-symbol algo-ns "algo-calc")
+  {:algo-calc (get-symbol algo-ns "bar-strategy")
    :algo-opts-default (var-get (get-symbol algo-ns "algo-opts-default"))
    :algo-charts (get-symbol algo-ns "algo-charts")})
 
