@@ -45,6 +45,34 @@
   (deftest us-calendar
     (testing "trading days"
       ; monday
+      (is (day-open? (:us24 cal/calendars) dt-monday6))
+      (is (day-open? (:us24 cal/calendars) dt-monday12))
+      (is (day-open? (:us24 cal/calendars) dt-monday18))
+      ; thursday
+      (is (day-open? (:us24 cal/calendars) dt-thursday06))
+      (is (day-open? (:us24 cal/calendars) dt-thursday12))
+      (is (day-open? (:us24 cal/calendars) dt-thursday18))
+      ; friday
+      (is (day-open? (:us24 cal/calendars) dt-friday06))
+      (is (day-open? (:us24 cal/calendars) dt-friday12))
+      (is (day-open? (:us24 cal/calendars) dt-friday18))
+      ; saturday
+      (is (day-closed? (:us24 cal/calendars) dt-saturday06))
+      (is (day-closed? (:us24 cal/calendars) dt-saturday12))
+      (is (day-closed? (:us24 cal/calendars) dt-saturday18))
+      ; sunday
+      (is (day-closed? (:us24 cal/calendars) dt-sunday06))
+      (is (day-closed? (:us24 cal/calendars) dt-sunday12))
+      (is (day-closed? (:us24 cal/calendars) dt-sunday18)))
+    (testing "trading hours"
+      (is (time-open?(:us24 cal/calendars) dt-friday06))
+      (is (not (time-closed? (:us24 cal/calendars) dt-friday06)))
+      (is (not (time-closed? (:us24 cal/calendars) dt-friday12)))
+      (is (not (time-closed? (:us24 cal/calendars) dt-friday18)))))
+
+  (deftest us1-calendar
+    (testing "trading days"
+      ; monday
       (is (day-open? (:us cal/calendars) dt-monday6))
       (is (day-open? (:us cal/calendars) dt-monday12))
       (is (day-open? (:us cal/calendars) dt-monday18))
@@ -65,39 +93,11 @@
       (is (day-closed? (:us cal/calendars) dt-sunday12))
       (is (day-closed? (:us cal/calendars) dt-sunday18)))
     (testing "trading hours"
-      (is (time-open?(:us cal/calendars) dt-friday06))
-      (is (not (time-closed? (:us cal/calendars) dt-friday06)))
+      (is (time-closed? (:us cal/calendars) dt-friday06))
       (is (not (time-closed? (:us cal/calendars) dt-friday12)))
-      (is (not (time-closed? (:us cal/calendars) dt-friday18)))))
-
-  (deftest us1-calendar
-    (testing "trading days"
-      ; monday
-      (is (day-open? (:us1 cal/calendars) dt-monday6))
-      (is (day-open? (:us1 cal/calendars) dt-monday12))
-      (is (day-open? (:us1 cal/calendars) dt-monday18))
-      ; thursday
-      (is (day-open? (:us1 cal/calendars) dt-thursday06))
-      (is (day-open? (:us1 cal/calendars) dt-thursday12))
-      (is (day-open? (:us1 cal/calendars) dt-thursday18))
-      ; friday
-      (is (day-open? (:us1 cal/calendars) dt-friday06))
-      (is (day-open? (:us1 cal/calendars) dt-friday12))
-      (is (day-open? (:us1 cal/calendars) dt-friday18))
-      ; saturday
-      (is (day-closed? (:us1 cal/calendars) dt-saturday06))
-      (is (day-closed? (:us1 cal/calendars) dt-saturday12))
-      (is (day-closed? (:us1 cal/calendars) dt-saturday18))
-      ; sunday
-      (is (day-closed? (:us1 cal/calendars) dt-sunday06))
-      (is (day-closed? (:us1 cal/calendars) dt-sunday12))
-      (is (day-closed? (:us1 cal/calendars) dt-sunday18)))
-    (testing "trading hours"
-      (is (time-closed? (:us1 cal/calendars) dt-friday06))
-      (is (not (time-closed? (:us1 cal/calendars) dt-friday12)))
-      (is (time-closed? (:us1 cal/calendars) dt-friday18))
-      (is (before-trading-hours? (:us1 cal/calendars) dt-friday06))
-      (is (after-trading-hours? (:us1 cal/calendars) dt-friday18))))
+      (is (time-closed? (:us cal/calendars) dt-friday18))
+      (is (before-trading-hours? (:us cal/calendars) dt-friday06))
+      (is (after-trading-hours? (:us cal/calendars) dt-friday18))))
 
   (deftest forex-calendar
     (testing "trading days"

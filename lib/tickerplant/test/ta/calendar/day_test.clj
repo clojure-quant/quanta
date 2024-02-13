@@ -23,15 +23,15 @@
       dt-sunday06 (to-est "2024-02-11T06:00:00")
       dt-sunday12 (to-est "2024-02-11T12:00:00")
       dt-sunday18 (to-est "2024-02-11T18:00:00")]
-  ;(println (next-open (:us1 cal/calendars) dt-monday6))
+  ;(println (next-open (:us cal/calendars) dt-monday6))
 
   (deftest next-open-day
-    (testing "next open day - us"
-      (is (t/= (t/date "2024-02-06") (t/date (next-open (:us cal/calendars) dt-monday6))))
-      (is (not (t/= (t/date dt-saturday06) (t/date (next-open (:us cal/calendars) dt-friday18)))))
-      (is (t/= (t/date "2024-02-12") (t/date (next-open (:us cal/calendars) dt-friday18))))
-      (is (t/= (t/date "2024-02-12") (t/date (next-open (:us cal/calendars) dt-saturday06))))
-      (is (t/= (t/date "2024-02-12") (t/date (next-open (:us cal/calendars) dt-sunday12)))))
+    (testing "next open day - us24"
+      (is (t/= (t/date "2024-02-06") (t/date (next-open (:us24 cal/calendars) dt-monday6))))
+      (is (not (t/= (t/date dt-saturday06) (t/date (next-open (:us24 cal/calendars) dt-friday18)))))
+      (is (t/= (t/date "2024-02-12") (t/date (next-open (:us24 cal/calendars) dt-friday18))))
+      (is (t/= (t/date "2024-02-12") (t/date (next-open (:us24 cal/calendars) dt-saturday06))))
+      (is (t/= (t/date "2024-02-12") (t/date (next-open (:us24 cal/calendars) dt-sunday12)))))
     (testing "next open day - forex"
       (is (t/= (t/date "2024-02-06") (t/date (next-open (:forex cal/calendars) dt-monday6))))
       (is (not (t/= (t/date dt-saturday06) (t/date (next-open (:forex cal/calendars) dt-friday18)))))
@@ -41,11 +41,11 @@
 
   ;(deftest next-close-day
   ;  (testing "next close day - us"
-  ;    (is (t/= (t/date "2024-02-06") (t/date (next-close (:us cal/calendars) dt-monday6))))
-  ;    (is (not (t/= (t/date dt-saturday06) (t/date (next-close (:us cal/calendars) dt-friday18)))))
-  ;    (is (t/= (t/date "2024-02-12") (t/date (next-close (:us cal/calendars) dt-friday18))))
-  ;    (is (t/= (t/date "2024-02-12") (t/date (next-close (:us cal/calendars) dt-saturday06))))
-  ;    (is (t/= (t/date "2024-02-12") (t/date (next-close (:us cal/calendars) dt-sunday12))))))
+  ;    (is (t/= (t/date "2024-02-06") (t/date (next-close (:us24 cal/calendars) dt-monday6))))
+  ;    (is (not (t/= (t/date dt-saturday06) (t/date (next-close (:us24 cal/calendars) dt-friday18)))))
+  ;    (is (t/= (t/date "2024-02-12") (t/date (next-close (:us24 cal/calendars) dt-friday18))))
+  ;    (is (t/= (t/date "2024-02-12") (t/date (next-close (:us24 cal/calendars) dt-saturday06))))
+  ;    (is (t/= (t/date "2024-02-12") (t/date (next-close (:us24 cal/calendars) dt-sunday12))))))
 
   (deftest prior-open-day
     (testing "prior open day - us"))

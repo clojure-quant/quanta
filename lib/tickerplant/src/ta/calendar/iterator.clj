@@ -78,17 +78,17 @@
 
 (comment
   (t/at (t/on (t/date-time)) (t/new-time 17 0 0))
-  (next-close-dt (:us1 calendars) 15 :minutes (t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]"))
+  (next-close-dt (:us calendars) 15 :minutes (t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]"))
   (round-down (t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]") :minutes 15)
 
-  (->> (iterate (partial next-close-dt (:us1 calendars) 15 :minutes)
-           (current-open-dt (:us calendars) 15 :minutes
+  (->> (iterate (partial next-close-dt (:us calendars) 15 :minutes)
+           (current-open-dt (:us24 calendars) 15 :minutes
                     (t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]")))
       (take 5))
 
-  (prev-close-dt (:us1 calendars) 15 :minutes (t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]"))
-  (->> (iterate (partial prev-close-dt (:us1 calendars) 15 :minutes)
-                (current-close-dt (:us1 calendars) 15 :minutes
+  (prev-close-dt (:us calendars) 15 :minutes (t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]"))
+  (->> (iterate (partial prev-close-dt (:us calendars) 15 :minutes)
+                (current-close-dt (:us calendars) 15 :minutes
                             (t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]")
                             ;(t/zoned-date-time "2024-02-09T12:29:00Z[America/New_York]")
                             ))
