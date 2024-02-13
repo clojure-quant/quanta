@@ -5,6 +5,7 @@
 (def base {:algo-ns 'notebook.algo.sma3
            :label :sma-crossover-1m
            :bar-category [:us :m]
+           :calendar [:us :m] ; hack for dsl-javelin
            :asset "EUR/USD"
            :feed :fx
            :trailing-n 5

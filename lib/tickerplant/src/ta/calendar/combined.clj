@@ -7,7 +7,7 @@
 
 ;; calendar-reader
 
-(defn calendar-seq-reader 
+(defn- calendar-seq-reader
   "returns a reader, a function without arguments that always returns the 
    next date for the sequence"
   [dt-start [calendar-kw interval-kw]]
@@ -40,8 +40,8 @@
        atom))
 
 (defn- get-next-index [state]
-  (->> (map (fn [[k v]] 
-         {:idx k :dt v}) @state)
+  (->> (map (fn [[k v]]
+              {:idx k :dt v}) @state)
        (sort-by :dt t/<)
        first
        :idx))
@@ -51,64 +51,67 @@
         dt (get @state idx-next)
         window (get windows idx-next)
         ;_ (println "idx-next: " idx-next "dt: " dt)    
-        dt-next (get-next-date readers idx-next)
-        ]
+        dt-next (get-next-date readers idx-next)]
     ;(println "idx-next: " idx-next "dt: " dt " dt-next: " dt-next)
     (swap! state assoc idx-next dt-next)
-    {:window window
+    {:calendar window
      :time dt}))
 
-(defn calendar-seq-combined [start-dt windows]
+(defn- calendar-seq-combined [start-dt windows]
   (let [readers (create-readers start-dt windows)
         state (create-initial-state readers)
         next (fn []
                (get-next-date-state windows readers state))]
     (repeatedly next)))
 
-(defn end-dates [end-dt windows]
-  (map #(next-close (first %) (last %) end-dt) windows)
-  
-  )
+(defn- end-dates [end-dt windows]
+  (map #(next-close (first %) (last %) end-dt) windows))
 
 
-(defn window
-  [start-dt end-dt windows]
-   (let [end-dts (end-dates end-dt windows)
-         end-dt-max (apply t/max end-dts)
-         seq (calendar-seq-combined start-dt windows)
-         not-end?  (fn [{:keys [window time]}]
-                     (t/<= time end-dt-max))
-         ]
-     (take-while not-end? seq)
+(defn combined-event-seq
+  [{:keys [start end]} windows]
+  (let [windows (into [] windows) ; windows needs to be a vector
+        end-dts (end-dates end windows)
+        end-dt-max (apply t/max end-dts)
+        seq (calendar-seq-combined start windows)
+        not-end?  (fn [{:keys [window time]}]
+                    (t/<= time end-dt-max))]
+    (take-while not-end? seq)
      ;end-dt-max
-     ))
+    ))
 
 
-(comment 
+(comment
+
+  ;; window
+ (require '[ta.calendar.window :refer [recent-days-window]])
+  
+  (def days10 (recent-days-window 10))
+  days10
+
 
   ;; reader
+
   
-  (def dt-start (t/now))
-  dt-start
-  
-  (def reader (calendar-seq-reader dt-start [:crypto :h]))
+
+  (def reader (calendar-seq-reader (:start days10) [:crypto :h]))
   ; reader will return with each call the next date
   (reader)
-  
-  (def windows [[:crypto :h]
+
+  (def calendars [[:crypto :h]
                 [:crypto :m]])
 
-  (end-dates dt-start windows)
-  (window dt-start dt-start windows)
+  (end-dates (:start days10) calendars)
+  (combined-event-seq days10 calendars)
 
-  (def readers (create-readers dt-start windows))
+  (def readers (create-readers (:start days10) calendars))
 
   (count readers)
   (get readers 0)
   (get readers 1)
   (get-next-date readers 0)
   (get-next-date readers 1)
-  
+
 
   ;; combiner test 
   (def state (create-initial-state readers))
@@ -119,35 +122,27 @@
   (get-next-index state)
 
 
-  (get-next-date-state windows readers state)
+  (get-next-date-state calendars readers state)
 
   ;; combiner
-  
-  (def c (calendar-seq-combined dt-start [[:crypto :h]
-                                          [:crypto :m]])) 
-  
+
+  (def c (calendar-seq-combined (:start days10) calendars))
+
   (take 1 c)
-  
+
 
   (require '[clojure.pprint :refer [print-table]])
-  (->> (take 1000 c)
+  (->> (take 10 c)
+       (print-table))
+
+ 
+
+  (combined-event-seq days10 calendars)
+
+  (->> (combined-event-seq days10 calendars)
        (print-table))
   
 
-  
-  (def start-dt (t/now))
-  (def end-dt (t/>> start-dt (t/new-duration 10 :days))
-  
-  start-dt
-    end-dt
-    
-  (window start-dt end-dt windows)
-
-  (->> (window start-dt end-dt windows)
-      (print-table)
-   )
-
-  
 ;  
-  )
+    )
 
