@@ -1,4 +1,4 @@
-(ns ta.env.algo.ds
+(ns ta.algo.ds
   (:require
    [tablecloth.api :as tc]))
 

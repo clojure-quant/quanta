@@ -1,28 +1,33 @@
 (ns ta.env.algo.bar-strategy
   (:require 
-    [taoensso.timbre :refer [trace debug info warn error]]
     [tablecloth.api :as tc]
-    [ta.env.algo.trailing-window :refer [trailing-window-load-bars]]))
+    [taoensso.timbre :refer [trace debug info warn error]]
+    [ta.algo.chain :refer [make-chain]]
+    [ta.env.algo.trailing-window :refer [create-trailing-bar-loader]]))
 
-(defn run-algo-safe [algo-calc env opts ds-bars]
+(defn run-algo-safe [algo-fn env spec ds-bars]
   (try
-    (algo-calc env opts ds-bars)
+    (algo-fn env spec ds-bars)
     (catch Exception ex
       (error "exception in running algo.")
-      (error "exception: " ex)
+      (error "algo exception: " ex)
       {:error "Exception!"})))
 
-
-(defn trailing-window-barstrategy [env opts time]
-  (println "calculating barstrategy for time: " time)
-  (if time 
-     (let [ds-bars (trailing-window-load-bars env opts time)
-           {:keys [algo-calc]} opts
-           result (if (> (tc/row-count ds-bars) 0)
-                    (run-algo-safe algo-calc env opts ds-bars)
-                    {:error "empty-bar-series"})]
-       result)
-    {:error "time is nil"}
-    ))
-
+(defn create-trailing-barstrategy [{:keys [trailing-n asset algo] :as spec}]
+  (assert trailing-n)
+  (assert asset)
+  (assert algo)
+  (let [algo-fn (make-chain algo)
+        load-fn (create-trailing-bar-loader spec)]
+     (assert algo-fn)
+     (fn [env _spec time]
+       ;(println "calculating barstrategy for time: " time)
+       (when time 
+         (let [ds-bars (load-fn env spec time)]
+           (if (and ds-bars (> (tc/row-count ds-bars) 0))
+             (run-algo-safe algo-fn env spec ds-bars)
+             {:error "no ds-bars available. "
+              :time time
+              :spec spec})))
+         )))
 
