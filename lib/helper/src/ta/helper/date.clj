@@ -93,6 +93,47 @@
 (defn epoch-second->datetime [es]
   (-> es (ldt/of-epoch-second 1 utc)))
 
+(defn extract-field [dt unit]
+  (if (contains? t/unit-map unit)
+    (case unit
+      :seconds (t/second dt)
+      :minutes (t/minute dt)
+      :hours (t/hour dt)
+      :days (t/day-of-month dt)
+      :months (.getValue (t/month dt))
+      :years (.getValue (t/year dt)))))
+
+(defn unit->field-kw [unit]
+  (if (contains? t/unit-map unit)
+    (case unit
+      :seconds  :second-of-minute
+      :minutes  :minute-of-hour
+      :hours    :hour-of-day
+      :days     :day-of-month
+      :months   :month-of-year
+      :years    :year)))
+
+(defn date-unit? [unit]
+  (some #(= unit %) [:days :months :years]))
+
+(defn adjust-field [dt unit n]
+  "modifies the target field"
+  (let [field-kw (unit->field-kw unit)]
+    (t/with dt field-kw n)))
+
+(defn align-field [dt unit]
+  "zeroes the subordinate time fields of the unit"
+  (t/truncate dt unit))
+
+(defn round-down [dt unit n]
+  "modulo operation on a field"
+  (let [value (extract-field dt unit)
+        rounded (if value
+                  (- value (mod value n)))]
+    (if rounded
+      (if (and (= rounded 0) (date-unit? unit))
+        (adjust-field dt unit 1)  ; fallback for zero date field values
+        (adjust-field dt unit rounded)))))
 
 (comment 
   ;FEED [QQQ|1D]: Requesting data: [1960-10-20T00:00:00.000Z ... 1961-12-14T00:00:00.000Z, 300 bars]
