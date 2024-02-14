@@ -6,19 +6,29 @@
                                           trading-open-time trading-close-time]]
             [ta.calendar.calendars :refer [calendars]]))
 
+(defn- dt-base [calendar n unit dt conf]
+  (let [{:keys [on-boundary-fn in-interval-fn]} conf
+        zoned (t/in dt (:timezone calendar))
+        alined (align-field zoned unit)
+        rounded (round-down alined unit n)]
+    (if (t/= rounded alined)
+      (if on-boundary-fn
+        (on-boundary-fn rounded (t/new-duration n unit))
+        rounded)
+      (if in-interval-fn
+        (in-interval-fn rounded (t/new-duration n unit))
+        rounded))))
+
 ;
 ; open
 ;
 (defn current-open-dt [calendar n unit dt]
-  (-> (t/in dt (:timezone calendar))
-      (align-field unit)
-      (round-down unit n)))
+  (dt-base calendar n unit dt {:on-boundary-fn nil :in-interval-fn nil}))
 
 (defn next-open-dt
   ([calendar n unit] (next-open-dt calendar n unit (t/now)))
   ([calendar n unit dt]
-   (let [dt-next (-> (current-open-dt calendar n unit dt)
-                     (t/>> (t/new-duration n unit)))
+   (let [dt-next (dt-base calendar n unit dt {:on-boundary-fn t/>> :in-interval-fn t/>>})
          day-next (t/date dt-next)]
      (if (or (day-closed? calendar day-next)
              (after-trading-hours? calendar dt-next))
@@ -30,15 +40,14 @@
 (defn prev-open-dt
   ([calendar n unit] (prev-open-dt calendar n unit (t/now)))
   ([calendar n unit dt]
-   (let [dt-prev (-> (current-open-dt calendar n unit dt)
-                     (t/<< (t/new-duration n unit)))
+   (let [dt-prev (dt-base calendar n unit dt {:on-boundary-fn t/<< :in-interval-fn nil})
          day-prev (t/date dt-prev)]
      (if (or (day-closed? calendar day-prev)
              (before-trading-hours? calendar dt-prev))
-       (->> (prior-open calendar dt-prev) (prev-open-dt calendars n unit))
+       (->> (prior-close calendar dt-prev) (prev-open-dt calendar n unit))
        (let [close (trading-close-time calendar day-prev)]
          (if (t/>= dt-prev close)
-           (prev-open-dt calendars n unit close)
+           (prev-open-dt calendar n unit close)
            dt-prev)
          )))))
 
@@ -46,33 +55,26 @@
 ; close
 ;
 (defn current-close-dt [calendar n unit dt]
-  (let [zoned (t/in dt (:timezone calendar))
-        alined (align-field zoned unit)
-        rounded (round-down alined unit n)]
-    (if (t/= rounded alined)
-      rounded
-      (t/>> rounded (t/new-duration n unit)))))
+  (dt-base calendar n unit dt {:on-boundary-fn nil :in-interval-fn t/>>}))
 
 (defn next-close-dt
   ([calendar n unit] (next-close-dt calendar n unit (t/now)))
   ([calendar n unit dt]
-   (let [dt-next (-> (current-close-dt calendar n unit dt)
-                     (t/>> (t/new-duration n unit)))
+   (let [dt-next (dt-base calendar n unit dt {:on-boundary-fn t/>> :in-interval-fn t/>>})
          day-next (t/date dt-next)]
      (if (or (day-closed? calendar day-next)
              (after-trading-hours? calendar dt-next))
-       (->> (next-open calendar dt-next) (next-close-dt calendars n unit))
+       (->> (next-open calendar dt-next) (next-close-dt calendar n unit))
        (let [open (trading-open-time calendar day-next)]
          (if (t/<= dt-next open)
-           (next-close-dt calendars n unit open)
+           (next-close-dt calendar n unit open)
            dt-next)
          )))))
 
 (defn prev-close-dt
   ([calendar n unit] (prev-close-dt calendar n unit (t/now)))
   ([calendar n unit dt]
-  (let [dt-prev (-> (current-close-dt calendar n unit dt)
-                    (t/<< (t/new-duration n unit)))
+  (let [dt-prev (dt-base calendar n unit dt {:on-boundary-fn t/<< :in-interval-fn nil})
         day-prev (t/date dt-prev)]
     (if (or (day-closed? calendar day-prev)
             (before-trading-hours? calendar dt-prev))
@@ -102,7 +104,9 @@
                                  ))
        (take 5))
 
-  (prev-close-dt (:us calendars) 15 :minutes (t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]"))
+  ;(prev-close-dt (:us calendars) 15 :minutes (t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]"))
+  ;(prev-close-dt (:forex calendars) 15 :minutes (t/in (t/date-time "2024-02-08T23:00:00") "America/New_York"))
+  (prev-close-dt (:forex calendars) 15 :minutes (t/in (t/date-time "2024-02-08T23:00:00") "America/New_York"))
   (->> (iterate (partial prev-close-dt (:us calendars) 15 :minutes)
                 (prev-close-dt (:us calendars) 15 :minutes
                             (t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]")
@@ -111,6 +115,7 @@
                             ))
        (take 5))
 
+  (next-close-dt (:us calendars) 15 :minutes (t/in (t/date-time "2024-02-09T06:00:00") "America/New_York"))
   (->> (iterate (partial next-close-dt (:us calendars) 15 :minutes)
                 (next-close-dt (:us calendars) 15 :minutes
                                   ;(t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]")

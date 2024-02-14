@@ -24,7 +24,7 @@
     (cond
       (intraday? calendar) (t/< time open)
       (overnight? calendar) (and (t/< time open)
-                                 (day-open? calendar day-before)))))
+                                 (day-closed? calendar day-before)))))
 
 (defn after-trading-hours? [{:keys [open close] :as calendar} dt]
   (let [time (t/time dt)
@@ -32,7 +32,7 @@
     (cond
       (intraday? calendar) (t/> time close)
       (overnight? calendar) (and (t/> time close)
-                                 (day-open? calendar day-after)))))
+                                 (day-closed? calendar day-after)))))
 
 (defn trading-open-time [{:keys [open timezone] :as calendar} d]
   (-> d
