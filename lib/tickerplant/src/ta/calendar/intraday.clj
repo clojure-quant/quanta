@@ -34,13 +34,13 @@
       (overnight? calendar) (and (t/> time close)
                                  (day-open? calendar day-after)))))
 
-(defn trading-open-time [{:keys [open timezone] :as calendar} dt]
-  (-> dt
+(defn trading-open-time [{:keys [open timezone] :as calendar} d]
+  (-> d
       (t/at open)
       (t/in timezone)))
 
-(defn trading-close-time [{:keys [close timezone] :as calendar} dt]
-  (-> dt
+(defn trading-close-time [{:keys [close timezone] :as calendar} d]
+  (-> d
       (t/at close)
       (t/in timezone)))
 
