@@ -6,7 +6,7 @@
   (assoc env :calendars (atom {})))
 
   (defn create-calendar [env calendar]
-    (assert (vector? calendar))
+    (assert (vector? calendar) "calendar needs to be [:market :interval]")
     (println "creating calendar: " calendar)
     (let [c (cell nil)] ; (nom/error “not started”)
       (swap! (:calendars env) assoc calendar c)
@@ -19,6 +19,7 @@
   (defn set-calendar! [env {:keys [calendar time] :as data}]
     ;(println "set-calendar! cal: " calendar " time: " time "data: " data)
     (let [c (get-calendar env calendar)]
+      ; we need to set time by calendar to env!!!!!
       (reset! c time)))
 
   (defn active-calendars [env]

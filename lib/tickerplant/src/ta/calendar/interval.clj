@@ -62,17 +62,22 @@
 
 (def intervals
   {:d {:next-close day/next-close
-         :prior-close day/prior-close
-         :current-close (gen-current-close align-d day/next-close)}
+       :prior-close day/prior-close
+       :current-close (gen-current-close align-d day/next-close)}
    :h {:next-close next-hour
        :prior-close prior-hour
-       :current-close (gen-current-close align-h next-hour)}
+       :current-close (gen-current-close align-h next-hour)
+       :duration (* 60 60)}
    :m {:next-close next-minute
        :prior-close prior-minute
-       :current-close (gen-current-close align-m next-minute)}
+       :current-close (gen-current-close align-m next-minute)
+       :duration 60
+       }
    :m30 {:next-close next-minute30
          :prior-close prior-minute30
-         :current-close (gen-current-close align-h next-minute)}
+         :current-close (gen-current-close align-h next-minute)
+         :duration 30
+         }
    })
 
 

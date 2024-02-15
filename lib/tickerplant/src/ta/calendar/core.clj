@@ -59,6 +59,21 @@
          end-dt (prior-close calendar-kw interval-kw end)]
      (take n (calendar-seq-prior calendar-kw interval-kw end-dt)))))
 
+(defn get-bar-window [[calendar-kw interval-kw] bar-end-dt]
+   ; TODO: improve
+   ; for intraday bars this works fine
+   ; for the first bar if the day this is incorrect.
+   {:start (prior-close calendar-kw interval-kw bar-end-dt)
+    :end bar-end-dt})
+
+(defn get-bar-duration
+  "returns duration in seconds of the given calendar"
+  [[calendar-kw interval-kw]]
+  (if (= interval-kw :d)
+      1000 ; TODO: improve. should depend on open/close time or the calendar-kw.
+      (get-in intervals [interval-kw :duration])))
+
+
 (comment 
    (now-calendar :us)
    (now-calendar :eu)
@@ -87,6 +102,10 @@
   (trailing-window :us :day 5)
   (trailing-window :us :day 10)
   (trailing-window :us :h 5)
+   
+
+   (get-bar-duration [:us :d])
+   (get-bar-duration [:us :m])
    
     
   

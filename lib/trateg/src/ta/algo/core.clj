@@ -4,6 +4,7 @@
    [tablecloth.api :as tc]
    [ta.viz.study-highchart :refer [study-highchart] :as hc]
    [ta.calendar.core :refer [trailing-window]]
+   [ta.algo.ds :refer [has-col?]]
    ))
 
 (defn- get-symbol [algo-ns algo-symbol]
@@ -32,12 +33,7 @@
      :algo-charts algo-charts
      :opts opts}))
 
-(defn- has-col? [ds col-kw]
-  (->> ds
-       tc/columns
-       (map meta)
-       (filter #(= col-kw (:name %)))
-       first))
+
 
 (defn- default-algo-chart-spec [ds-algo]
   (if (has-col? ds-algo :trade)

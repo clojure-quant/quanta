@@ -2,6 +2,14 @@
   (:require
    [tablecloth.api :as tc]))
 
+(defn has-col? [ds col-kw]
+  (->> ds
+       tc/columns
+       (map meta)
+       (filter #(= col-kw (:name %)))
+       first))
+
+
 (defn last-result-row [ds-algo]
   (tc/select-rows ds-algo [(dec (tc/row-count ds-algo))]))
 
