@@ -10,7 +10,7 @@
     (assert get-series "environment does not provide get-series!")
     (assert asset "cannot get-bars for unknown asset!")
     (assert calendar "cannot get-bars for unknown calendar!")
-    (assert calendar "cannot get-bars for unknown window!")
+    (assert window "cannot get-bars for unknown window!")
     (get-series asset calendar window)))
 
 

@@ -11,10 +11,10 @@
         window (trailing-window calendar n bar-close-date)]
      (e/get-bars env asset calendar window)))
 
-(defn get-bars-lower-timeframe [env spec timeframe]
+(defn get-bars-lower-timeframe [env spec lower-timeframe]
   (let [calendar (s/get-calendar spec)
         market (first calendar)
-        calendar-lower [market timeframe]
+        calendar-lower [market lower-timeframe]
         asset (s/get-asset spec)
         time (e/get-calendar-time env calendar)
         window (get-bar-window calendar time)]

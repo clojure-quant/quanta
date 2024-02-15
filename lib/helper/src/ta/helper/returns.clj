@@ -3,7 +3,10 @@
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as fun]))
 
-(defn diff [integrated-values]
+(defn diff 
+  "returns a vector of the difference between subsequent values.
+   first value is 0, indicating no difference."
+  [integrated-values]
   (let [n (count integrated-values)]
     (dtype/clone
      (dtype/make-reader

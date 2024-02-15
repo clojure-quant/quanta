@@ -3,9 +3,7 @@
    [tablecloth.api :as tc]
    [tick.core :as tick]
    [ta.backtest.date :refer [days-ago select-rows-since]]
-   [ta.warehouse.random :refer [random-dataset random-datasets]]
-   ;[ta.dataset.returns :refer [forward-shift-col]]
-   ))
+   [ta.warehouse.random :refer [random-dataset random-datasets]]))
 
 (random-dataset 3)
 
