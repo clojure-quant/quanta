@@ -9,7 +9,7 @@
         org.pinkgorilla/reval {:mvn/version "0.5.139"}
         ; ta
         ta/trateg {:local/root "../../lib/trateg" :deps/manifest :deps}
-        ta/data {:local/root "../../lib/data" :deps/manifest :deps}
+        ta/import {:local/root "../../lib/import" :deps/manifest :deps}
         ta/tradingview {:local/root "../../lib/tradingview" :deps/manifest :deps}
         ta/indicator {:local/root "../../lib/indicator" :deps/manifest :deps}
         ;ta/tickerplant {:local/root "../../lib/tickerplant" :deps/manifest :deps}

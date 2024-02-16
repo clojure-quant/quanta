@@ -18,9 +18,9 @@
   io.github.clojure-quant/fix-engine {:git/sha "d25efeefd2db73dee622e826ae86248f74f38273"}
   io.github.clojure-quant/vector-math {:git/url "https://github.com/clojure-quant/techml.vector-math.git"
                                        :sha "9c5a959ea1b8ea7861d953c5541209169b7fe7f0"}
-  ta/warehouse {:local/root "../warehouse" :deps/manifest :deps}
+  ta/db {:local/root "../db" :deps/manifest :deps}
   ta/tickerplant {:local/root "../tickerplant" :deps/manifest :deps}
-  ta/data {:local/root "../data" :deps/manifest :deps}
+  ta/import {:local/root "../import" :deps/manifest :deps}
   }
  :aliases
  {:garamond
