@@ -6,9 +6,9 @@
     [ta.import.provider.bybit.ds :as bybit]))
 
 (def dict-provider
-  {:kibot kibot/get-series
-   :alphavantage av/get-series
-   :bybit bybit/get-series})
+  {:kibot kibot/get-bars
+   :alphavantage av/get-bars
+   :bybit bybit/get-bars})
 
 (defn get-provider
   "gets the get-sreies fn for the specified provider
@@ -27,7 +27,7 @@
   (let [p (get-provider p asset)]
     (get dict-provider p)))
 
-(defn get-series
+(defn get-bars
   "downloads timeseries from provider"
   [{:keys [asset import] :as asset-opts} range]
   (let [get-series (get-provider-fn import asset)

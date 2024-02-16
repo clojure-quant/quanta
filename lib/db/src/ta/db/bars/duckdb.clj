@@ -1,4 +1,4 @@
-(ns ta.warehouse.duckdb
+(ns ta.db.bars.duckdb
   (:require
    [taoensso.timbre :as timbre :refer [debug info warn error]]
    [clojure.java.io :as java-io]
@@ -49,64 +49,60 @@
     "epoch" :epoch
     "ticks" :ticks}))
 
-(defn sql-query-bars-for-asset [bar-category asset]
-  (let [table-name (bar-category->table-name bar-category)]
+(defn sql-query-bars-for-asset [calendar asset]
+  (let [table-name (bar-category->table-name calendar)]
     (str "select * from " table-name " where asset = '" asset "' order by date")
   ))
 
 
-(defn get-bars-full [session bar-category asset]
+(defn get-bars-full [session calendar asset]
     (debug "get-bars " asset)
-    (let [query (sql-query-bars-for-asset bar-category asset)]
+    (let [query (sql-query-bars-for-asset calendar asset)]
     (-> (duckdb/sql->dataset (:conn session) query)
         (keywordize-columns))))
 
-(defn sql-query-bars-for-asset-since [bar-category asset since]
-  (let [table-name (bar-category->table-name bar-category)]
+(defn sql-query-bars-for-asset-since [calendar asset since]
+  (let [table-name (bar-category->table-name calendar)]
     (str "select * from " table-name 
          " where asset = '" asset "'" 
          " and date > '" since "'"
          " order by date")))
 
-(defn get-bars-since [session bar-category asset since]
+(defn get-bars-since [session calendar asset since]
     (debug "get-bars-since " asset since)
-    (let [query (sql-query-bars-for-asset-since bar-category asset since)]
+    (let [query (sql-query-bars-for-asset-since calendar asset since)]
       (-> (duckdb/sql->dataset (:conn session) query)
           (keywordize-columns))))
   
 
-(defn sql-query-bars-for-asset-window [bar-category asset dstart dend]
-  (let [table-name (bar-category->table-name bar-category)]
+(defn sql-query-bars-for-asset-window [calendar asset dstart dend]
+  (let [table-name (bar-category->table-name calendar)]
     (str "select * from " table-name
          " where asset = '" asset "'"
          " and date >= '" dstart "'"
          " and date <= '" dend "'"
          " order by date")))
 
-(defn get-bars-window [session bar-category asset dstart dend]
+(defn get-bars-window [session calendar asset dstart dend]
   (debug "get-bars-window " asset dstart dend)
-  (let [query (sql-query-bars-for-asset-window bar-category asset dstart dend)]
+  (let [query (sql-query-bars-for-asset-window calendar asset dstart dend)]
     (debug "sql-query: " query)
     (-> (duckdb/sql->dataset (:conn session) query)
         (keywordize-columns))))
 
 (defn get-bars 
-  "returns bars for asset, window and bar-category."
-  [session bar-category asset {:keys [start end] :as window}]
+  "returns bars for asset/calendar + window"
+  [session {:keys [asset calendar]} {:keys [start end] :as window}]
   (cond  
     (and start end)
-    (get-bars-window session bar-category asset start end)
+    (get-bars-window session calendar asset start end)
 
     start
-    (get-bars-since session bar-category asset start)  
+    (get-bars-since session calendar asset start)  
     
     :else 
-    (get-bars-full session bar-category asset)
+    (get-bars-full session calendar asset)
     ))
-  
-  
-  
-
 
 (defn delete-bars [session]
   (duckdb/sql->dataset
@@ -121,8 +117,8 @@
       ;(tick/date-time)
       (tick/instant)))
 
-(defn empty-ds [bar-category]
-  (let [table-name (bar-category->table-name bar-category)]
+(defn empty-ds [calendar]
+  (let [table-name (bar-category->table-name calendar)]
     (-> (tc/dataset [{:open 0.0 :high 0.0 :low 0.0 :close 0.0
                       :volume 0.0 ; crypto volume is double.
                       :asset "000"
@@ -131,8 +127,8 @@
         (tc/set-dataset-name table-name))))
 
 
-(defn create-table [session bar-category]
-  (let [ds (empty-ds bar-category)]
+(defn create-table [session calendar]
+  (let [ds (empty-ds calendar)]
     (duckdb/create-table! (:conn session) ds)))
 
 (defn init-tables [session]

@@ -43,7 +43,7 @@
                                (t/>= (:date row) dt)))
     ds-bars))
 
-(defn get-series [{:keys [asset calendar]} range]
+(defn get-bars [{:keys [asset calendar]} range]
   (let [{:keys [category] :as instrument} (db/instrument-details asset)
         symbol-alphavantage (symbol->provider asset)
         f (second calendar)
@@ -61,14 +61,14 @@
   (require '[ta.helper.date :refer [parse-date]])
   (def dt (parse-date "2024-02-01"))
   
-  (-> (get-series {:asset "EURUSD"
+  (-> (get-bars {:asset "EURUSD"
                    :calendar [:fx :d]} 
                   {:start (parse-date "2023-09-01")
                    :mode :append} 
                   {})
       (tc/info))
   
-  (get-series {:asset "FMCDX"  
+  (get-bars {:asset "FMCDX"  
                :calendar [:us :d]}
               {:start dt
                :mode :append})

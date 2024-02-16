@@ -9,7 +9,7 @@
     ; import
     [ta.data.import.warehouse :refer [save-series]]
     [ta.data.import.append :as append]
-    [ta.import.core :refer [get-series]]
+    [ta.import.core :refer [get-bars]]
    ))
 
 
@@ -20,7 +20,7 @@
     (import-series provider series-opts range {}))
   ([provider series-opts range opts]
     (let [opts (assoc series-opts :import provider)
-          series-ds (get-series opts range)
+          series-ds (get-bars opts range)
           c  (tc/row-count series-ds)]
       (info "imported " (:symbol series-opts) " - " c "bars.")
       (when (> c 0)
@@ -30,7 +30,7 @@
    "downloads timeseries from provider and appends it to the existing series in the  warehouse"
   [provider series-opts]
    (let [opts (assoc series-opts :import provider)]
-     (append/append-series get-series opts)))
+     (append/append-series get-bars opts)))
 
 (defn import-one
   [provider series-opts range]

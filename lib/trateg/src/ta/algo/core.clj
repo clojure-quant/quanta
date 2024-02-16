@@ -77,7 +77,7 @@
 
   (require '[modular.system])
   (def session (:duckdb modular.system/system))
-  (require '[ta.warehouse.duckdb :as duckdb])
+  (require '[ta.db.bars.duckdb :as duckdb])
   (def env {:get-series (fn [asset cal]
                           (duckdb/get-bars session asset))})
 

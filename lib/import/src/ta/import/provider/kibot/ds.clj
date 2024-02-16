@@ -79,10 +79,8 @@
     {:startdate (fmt-yyyymmdd start)} ;  :startdate "2023-09-01"
     ))
 
-
-
-(defn get-series [{:keys [asset calendar]} range]
-  (info "get-series kibot..")
+(defn get-bars [{:keys [asset calendar]} range]
+  (info "get-bars kibot..")
   (let [symbol-map (symbol->provider asset)
         f (second calendar)
         period-kibot (get interval-mapping f)
@@ -173,21 +171,21 @@
   (def dt (parse-date "2024-02-01"))
   (fmt-yyyymmdd dt)
 
-  (get-series {:asset "MSFT" ; stock
+  (get-bars {:asset "MSFT" ; stock
                :calendar [:us :d]}
               {:start dt})
 
-  (get-series {:asset "NG0" ; future
+  (get-bars {:asset "NG0" ; future
                :calendar [:us :d]}
               {:start dt})
 
 
-  (get-series {:asset "EURUSD" ; forex
+  (get-bars {:asset "EURUSD" ; forex
                :calendar [:forex :d]}
               {:start (parse-date "2023-09-01")})
 
 
-  (get-series  {:asset "IJH" ; ETF
+  (get-bars  {:asset "IJH" ; ETF
                 :calendar [:etf :d]}
                {:start (parse-date "2023-09-01")})
 

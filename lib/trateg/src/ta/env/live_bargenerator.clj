@@ -21,7 +21,7 @@
    [manifold.stream :as s]
    [manifold.bus :as mbus]
    [tablecloth.api :as tc]
-   [ta.warehouse.duckdb :as duck]
+   [ta.db.bars.duckdb :as duck]
    [ta.tickerplant.bar-generator :as bg]
    [ta.quote.core :refer [subscribe quote-stream]]
    [ta.env.tools.last-msg-summary :as summary]
@@ -38,7 +38,7 @@
      :duckdb duckdb
      :bar-categories (atom {})
      :algos (atom {})
-     :env {:get-series (partial duck/get-bars-window duckdb)}
+     :env {:get-bars (partial duck/get-bars-window duckdb)}
      :live-results-stream live-results-stream
      :global-quote-stream global-quote-stream
      :id-bus (create-id-bus live-results-stream)

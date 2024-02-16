@@ -17,10 +17,9 @@
 
 (defn get-last-daily [asset]
   (info "get-last-daily: " asset)
-  (-> (kibot/get-series {:asset asset
-                         :calendar [:us :d]}
-                        {:dstart nil}
-                        )
+  (-> (kibot/get-bars {:asset asset
+                       :calendar [:us :d]}
+                       {:dstart nil})
       (tc/add-column :symbol asset)
       (tc/select-rows [-1])))
 
@@ -97,7 +96,8 @@
       (daily-snapshot-futures-raw)   
       (print-range :all))
 
-  (kibot/get-series "NG0" "D" 2 {})
+  (kibot/get-bars {:asset "NG0"
+                   :calendar [:us :d]})
   (daily-snapshot-futures-raw [])
   (daily-snapshot-futures-raw ["NG0"])
   (daily-snapshot-futures ["NG0"])

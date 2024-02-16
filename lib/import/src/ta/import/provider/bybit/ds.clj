@@ -36,7 +36,7 @@
       {:start start-date-bybit}
       range))
 
-(defn get-series [{:keys [asset calendar]} range]
+(defn get-bars [{:keys [asset calendar]} range]
   (let [f (last calendar)
         frequency-bybit (bybit-frequency f)
         symbol-bybit (symbol->provider asset)
@@ -56,7 +56,7 @@
 
   
 
-  (get-series {:asset "BTCUSD"
+  (get-bars {:asset "BTCUSD"
                :calendar [:crypto :d]}
                {:start (t/date-time "2024-02-01T00:00:00")})
   

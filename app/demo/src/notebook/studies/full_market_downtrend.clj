@@ -2,9 +2,10 @@
   (:require
    [tablecloth.api :as tc]
    [tech.v3.datatype.functional :as fun]
+   [ta.db.bars.duckdb :as duck]
+   [ta.data.api-ds.kibot-ftp :as kibot-ds]
    [notebook.studies.full-market :refer [load-ds-day]]
-   [ta.warehouse.duckdb :as duck]
-   [ta.data.api-ds.kibot-ftp :as kibot-ds]))
+   ))
 
 (defn turnover [ds]
    (fun/* (:close ds) (:volume ds)))
@@ -50,10 +51,10 @@
 
  (def db (duck/duckdb-start))
 
-(defn load-history [symbol]
+(defn load-history [opts]
    ;(tc/dataset {:close [100 101 102 101 102 103 104 105 106 108]})
     ;(println "loading: " symbol)
-  (->  (duck/get-bars db symbol)
+  (->  (duck/get-bars db opts {})
       (tc/rename-columns {"open" :open
                           "high" :high
                           "low" :low 

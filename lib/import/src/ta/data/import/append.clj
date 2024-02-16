@@ -41,14 +41,14 @@
   )
  
 
-(defn append-series [get-series series-opts]
+(defn append-series [get-bars series-opts]
   (if (exists-series? series-opts)
     (let [ds-old (load-series series-opts)
           last-date (get-in (tc/last ds-old) [:date 0])]
       (if last-date
-        (let [_ (info "get-series symbol: " (:symbol series-opts) "since: " last-date)
+        (let [_ (info "get-bars symbol: " (:symbol series-opts) "since: " last-date)
               range {:start last-date :mode :append}
-              ds-new (get-series series-opts range)
+              ds-new (get-bars series-opts range)
               ds-new (if ds-new 
                        (remove-first-row-if-date-equals ds-new last-date)
                        nil)
@@ -67,12 +67,12 @@
 (comment 
   
   (require '[ta.data.api-ds.alphavantage :as av])
-  (append-series av/get-series {:symbol "FMCDX"  :frequency "D"} {})
+  (append-series av/get-bars {:symbol "FMCDX"  :frequency "D"} {})
     
   (load-series {:symbol "FMCDX"  :frequency "D"})
 
   (get-in (tc/last (load-series {:symbol "FMCDX"  :frequency "D"})) [:date 0])
-   (av/get-series {:symbol "FMCDX"  :frequency "D"} 
+   (av/get-bars {:symbol "FMCDX"  :frequency "D"} 
                   {:start 4 :mode :append}
                     {})
 
