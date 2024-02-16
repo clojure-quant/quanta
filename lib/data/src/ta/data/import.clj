@@ -2,39 +2,16 @@
    (:require
     [taoensso.timbre :refer [info warn error]]
     [tablecloth.api :as tc]
+     ; db
     [ta.db.asset.symbollist :refer [load-list]]
-     ; import
-    [ta.warehouse :refer [load-series exists-series?]]
-    [ta.data.import.warehouse :refer [save-series]]
     [ta.db.asset.symbol-db :as db]
+    [ta.warehouse :refer [load-series exists-series?]]
+    ; import
+    [ta.data.import.warehouse :refer [save-series]]
     [ta.data.import.append :as append]
-     ; providers
-    [ta.data.api-ds.kibot :as kibot]
-    [ta.data.api-ds.alphavantage :as av]
-    [ta.data.api-ds.bybit :as bybit]))
+    [ta.import.core :refer [get-series]]
+   ))
 
-(def dict-provider
-  {:kibot kibot/get-series
-   :alphavantage av/get-series
-   :bybit bybit/get-series
-   })
-
-(defn get-provider 
-  "gets the get-sreies fn for the specified provider
-   provider can be a keyword (so a fixed provider)
-   provider can also be (fn [s]) to get-series depending on the symbol passed"
-  [p symbol]
-   (if (fn? p)
-       (p symbol)
-        p))
-
-(defn get-provider-fn
-  "returns the get-series fn for the specified provider
-   provider can be a keyword (so a fixed provider)
-   provider can also be (fn [s]) to get-series depending on the symbol passed"
-  [p symbol]
-  (let [p (get-provider p symbol)]
-    (get dict-provider p)))
 
 (defn import-series 
   "downloads timeseries from provider and saves it to warehouse
@@ -42,10 +19,8 @@
   ([provider series-opts range]
     (import-series provider series-opts range {}))
   ([provider series-opts range opts]
-    (let [provider-kw (get-provider provider (:symbol series-opts))
-          _ (info "import provider: " provider-kw " symbol: " (:symbol series-opts) " range: " range)      
-          get-series (get-provider-fn provider (:symbol series-opts))
-          series-ds (get-series series-opts range opts)
+    (let [opts (assoc series-opts :import provider)
+          series-ds (get-series opts range)
           c  (tc/row-count series-ds)]
       (info "imported " (:symbol series-opts) " - " c "bars.")
       (when (> c 0)
@@ -53,13 +28,9 @@
 
 (defn append-series 
    "downloads timeseries from provider and appends it to the existing series in the  warehouse"
-  ([provider series-opts]  
-   (append-series provider series-opts {}))
-  ([provider series-opts opts]
-   (let [provider-kw (get-provider provider (:symbol series-opts))
-         _ (info "append provider: " provider-kw " symbol: " (:symbol series-opts) " interval: " (:frequency series-opts))
-         get-series (get-provider-fn provider (:symbol series-opts))]
-     (append/append-series get-series series-opts opts))))
+  [provider series-opts]
+   (let [opts (assoc series-opts :import provider)]
+     (append/append-series get-series opts)))
 
 (defn import-one
   [provider series-opts range]

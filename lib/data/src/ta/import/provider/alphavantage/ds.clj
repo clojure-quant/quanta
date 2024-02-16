@@ -1,11 +1,11 @@
-(ns ta.data.api-ds.alphavantage
+(ns ta.import.provider.alphavantage.ds
   (:require
     [taoensso.timbre :refer [info warn error]]
     [tick.core :as t]
     [tech.v3.dataset :as tds]
     [tablecloth.api :as tc]
-    [ta.data.api.alphavantage :as av]
-    [ta.db.asset.symbol-db :as db]))
+    [ta.db.asset.symbol-db :as db]
+    [ta.import.provider.alphavantage.raw :as av]))
 
 (defn alphavantage-result->dataset [response]
   (-> response
@@ -26,7 +26,7 @@
    symbol)
 
 (def interval-mapping
-  {"D" "daily"})
+  {:d "daily"})
 
 (defn range->parameter [{:keys [start mode] :as range}]
   (if (= range :full) 
@@ -43,12 +43,15 @@
                                (t/>= (:date row) dt)))
     ds-bars))
 
-(defn get-series [{:keys [symbol frequency]} range opts]
-  (let [{:keys [category] :as instrument} (db/instrument-details symbol)
-        symbol (symbol->provider symbol)
-        period (get interval-mapping frequency)
+(defn get-series [{:keys [asset calendar]} range]
+  (let [{:keys [category] :as instrument} (db/instrument-details asset)
+        symbol-alphavantage (symbol->provider asset)
+        f (second calendar)
+        period-alphavantage (get interval-mapping f)
         av-get-data (get-category-download-fn category)]
-    (-> (av-get-data (range->parameter range) symbol)
+    (assert asset "get-series-alphavantage needs an asset!")
+    (assert period-alphavantage (str "get-series-alphavantage does not support interval: " f))
+    (-> (av-get-data (range->parameter range) symbol-alphavantage)
         (alphavantage-result->dataset)
         (filter-rows-after-date (:start range))
         )))
@@ -56,19 +59,21 @@
 
 (comment 
   (require '[ta.helper.date :refer [parse-date]])
-  (parse-date "2023-09-01")
+  (def dt (parse-date "2024-02-01"))
   
-  (-> (get-series {:symbol "EURUSD"  :frequency "D"} 
+  (-> (get-series {:asset "EURUSD"
+                   :calendar [:fx :d]} 
                   {:start (parse-date "2023-09-01")
                    :mode :append} 
                   {})
       (tc/info))
   
-  (get-series {:symbol "FMCDX"  :frequency "D"}
-             {:start (parse-date "2023-09-21")
-             :mode :append}
-            {})
-  
+  (get-series {:asset "FMCDX"  
+               :calendar [:us :d]}
+              {:start dt
+               :mode :append})
+
+
   
 
   

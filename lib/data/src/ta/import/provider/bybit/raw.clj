@@ -1,4 +1,4 @@
-(ns ta.data.api.bybit
+(ns ta.import.provider.bybit.raw
   (:require
    [taoensso.timbre :refer [info]]
    [clj-http.client :as http]
@@ -113,8 +113,8 @@
 
 (comment 
   
-  (require '[tick.core :as tick]) 
-  (def start-date-daily (tick/date-time "2018-11-01T00:00:00"))
+  (require '[tick.core :as t]) 
+  (def start-date-daily (t/date-time "2018-11-01T00:00:00"))
 
    (-> (get-history-request
           {:symbol "BTCUSD"
@@ -122,10 +122,11 @@
            :interval "D"
            :limit 3})
        (count))
+  
 
   (-> (get-history-request
          {:symbol "BTCUSD"
-          :start (-> "2018-11-01T00:00:00" tick/date-time ->epoch-millisecond)
+          :start (-> "2024-02-01T00:00:00" tick/date-time ->epoch-millisecond)
           :interval "D"
           :limit 200})
       count)

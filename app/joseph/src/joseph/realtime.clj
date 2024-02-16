@@ -3,8 +3,8 @@
     [taoensso.timbre :refer [trace debug info warnf error]]
     [tablecloth.api :as tc]
     [ta.db.asset.symbol-db :as db]
-    [ta.data.api-ds.kibot :as kibot]
-    [ta.helper.ds :refer [ds->map]]))
+    [ta.helper.ds :refer [ds->map]]
+    [ta.import.provider.kibot.ds :as kibot]))
 
 (defn realtime-snapshot [symbols]
   (let [data (kibot/get-snapshot symbols)
@@ -15,10 +15,13 @@
     data-ok))
 
 
-(defn get-last-daily [symbol]
-  (info "get-last-daily: " symbol)
-  (-> (kibot/get-series symbol "D" 3 {})
-      (tc/add-column :symbol symbol)
+(defn get-last-daily [asset]
+  (info "get-last-daily: " asset)
+  (-> (kibot/get-series {:asset asset
+                         :calendar [:us :d]}
+                        {:dstart nil}
+                        )
+      (tc/add-column :symbol asset)
       (tc/select-rows [-1])))
 
 

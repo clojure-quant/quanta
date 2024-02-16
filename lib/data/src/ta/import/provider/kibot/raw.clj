@@ -1,4 +1,4 @@
-(ns ta.data.api.kibot
+(ns ta.import.provider.kibot.raw
   (:require
    [clojure.string :as str]
    [clojure.set]
@@ -122,8 +122,6 @@
                     :user user
                     :password password}
                    opts))))
-
-
 
 
 (defn snapshot [opts]

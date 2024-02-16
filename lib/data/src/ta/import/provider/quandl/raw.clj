@@ -1,4 +1,4 @@
-(ns ta.data.api.quandl
+(ns ta.import.provider.quandl.raw
   (:require
    [clojure.string :as str]
    [clojure.set]

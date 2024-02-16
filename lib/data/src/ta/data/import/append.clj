@@ -41,14 +41,14 @@
   )
  
 
-(defn append-series [get-series series-opts opts]
+(defn append-series [get-series series-opts]
   (if (exists-series? series-opts)
     (let [ds-old (load-series series-opts)
           last-date (get-in (tc/last ds-old) [:date 0])]
       (if last-date
         (let [_ (info "get-series symbol: " (:symbol series-opts) "since: " last-date)
               range {:start last-date :mode :append}
-              ds-new (get-series series-opts range opts)
+              ds-new (get-series series-opts range)
               ds-new (if ds-new 
                        (remove-first-row-if-date-equals ds-new last-date)
                        nil)

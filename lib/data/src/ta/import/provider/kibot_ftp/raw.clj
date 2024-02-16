@@ -1,4 +1,4 @@
-(ns ta.data.api.kibot-ftp
+(ns ta.import.provider.kibot-ftp.raw
   (:require 
    [clojure.set :as set]
    [babashka.fs :as fs]

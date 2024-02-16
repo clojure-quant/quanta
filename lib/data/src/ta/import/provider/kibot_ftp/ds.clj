@@ -1,10 +1,10 @@
-(ns ta.data.api-ds.kibot-ftp
+(ns ta.import.provider.kibot-ftp.ds
   (:require 
     [babashka.fs :as fs]
     [clojure.java.io :as io]
     [tech.v3.dataset :as tds]
     [tablecloth.api :as tc]
-    [ta.data.api.kibot-ftp :as kibot]))
+    [ta.import.provider.kibot-ftp.raw :as kibot]))
 
 ;; csv file => dataset
 
