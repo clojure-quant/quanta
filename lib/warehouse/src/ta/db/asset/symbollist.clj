@@ -1,11 +1,11 @@
-(ns ta.warehouse.symbollist
+(ns ta.db.asset.symbollist
   (:require
    [clojure.string :refer [includes? lower-case]]
    [clojure.java.io :as java-io]
    [clojure.edn :as edn]
    [taoensso.timbre :refer [debug info warnf error]]
    [modular.config :refer [get-in-config] :as config]
-   [ta.warehouse.symbol-db :as db]
+   [ta.db.asset.symbol-db :as db]
    ))
 
 (defn get-lists []

@@ -8,7 +8,7 @@
     [tech.v3.datatype.argops :as argops]
     [tablecloth.api :as tc]
     [ta.data.api.kibot :as kibot]
-    [ta.warehouse.symbol-db :as db]))
+    [ta.db.asset.symbol-db :as db]))
 
 (defn string->stream [s]
   (io/input-stream (.getBytes s "UTF-8")))

@@ -5,7 +5,7 @@
     [tech.v3.dataset :as tds]
     [tablecloth.api :as tc]
     [ta.data.api.alphavantage :as av]
-    [ta.warehouse.symbol-db :as db]))
+    [ta.db.asset.symbol-db :as db]))
 
 (defn alphavantage-result->dataset [response]
   (-> response

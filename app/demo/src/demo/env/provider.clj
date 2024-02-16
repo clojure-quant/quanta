@@ -1,6 +1,6 @@
 (ns demo.env.provider
   (:require
-   [ta.warehouse.symbol-db :as db]))
+   [ta.db.asset.symbol-db :as db]))
 
 
 

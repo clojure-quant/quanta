@@ -2,7 +2,7 @@
   (:require
     [taoensso.timbre :refer [trace debug info warnf error]]
     [tablecloth.api :as tc]
-    [ta.warehouse.symbol-db :as db]
+    [ta.db.asset.symbol-db :as db]
     [ta.data.api-ds.kibot :as kibot]
     [ta.helper.ds :refer [ds->map]]))
 

@@ -13,7 +13,7 @@
    [ta.warehouse :refer [load-symbol]]
    [ta.warehouse.tml :refer [filter-date-range]]
    ;[ta.tradingview.db-ts :refer [save-chart-boxed delete-chart load-chart-boxed chart-list now-epoch]]
-   [ta.warehouse.symbol-db :refer [search instrument-details]]
+   [ta.db.asset.symbol-db :refer [search instrument-details]]
    [ta.tradingview.db-instrument :refer [inst-type category-name->category]]
    [ta.data.settings :refer [determine-wh category-names]]
    ;[ta.tradingview.db-marks :refer [load-marks convert-marks]]

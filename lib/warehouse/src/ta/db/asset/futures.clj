@@ -1,4 +1,4 @@
-(ns ta.warehouse.futures)
+(ns ta.db.asset.futures)
 
 
 ;; Why is this here?

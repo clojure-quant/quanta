@@ -55,7 +55,7 @@
   ))
 
 
-(defn get-bars [session bar-category asset]
+(defn get-bars-full [session bar-category asset]
     (debug "get-bars " asset)
     (let [query (sql-query-bars-for-asset bar-category asset)]
     (-> (duckdb/sql->dataset (:conn session) query)
@@ -89,6 +89,24 @@
     (debug "sql-query: " query)
     (-> (duckdb/sql->dataset (:conn session) query)
         (keywordize-columns))))
+
+(defn get-bars 
+  "returns bars for asset, window and bar-category."
+  [session bar-category asset {:keys [start end] :as window}]
+  (cond  
+    (and start end)
+    (get-bars-window session bar-category asset start end)
+
+    start
+    (get-bars-since session bar-category asset start)  
+    
+    :else 
+    (get-bars-full session bar-category asset)
+    ))
+  
+  
+  
+
 
 (defn delete-bars [session]
   (duckdb/sql->dataset

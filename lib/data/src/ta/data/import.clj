@@ -2,11 +2,11 @@
    (:require
     [taoensso.timbre :refer [info warn error]]
     [tablecloth.api :as tc]
-    [ta.warehouse.symbollist :refer [load-list]]
+    [ta.db.asset.symbollist :refer [load-list]]
      ; import
     [ta.warehouse :refer [load-series exists-series?]]
     [ta.data.import.warehouse :refer [save-series]]
-    [ta.warehouse.symbol-db :as db]
+    [ta.db.asset.symbol-db :as db]
     [ta.data.import.append :as append]
      ; providers
     [ta.data.api-ds.kibot :as kibot]

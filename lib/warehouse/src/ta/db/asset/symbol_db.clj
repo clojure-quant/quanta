@@ -1,9 +1,8 @@
-(ns ta.warehouse.symbol-db
+(ns ta.db.asset.symbol-db
   (:require
    [clojure.string :refer [includes? lower-case blank?]]
    [taoensso.timbre :refer [trace debug info warnf error]]
-   [ta.warehouse.futures :refer [is-future? future-symbol]]
-   
+   [ta.db.asset.futures :refer [is-future? future-symbol]]
    ))
 
 (defonce db (atom {}))

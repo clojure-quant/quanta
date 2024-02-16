@@ -1,7 +1,7 @@
 (ns ta.list-test
   (:require
    [clojure.test :refer :all]
-   [ta.warehouse.symbollist :refer [load-list load-list-full]]
+   [ta.db.asset.symbollist :refer [load-list load-list-full]]
    [ta.config]))
 
 (deftest test-symbollist

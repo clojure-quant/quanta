@@ -3,7 +3,7 @@
    [taoensso.timbre :refer [trace debug info warnf error]]
    [reval.task :refer [nbeval]]
    [ta.helper.print :refer [print-all]]
-   [ta.warehouse.symbollist :refer [load-list]]
+   [ta.db.asset.symbollist :refer [load-list]]
    [ta.warehouse.overview :refer [warehouse-overview]]
    ;[ta.gann.gann :refer [gann-symbols]]
    [ta.gann.chartmaker :refer [make-boxes-all-individual]]
