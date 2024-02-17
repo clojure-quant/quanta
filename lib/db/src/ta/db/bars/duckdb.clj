@@ -88,12 +88,6 @@
 (defn- has-dohlcv? [ds]
   (subset? #{:date :open :high :low :close :volume} (ds-cols ds)))
 
-{:open 0.0 :high 0.0 :low 0.0 :close 0.0
- :volume 0.0 ; crypto volume is double.
- :asset "000"
- :date (now)
- :epoch 0 :ticks 0}
-
 (defn order-columns [ds]
   (tc/dataset [(:date ds)
                (:asset ds)
@@ -106,6 +100,7 @@
                (:ticks ds)]))
 
 (defn order-columns-strange [ds]
+  ; see: https://github.com/techascent/tmducken/issues/18
   (tc/dataset [(:open ds)
                (:epoch ds)
                (:date ds)
@@ -130,8 +125,8 @@
     (info "duckdb append-bars # " (tc/row-count ds))
     ;(info "duckdb append-bars ds-meta: " (tc/info ds))
     ;(info "session: " session)
-    (info "ds: " ds)
-    (info "date col type: " (date-type ds))
+    ;(info "ds: " ds)
+    ;(info "date col type: " (date-type ds))
     (duckdb/insert-dataset! (:conn session) ds)))
 
 (defn keywordize-columns [ds]
@@ -241,10 +236,10 @@
 (defrecord bardb-duck [db conn new?]
   bardb
   (get-bars [this opts window]
-    (info "this: " this)
+    ;(info "this: " this)
     (get-bars this opts window))
   (append-bars [this opts ds-bars]
-    (info "this: " this)
+    ;(info "this: " this)
     (append-bars  this opts ds-bars)))
 
 

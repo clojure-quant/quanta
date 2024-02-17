@@ -81,30 +81,44 @@ window
 (-> (duck/empty-ds [:us :d]) (tc/info))
 
 
+; since we dont have this asset in our db, it will fetch via kibot
+; and save to duckdb.
 (b/get-bars db-dynamic
             {:asset "MSFT"
              :calendar [:us :d]
              :import :kibot}
             window)
 
+;; check if we get the same number of bars back:
 (b/get-bars db-duck
-            {:asset "MSFT"
+            {:asset "QQQ"
              :calendar [:us :d]
              :import :kibot}
             window)
 
 
 (b/get-bars db-dynamic
-            {:asset "MSFT"
+            {:asset "QQQ"
              :calendar [:us :d]
-             :import :alphavantage}
+             :import :kibot}
             window)
-
 
 ;; TEST if import-missing works
 
 (b/get-bars db-dynamic
-            {:asset "EURUSD"
-             :calendar [:us :m]
+            {:asset "QQQ"
+             :calendar [:us :d]
              :import :kibot}
             window)
+
+;; test if fetching further days back works
+
+(def window100 (-> (w/recent-days-window 100)
+                (window-as-date-time)))
+
+(b/get-bars db-dynamic
+            {:asset "QQQ"
+             :calendar [:us :d]
+             :import :kibot}
+            window100)
+

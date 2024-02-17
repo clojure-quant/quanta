@@ -34,14 +34,14 @@
     (info "appending bars: state: " state)
     (info "appending bars: " ds-bars)
     (bardb/append-bars (:bar-db state) opts ds-bars)
-    (overview/update-range (:overview-db state) opts task)))
+    (overview/update-range (:overview-db state) opts (:db task))))
 
 (defn run-import-tasks [state opts tasks]
    (doall (map #(run-import-task state opts %) tasks)))
 
 (defn import-on-demand [state {:keys [asset calendar] :as opts} req-window]
   (info "import-on-demand " opts req-window)
-  (let [db-window (overview/available-range state opts)
+  (let [db-window (overview/available-range (:overview-db state) opts)
         tasks (import-tasks  req-window db-window)]
     (info "import tasks: " tasks)
     (when (import-needed? tasks)
