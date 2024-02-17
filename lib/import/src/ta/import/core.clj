@@ -40,7 +40,7 @@
   
   (get-provider-fn :kibot "")
 
-  ; see demo.data-import.download how to use get-series
+  ; see notebook.playground.import.bars for how to use get-series
  
 ;  
 )

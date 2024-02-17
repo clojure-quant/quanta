@@ -1,4 +1,4 @@
-(ns demo.data-import.download
+(ns notebook.playground.import.bars
   (:require
    [tick.core :as t]
    [ta.import.core :refer [get-bars]]))

@@ -4,7 +4,9 @@
    [clojure.java.io :as java-io]
    [tablecloth.api :as tc]
    [tmducken.duckdb :as duckdb]
-   [tick.core :as tick]))
+   [tick.core :as tick]
+   [ta.db.bars.protocol :refer [bardb]]
+   ))
 
 ;; https://github.com/techascent/tmducken
 
@@ -34,6 +36,7 @@
   (let [table-name (bar-category->table-name calendar)
         ds (tc/set-dataset-name ds table-name)]
     (info "duckdb append-bars # " (tc/row-count ds))
+    (info "session: " session)
     (duckdb/insert-dataset! (:conn session) ds)))
 
 (defn keywordize-columns [ds]
@@ -139,6 +142,23 @@
                   [[:us :m]
                    [:us :h]
                    [:us :d]])))))
+
+(defrecord bardb-duck [state]
+  bardb
+  (get-bars [this opts window]
+    (info "this: " this)
+    (get-bars (:state this) opts window))
+  (append-bars [this opts ds-bars]
+    (info "this: " this)
+    (append-bars (:state this) opts ds-bars)))
+ 
+(defn start-bardb-duck [opts]
+  (let [state (duckdb-start opts)]
+    (bardb-duck. state)))
+
+(defn stop-bardb-duck [state]
+  (duckdb-stop state))
+
 
 (comment
   (require '[modular.system])

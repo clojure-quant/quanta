@@ -1,4 +1,4 @@
-(ns notebook.playground.duck
+(ns notebook.playground.bardb.duck
   (:require
    [tick.core :as t]
    [ta.db.bars.duckdb :as duck]
