@@ -138,13 +138,13 @@ window100
 
 
 (b/get-bars db-dynamic
-            {:asset "MO"
+            {:asset "AAPL"
              :calendar [:us :d]
              :import :kibot}
             window)
 
 (b/get-bars db-dynamic
-            {:asset "MO"
+            {:asset "AAPL"
              :calendar [:us :d]
              :import :kibot}
             window100)

@@ -67,6 +67,18 @@
 (defn fmt-yyyymmdd [dt]
   (t/format (t/formatter "YYYY-MM-dd") (t/date-time dt)))
 
+(defn make-one [range key kibot-name]
+  (if-let [dt (key range)]
+    (into {} [[kibot-name (fmt-yyyymmdd dt)]])
+    {}))
+
+
+
+(defn start-end->kibot [{:keys [start] :as range}]
+  ; {:startdate "2023-09-01" :enddate "2024-01-01"}
+  (merge (make-one range :start :startdate)
+         (make-one range :end :enddate)))
+
 (defn range->parameter [{:keys [start] :as range}]
   (cond
     (= range :full)
@@ -76,7 +88,7 @@
     {:period range}
 
     :else
-    {:startdate (fmt-yyyymmdd start)} ;  :startdate "2023-09-01"
+    (start-end->kibot range) 
     ))
 
 (defn get-bars [{:keys [asset calendar]} range]
@@ -181,6 +193,10 @@
   (t/month (t/date-time dt-inst))
   (t/month dt)
   
+  (start-end->kibot {:start (t/inst)})
+  (start-end->kibot {:end (t/inst)})
+  (start-end->kibot {:start (t/inst) :end (t/inst)})
+
   (get-bars {:asset "MSFT" ; stock
                :calendar [:us :d]}
               {:start dt})
