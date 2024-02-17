@@ -19,9 +19,17 @@ dt
           {:start dt
            :mode :append})
 
+(defn date-type [ds]
+  (-> ds :date meta :datatype))
+
 ;; KIBOT
-(get-bars {:asset "NG0" ; future
+(-> (get-bars {:asset "NG0" ; future
            :calendar [:us :d]
            :import :kibot}
           {:start dt})
+ date-type)
+    
+
+
+
 

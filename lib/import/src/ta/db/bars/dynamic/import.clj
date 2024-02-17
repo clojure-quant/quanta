@@ -12,11 +12,11 @@
                   :end (:end req-window)
                   :db {:start (:start req-window) 
                        :end (:end req-window)}})
- :missing-prior (when  (t/> (:start db-window) (:start req-window))
+ :missing-prior (when  (and db-window (t/> (:start db-window) (:start req-window)))
    {:start (:start req-window) 
     :end (:start db-window)
     :db {:start (:start req-window)}})
-  :missing-after (when (t/< (:end db-window) (:end req-window))
+  :missing-after (when (and db-window (t/< (:end db-window) (:end req-window)))
    {:start (:end db-window) 
     :end (:end req-window)
     :db {:end (:end req-window)}})})
@@ -31,15 +31,18 @@
 
 (defn run-import-task [state opts task]
   (let [ds-bars (i/get-bars opts task)]
-    (bardb/append-bars (:bardb state) opts ds-bars)
+    (info "appending bars: state: " state)
+    (info "appending bars: " ds-bars)
+    (bardb/append-bars (:bar-db state) opts ds-bars)
     (overview/update-range (:overview-db state) opts task)))
 
 (defn run-import-tasks [state opts tasks]
    (doall (map #(run-import-task state opts %) tasks)))
 
 (defn import-on-demand [state {:keys [asset calendar] :as opts} req-window]
-  (info "import-on-demand opts req-window")
+  (info "import-on-demand " opts req-window)
   (let [db-window (overview/available-range state opts)
         tasks (import-tasks  req-window db-window)]
+    (info "import tasks: " tasks)
     (when (import-needed? tasks)
       (run-import-tasks state opts tasks))))

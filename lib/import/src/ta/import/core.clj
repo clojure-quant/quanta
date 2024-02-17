@@ -1,5 +1,6 @@
 (ns ta.import.core
   (:require 
+    [tablecloth.api :as tc]
     ; import providers
     [ta.import.provider.kibot.ds :as kibot]
     [ta.import.provider.alphavantage.ds :as av]
@@ -33,7 +34,9 @@
   (let [get-series (get-provider-fn import asset)
         _ (assert get-series (str "provider not found: " import))
         series-ds (get-series asset-opts range)]
-    series-ds))
+    ;series-ds
+    (tc/add-columns series-ds {:asset asset :epoch 0 :ticks 0})
+    ))
 
 
 (comment

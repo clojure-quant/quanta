@@ -1,10 +1,11 @@
 (ns ta.db.bars.duckdb
   (:require
    [taoensso.timbre :as timbre :refer [debug info warn error]]
-   [clojure.java.io :as java-io]
+   [tick.core :as t]
    [tablecloth.api :as tc]
+   [tech.v3.datatype :as dtype]
+   [clojure.java.io :as java-io]
    [tmducken.duckdb :as duckdb]
-   [tick.core :as tick]
    [ta.db.bars.protocol :refer [bardb]]
    ))
 
@@ -13,7 +14,7 @@
 (defn- exists-db? [path]
   (.exists (java-io/file path)))
 
-(defn duckdb-start [db-filename]
+(defn- duckdb-start-impl [db-filename]
   (duckdb/initialize! {:duckdb-home "./binaries"})
   (let [new? (exists-db? db-filename)
         db (duckdb/open-db db-filename)
@@ -22,7 +23,7 @@
      :conn conn
      :new? new?}))
 
-(defn duckdb-stop [{:keys [db conn] :as session}]
+(defn- duckdb-stop-impl [{:keys [db conn] :as session}]
   (duckdb/disconnect conn))
 
 ;; bar-category
@@ -32,10 +33,37 @@
 
 ;; work with duckdb
 
+(defn date-type [ds]
+  (-> ds :date meta :datatype))
+
+(defn ensure-date-instant 
+  "duckdb needs one fixed type for the :date column.
+   we use instant, which techml calls packed-instant"
+  [ds]
+  (let [t (date-type ds)
+        instant? (= t :packed-instant)]
+    (if instant?
+      ds
+      (tc/add-column ds :date (map t/instant (:date ds))))))
+
+(defn ensure-volume-float64
+  "duckdb needs one fixed type for the :volume column.
+   many data-sources return volume as int, so we might have to convert it."
+  [ds]
+  (let [t (-> ds :volume meta :datatype)
+        float64? (= t :float64)]
+    (if float64?
+      ds
+      (tc/add-column ds :volume (map double (:volume ds))))))
+
+
 (defn append-bars [session {:keys [calendar]} ds]
   (let [table-name (bar-category->table-name calendar)
+        ds (ensure-date-instant ds)
+        ds (ensure-volume-float64 ds)
         ds (tc/set-dataset-name ds table-name)]
     (info "duckdb append-bars # " (tc/row-count ds))
+    (info "duckdb append-bars ds-meta: " (tc/info ds))
     (info "session: " session)
     (duckdb/insert-dataset! (:conn session) ds)))
 
@@ -115,10 +143,10 @@
  ;; CREATE INDEX s_idx ON films (revenue);
 
 
-(defn now []
-  (-> (tick/now)
+(defn- now []
+  (-> (t/now)
       ;(tick/date-time)
-      (tick/instant)))
+      (t/instant)))
 
 (defn empty-ds [calendar]
   (let [table-name (bar-category->table-name calendar)]
@@ -143,27 +171,28 @@
                    [:us :h]
                    [:us :d]])))))
 
-(defrecord bardb-duck [state]
+(defrecord bardb-duck [db conn new?]
   bardb
   (get-bars [this opts window]
     (info "this: " this)
-    (get-bars (:state this) opts window))
+    (get-bars this opts window))
   (append-bars [this opts ds-bars]
     (info "this: " this)
-    (append-bars (:state this) opts ds-bars)))
- 
+    (append-bars  this opts ds-bars)))
+
+
 (defn start-bardb-duck [opts]
-  (let [state (duckdb-start opts)]
-    (bardb-duck. state)))
+  (let [{:keys [db conn new?]} (duckdb-start-impl opts)]
+    (bardb-duck. db conn new?)))
 
 (defn stop-bardb-duck [state]
-  (duckdb-stop state))
+  (duckdb-stop-impl state))
 
 
 (comment
   (require '[modular.system])
   (def db (:duckdb modular.system/system))
-  (def db (duckdb-start "../../output/duckdb/bars"))
+  (def db (duckdb-start-impl "../../output/duckdb/bars"))
   db
 
   (bar-category->table-name [:us :m])

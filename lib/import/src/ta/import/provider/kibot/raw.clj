@@ -200,6 +200,7 @@
             :type "futures" ; Can be stocks, ETFs forex, futures.
             :interval "daily"
             :startdate "2023-09-01"
+            :enddate "2023-09-20"
             :timezone "UTC"
             :splitadjusted 1})
 
@@ -230,15 +231,8 @@
   (history {:symbol "JY"
             :type "futures" ; Can be stocks, ETFs forex, futures.
             :interval "1" ; 1 ; 5 ; 5 minute bars
-            :period 1 ; number of days going back
+            :period 10 ; number of days going back
             :timezone "UTC"})
-
-
- 
-
-
-
-
 
   (-> (slurp "../resources/symbollist/futures-kibot.edn")
       (edn/read-string)

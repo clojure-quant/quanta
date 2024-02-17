@@ -65,7 +65,7 @@
 
 
 (defn fmt-yyyymmdd [dt]
-  (t/format (t/formatter "YYYY-MM-dd") dt))
+  (t/format (t/formatter "YYYY-MM-dd") (t/date-time dt)))
 
 (defn range->parameter [{:keys [start] :as range}]
   (cond
@@ -80,14 +80,14 @@
     ))
 
 (defn get-bars [{:keys [asset calendar]} range]
-  (info "get-bars kibot..")
+  (info "get-bars kibot " asset " " calendar " " range " ..")
   (let [symbol-map (symbol->provider asset)
         f (second calendar)
         period-kibot (get interval-mapping f)
         range-kibot (range->parameter range)
         _ (assert symbol-map (str "kibot symbol not found: " asset))
-        _ (assert symbol-map (str "kibot does not support frequency: " f))
-        _ (info "kibot make request")
+        _ (assert period-kibot (str "kibot does not support frequency: " f))
+        _ (info "kibot make request interval: " period-kibot " range: " range-kibot "asset-kibot: " symbol-map)
         result (kibot/history (merge symbol-map
                                      range-kibot
                                      {:interval period-kibot
@@ -169,8 +169,18 @@
 
   (require '[ta.helper.date :refer [parse-date]])
   (def dt (parse-date "2024-02-01"))
-  (fmt-yyyymmdd dt)
+  (class dt)dt
 
+  (fmt-yyyymmdd dt)
+  (def dt-inst (t/inst))
+  (fmt-yyyymmdd dt-inst)
+  (def dt-instant (t/instant))
+  (fmt-yyyymmdd dt-instant)
+
+  (t/year dt-inst)
+  (t/month (t/date-time dt-inst))
+  (t/month dt)
+  
   (get-bars {:asset "MSFT" ; stock
                :calendar [:us :d]}
               {:start dt})

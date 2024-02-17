@@ -64,8 +64,8 @@
   ;                (clip/ref :symbol-lists))
   ;        :stop (juan.scheduler/stop! this)}
   
-  :duckdb {:start (ta.db.bars.duckdb/duckdb-start "../../output/duckdb/bars")
-           :stop (ta.db.bars.duckdb/duckdb-stop this)
+  :duckdb {:start (ta.db.bars.duckdb/start-bardb-duck "../../output/duckdb/bars")
+           :stop (ta.db.bars.duckdb/stop-bardb-duck this)
            :post-start ta.db.bars.duckdb/init-tables}
 
   :feed-fx {:start    (ta.quote.fix/start-fix-feed-autoconnect :ctrader-tradeviewmarkets-quote)

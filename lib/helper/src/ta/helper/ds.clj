@@ -40,8 +40,11 @@
 
   (-> (tc/dataset {:close [1 2 3]
                    :adj-close [5 7 8]})
-      (has-col :x)
+      ;(has-col :x)
    ;   (has-col :close)
+      :close
+      meta
+      :datatype
       )
 ;  
   )
