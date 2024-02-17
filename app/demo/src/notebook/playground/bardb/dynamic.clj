@@ -4,9 +4,12 @@
    [tablecloth.api :as tc]
    [modular.system]
    [ta.calendar.window :as w]
+   [ta.calendar.core :as cal]
    [ta.db.bars.protocol :as b]
    [ta.db.bars.duckdb :as duck]
-   [ta.db.bars.dynamic :as dynamic]))
+   [ta.db.bars.dynamic :as dynamic]
+   [ta.db.bars.dynamic.import :as importer]
+   [ta.db.bars.dynamic.overview-db :as overview]))
 
 ;; Test if duckdb get/append works
 
@@ -65,11 +68,10 @@ window
 db-dynamic
 
 (defn window-as-date-time [window]
-   {:start (t/date-time (:start window))
-   :end (t/date-time (:end window))}
-  )
+  {:start (t/date-time (:start window))
+   :end (t/date-time (:end window))})
 
-(def window (-> (w/recent-days-window 10)
+(def window (-> (cal/trailing-range-current [:us :d] 10)
                 (window-as-date-time)))
 
 window
@@ -113,11 +115,36 @@ window
 
 ;; test if fetching further days back works
 
-(def window100 (-> (w/recent-days-window 100)
-                (window-as-date-time)))
+(overview/available-range
+ (:overview-db db-dynamic)
+ {:asset "MO"
+  :calendar [:us :d]
+  :import :kibot})
+
+(importer/tasks-for-request db-dynamic
+                            {:asset "MO"
+                             :calendar [:us :d]
+                             :import :kibot}
+                            window)
+
+(def window100 (-> (cal/trailing-range-current [:us :d] 100)
+                   (window-as-date-time)))
+
+window100
+
+;; TODO: create unit-tests for tasks-for-request
+;; this unit tests can use an in-memory db for the datahike-db,
+;; and the creation can be mocked via (bindings) or (with-redefs)
+
 
 (b/get-bars db-dynamic
-            {:asset "QQQ"
+            {:asset "MO"
+             :calendar [:us :d]
+             :import :kibot}
+            window)
+
+(b/get-bars db-dynamic
+            {:asset "MO"
              :calendar [:us :d]
              :import :kibot}
             window100)

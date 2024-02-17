@@ -59,6 +59,15 @@
          end-dt (prior-close calendar-kw interval-kw end)]
      (take n (calendar-seq-prior calendar-kw interval-kw end-dt)))))
 
+(defn trailing-range-current 
+   [calendar n]
+  (let [[calendar-kw interval-kw] calendar
+        time (now-calendar calendar-kw)
+        end-dt (prior-close calendar-kw interval-kw time)
+        window (trailing-window calendar-kw interval-kw n end-dt)]
+     {:end (first window)
+      :start (last window)}))
+
 (defn get-bar-window [[calendar-kw interval-kw] bar-end-dt]
    ; TODO: improve
    ; for intraday bars this works fine
