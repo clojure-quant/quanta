@@ -136,7 +136,6 @@ window100
 ;; this unit tests can use an in-memory db for the datahike-db,
 ;; and the creation can be mocked via (bindings) or (with-redefs)
 
-
 (b/get-bars db-dynamic
             {:asset "AAPL"
              :calendar [:us :d]

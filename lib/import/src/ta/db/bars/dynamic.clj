@@ -22,4 +22,4 @@
     (bardb-dynamic. bar-db overview-db)))
 
 (defn stop-bardb-dynamic [this]
-  (overview/stop-overview-db this))
+  (overview/stop-overview-db (:overview-db this)))

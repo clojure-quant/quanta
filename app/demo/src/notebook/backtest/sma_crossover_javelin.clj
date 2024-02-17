@@ -2,11 +2,11 @@
   (:require
    [ta.calendar.window :as win]
    [ta.env.javelin.backtest :refer [run-backtest]]
-   [ta.env.javelin.env :refer [create-env-duckdb]]
+   [ta.env.javelin.env :refer [create-env]]
    [ta.env.javelin.algo :as dsl]
    [notebook.algo-config.simple-sma-crossover :refer [algos-fx]]))
 
-(def env (create-env-duckdb))
+(def env (create-env :bardb-dynamic))
 
 env
 

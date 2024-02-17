@@ -67,7 +67,10 @@
   :duckdb {:start (ta.db.bars.duckdb/start-bardb-duck "../../output/duckdb/bars")
            :stop (ta.db.bars.duckdb/stop-bardb-duck this)
            :post-start ta.db.bars.duckdb/init-tables}
-
+  
+  :bardb-dynamic {:start (ta.db.bars.dynamic/start-bardb-dynamic (clip/ref :duckdb) "../../output/overviewdb")
+                  :stop (ta.db.bars.dynamic/stop-bardb-dynamic this)}
+  
   :feed-fx {:start    (ta.quote.fix/start-fix-feed-autoconnect :ctrader-tradeviewmarkets-quote)
                    ; not connected feed: 
                    ;(ta.quote.fix/create-quotefeed-fix :ctrader-tradeviewmarkets-quote)

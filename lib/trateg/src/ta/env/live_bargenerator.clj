@@ -21,13 +21,14 @@
    [manifold.stream :as s]
    [manifold.bus :as mbus]
    [tablecloth.api :as tc]
-   [ta.db.bars.duckdb :as duck]
+   [ta.db.bars.protocol :as b]
+  ; [ta.db.bars.duckdb :as duck]
    [ta.tickerplant.bar-generator :as bg]
    [ta.quote.core :refer [subscribe quote-stream]]
    [ta.env.tools.last-msg-summary :as summary]
    [ta.env.tools.id-bus :refer [create-id-bus]]))
 
-(defn create-live-environment [feed duckdb]
+(defn create-live-environment [feed bar-db]
   (let [global-quote-stream (s/stream)
         feed-handler (vals feed)
         feed-streams (map quote-stream feed-handler)
@@ -35,10 +36,10 @@
     (doall
      (map #(s/connect % global-quote-stream) feed-streams))
     {:feed feed
-     :duckdb duckdb
+     ;:duckdb bar-db
      :bar-categories (atom {})
      :algos (atom {})
-     :env {:get-bars (partial duck/get-bars-window duckdb)}
+     :env {:bar-db bar-db}
      :live-results-stream live-results-stream
      :global-quote-stream global-quote-stream
      :id-bus (create-id-bus live-results-stream)
@@ -110,13 +111,13 @@
   )
 
 
-(defn save-finished-bars [duckdb]
+(defn save-finished-bars [bardb]
   (fn [{:keys [time category ds-bars] :as msg}]
     (try
       (info "save finished bars " time category " ... ")
       (let [ds-bars (select-valid-bars-ds ds-bars)]
         (if (ds-has-rows ds-bars)
-          (duck/append-bars duckdb {:calendar category} ds-bars)
+          (b/append-bars bardb {:calendar category} ds-bars)
           (warn "not saving finished bars - ds-bars is not valid!")))
       (catch Exception ex
         (error "generated bars save exception!")
@@ -171,12 +172,12 @@
                        )]
     (s/consume process-tick stream)))
 
-(defn create-bar-category [{:keys [duckdb feed] :as state}
+(defn create-bar-category [{:keys [env feed] :as state}
                            bar-category]
   (info "add new bar category: " bar-category)
   (let [bargen (bg/bargenerator-start bar-category)
         bar-close-stream (bg/bar-close-stream bargen)
-        bars-finished-stream (s/map (save-finished-bars duckdb) bar-close-stream)
+        bars-finished-stream (s/map (save-finished-bars (:bar-db env)) bar-close-stream)
         ;results-stream (s/map (partial calculate-on-bar-close env bar-category)
         ;                      bars-finished-stream)
         results-stream (s/stream)

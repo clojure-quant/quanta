@@ -5,6 +5,7 @@
    [ta.viz.study-highchart :refer [study-highchart] :as hc]
    [ta.calendar.core :refer [trailing-window]]
    [ta.algo.ds :refer [has-col?]]
+   [ta.env.core :as env]
    ))
 
 (defn- get-symbol [algo-ns algo-symbol]
@@ -21,13 +22,13 @@
 (defn get-algo-calc [algo-ns]
   (:algo-calc (get-algo algo-ns)))
 
-(defn run-algo [{:keys [get-series] :as env} 
+(defn run-algo [env
                 {:keys [algo-ns algo-opts]
                 :or {algo-opts {}}}]
   (let [{:keys [asset calendar]} algo-opts
         {:keys [algo-calc algo-opts-default algo-charts]} (get-algo algo-ns)
         opts (merge algo-opts-default algo-opts)
-        ds-bars (get-series asset calendar)
+        ds-bars (env/get-bars env asset calendar)
         ds-algo (algo-calc ds-bars opts)]
     {:ds-algo ds-algo
      :algo-charts algo-charts
@@ -78,8 +79,7 @@
   (require '[modular.system])
   (def session (:duckdb modular.system/system))
   (require '[ta.db.bars.duckdb :as duckdb])
-  (def env {:get-series (fn [asset cal]
-                          (duckdb/get-bars session asset))})
+  (def env {:bar-db session})
 
   (-> (run-algo env {:algo-ns 'demo.algo.sma3
                      :algo-opts {:asset "MSFT"
