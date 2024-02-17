@@ -1,5 +1,6 @@
 (ns ta.db.bars.duckdb
   (:require
+   [clojure.set :refer [subset?]]
    [taoensso.timbre :as timbre :refer [debug info warn error]]
    [tick.core :as t]
    [tablecloth.api :as tc]
@@ -33,10 +34,10 @@
 
 ;; work with duckdb
 
-(defn date-type [ds]
+(defn- date-type [ds]
   (-> ds :date meta :datatype))
 
-(defn ensure-date-instant 
+(defn- ensure-date-instant 
   "duckdb needs one fixed type for the :date column.
    we use instant, which techml calls packed-instant"
   [ds]
@@ -46,7 +47,7 @@
       ds
       (tc/add-column ds :date (map t/instant (:date ds))))))
 
-(defn ensure-volume-float64
+(defn- ensure-volume-float64
   "duckdb needs one fixed type for the :volume column.
    many data-sources return volume as int, so we might have to convert it."
   [ds]
@@ -56,15 +57,81 @@
       ds
       (tc/add-column ds :volume (map double (:volume ds))))))
 
+(defn- has-col [ds col]
+  (->> ds
+       tc/columns
+       (map meta)
+       (filter #(= col (:name %)))
+       empty?
+       not
+       ;(map :name)
+       ))
 
-(defn append-bars [session {:keys [calendar]} ds]
+(defn- ensure-epoch [ds]
+  (if (has-col ds :epoch)
+    ds
+    (tc/add-column ds :epoch 0)))
+
+(defn- ensure-ticks [ds]
+  (if (has-col ds :ticks)
+    ds
+    (tc/add-column ds :ticks 0)))
+
+(defn- ensure-asset [ds asset]
+  (if (has-col ds :asset)
+    ds
+    (tc/add-column ds :asset asset)))
+
+(defn- ds-cols [ds]
+  (->> ds tc/column-names (into #{})))
+
+(defn- has-dohlcv? [ds]
+  (subset? #{:date :open :high :low :close :volume} (ds-cols ds)))
+
+{:open 0.0 :high 0.0 :low 0.0 :close 0.0
+ :volume 0.0 ; crypto volume is double.
+ :asset "000"
+ :date (now)
+ :epoch 0 :ticks 0}
+
+(defn order-columns [ds]
+  (tc/dataset [(:date ds)
+               (:asset ds)
+               (:open ds)
+               (:high ds)
+               (:low ds)
+               (:close ds)
+               (:volume ds)
+               (:epoch ds)
+               (:ticks ds)]))
+
+(defn order-columns-strange [ds]
+  (tc/dataset [(:open ds)
+               (:epoch ds)
+               (:date ds)
+               (:close ds)               
+               (:volume ds)
+               (:high ds)
+               (:low ds)
+               (:ticks ds)
+               (:asset ds)
+               ]))
+
+(defn append-bars [session {:keys [calendar asset]} ds]
+  (assert (has-dohlcv? ds) "ds needs to have columns [:date :open :high :low :close :volume]")
   (let [table-name (bar-category->table-name calendar)
         ds (ensure-date-instant ds)
         ds (ensure-volume-float64 ds)
+        ds (ensure-epoch ds)
+        ds (ensure-ticks ds)
+        ds (ensure-asset ds asset)
+        ds (order-columns-strange ds)
         ds (tc/set-dataset-name ds table-name)]
     (info "duckdb append-bars # " (tc/row-count ds))
-    (info "duckdb append-bars ds-meta: " (tc/info ds))
-    (info "session: " session)
+    ;(info "duckdb append-bars ds-meta: " (tc/info ds))
+    ;(info "session: " session)
+    (info "ds: " ds)
+    (info "date col type: " (date-type ds))
     (duckdb/insert-dataset! (:conn session) ds)))
 
 (defn keywordize-columns [ds]
