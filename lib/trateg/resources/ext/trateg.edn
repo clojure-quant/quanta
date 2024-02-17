@@ -1,12 +1,11 @@
 {; runtime
  :clj-services {:name "trateg services"
                 :permission  #{}
-                :symbols [; warehouse
+                :symbols [; db
                           ta.db.asset.symbollist/get-lists
                           ta.db.asset.symbollist/load-list
                           ta.warehouse.overview/overview-map
-                          ; data
-                          ta.data.load/load-series
+                          ta.warehouse.load/load-series
                           ; algo
                           ta.algo.manager/algo-names
                           ta.algo.manager/algo-info

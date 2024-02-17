@@ -1,4 +1,4 @@
-(ns ta.env.tools.series-static
+(ns ta.env.bars.db
   "series-static adds a barsieries getter that 
    just gives back series that are currently saved in the storage db."
    (:require
@@ -9,7 +9,9 @@
   "creates environment to load series via duckdb"
   [env duckdb]
   (assoc env 
-         :get-bars (partial duck/get-bars duckdb)))
+         :get-bars (partial duck/get-bars duckdb)
+         :add-bars (partial duck/append-bars duckdb)
+         ))
 
 (defn create-historic-static-nippy
   "creates environment to load series via nippy

@@ -15,12 +15,13 @@
   try-let/try-let {:mvn/version "1.3.1"}
   hoplon/javelin {:mvn/version "3.9.3"}
   ; com.stuartsierra/frequencies {:mvn/version "0.1.0"}     ; percentile stats
-  io.github.clojure-quant/fix-engine {:git/sha "d25efeefd2db73dee622e826ae86248f74f38273"}
+
   io.github.clojure-quant/vector-math {:git/url "https://github.com/clojure-quant/techml.vector-math.git"
                                        :sha "9c5a959ea1b8ea7861d953c5541209169b7fe7f0"}
   ta/db {:local/root "../db" :deps/manifest :deps}
   ta/tickerplant {:local/root "../tickerplant" :deps/manifest :deps}
   ta/import {:local/root "../import" :deps/manifest :deps}
+  ta/quote {:local/root "../quote" :deps/manifest :deps}
   }
  :aliases
  {:garamond

@@ -87,8 +87,8 @@
    
    
 
-    (duck/append-bars db [:us :d] ds)
-    (duck/get-bars db "MSFT")
+    (duck/append-bars db {:calendar [:us :d]} ds)
+    (duck/get-bars db {:asset "MSFT"} {})
     (duck/delete-bars db)
   
    (-> (load-history "MSFT")
@@ -99,7 +99,7 @@
     (doall (map (fn [day]
                   ;(println "loading ds: " day)
                  (let [ds (load-ds-day :stock :daily-unadjusted day)]
-                   (duck/append-bars db ds)))
+                   (duck/append-bars db {:calendar [:us :d]} ds)))
                 (kibot-ds/existing-ds-files :stock :daily-unadjusted)))
     
 

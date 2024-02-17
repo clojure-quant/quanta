@@ -6,7 +6,7 @@
    [cljc.java-time.instant :as inst]
    [cljc.java-time.local-date-time :as ldt]
    [cljc.java-time.zone-offset :refer [utc]]
-   [ta.data.helper :refer [str->float remove-last-bar-if-timestamp-equals]]))
+   [ta.import.helper :refer [str->float remove-last-bar-if-timestamp-equals]]))
 
 (defn epoch-millisecond->datetime [epoch-ms]
   (-> epoch-ms

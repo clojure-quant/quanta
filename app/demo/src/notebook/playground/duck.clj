@@ -1,25 +1,30 @@
-(ns notebook.playground.duck 
-  (:require 
-    [tick.core :as t]
-    [ta.db.bars.duckdb :as duck]
-    [modular.system]))
-  
-(def duckdb (modular.system/system :duckdb))
+(ns notebook.playground.duck
+  (:require
+   [tick.core :as t]
+   [ta.db.bars.duckdb :as duck]
+   [modular.system]))
 
-(duck/get-bars-window duckdb [:us :m] "EUR/USD"
-                      "2024-01-26T19:35:00Z"
-                      "2024-02-26T19:45:00Z")
+(def db (modular.system/system :duckdb))
 
-(def time (t/instant "2024-01-26T20:00:00Z"))
-(duck/get-bars-since duckdb [:us :m] "EUR/USD" time)
+(def window {:start (t/instant "2024-02-01T20:00:00Z")
+             :end (t/instant "2024-03-01T20:00:00Z")})
 
 
-(duck/get-bars db {:asset "EUR/USD"
-              :calendar [:us :m]}
-             {:start time}
-          )
+(duck/get-bars db
+               {:asset "EUR/USD"
+                :calendar [:us :m]}
+               window)
+
 (duck/get-bars db {:asset "USD/JPY"
                    :calendar [:us :m]}
-                  {:start time})
+               window)
+
+(def window-since (dissoc window :end))
+
+
+(duck/get-bars db {:asset "USD/JPY"
+                   :calendar [:us :m]}
+                   window-since)
+
 
 

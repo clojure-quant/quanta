@@ -4,13 +4,20 @@
 
 (defn get-bars
   "returns bars for asset/calendar/window"
-  [env {:keys [asset calendar] :as opts} window]
-  (let [get-bars (:get-bars env)]
+  [{:keys [get-bars] :as env} {:keys [asset calendar] :as opts} window]
     (assert get-bars "environment does not provide get-bars!")
     (assert asset "cannot get-bars for unknown asset!")
     (assert calendar "cannot get-bars for unknown calendar!")
     (assert window "cannot get-bars for unknown window!")
-    (get-bars opts window)))
+    (get-bars opts window))
+
+(defn add-bars
+  "returns bars for asset/calendar/window"
+  [{:keys [add-bars] :as env} {:keys [calendar] :as opts} ds-bars]
+    (assert add-bars "environment does not provide add-bars!")
+    (assert calendar "can not execute add-bars - needs calendar parameter.")
+    (assert ds-bars "can not execute add-bars - needs ds-bars parameter.")
+    (add-bars env opts ds-bars))
 
 
 (defn get-calendar-time [env calendar]

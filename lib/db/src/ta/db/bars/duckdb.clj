@@ -30,8 +30,8 @@
 
 ;; work with duckdb
 
-(defn append-bars [session bar-category ds]
-  (let [table-name (bar-category->table-name bar-category)
+(defn append-bars [session {:keys [calendar]} ds]
+  (let [table-name (bar-category->table-name calendar)
         ds (tc/set-dataset-name ds table-name)]
     (info "duckdb append-bars # " (tc/row-count ds))
     (duckdb/insert-dataset! (:conn session) ds)))

@@ -1,7 +1,7 @@
 (ns ta.env.javelin.env
   (:require
    [ta.env.javelin.calendar :as cal]
-   [ta.env.tools.series-static :as series]
+   [ta.env.bars.db :as series]
    [modular.system]
    ))
 

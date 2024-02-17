@@ -116,7 +116,7 @@
       (info "save finished bars " time category " ... ")
       (let [ds-bars (select-valid-bars-ds ds-bars)]
         (if (ds-has-rows ds-bars)
-          (duck/append-bars duckdb category ds-bars)
+          (duck/append-bars duckdb {:calendar category} ds-bars)
           (warn "not saving finished bars - ds-bars is not valid!")))
       (catch Exception ex
         (error "generated bars save exception!")

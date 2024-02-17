@@ -5,7 +5,7 @@
    [cheshire.core] ; JSON Encoding
    [throttler.core]
    [ta.helper.date :refer [parse-date]]
-   [ta.data.helper :refer [str->float]]))
+   [ta.import.helper :refer [str->float]]))
 
 ;; https://www.alphavantage.co/documentation/#
 ;; https://github.com/RomelTorres/alpha_vantage/issues/13

@@ -9,7 +9,7 @@
    [cheshire.core :as cheshire] ; JSON Encoding
    [throttler.core]
    [ta.helper.date :refer [parse-date]]
-   [ta.data.helper :refer [str->float]]))
+   [ta.import.helper :refer [str->float]]))
 
 ; quandl has been purchased by nasdaq
 ; https://docs.data.nasdaq.com/v1.0/docs/getting-started
