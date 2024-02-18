@@ -9,7 +9,7 @@
   (assert trailing-n)
   (assert asset)
   (assert calendar)
-  (fn [env _spec time]
+  (fn [env spec time]
     (when time
       (let [[c i] calendar
             time-seq (trailing-window c i trailing-n time)
@@ -18,8 +18,7 @@
             dend-instant (t/instant dend)
             dstart-instant (t/instant dstart)
             ds-bars (env/get-bars env
-                                  {:asset asset
-                                   :calendar calendar}
+                                  spec
                                   {:start dstart-instant
                                    :end dend-instant})]
         ds-bars))))

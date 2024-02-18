@@ -9,12 +9,12 @@
   bardb
   (get-bars [this opts window]
     (info "dynamic get-bars " opts window)
-    (info "this: " this)
+    ;(info "this: " this)
     (import-on-demand this opts window)
     (b/get-bars (:bar-db this) opts window))
   (append-bars [this opts ds-bars]
     (info "dynamic append-bars " opts ds-bars)
-    (info "this: " this)
+    ;(info "this: " this)
     (b/append-bars (:bar-db this) opts ds-bars)))
 
 (defn start-bardb-dynamic [bar-db overview-path]

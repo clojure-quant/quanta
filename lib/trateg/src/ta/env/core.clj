@@ -6,10 +6,7 @@
 (defn set-env-bardb
   "creates environment to load series via duckdb"
   [env bar-db]
-  (assoc env :bar-db bar-db
-         ;:get-bars (partial duck/get-bars duckdb)
-         ;:add-bars (partial duck/append-bars duckdb)
-         ))
+  (assoc env :bar-db bar-db))
 
 (defn get-bars
   "returns bars for asset/calendar/window"

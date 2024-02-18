@@ -1,10 +1,14 @@
-(ns notebook.backtest.sma-crossover-javelin
+(ns notebook.backtest.sma-crossover.multiple-assets
   (:require
    [ta.calendar.window :as win]
    [ta.env.javelin.backtest :refer [run-backtest]]
    [ta.env.javelin.env :refer [create-env]]
    [ta.env.javelin.algo :as dsl]
-   [notebook.algo-config.simple-sma-crossover :refer [algos-fx]]))
+   [notebook.algo-config.simple-sma-crossover :refer [algos-fx]]
+   [ta.db.bars.protocol :as b]
+   [tick.core :as t]
+   [ta.calendar.core :as cal]
+   ))
 
 (def env (create-env :bardb-dynamic))
 
