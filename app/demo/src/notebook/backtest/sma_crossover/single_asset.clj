@@ -42,7 +42,7 @@ bdb
 (def strategy (dsl/add-bar-strategy env algo))
 strategy
 
-(def window-4y (-> (cal/trailing-range-current [:us :d] 1000)
+(def window-4y (-> (cal/trailing-range-current [:us :d] 1)
                    ;(window-as-date-time)
                    ))
 
