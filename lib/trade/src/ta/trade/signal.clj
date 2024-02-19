@@ -1,4 +1,4 @@
-(ns ta.backtest.signal
+(ns ta.trade.signal
   (:require
    [tablecloth.api :as tc]
    [ta.helper.ago :refer [xf-ago-pair]]))

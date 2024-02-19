@@ -2,10 +2,10 @@
   (:require
    [tablecloth.api :as tc]
    [ta.warehouse :as wh]
-   [ta.backtest.roundtrip-backtest :refer [run-backtest]]
-   [ta.backtest.print :refer [print-overview-stats print-roundtrip-stats
+   [ta.trade.roundtrip-backtest :refer [run-backtest]]
+   [ta.trade.print :refer [print-overview-stats print-roundtrip-stats
                               print-roundtrips print-roundtrips-pl-desc]]
-   [ta.backtest.roundtrip-stats :refer [roundtrip-performance-metrics]]
+   [ta.trade.metrics.roundtrip-stats :refer [roundtrip-performance-metrics]]
    [ta.algo.buy-hold :refer [buy-hold-signal]]
    [ta.viz.table :refer [print-table]]))
 

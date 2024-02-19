@@ -28,7 +28,7 @@
    [ta.model.trade :refer [trade]]
    [ta.model.rank :refer [rank]]
    [ta.model.stats :refer [gauntlet2]]
-   [ta.series.compress :refer [compress group-month]]
+   [ta.calendar.compress :refer [compress group-month]]
    ;[ta.model.single :refer :all]
    ;:reload-all
    ))

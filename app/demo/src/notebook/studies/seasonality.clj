@@ -11,10 +11,10 @@
    [ta.data.api-ds.kibot :refer [symbol-list]]
    [ta.data.import :refer [import-series import-list]]
    [ta.warehouse :as wh]
-   [ta.compress :as compress]
+   [ta.calendar.compress :as compress]
    [ta.helper.date-ds :as h]
    [ta.nippy :as nippy]
-   [ta.multi.nav-trades :refer [portfolio]]
+   [ta.trade.metrics.nav-trades :refer [portfolio]]
    [demo.math :as math]
    [tech.v3.dataset.print :refer [print-range]]
    ))

@@ -1,10 +1,10 @@
-(ns ta.backtest.roundtrip-stats
+(ns ta.trade.metrics.roundtrip-stats
   (:require
    [clojure.set]
    [tablecloth.api :as tc]
    [tech.v3.dataset :as tds]
    [ta.helper.stats :refer [mean]]
-   [ta.backtest.drawdown :refer [max-drawdown]]))
+   [ta.trade.drawdown :refer [max-drawdown]]))
 
 (defn calc-roundtrip-stats [ds-roundtrips group-by]
   (-> ds-roundtrips

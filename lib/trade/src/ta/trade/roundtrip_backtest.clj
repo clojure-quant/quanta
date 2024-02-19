@@ -1,4 +1,4 @@
-(ns ta.backtest.roundtrip-backtest
+(ns ta.trade.roundtrip-backtest
   (:require
    [taoensso.timbre :refer [trace debug info warnf error]]
    [tech.v3.datatype :as dtype]
@@ -7,8 +7,8 @@
    [ta.warehouse :as wh]
    [ta.data.settings :refer [determine-wh ]]
    [ta.helper.ago :refer [xf-future]]
-   [ta.backtest.signal :refer [trade-signal]]
-   [ta.backtest.position-pl :refer [position-pl]]
+   [ta.trade.signal :refer [trade-signal]]
+   [ta.trade.position-pl :refer [position-pl]]
    [clojure.edn :as edn]
    [try-let :refer [try-let]]
    ))

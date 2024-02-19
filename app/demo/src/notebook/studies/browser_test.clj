@@ -1,7 +1,7 @@
 (ns notebook.studies.browser-test
   (:require
    [ta.algo.manager :as am]
-   [ta.backtest.roundtrip-backtest :refer [run-backtest]]
+   [ta.trade.roundtrip-backtest :refer [run-backtest]]
    ))
 
 

@@ -8,11 +8,11 @@
    [ta.helper.ds :refer [ds->map]]
    [ta.helper.date-ds :refer [ds-convert-col-instant->localdatetime ensure-roundtrip-date-localdatetime]]
    ; backtest
-   [ta.backtest.roundtrip-backtest :refer [run-backtest]]
-   [ta.backtest.roundtrip-stats :refer [roundtrip-performance-metrics]]
-   [ta.backtest.nav :refer [nav-metrics nav]]
+   [ta.trade.roundtrip-backtest :refer [run-backtest]]
+   [ta.trade.metrics.roundtrip-stats :refer [roundtrip-performance-metrics]]
+   [ta.trade.metrics.nav :refer [nav-metrics nav]]
    [ta.series.signal :refer [select-signal-has]]
-   [ta.backtest.trades :refer [get-trades]]
+   [ta.trade.trades :refer [get-trades]]
    ; viz
    [ta.viz.study-highchart :refer [study-highchart] :as hc]))
 
@@ -234,7 +234,7 @@
 
 
   (require '[ta.warehouse :as wh])
-  (require ' [ta.backtest.signal :refer [trade-signal]])
+  (require ' [ta.trade.signal :refer [trade-signal]])
   (let [ds-bars (wh/load-symbol :stocks "D" "GOOGL")
         {:keys [algo]} (get-algo "moon")
         ds-algo (algo ds-bars {:symbol "GOOGL" :frequency "D"})]

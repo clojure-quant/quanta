@@ -3,9 +3,9 @@
    [clojure.test :refer :all]
    [tablecloth.api :as tc]
    [ta.algo.buy-hold :refer [buy-hold-signal]]
-   [ta.backtest.signal :refer [trade-signal]]
-   [ta.backtest.roundtrip-backtest :refer [backtest-ds]]
-   [ta.backtest.roundtrip-stats :refer [calc-roundtrip-stats position-stats]]))
+   [ta.trade.signal :refer [trade-signal]]
+   [ta.trade.roundtrip-backtest :refer [backtest-ds]]
+   [ta.trade.metrics.roundtrip-stats :refer [calc-roundtrip-stats position-stats]]))
 
 (def ds-bars
   (let [n 12]

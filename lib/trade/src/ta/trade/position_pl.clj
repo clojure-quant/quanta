@@ -1,4 +1,4 @@
-(ns ta.backtest.position-pl
+(ns ta.trade.position-pl
   (:require
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as fun]

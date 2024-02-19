@@ -4,7 +4,7 @@
    [tech.v3.datatype.functional :as dfn]
    [ta.helper.date :refer [parse-date]]
    [ta.helper.ago :refer [xf-ago]]
-   [ta.backtest.signal :refer [running-index-vec]]
+   [ta.trade.signal :refer [running-index-vec]]
    [ta.series.signal :refer [prior-int cross-up cross-down price-when]]
    [ta.algo.manager :refer [add-algo]]
    [ta.gann.box :refer [find-quadrant get-quadrant]]))

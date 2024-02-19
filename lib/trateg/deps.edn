@@ -22,6 +22,7 @@
   ta/calendar {:local/root "../calendar" :deps/manifest :deps}
   ta/import {:local/root "../import" :deps/manifest :deps}
   ta/quote {:local/root "../quote" :deps/manifest :deps}
+  ta/trade {:local/root "../trade" :deps/manifest :deps}
   }
  :aliases
  {:garamond

@@ -14,13 +14,13 @@
    ;[ta.model.trade :refer [set-ts get-ts trade]]
    ;[ta.model.rank :refer [rank]]
    ;[ta.model.stats :refer [gauntlet2]]
-   ;[ta.series.compress :refer [compress group-month]]
+   ;[ta.calendar.compress :refer [compress group-month]]
    [ta.backtest.date :refer [month-begin? month-end? add-year-and-month-date-as-local-date]]
    [ta.series.indicator :refer [sma]]
-   ;[ta.backtest.signal :refer [buy-above]]
-   [ta.backtest.roundtrip-backtest :refer [run-backtest run-backtest-parameter-range]]
-   [ta.backtest.roundtrip-stats :refer [roundtrip-performance-metrics backtests->performance-metrics]]
-   [ta.backtest.print]
+   ;[ta.trade.signal :refer [buy-above]]
+   [ta.trade.roundtrip-backtest :refer [run-backtest run-backtest-parameter-range]]
+   [ta.trade.metrics.roundtrip-stats :refer [roundtrip-performance-metrics backtests->performance-metrics]]
+   [ta.trade.print]
    [reval.document.manager :refer [save]];  save [data ns name-no-ext format]
    ))
 
@@ -37,7 +37,7 @@
                 ])
 
 (def col-rt
-  (concat [:year-month :symbol :sma-r] ta.backtest.print/cols-rt))
+  (concat [:year-month :symbol :sma-r] ta.trade.print/cols-rt))
 
 ;; single symbol
 

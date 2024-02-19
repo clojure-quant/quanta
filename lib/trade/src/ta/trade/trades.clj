@@ -1,4 +1,4 @@
-(ns ta.backtest.trades
+(ns ta.trade.trades
   (:require
    ;[clojure.set :refer [rename-keys]]
    ;[clojure.walk]

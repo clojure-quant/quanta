@@ -1,11 +1,11 @@
-(ns ta.backtest.nav
+(ns ta.trade.metrics.nav
   (:require
    [clojure.set]
    [tablecloth.api :as tc]
    [tech.v3.datatype.functional :as dfn]
    [ta.helper.date-ds :as d]
-   [ta.backtest.drawdown :refer [trailing-sum drawdowns-from-value]]
-   [ta.backtest.position-pl :refer [position-pl]]))
+   [ta.trade.drawdown :refer [trailing-sum drawdowns-from-value]]
+   [ta.trade.position-pl :refer [position-pl]]))
 
 (defn nav-stats [ds-study group-by]
   (-> ds-study

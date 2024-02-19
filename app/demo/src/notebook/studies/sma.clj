@@ -1,9 +1,9 @@
 (ns notebook.studies.sma
   (:require
    [ta.backtest.study :refer [run-study]]
-   [ta.backtest.roundtrip-backtest :refer [run-backtest run-backtest-parameter-range]]
-   [ta.backtest.roundtrip-stats :as s]
-   [ta.backtest.print :as p]
+   [ta.trade.roundtrip-backtest :refer [run-backtest run-backtest-parameter-range]]
+   [ta.trade.metrics.roundtrip-stats :as s]
+   [ta.trade.print :as p]
    [demo.algo.sma :refer [sma-signal]]
    [ta.algo.buy-hold :refer [buy-hold-signal]]))
 

@@ -3,9 +3,9 @@
    [tick.core :as tick]
    [tech.v3.dataset :as tds]
    [tablecloth.api :as tc]
-   [ta.backtest.roundtrip-backtest :refer [run-backtest run-backtest-parameter-range]]
-   [ta.backtest.roundtrip-stats :as s]
-   [ta.backtest.print :as p]
+   [ta.trade.roundtrip-backtest :refer [run-backtest run-backtest-parameter-range]]
+   [ta.trade.metrics.roundtrip-stats :as s]
+   [ta.trade.print :as p]
    [demo.algo.supertrend :refer [supertrend-signal]]))
 
 (-> (tds/->dataset {:date [(tick/date-time "2019-01-01T00:00:00")

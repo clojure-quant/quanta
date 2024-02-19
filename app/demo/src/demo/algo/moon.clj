@@ -114,8 +114,8 @@
    (def ds-bars (wh/load-symbol :stocks "D" "SPY")) 
    (tc/info ds-bars)
   
-  (require '[ta.backtest.signal :refer [trade-signal]])
-  (require '[ta.backtest.roundtrip-backtest :refer [calc-roundtrips]])   
+  (require '[ta.trade.signal :refer [trade-signal]])
+  (require '[ta.trade.roundtrip-backtest :refer [calc-roundtrips]])   
   (trade-signal ds-demo)
 
   (-> (trade-signal ds-demo)

@@ -1,4 +1,4 @@
-(ns ta.compress
+(ns ta.calendar.compress
   (:require
    [tick.core :as tick]
    [tech.v3.datatype :as dtype]

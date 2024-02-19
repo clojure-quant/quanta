@@ -1,9 +1,9 @@
-(ns ta.compress-test
+(ns ta.calendar.compress-test
   (:require
    [clojure.test :refer :all]
    [clj-time.core :as t]
    [ta.data.csv :refer [load-bars-file save-bars-file]]
-   [ta.series.compress :refer [compress group-month]]))
+   [ta.calendar.compress :refer [compress group-month]]))
 
 ;; Note that compress requires datetime and not zoned date.
 ;; Therefore we cannot use trateg parser that produces zoned date time.

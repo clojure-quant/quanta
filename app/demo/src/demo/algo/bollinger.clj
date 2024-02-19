@@ -3,7 +3,7 @@
    [tech.v3.dataset :as tds]
    [tablecloth.api :as tc]
    [ta.series.ta4j :as ta4j]
-   [ta.backtest.signal :refer [add-running-index]]
+   [ta.trade.signal :refer [add-running-index]]
    [ta.helper.window :refer [drop-beginning calc-trailing-true-counter]]
    [ta.algo.manager :refer [add-algo]]
    [ta.tradingview.chart.color :refer [color]]

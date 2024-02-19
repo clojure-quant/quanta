@@ -1,7 +1,7 @@
 (ns joseph.nav
   (:require
     [clojure.string :as str]
-    [ta.multi.nav-trades :refer [portfolio]]
+    [ta.trade.metrics.nav-trades :refer [portfolio]]
     [ta.helper.ds :refer [ds->map]]
     [joseph.trades :refer [load-trades-valid]]))
 

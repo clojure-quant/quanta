@@ -1,7 +1,7 @@
-(ns ta.signal-test
+(ns ta.trade.signal-test
   (:require
    [clojure.test :refer :all]
-   [ta.backtest.signal :refer [signal->position signal->trade]]))
+   [ta.trade.signal :refer [signal->position signal->trade]]))
 
 (def s [:none
         :buy :buy :buy

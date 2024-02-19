@@ -1,14 +1,17 @@
-(ns ta.multi.nav-trades
+(ns ta.trade.metrics.nav-trades
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
-   [tick.core :as t] 
+   [tick.core :as t]
    [tablecloth.api :as tc]
    [tech.v3.datatype.functional :as dfn]
    [tech.v3.datatype.argops :as argops]
    [tech.v3.tensor :as dtt]
    [ta.multi.aligned :refer [load-aligned-filled load-symbol-window]]
-   [ta.multi.calendar :refer [daily-calendar daily-calendar-sunday-included]]
-   ))
+   [ta.multi.calendar :refer [daily-calendar daily-calendar-sunday-included]]))
+
+;; todo:
+;; 1. use calendar that uses ta.calendar
+;; 2. remove ta.multi.aligned and instead use bar-db protocol.
 
 (defn filter-range [ds-bars {:keys [start end]}]
   (tc/select-rows
@@ -23,27 +26,26 @@
   (vec (repeat size val)))
 
 (defn no-effect [size]
-   (tc/dataset
-       {:open# (vec-const size 0)
-        :long$ (vec-const size 0.0)
-        :short$ (vec-const size 0.0)
-        :net$ (vec-const size 0.0)
-        :pl-u (vec-const size 0.0)
-        :pl-r (vec-const size 0.0)}))
+  (tc/dataset
+   {:open# (vec-const size 0)
+    :long$ (vec-const size 0.0)
+    :short$ (vec-const size 0.0)
+    :net$ (vec-const size 0.0)
+    :pl-u (vec-const size 0.0)
+    :pl-r (vec-const size 0.0)}))
 
 (defn trade-stats [ds-bars {:keys [date-entry date-exit qty]}]
   (let [ds-trade (filter-range ds-bars {:start date-entry :end date-exit})]
-    (tc/add-columns ds-trade 
-                    {:position/trades-open 
-                     #(map inc (% :position/trades-open))})
-  ))
+    (tc/add-columns ds-trade
+                    {:position/trades-open
+                     #(map inc (% :position/trades-open))})))
 
 
 (defn set-col-win [ds win col val]
   ;(println "set-col val: " val)
   (dtt/mset! (dtt/select (col ds) win) val))
 
-(defn trade-unrealized-effect [ds-eff idxs-win price-w w# 
+(defn trade-unrealized-effect [ds-eff idxs-win price-w w#
                                {:keys [qty side
                                        entry-price entry-date
                                        exit-price exit-date] :as trade}]
@@ -59,7 +61,7 @@
                   (dfn/* price-w qty2))
         net$ (dfn/+ long$ short$)
         open$ (* qty2 entry-price)
-        pl-u (dfn/- open$ net$) ]
+        pl-u (dfn/- open$ net$)]
     ;(println "idxs-win: " idxs-win)
     ;(println "win-size: " w#)
     ;(println "open#: " open#)
@@ -69,25 +71,24 @@
     (set-col-win ds-eff idxs-win  :net$ net$)
     (set-col-win ds-eff idxs-win  :pl-u pl-u)))
 
-(defn trade-realized-effect [ds-eff idxs-exit 
-                            {:keys [qty side
-                                    entry-price
-                                    exit-price] :as trade}]
+(defn trade-realized-effect [ds-eff idxs-exit
+                             {:keys [qty side
+                                     entry-price
+                                     exit-price] :as trade}]
    ;(info "calculate trade-realized..")
-   (let [; derived values of trade parameter
-         long? (= :long side) 
-         qty2 (if long? qty (- 0 qty))
-         pl-realized (* qty2 (- exit-price entry-price))
+  (let [; derived values of trade parameter
+        long? (= :long side)
+        qty2 (if long? qty (- 0 qty))
+        pl-realized (* qty2 (- exit-price entry-price))
          ; columns [row-count window-size]
          ; columns [row-count 0]
-         pl-r [pl-realized] ; scalar inside vector]
-       ]
-     (set-col-win ds-eff idxs-exit :pl-r pl-r)
-     ))
+        pl-r [pl-realized] ; scalar inside vector]
+        ]
+    (set-col-win ds-eff idxs-exit :pl-r pl-r)))
 
 (defn trade-effect [ds-bars has-series?
-                    {:keys [qty side 
-                            entry-date exit-date] 
+                    {:keys [qty side
+                            entry-date exit-date]
                      :as trade}]
   (assert entry-date "trade does not have entry-dt")
   ;(assert exit-date "trade does not have entry-dt")
@@ -97,20 +98,20 @@
   (let [full# (tc/row-count ds-bars)
         ds-eff (no-effect full#)
         warnings (atom [])
-        idxs-win (cond 
+        idxs-win (cond
                    ; open trade
-                   (nil? exit-date) 
+                   (nil? exit-date)
                    (argops/argfilter #(t/<= entry-date %)
-                                      (:date ds-bars))
+                                     (:date ds-bars))
                    ; closed trade with same date entry/exit
                    (t/= entry-date exit-date)
-                    nil
-                   
+                   nil
+
                    ; closed trade over multiple bars
                    :else
                    (argops/argfilter #(and (t/<= entry-date %)
-                                            (t/< % exit-date))
-                                      (:date ds-bars)))]
+                                           (t/< % exit-date))
+                                     (:date ds-bars)))]
     ; unrealized effect
     (when (and idxs-win has-series?)
       (let [ds-w (tc/select-rows ds-bars idxs-win)
@@ -119,7 +120,7 @@
         (if (= w# 0)
           (do (warn "cannot calculate unrealized effect for trade: " trade)
               (swap! warnings conj (assoc trade :warning :unrealized)))
-          (trade-unrealized-effect ds-eff idxs-win price-w w# trade)))) 
+          (trade-unrealized-effect ds-eff idxs-win price-w w# trade))))
     ; realized effect
     (when exit-date
       (let [idxs-exit (argops/argfilter #(t/= exit-date %) (:date ds-bars))
@@ -131,26 +132,25 @@
           (trade-realized-effect ds-eff idxs-exit trade))))
     ; return
     {:eff ds-eff
-     :warnings @warnings}
-    ))
+     :warnings @warnings}))
 
 (defn effects+ [a b]
   (let [warnings (concat (:warnings a) (:warnings b))
         a (:eff a)
         b (:eff b)]
-  {:warnings warnings
-   :eff (tc/dataset
-          {:open# (dfn/+ (:open# a) (:open# b))
-           :long$ (dfn/+ (:long$ a) (:long$ b))
-           :short$ (dfn/+ (:short$ a) (:short$ b))
-           :net$ (dfn/+ (:net$ a) (:net$ b))
-           :pl-u (dfn/+ (:pl-u a) (:pl-u b))
-           :pl-r (dfn/+ (:pl-r a) (:pl-r b))})}))
+    {:warnings warnings
+     :eff (tc/dataset
+           {:open# (dfn/+ (:open# a) (:open# b))
+            :long$ (dfn/+ (:long$ a) (:long$ b))
+            :short$ (dfn/+ (:short$ a) (:short$ b))
+            :net$ (dfn/+ (:net$ a) (:net$ b))
+            :pl-u (dfn/+ (:pl-u a) (:pl-u b))
+            :pl-r (dfn/+ (:pl-r a) (:pl-r b))})}))
 
 (defn effects-sum [effects]
-   (let [empty {:eff (no-effect (tc/row-count (:eff (first effects))))
-                :warnings []}]
-     (reduce effects+ empty effects)))
+  (let [empty {:eff (no-effect (tc/row-count (:eff (first effects))))
+               :warnings []}]
+    (reduce effects+ empty effects)))
 
 
 (defn empty-series [calendar]
@@ -175,72 +175,71 @@
                         (filter #(= symbol (:symbol %)) trades))
         calc-symbol (fn [symbol]
                       (effects-symbol symbol warehouse calendar (trades-symbol symbol)))
-        symbols (->> trades 
-                     (map :symbol) 
+        symbols (->> trades
+                     (map :symbol)
                      ;(filter exists-series?)
                      (into #{})
                      (into []))
         {:keys [eff warnings]} (reduce effects+
-                                 {:eff (no-effect (tc/row-count (:calendar calendar)))
-                                  :warnings []}
-                                  (map calc-symbol symbols))
+                                       {:eff (no-effect (tc/row-count (:calendar calendar)))
+                                        :warnings []}
+                                       (map calc-symbol symbols))
         ; result
-        pl-r-cum (dfn/cumsum (:pl-r eff))] 
-    {:warnings warnings 
+        pl-r-cum (dfn/cumsum (:pl-r eff))]
+    {:warnings warnings
      :warehouse warehouse
-     :eff (tc/add-columns 
+     :eff (tc/add-columns
            eff
            {:date (-> calendar :calendar :date)
             :pl-r-cum pl-r-cum
             :pl-cum (dfn/+ (:pl-u eff) pl-r-cum)})}))
 
 
-(comment 
-  
+(comment
+
   (require '[ta.helper.date :refer [parse-date]])
   (require '[tech.v3.dataset.print :refer [print-range]])
   (require '[clojure.pprint :refer [print-table]])
-  
+
   (t/min  (parse-date "2022-01-02")
           (parse-date "2022-01-01")
           (parse-date "2022-01-04"))
 
-  (def ds1 (tc/dataset 
+  (def ds1 (tc/dataset
             {:date [(parse-date "2022-01-01")
                     (parse-date "2022-01-02")
                     (parse-date "2022-01-04")
                     (parse-date "2022-01-05")
                     (parse-date "2022-01-06")
                     (parse-date "2022-01-07")]}))
-  ds1 
+  ds1
 
   (def entry-dt   (parse-date "2022-01-02"))
   (def exit-dt   (parse-date "2022-01-06"))
-  
+
   (argops/argfilter #(t/<= entry-dt % exit-dt) (:date ds1))
   (argops/argfilter #(t/<= entry-dt % entry-dt) (:date ds1))
 
   (tc/select-rows ds1 [0 5])
 
   (require '[joseph.trades :refer [load-trades-valid]])
-  
+
   (def trades (load-trades-valid))
   (count trades)
 
-  (def trades-googl 
+  (def trades-googl
     (filter #(= "GOOGL" (:symbol %)) trades))
   (count trades-googl)
-  
-  (print-table [:entry-date :exit-date :symbol ] trades)
+
+  (print-table [:entry-date :exit-date :symbol] trades)
   (print-table [:entry-date :exit-date :symbol] trades-googl)
 
   (def trade (last trades-googl))
   trade
 
   (defn in-range? [entry-date exit-date date]
-    (t/<= entry-date date exit-date) 
-    )
-  
+    (t/<= entry-date date exit-date))
+
   (def entry-date (parse-date "2022-03-05"))
   (def exit-date (parse-date "2022-03-07"))
 
@@ -250,40 +249,38 @@
   (in-range? entry-date exit-date (parse-date "2022-03-07"))
 
 
-  
-  (load-aligned-filled 
-   "GOOGL" 
+
+  (load-aligned-filled
+   "GOOGL"
    nil
    (daily-calendar (parse-date "2022-10-01")
                    (parse-date "2023-04-01")))
-  
-  (def ds-bars 
-    (load-symbol-window {:symbol "GOOGL" 
+
+  (def ds-bars
+    (load-symbol-window {:symbol "GOOGL"
                          :frequency "D"
-                         :warehouse nil
-                         } 
-                    (parse-date "2023-03-01")
-                    (parse-date "2023-03-20")))
+                         :warehouse nil}
+                        (parse-date "2023-03-01")
+                        (parse-date "2023-03-20")))
   ds-bars
   (trade-effect ds-bars true trade)
-  
+
   (effects-sum [(trade-effect ds-bars true trade)
                 (trade-effect ds-bars true trade)])
-  
-  (-> (effects-symbol 
-       "GOOGL" 
+
+  (-> (effects-symbol
+       "GOOGL"
        nil
        (daily-calendar (parse-date "2022-10-01")
                        (parse-date "2023-04-01"))
-        trades-googl)
+       trades-googl)
       :eff
-      (print-range :all)
-      )
-  
+      (print-range :all))
 
 
-  (def trades-test 
-    [{:symbol "GOOGL" 
+
+  (def trades-test
+    [{:symbol "GOOGL"
       :side :long
       :qty 1000.0
       :entry-date #time/date-time "2023-03-06T00:00"
@@ -302,12 +299,11 @@
                :entry-price 80.96
                :exit-date #time/date-time "2022-11-27T00:00"
                :exit-price 82.18}]
-             {:warehouse :seasonal2}
-             )
-  
+             {:warehouse :seasonal2})
+
   (def trades-dax
     (filter #(= "DAX0" (:symbol %)) trades))
-  
+
   (count trades-dax)
 
   (portfolio trades-dax {:warehouse :s2})
@@ -324,21 +320,21 @@
   (portfolio (take 400 trades))
   (portfolio trades)
 
-  
-  (->> 
+
+  (->>
    (portfolio trades)
    :warnings
    ;(print-table [:warning :symbol :side :exit-date])
    )
-  
-  
+
+
   (require '[ta.multi.aligned :refer [load-symbol-window]])
-  
-  (-> 
-  (load-symbol-window "BZ0" "D" 
-                      #time/date-time "2022-08-01T00:00"
-                      #time/date-time "2023-08-01T00:00")
-  
+
+  (->
+   (load-symbol-window "BZ0" "D"
+                       #time/date-time "2022-08-01T00:00"
+                       #time/date-time "2023-08-01T00:00")
+
    (print-range :all))
 ; |   :realized |     BZ0 |     :short | 2023-07-16T00:00 |
 ; | :unrealized |     BZ0 |     :short | 2022-10-03T00:00 |
