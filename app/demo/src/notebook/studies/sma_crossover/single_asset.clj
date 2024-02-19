@@ -1,4 +1,4 @@
-(ns notebook.backtest.sma-crossover.single-asset
+(ns notebook.studies.sma-crossover.single-asset
   (:require
    [tick.core :as t]
    [ta.calendar.core :as cal]

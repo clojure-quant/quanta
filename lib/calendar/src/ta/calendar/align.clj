@@ -1,16 +1,24 @@
 (ns ta.calendar.align
   (:require
+   [taoensso.timbre :refer [trace debug info warn error]]
    [tablecloth.api :as tc]
    [tech.v3.datatype.argops :as argops]
    [tech.v3.tensor :as dtt]))
+  
 
 (defn align-to-calendar 
   "aligns ds-bars to a calendar.
    missing bars will have empty values."
-  [calendar ds-bars]
-  (-> (tc/left-join calendar ds-bars :date)
+  [calendar-ds bars-ds]
+  ;(info "bars-ds: " bars-ds)
+  ;(info "bars-ds info" (tc/info bars-ds))
+  ;(info "calendar-ds: " calendar-ds)
+  ;(info "calendar-ds info: " (tc/info calendar-ds))
+  (let [bars-ds-unique (tc/unique-by bars-ds :date)] ; todo: fix importer so duplicates are avoided.
+  (-> (tc/left-join calendar-ds bars-ds-unique :date)
       (tc/order-by [:date] [:asc])
-      (tc/set-dataset-name (-> ds-bars meta :name))))
+      (tc/set-dataset-name (-> bars-ds meta :name)))))
+
 
 (defn- set-col! [ds col idx val]
   ;(println "set-close! idx: " idx " val: " val)
@@ -55,6 +63,18 @@
     (-> ds-bars-aligned
         (tc/drop-columns [:close col-date-symbol])
         (tc/rename-columns {:close2 :close}))))
+
+(comment 
+  
+  (def ds-cal (tc/dataset {:date [1 2 3 4]}))
+  (def ds-bars (tc/dataset {:date [0 1 2 2 3 5 6 7 8 8] :close [0 1 2 2.2 3 5 6 7 8 8.8]}))
+
+  (tc/unique-by ds-bars :date)
+
+  (align-to-calendar ds-cal ds-bars)
+  
+ ;  
+  )
 
 
 

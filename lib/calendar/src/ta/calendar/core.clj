@@ -2,7 +2,8 @@
   (:require
    [tick.core :as t]
    [ta.calendar.interval :refer [intervals] :as interval]
-   [ta.calendar.calendars :refer [calendars]]))
+   [ta.calendar.calendars :refer [calendars]]
+   [ta.calendar.core :as cal]))
 
 (defn now-calendar [calendar-kw]
   (let [calendar (calendar-kw calendars)]
@@ -59,6 +60,14 @@
          end-dt (prior-close calendar-kw interval-kw end)]
      (take n (calendar-seq-prior calendar-kw interval-kw end-dt)))))
 
+(defn trailing-window2
+  ([[calendar-kw interval-kw] n end-dt] ; dt-end
+   (take n (calendar-seq-prior calendar-kw interval-kw end-dt)))
+  ([[calendar-kw interval-kw ] n]
+   (let [end (current-close calendar-kw interval-kw)
+         end-dt (prior-close calendar-kw interval-kw end)]
+     (take n (calendar-seq-prior calendar-kw interval-kw end-dt)))))
+
 (defn trailing-range-current 
    [calendar n]
   (let [[calendar-kw interval-kw] calendar
@@ -67,6 +76,18 @@
         window (trailing-window calendar-kw interval-kw n end-dt)]
      {:end (first window)
       :start (last window)}))
+
+(defn fixed-window
+  [[calendar-kw interval-kw] {:keys [start end]}] 
+  (let [seq (calendar-seq-prior calendar-kw interval-kw end)
+        after-start? (fn [dt] (t/>= dt start))]
+   (take-while after-start? seq)  
+    ))
+
+(defn calendar-seq->range [cal-seq]
+  {:start (last cal-seq)
+   :end  (first cal-seq)})
+
 
 (defn get-bar-window [[calendar-kw interval-kw] bar-end-dt]
    ; TODO: improve
@@ -115,6 +136,19 @@
 
    (get-bar-duration [:us :d])
    (get-bar-duration [:us :m])
+
+   (-> (fixed-window [:us :d] {:start (t/date-time "2023-01-01T00:00:00")
+                               :end (t/date-time "2023-02-01T00:00:00")})
+       calendar-seq->range
+    )
+   
+   (-> (trailing-window :us :d 5)
+       calendar-seq->range
+    
+    )
+   
+   
+
    
     
   
