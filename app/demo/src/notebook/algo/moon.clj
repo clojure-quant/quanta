@@ -1,13 +1,11 @@
-(ns demo.algo.moon
+(ns notebook.algo.moon
   (:require
    [tablecloth.api :as tc]
    [tech.v3.datatype :as dtype]
-   [ta.algo.manager :refer [add-algo] :as am]
    [astro.moon :refer [inst->moon-phase-kw phase->text]]
    [ta.tradingview.chart.shape :as shapes] 
    [ta.tradingview.chart.plot :refer [plot-type]]
-   [ta.tradingview.chart.color :refer [color]]
- ))
+   [ta.tradingview.chart.color :refer [color]]))
 
 (defn moon-phase [col-date]
    (dtype/emap inst->moon-phase-kw :object col-date))
@@ -23,6 +21,7 @@
 (defn moon-signal [moon-phase]
   (dtype/emap moon-phase->signal :object moon-phase))
 
+
 (defn buy-signal->text [signal]
   (if (= signal :buy)
     1.0
@@ -31,7 +30,7 @@
 (defn signal-text [signal]
   (dtype/emap buy-signal->text :object signal))
 
-(defn moon-study [ds-bars options]
+(defn moon-indicator [env spec ds-bars]
   (let [col-date (:date ds-bars)
         col-moon-phase (moon-phase col-date)
         col-moon-signal (moon-signal col-moon-phase)
@@ -70,21 +69,15 @@
 
 
 
-(add-algo
- {:name "moon"
-  :comment "very good - 2:1"
-  :algo moon-study
-  :charts [;nil ; {:trade "flags"}
+(def charts [;nil ; {:trade "flags"}
            ;{:trade "chars" #_"arrows"}
            {:signal-text {:type "chars" 
                           :char "!" 
                           :textColor (color :steelblue)
                           :title "moon-phase-fullmoon" ; title should show up in pane settings
                           }}
-           {:volume {:type "line" :plottype (plot-type :columns)}}] 
- ; :shapes moon-phase-shapes ; fixed-shapes
-  :options {:symbol "SPY"
-            :frequency "D"}})
+           {:volume {:type "line" :plottype (plot-type :columns)}}])
+
 
 
 (comment 

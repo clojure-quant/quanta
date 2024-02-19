@@ -4,7 +4,6 @@
    [ta.calendar.combined :refer [combined-event-seq]]
    [ta.env.javelin.calendar :as cal]))
 
-
 (defn run-backtest [env w]
   (let [cals (cal/active-calendars env)
         event-seq (combined-event-seq w cals)]
@@ -40,12 +39,7 @@
   ;; this will print "now: DATE" for all hours in the last year
   ;; will return the number of hourly bars in the last year.
   (demo-backtest)
-
-
-  
-  
-  
-  
+ 
  ; 
   )
 

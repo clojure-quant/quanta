@@ -19,7 +19,7 @@
   (try (let [bars (get-bars-aligned-filled env spec cal-seq)
              close (:close bars)
              close-diff (diff close)]
-         (info "close-diff for asst: " asset "diff: " close-diff)
+         ;(info "close-diff for asst: " asset "diff: " close-diff)
          close-diff)
        (catch Exception ex
          (error "could not calculate asset: " asset)

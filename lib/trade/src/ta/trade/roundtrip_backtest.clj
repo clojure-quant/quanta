@@ -4,14 +4,9 @@
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as fun]
    [tablecloth.api :as tc]
-   [ta.warehouse :as wh]
-   [ta.data.settings :refer [determine-wh ]]
    [ta.helper.ago :refer [xf-future]]
    [ta.trade.signal :refer [trade-signal]]
-   [ta.trade.position-pl :refer [position-pl]]
-   [clojure.edn :as edn]
-   [try-let :refer [try-let]]
-   ))
+   [ta.trade.position-pl :refer [position-pl]]))
 
 
 (defn- bar->roundtrip-partial [ds]
@@ -106,6 +101,10 @@
     (tc/add-column ds :win
                    (dtype/emap win :bool (:pl-log ds)))))
 
+(defn calc-rountrips-simple [signal-ds]
+  (calc-roundtrips signal-ds {}))
+
+
 (comment
   (-> (tc/dataset {:l [:x :x :y :y :y]
                    :a [1 2 3 4 5]
@@ -118,44 +117,21 @@
 ;  
   )
 
-(defn calc-study [algo ds-bars algo-options]
- (algo ds-bars algo-options))
-
-
-(defn backtest-ds
+(defn signal-ds->roundtrips
   "algo has to create :position column
    creates roundtrips based on this column"
-  [ds-bars algo options]
-  (try-let [algo-options (dissoc options :w :symbol :frequency :entry-cols)
-            ds-study (calc-study algo ds-bars algo-options)]
-      (if (:signal ds-study)       
-        (try-let [ds-study-position (trade-signal ds-study)
-                  roundtrips (calc-roundtrips ds-study-position options)]
-           {:ds-study ds-study-position
-            :ds-roundtrips roundtrips} 
-          (catch Exception e
-            (error "backtest-ds exception in rountrip-calculation: " e)
-            {:error "backtest roundtrip calculation exception"
-             :ds-study ds-study}))
-        ; the algo is not setup to calculate :signal olumn
-        {:ds-study ds-study}) 
-     (catch Exception e
-       (error "exception in calculating study: " e)
-      {:ds-study ds-bars
-       :error "could not calculate study"})))
-       
+  [ds-signal]
+    (let [signal (:signal ds-signal)
+          options {}]
+      (assert signal "to crate positions :signal column needs to be present!")
+      (-> (trade-signal ds-signal)
+          (calc-roundtrips options))))
+      
 
 
 
-(defn run-backtest
-  "algo has to create :position column
-   creates roundtrips based on this column"
-  [algo {:keys [symbol frequency] :as options}]
-  (let [w (determine-wh symbol)
-        ds-bars (wh/load-symbol w frequency symbol)]
-    (backtest-ds ds-bars algo options)))
 
-(defn run-backtest-parameter-range
+#_(defn run-backtest-parameter-range
   [algo base-options
    prop-to-change prop-range]
   (let [{:keys [backtest-runner]
@@ -168,12 +144,4 @@
                   (assoc :ds-roundtrips (tc/set-dataset-name (:ds-roundtrips r) m)))]
         r))))
 
-
-(comment 
-  
-  (determine-wh "GOOGL")
-  (wh/load-symbol :stocks "D" "GOOGL")
-   
-  ;
-  )
 

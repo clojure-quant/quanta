@@ -6,8 +6,8 @@
    [ta.helper.stats :refer [mean]]
    [ta.trade.drawdown :refer [max-drawdown]]))
 
-(defn calc-roundtrip-stats [ds-roundtrips group-by]
-  (-> ds-roundtrips
+(defn calc-roundtrip-stats [roundtrips-ds group-by]
+  (-> roundtrips-ds
       (tc/group-by group-by)
       (tc/aggregate {:bars (fn [ds]
                              (->> ds
@@ -33,25 +33,23 @@
                                       (-> ds
                                           (tc/->array :pl-log)
                                           max-drawdown))} {:drop-missing? false})
-      (tc/set-dataset-name (tc/dataset-name ds-roundtrips))))
+      (tc/set-dataset-name (tc/dataset-name roundtrips-ds))))
 
-(defn position-stats [backtest-result]
-  (let [ds-roundtrips (:ds-roundtrips backtest-result)]
-    (as-> ds-roundtrips x
+(defn position-stats [roundtrips-ds]
+    (as-> roundtrips-ds x
       (calc-roundtrip-stats x [:position])
       (tds/mapseq-reader x)
       (map (juxt :position identity) x)
-      (into {} x))))
+      (into {} x)))
 
-(defn win-loss-stats [backtest-result]
-  (let [ds-roundtrips (:ds-roundtrips backtest-result)]
-    (as-> ds-roundtrips x
+(defn win-loss-stats [roundtrips-ds]
+    (as-> roundtrips-ds x
       (calc-roundtrip-stats x [:win])
       (tds/mapseq-reader x)
       (map (juxt :win identity) x)
       (into {} x)
       (clojure.set/rename-keys x {true :win
-                                  false :loss}))))
+                                  false :loss})))
 
 (defn win-loss-performance-metrics [win-loss-stats]
   (let [win (:win win-loss-stats)
@@ -77,14 +75,13 @@
                       0.0
                       )}))
 
-(defn roundtrip-performance-metrics [backtest-result]
-  (let [ds-roundtrips (:ds-roundtrips backtest-result)
-        wl-stats (win-loss-stats backtest-result)
+(defn roundtrip-metrics [roundtrips-ds]
+  (let [wl-stats (win-loss-stats roundtrips-ds)
         metrics (win-loss-performance-metrics wl-stats)
         metrics-ds (tc/dataset metrics)]
     (-> metrics-ds
         (tc/set-dataset-name "rt-stats")
-        (tc/add-column :p (tc/dataset-name ds-roundtrips)))))
+        (tc/add-column :p (tc/dataset-name roundtrips-ds)))))
 
 ; {:drop-missing? false} as an option
 

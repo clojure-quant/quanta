@@ -34,8 +34,8 @@
 
 (defn run-import-task [state opts task]
   (let [ds-bars (i/get-bars opts task)]
-    (info "appending bars: state: " state)
-    (info "appending bars: " ds-bars)
+    ;(info "appending bars: state: " state)
+    ;(info "appending bars: " ds-bars)
     (bardb/append-bars (:bar-db state) opts ds-bars)
     (overview/update-range (:overview-db state) opts (:db task))))
 
