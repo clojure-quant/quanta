@@ -2,62 +2,21 @@
   (:require
    [tick.core :as t]
    [ta.calendar.day :as day]
-   [ta.calendar.intraday :as intraday]))
-
-(defn now-in-zone [zone]
-  (-> (t/now)
-      (t/in zone)))
+   [ta.calendar.intraday :as intraday]
+   [ta.helper.date :refer [align-field now-in-zone]]))
 
 (defn now-calendar [{:keys [timezone] :as calendar}]
   (now-in-zone timezone))
 
-; align fns
+(defn current-close-aligned [calendar dt align-unit next-fn]
+  (let [zoned (t/in dt (:timezone calendar))
+        aligned (align-field zoned align-unit)
+        dt-next (next-fn calendar aligned)]
+    dt-next))
 
-(defn align-m [dt]
-  (-> dt
-      (t/with :second-of-minute 0)
-      (t/with :nano-of-second 0)))
-
-(defn align-h [dt]
-  (-> dt
-      (align-m)
-      (t/with :minute-of-hour 0)))
-
- (defn align-d [dt]
-  (-> dt
-      (align-m)
-      (t/with :minute-of-hour 0)))
-
-(defn gen-current-close [align-fn next-fn]
-  (fn [calendar]
-    ;(println "current-close for calendar: " calendar)
-    (let [now (now-calendar calendar)
-          now-aligned (align-fn now)
-          dt-next (next-fn calendar now-aligned)]
-      dt-next)))
-
-;; hour
-
- (defn next-hour [calendar dt]
-   (intraday/next-intraday (t/new-duration 1 :hours) calendar dt))
-
- (defn prior-hour [calendar dt]
-    (intraday/prior-intraday (t/new-duration 1 :hours) calendar dt))
-
-;; minute
- 
- (defn next-minute [calendar dt]
-  (intraday/next-intraday (t/new-duration 1 :minutes) calendar dt))
- 
- (defn prior-minute [calendar dt]
-   (intraday/prior-intraday (t/new-duration 1 :minutes) calendar dt))
-
- ;; minute-30 = half hour
- (defn next-minute30 [calendar dt]
-  (intraday/next-intraday (t/new-duration 30 :minutes) calendar dt))
-
- (defn prior-minute30 [calendar dt]
-  (intraday/prior-intraday (t/new-duration 30 :minutes) calendar dt))
+(defn gen-current-close [align-unit next-fn]
+  (fn ([calendar] (current-close-aligned calendar (t/now) align-unit next-fn))
+      ([calendar dt] (current-close-aligned calendar dt align-unit next-fn))))
 
 
 (def intervals
@@ -79,7 +38,6 @@
          :duration 30
          }
    })
-
 
 (comment
   (now-in-zone "Europe/Paris")

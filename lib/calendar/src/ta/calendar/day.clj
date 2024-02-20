@@ -1,15 +1,10 @@
 (ns ta.calendar.day
   (:require
-   [tick.core :as t]))
-
-; week 
-
-(defn day-open? [{:keys [week] :as calendar} dt]
-  (let [day (t/day-of-week dt)]
-    (contains? week day)))
-
-(defn day-closed? [calendar dt]
-  (not (day-open? calendar dt)))
+   [tick.core :as t]
+   [ta.calendar.helper :refer [before-trading-hours? after-trading-hours?
+                               trading-open-time trading-close-time
+                               time-open? time-closed?
+                               day-open? day-closed?]]))
 
 ; helper fns
 
@@ -58,6 +53,37 @@
   (let [prior-dt (prior-day calendar dt)
         prior-day (t/date prior-dt)]
     (at-time prior-day close timezone)))
+
+
+; recent (current / prior)
+
+(defn recent-close [calendar dt]
+  "like prior-close, but also can return the close time of the same day when dt is after trading-hours"
+  (if (and (day-open? calendar dt) (after-trading-hours? calendar dt))
+    (trading-close-time calendar (t/date dt))
+    (prior-close calendar dt)))
+
+(defn recent-open [calendar dt]
+  "like prior-open, but also can return the open time of the same day when dt is after trading-hours open time"
+  (if (and (day-open? calendar dt) (not (before-trading-hours? calendar dt)))
+    (trading-open-time calendar (t/date dt))
+    (prior-open calendar dt)))
+
+
+; upcomming (current / next)
+
+(defn upcoming-close [calendar dt]
+  "like next-close, but also can return the close time of the same day when dt is before trading-hours close time"
+  (if (and (day-open? calendar dt) (not (after-trading-hours? calendar dt)))
+    (trading-close-time calendar (t/date dt))
+    (next-close calendar dt)))
+
+(defn upcoming-open [calendar dt]
+  "like next-open, but also can return the open time of the same day when dt is before trading-hours"
+  (if (and (day-open? calendar dt) (before-trading-hours? calendar dt))
+    (trading-close-time calendar (t/date dt))
+    (next-close calendar dt)))
+
 
 (comment 
   (require '[ta.calendar.calendars :refer [calendars]])

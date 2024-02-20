@@ -28,6 +28,10 @@
 (defn now-date []
   (-> (t/now) t/date))
 
+(defn now-in-zone [zone]
+  (-> (t/now)
+      (t/in zone)))
+
 ;; parsing
 
 (def date-fmt (of-pattern "yyyy-MM-dd"))

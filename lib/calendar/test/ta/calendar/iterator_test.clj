@@ -2,9 +2,11 @@
   (:require [clojure.test :refer :all]
             [tick.core :as t]
             [ta.calendar.calendars :as cal]
-            [ta.calendar.iterator :refer [prev-close-dt next-close-dt
-                                          prev-open-dt next-open-dt
-                                          current-close-dt current-open-dt]]))
+            [ta.calendar.intraday :refer [prior-close-dt next-close-dt
+                                          prior-open-dt next-open-dt
+                                          current-close-dt current-open-dt]]
+            [ta.calendar.day :refer [recent-close recent-open
+                                     upcoming-close upcoming-open]]))
 
 
 (defn to-est [dt-str]
@@ -27,15 +29,20 @@
       dt-friday-06-00 (to-est "2024-02-09T06:00:00")
       dt-friday-09-00 (to-est "2024-02-09T09:00:00")
       dt-friday-09-15 (to-est "2024-02-09T09:15:00")
-      dt-friday-12-34 (to-est "2024-02-09T12:34:56")
+      dt-friday-12-00 (to-est "2024-02-09T12:00:00")
       dt-friday-12-15 (to-est "2024-02-09T12:15:00")
+      dt-friday-12-29 (to-est "2024-02-09T12:29:00")
       dt-friday-12-30 (to-est "2024-02-09T12:30:00")
+      dt-friday-12-33 (to-est "2024-02-09T12:33:00")
+      dt-friday-12-34 (to-est "2024-02-09T12:34:00")
+      dt-friday-12-34-56 (to-est "2024-02-09T12:34:56")
       dt-friday-12-45 (to-est "2024-02-09T12:45:00")
       dt-friday-13-00 (to-est "2024-02-09T13:00:00")
       dt-friday-16-15 (to-est "2024-02-09T16:15:00")
       dt-friday-16-30 (to-est "2024-02-09T16:30:00")
       dt-friday-16-45 (to-est "2024-02-09T16:45:00")
       dt-friday-17-00 (to-est "2024-02-09T17:00:00")
+      dt-friday-17-01 (to-est "2024-02-09T17:01:00")
       dt-friday-17-15 (to-est "2024-02-09T17:15:00")
       dt-friday-18-00 (to-est "2024-02-09T18:00:00")
 
@@ -59,9 +66,9 @@
   ;
   (deftest current-close
     (testing "dt inside interval"
-      (is (t/= dt-friday-12-45 (current-close-dt us-cal 15 :minutes dt-friday-12-34)))
-      (is (not (t/= dt-friday-12-15 (current-close-dt us-cal 15 :minutes dt-friday-12-34))))
-      (is (not (t/= dt-friday-12-30 (current-close-dt us-cal 15 :minutes dt-friday-12-34)))))
+      (is (t/= dt-friday-12-45 (current-close-dt us-cal 15 :minutes dt-friday-12-34-56)))
+      (is (not (t/= dt-friday-12-15 (current-close-dt us-cal 15 :minutes dt-friday-12-34-56))))
+      (is (not (t/= dt-friday-12-30 (current-close-dt us-cal 15 :minutes dt-friday-12-34-56)))))
     (testing "dt on interval boundary"
       (is (t/= dt-friday-12-30 (current-close-dt us-cal 15 :minutes dt-friday-12-30)))
       (is (not (t/= dt-friday-12-15 (current-close-dt us-cal 15 :minutes dt-friday-12-30))))
@@ -69,9 +76,9 @@
 
   (deftest current-open
     (testing "dt inside interval"
-      (is (t/= dt-friday-12-30 (current-open-dt us-cal 15 :minutes dt-friday-12-34)))
-      (is (not (t/= dt-friday-12-15 (current-open-dt us-cal 15 :minutes dt-friday-12-34))))
-      (is (not (t/= dt-friday-12-45 (current-open-dt us-cal 15 :minutes dt-friday-12-34)))))
+      (is (t/= dt-friday-12-30 (current-open-dt us-cal 15 :minutes dt-friday-12-34-56)))
+      (is (not (t/= dt-friday-12-15 (current-open-dt us-cal 15 :minutes dt-friday-12-34-56))))
+      (is (not (t/= dt-friday-12-45 (current-open-dt us-cal 15 :minutes dt-friday-12-34-56)))))
     (testing "dt on interval boundary"
       (is (t/= dt-friday-12-30 (current-open-dt us-cal 15 :minutes dt-friday-12-30)))
       (is (not (t/= dt-friday-12-15 (current-open-dt us-cal 15 :minutes dt-friday-12-30))))
@@ -82,75 +89,96 @@
   ;
   (deftest prev-close-intraday
     (testing "dt inside interval"
-      (is (t/= dt-friday-12-30 (prev-close-dt us-cal 15 :minutes dt-friday-12-34)))
-      (is (not (t/= dt-friday-12-15 (prev-close-dt us-cal 15 :minutes dt-friday-12-34))))
-      (is (not (t/= dt-friday-12-45 (prev-close-dt us-cal 15 :minutes dt-friday-12-34)))))
+      (is (t/= dt-friday-12-30 (prior-close-dt us-cal 15 :minutes dt-friday-12-34-56)))
+      (is (not (t/= dt-friday-12-15 (prior-close-dt us-cal 15 :minutes dt-friday-12-34-56))))
+      (is (not (t/= dt-friday-12-45 (prior-close-dt us-cal 15 :minutes dt-friday-12-34-56))))
+      ; 1 min
+      (is (t/= dt-friday-12-34 (prior-close-dt us-cal 1 :minutes dt-friday-12-34-56)))
+      (is (not (t/= dt-friday-12-33 (prior-close-dt us-cal 1 :minutes dt-friday-12-34-56))))
+      ; 1 hour
+      (is (t/= dt-friday-12-00 (prior-close-dt us-cal 1 :hours dt-friday-12-34-56)))
+      (is (not (t/= dt-friday-13-00 (prior-close-dt us-cal 1 :hours dt-friday-12-34-56))))
+      ; 1 day
+      (is (t/= dt-thursday-17-00 (recent-close us-cal dt-friday-12-34-56)))
+      (is (not (t/= dt-friday-17-00 (recent-close us-cal dt-friday-12-34-56)))))
     (testing "dt on interval boundary"
-      (is (t/= dt-friday-12-15 (prev-close-dt us-cal 15 :minutes dt-friday-12-30)))
-      (is (not (t/= dt-friday-12-30 (prev-close-dt us-cal 15 :minutes dt-friday-12-30))))
-      (is (not (t/= dt-friday-12-45 (prev-close-dt us-cal 15 :minutes dt-friday-12-30)))))
+      (is (t/= dt-friday-12-15 (prior-close-dt us-cal 15 :minutes dt-friday-12-30)))
+      (is (not (t/= dt-friday-12-30 (prior-close-dt us-cal 15 :minutes dt-friday-12-30))))
+      (is (not (t/= dt-friday-12-45 (prior-close-dt us-cal 15 :minutes dt-friday-12-30))))
+      ; 1 min
+      (is (t/= dt-friday-12-29 (prior-close-dt us-cal 1 :minutes dt-friday-12-30)))
+      (is (not (t/= dt-friday-12-30 (prior-close-dt us-cal 1 :minutes dt-friday-12-30))))
+      ; 1 hour
+      (is (t/= dt-friday-12-00 (prior-close-dt us-cal 1 :hours dt-friday-13-00)))
+      (is (not (t/= dt-friday-13-00 (prior-close-dt us-cal 1 :hours dt-friday-13-00))))
+      ; 1 day
+      (is (t/= dt-thursday-17-00 (recent-close us-cal dt-friday-17-00)))
+      (is (not (t/= dt-friday-17-00 (recent-close us-cal dt-friday-17-00)))))
     (testing "dt before trading hours"
-      (is (t/= dt-thursday-17-00 (prev-close-dt us-cal 15 :minutes dt-friday-06-00)))
-      (is (not (t/= dt-thursday-09-00 (prev-close-dt us-cal 15 :minutes dt-friday-06-00))))
-      (is (not (t/= dt-friday-00-00 (prev-close-dt us-cal 15 :minutes dt-friday-06-00))))
-      (is (not (t/= dt-friday-09-00 (prev-close-dt us-cal 15 :minutes dt-friday-06-00)))))
+      (is (t/= dt-thursday-17-00 (prior-close-dt us-cal 15 :minutes dt-friday-06-00)))
+      (is (not (t/= dt-thursday-09-00 (prior-close-dt us-cal 15 :minutes dt-friday-06-00))))
+      (is (not (t/= dt-friday-00-00 (prior-close-dt us-cal 15 :minutes dt-friday-06-00))))
+      (is (not (t/= dt-friday-09-00 (prior-close-dt us-cal 15 :minutes dt-friday-06-00)))))
     (testing "dt after trading hours"
-      (is (t/= dt-thursday-17-00 (prev-close-dt us-cal 15 :minutes dt-thursday-23-00)))
-      (is (not (t/= dt-thursday-09-00 (prev-close-dt us-cal 15 :minutes dt-thursday-23-00))))
-      (is (not (t/= dt-friday-00-00 (prev-close-dt us-cal 15 :minutes dt-thursday-23-00))))
-      (is (not (t/= dt-friday-09-00 (prev-close-dt us-cal 15 :minutes dt-thursday-23-00)))))
+      (is (t/= dt-thursday-17-00 (prior-close-dt us-cal 15 :minutes dt-thursday-23-00)))
+      (is (not (t/= dt-thursday-09-00 (prior-close-dt us-cal 15 :minutes dt-thursday-23-00))))
+      (is (not (t/= dt-friday-00-00 (prior-close-dt us-cal 15 :minutes dt-thursday-23-00))))
+      (is (not (t/= dt-friday-09-00 (prior-close-dt us-cal 15 :minutes dt-thursday-23-00))))
+      ; 1 day
+      (is (t/= dt-friday-17-00 (recent-close us-cal dt-friday-17-01)))
+      (is (not (t/= dt-thursday-17-00 (recent-close us-cal dt-friday-17-01)))))
     (testing "dt before trading hours (from next week)"
-      (is (t/= dt-friday-17-00 (prev-close-dt us-cal 15 :minutes dt-monday-next-06-00)))
-      (is (t/= dt-friday-17-00 (prev-close-dt us-cal 15 :minutes dt-monday-next-09-00)))
-      (is (not (t/= dt-monday-next-09-00 (prev-close-dt us-cal 15 :minutes dt-monday-next-06-00)))))
+      (is (t/= dt-friday-17-00 (prior-close-dt us-cal 15 :minutes dt-monday-next-06-00)))
+      (is (t/= dt-friday-17-00 (prior-close-dt us-cal 15 :minutes dt-monday-next-09-00)))
+      (is (not (t/= dt-monday-next-09-00 (prior-close-dt us-cal 15 :minutes dt-monday-next-06-00)))))
     (testing "dt after trading hours (weekend)"
-      (is (t/= dt-friday-17-00 (prev-close-dt us-cal 15 :minutes dt-friday-18-00)))
-      (is (t/= dt-friday-17-00 (prev-close-dt us-cal 15 :minutes dt-friday-17-15)))
+      (is (t/= dt-friday-17-00 (prior-close-dt us-cal 15 :minutes dt-friday-18-00)))
+      (is (t/= dt-friday-17-00 (prior-close-dt us-cal 15 :minutes dt-friday-17-15)))
       (is (not (t/= dt-friday-16-45 (next-open-dt forex-cal 15 :minutes dt-friday-17-15)))))
     (testing "dt on trading week start"
-      (is (t/= dt-friday-17-00 (prev-close-dt us-cal 15 :minutes dt-monday-next-09-00)))
-      (is (not (t/= dt-monday-next-09-00 (prev-close-dt us-cal 15 :minutes dt-monday-next-09-00)))))
+      (is (t/= dt-friday-17-00 (prior-close-dt us-cal 15 :minutes dt-monday-next-09-00)))
+      (is (not (t/= dt-monday-next-09-00 (prior-close-dt us-cal 15 :minutes dt-monday-next-09-00)))))
     (testing "dt on trading week close"
-      (is (t/= dt-friday-16-45 (prev-close-dt us-cal 15 :minutes dt-friday-17-00)))
-      (is (not (t/= dt-friday-17-00 (prev-close-dt us-cal 15 :minutes dt-friday-17-00)))))
+      (is (t/= dt-friday-16-45 (prior-close-dt us-cal 15 :minutes dt-friday-17-00)))
+      (is (not (t/= dt-friday-17-00 (prior-close-dt us-cal 15 :minutes dt-friday-17-00)))))
     (testing "dt not on trading day"
-      (is (t/= dt-friday-17-00 (prev-close-dt us-cal 15 :minutes dt-saturday-12-00)))
-      (is (not (t/= dt-friday-09-00 (prev-close-dt us-cal 15 :minutes dt-saturday-12-00))))
-      (is (not (t/= dt-monday-09-00 (prev-close-dt us-cal 15 :minutes dt-saturday-12-00))))
-      (is (not (t/= dt-saturday-09-00 (prev-close-dt us-cal 15 :minutes dt-saturday-12-00))))
-      (is (not (t/= dt-saturday-17-00 (prev-close-dt us-cal 15 :minutes dt-saturday-12-00))))))
+      (is (t/= dt-friday-17-00 (prior-close-dt us-cal 15 :minutes dt-saturday-12-00)))
+      (is (not (t/= dt-friday-09-00 (prior-close-dt us-cal 15 :minutes dt-saturday-12-00))))
+      (is (not (t/= dt-monday-09-00 (prior-close-dt us-cal 15 :minutes dt-saturday-12-00))))
+      (is (not (t/= dt-saturday-09-00 (prior-close-dt us-cal 15 :minutes dt-saturday-12-00))))
+      (is (not (t/= dt-saturday-17-00 (prior-close-dt us-cal 15 :minutes dt-saturday-12-00))))))
 
   (deftest prev-close-overnight
     ; close on 16:30 for forex (custom definition)
     (testing "dt before trading hours - forex/overnight"
-      (is (t/= dt-friday-16-30 (prev-close-dt forex-cal 15 :minutes dt-sunday-06-00)))
-      (is (not (t/= dt-sunday-17-00 (prev-close-dt forex-cal 15 :minutes dt-sunday-06-00)))))
+      (is (t/= dt-friday-16-30 (prior-close-dt forex-cal 15 :minutes dt-sunday-06-00)))
+      (is (not (t/= dt-sunday-17-00 (prior-close-dt forex-cal 15 :minutes dt-sunday-06-00)))))
     (testing "dt after trading hours - forex/overnight"
-      (is (t/= dt-friday-16-30 (prev-close-dt forex-cal 15 :minutes dt-friday-18-00)))
-      (is (t/= dt-friday-16-30 (prev-close-dt forex-cal 15 :minutes dt-friday-17-15)))
+      (is (t/= dt-friday-16-30 (prior-close-dt forex-cal 15 :minutes dt-friday-18-00)))
+      (is (t/= dt-friday-16-30 (prior-close-dt forex-cal 15 :minutes dt-friday-17-15)))
       (is (not (t/= dt-friday-16-15 (next-open-dt forex-cal 15 :minutes dt-friday-17-15)))))
     (testing "dt on trading week start"
-      (is (t/= dt-friday-16-30 (prev-close-dt forex-cal 15 :minutes dt-sunday-17-00)))
-      (is (not (t/= dt-monday-next-09-00 (prev-close-dt forex-cal 15 :minutes dt-sunday-17-00))))
-      (is (not (t/= dt-sunday-17-00 (prev-close-dt forex-cal 15 :minutes dt-sunday-17-00)))))
+      (is (t/= dt-friday-16-30 (prior-close-dt forex-cal 15 :minutes dt-sunday-17-00)))
+      (is (not (t/= dt-monday-next-09-00 (prior-close-dt forex-cal 15 :minutes dt-sunday-17-00))))
+      (is (not (t/= dt-sunday-17-00 (prior-close-dt forex-cal 15 :minutes dt-sunday-17-00)))))
     (testing "dt on trading week close"
-      (is (t/= dt-friday-16-15 (prev-close-dt forex-cal 15 :minutes dt-friday-16-30)))
-      (is (not (t/= dt-friday-16-30 (prev-close-dt forex-cal 15 :minutes dt-friday-16-30)))))
+      (is (t/= dt-friday-16-15 (prior-close-dt forex-cal 15 :minutes dt-friday-16-30)))
+      (is (not (t/= dt-friday-16-30 (prior-close-dt forex-cal 15 :minutes dt-friday-16-30)))))
     (testing "dt not on trading day"
-      (is (t/= dt-friday-16-30 (prev-close-dt forex-cal 15 :minutes dt-saturday-12-00)))
-      (is (not (t/= dt-friday-09-00 (prev-close-dt forex-cal 15 :minutes dt-saturday-12-00))))
-      (is (not (t/= dt-sunday-17-00 (prev-close-dt forex-cal 15 :minutes dt-saturday-12-00))))
-      (is (not (t/= dt-saturday-09-00 (prev-close-dt forex-cal 15 :minutes dt-saturday-12-00))))
-      (is (not (t/= dt-saturday-17-00 (prev-close-dt forex-cal 15 :minutes dt-saturday-12-00))))))
+      (is (t/= dt-friday-16-30 (prior-close-dt forex-cal 15 :minutes dt-saturday-12-00)))
+      (is (not (t/= dt-friday-09-00 (prior-close-dt forex-cal 15 :minutes dt-saturday-12-00))))
+      (is (not (t/= dt-sunday-17-00 (prior-close-dt forex-cal 15 :minutes dt-saturday-12-00))))
+      (is (not (t/= dt-saturday-09-00 (prior-close-dt forex-cal 15 :minutes dt-saturday-12-00))))
+      (is (not (t/= dt-saturday-17-00 (prior-close-dt forex-cal 15 :minutes dt-saturday-12-00))))))
 
   ;
   ; NEXT CLOSE
   ;
     (deftest next-close-intraday
       (testing "dt inside interval"
-        (is (t/= dt-friday-12-45 (next-close-dt us-cal 15 :minutes dt-friday-12-34)))
-        (is (not (t/= dt-friday-12-15 (next-close-dt us-cal 15 :minutes dt-friday-12-34))))
-        (is (not (t/= dt-friday-12-30 (next-close-dt us-cal 15 :minutes dt-friday-12-34)))))
+        (is (t/= dt-friday-12-45 (next-close-dt us-cal 15 :minutes dt-friday-12-34-56)))
+        (is (not (t/= dt-friday-12-15 (next-close-dt us-cal 15 :minutes dt-friday-12-34-56))))
+        (is (not (t/= dt-friday-12-30 (next-close-dt us-cal 15 :minutes dt-friday-12-34-56)))))
       (testing "dt on interval boundary"
         (is (t/= dt-friday-12-45 (next-close-dt us-cal 15 :minutes dt-friday-12-30)))
         (is (not (t/= dt-friday-12-30 (next-close-dt us-cal 15 :minutes dt-friday-12-30))))
@@ -212,64 +240,64 @@
   ;
   (deftest prev-open-intraday
     (testing "dt inside interval"
-      (is (t/= dt-friday-12-30 (prev-open-dt us-cal 15 :minutes dt-friday-12-34)))
-      (is (not (t/= dt-friday-12-15 (prev-open-dt us-cal 15 :minutes dt-friday-12-34))))
-      (is (not (t/= dt-friday-12-45 (prev-open-dt us-cal 15 :minutes dt-friday-12-34)))))
+      (is (t/= dt-friday-12-30 (prior-open-dt us-cal 15 :minutes dt-friday-12-34-56)))
+      (is (not (t/= dt-friday-12-15 (prior-open-dt us-cal 15 :minutes dt-friday-12-34-56))))
+      (is (not (t/= dt-friday-12-45 (prior-open-dt us-cal 15 :minutes dt-friday-12-34-56)))))
     (testing "dt on interval boundary"
-      (is (t/= dt-friday-12-15 (prev-open-dt us-cal 15 :minutes dt-friday-12-30)))
-      (is (not (t/= dt-friday-12-30 (prev-open-dt us-cal 15 :minutes dt-friday-12-30))))
-      (is (not (t/= dt-friday-12-45 (prev-open-dt us-cal 15 :minutes dt-friday-12-30)))))
+      (is (t/= dt-friday-12-15 (prior-open-dt us-cal 15 :minutes dt-friday-12-30)))
+      (is (not (t/= dt-friday-12-30 (prior-open-dt us-cal 15 :minutes dt-friday-12-30))))
+      (is (not (t/= dt-friday-12-45 (prior-open-dt us-cal 15 :minutes dt-friday-12-30)))))
     (testing "dt before trading hours"
-      (is (t/= dt-thursday-16-45 (prev-open-dt us-cal 15 :minutes dt-friday-06-00)))
-      (is (not (t/= dt-thursday-17-00 (prev-open-dt us-cal 15 :minutes dt-friday-06-00))))
-      (is (not (t/= dt-friday-00-00 (prev-open-dt us-cal 15 :minutes dt-friday-06-00))))
-      (is (not (t/= dt-friday-09-00 (prev-open-dt us-cal 15 :minutes dt-friday-06-00)))))
+      (is (t/= dt-thursday-16-45 (prior-open-dt us-cal 15 :minutes dt-friday-06-00)))
+      (is (not (t/= dt-thursday-17-00 (prior-open-dt us-cal 15 :minutes dt-friday-06-00))))
+      (is (not (t/= dt-friday-00-00 (prior-open-dt us-cal 15 :minutes dt-friday-06-00))))
+      (is (not (t/= dt-friday-09-00 (prior-open-dt us-cal 15 :minutes dt-friday-06-00)))))
     (testing "dt after trading hours"
-      (is (t/= dt-thursday-16-45 (prev-open-dt us-cal 15 :minutes dt-thursday-23-00)))
-      (is (not (t/= dt-thursday-17-00 (prev-open-dt us-cal 15 :minutes dt-thursday-23-00))))
-      (is (not (t/= dt-friday-00-00 (prev-open-dt us-cal 15 :minutes dt-thursday-23-00))))
-      (is (not (t/= dt-friday-09-00 (prev-open-dt us-cal 15 :minutes dt-thursday-23-00)))))
+      (is (t/= dt-thursday-16-45 (prior-open-dt us-cal 15 :minutes dt-thursday-23-00)))
+      (is (not (t/= dt-thursday-17-00 (prior-open-dt us-cal 15 :minutes dt-thursday-23-00))))
+      (is (not (t/= dt-friday-00-00 (prior-open-dt us-cal 15 :minutes dt-thursday-23-00))))
+      (is (not (t/= dt-friday-09-00 (prior-open-dt us-cal 15 :minutes dt-thursday-23-00)))))
     (testing "dt before trading hours (from next week)"
-      (is (t/= dt-friday-16-45 (prev-open-dt us-cal 15 :minutes dt-monday-next-06-00)))
-      (is (not (t/= dt-monday-next-09-00 (prev-open-dt us-cal 15 :minutes dt-monday-next-06-00))))
+      (is (t/= dt-friday-16-45 (prior-open-dt us-cal 15 :minutes dt-monday-next-06-00)))
+      (is (not (t/= dt-monday-next-09-00 (prior-open-dt us-cal 15 :minutes dt-monday-next-06-00))))
       (is (not (t/= dt-friday-16-45 (next-open-dt forex-cal 15 :minutes dt-friday-17-15)))))
     (testing "dt after trading hours (weekend)"
-      (is (t/= dt-friday-16-45 (prev-open-dt us-cal 15 :minutes dt-friday-18-00)))
-      (is (not (t/= dt-friday-17-00 (prev-open-dt us-cal 15 :minutes dt-friday-17-15)))))
+      (is (t/= dt-friday-16-45 (prior-open-dt us-cal 15 :minutes dt-friday-18-00)))
+      (is (not (t/= dt-friday-17-00 (prior-open-dt us-cal 15 :minutes dt-friday-17-15)))))
     (testing "dt on trading week start"
-      (is (t/= dt-friday-16-45 (prev-open-dt us-cal 15 :minutes dt-monday-next-09-00)))
-      (is (not (t/= dt-monday-next-09-00 (prev-open-dt us-cal 15 :minutes dt-monday-next-09-00)))))
+      (is (t/= dt-friday-16-45 (prior-open-dt us-cal 15 :minutes dt-monday-next-09-00)))
+      (is (not (t/= dt-monday-next-09-00 (prior-open-dt us-cal 15 :minutes dt-monday-next-09-00)))))
     (testing "dt on trading week close"
-      (is (t/= dt-friday-16-45 (prev-open-dt us-cal 15 :minutes dt-friday-17-00)))
-      (is (not (t/= dt-friday-17-00 (prev-open-dt us-cal 15 :minutes dt-friday-17-00)))))
+      (is (t/= dt-friday-16-45 (prior-open-dt us-cal 15 :minutes dt-friday-17-00)))
+      (is (not (t/= dt-friday-17-00 (prior-open-dt us-cal 15 :minutes dt-friday-17-00)))))
     (testing "dt not on trading day"
-      (is (t/= dt-friday-16-45 (prev-open-dt us-cal 15 :minutes dt-saturday-12-00)))
-      (is (not (t/= dt-monday-09-00 (prev-open-dt us-cal 15 :minutes dt-saturday-12-00))))
-      (is (not (t/= dt-saturday-09-00 (prev-open-dt us-cal 15 :minutes dt-saturday-12-00))))
-      (is (not (t/= dt-saturday-17-00 (prev-open-dt us-cal 15 :minutes dt-saturday-12-00))))))
+      (is (t/= dt-friday-16-45 (prior-open-dt us-cal 15 :minutes dt-saturday-12-00)))
+      (is (not (t/= dt-monday-09-00 (prior-open-dt us-cal 15 :minutes dt-saturday-12-00))))
+      (is (not (t/= dt-saturday-09-00 (prior-open-dt us-cal 15 :minutes dt-saturday-12-00))))
+      (is (not (t/= dt-saturday-17-00 (prior-open-dt us-cal 15 :minutes dt-saturday-12-00))))))
 
   (deftest prev-open-overnight
     ; close on 16:30 for forex (custom definition)
     (testing "dt before trading hours - forex/overnight"
-      (is (t/= dt-friday-16-15 (prev-open-dt forex-cal 15 :minutes dt-sunday-06-00)))
-      (is (not (t/= dt-sunday-17-00 (prev-open-dt forex-cal 15 :minutes dt-sunday-06-00)))))
+      (is (t/= dt-friday-16-15 (prior-open-dt forex-cal 15 :minutes dt-sunday-06-00)))
+      (is (not (t/= dt-sunday-17-00 (prior-open-dt forex-cal 15 :minutes dt-sunday-06-00)))))
     (testing "dt after trading hours - forex/overnight"
-      (is (t/= dt-friday-16-15 (prev-open-dt forex-cal 15 :minutes dt-friday-18-00)))
-      (is (t/= dt-friday-16-15 (prev-open-dt forex-cal 15 :minutes dt-friday-17-15)))
+      (is (t/= dt-friday-16-15 (prior-open-dt forex-cal 15 :minutes dt-friday-18-00)))
+      (is (t/= dt-friday-16-15 (prior-open-dt forex-cal 15 :minutes dt-friday-17-15)))
       (is (not (t/= dt-friday-16-15 (next-open-dt forex-cal 15 :minutes dt-friday-17-15)))))
     (testing "dt on trading week start"
-      (is (t/= dt-friday-16-15 (prev-open-dt forex-cal 15 :minutes dt-sunday-17-00)))
-      (is (not (t/= dt-monday-next-09-00 (prev-open-dt forex-cal 15 :minutes dt-sunday-17-00))))
-      (is (not (t/= dt-sunday-17-00 (prev-open-dt forex-cal 15 :minutes dt-sunday-17-00)))))
+      (is (t/= dt-friday-16-15 (prior-open-dt forex-cal 15 :minutes dt-sunday-17-00)))
+      (is (not (t/= dt-monday-next-09-00 (prior-open-dt forex-cal 15 :minutes dt-sunday-17-00))))
+      (is (not (t/= dt-sunday-17-00 (prior-open-dt forex-cal 15 :minutes dt-sunday-17-00)))))
     (testing "dt on trading week close"
-      (is (t/= dt-friday-16-15 (prev-open-dt forex-cal 15 :minutes dt-friday-16-30)))
-      (is (not (t/= dt-friday-16-30 (prev-open-dt forex-cal 15 :minutes dt-friday-16-30)))))
+      (is (t/= dt-friday-16-15 (prior-open-dt forex-cal 15 :minutes dt-friday-16-30)))
+      (is (not (t/= dt-friday-16-30 (prior-open-dt forex-cal 15 :minutes dt-friday-16-30)))))
     (testing "dt not on trading day"
-      (is (t/= dt-friday-16-15 (prev-open-dt forex-cal 15 :minutes dt-saturday-12-00)))
-      (is (not (t/= dt-friday-09-00 (prev-open-dt forex-cal 15 :minutes dt-saturday-12-00))))
-      (is (not (t/= dt-sunday-17-00 (prev-open-dt forex-cal 15 :minutes dt-saturday-12-00))))
-      (is (not (t/= dt-saturday-09-00 (prev-open-dt forex-cal 15 :minutes dt-saturday-12-00))))
-      (is (not (t/= dt-saturday-17-00 (prev-open-dt forex-cal 15 :minutes dt-saturday-12-00))))))
+      (is (t/= dt-friday-16-15 (prior-open-dt forex-cal 15 :minutes dt-saturday-12-00)))
+      (is (not (t/= dt-friday-09-00 (prior-open-dt forex-cal 15 :minutes dt-saturday-12-00))))
+      (is (not (t/= dt-sunday-17-00 (prior-open-dt forex-cal 15 :minutes dt-saturday-12-00))))
+      (is (not (t/= dt-saturday-09-00 (prior-open-dt forex-cal 15 :minutes dt-saturday-12-00))))
+      (is (not (t/= dt-saturday-17-00 (prior-open-dt forex-cal 15 :minutes dt-saturday-12-00))))))
 
   ;
   ; NEXT OPEN

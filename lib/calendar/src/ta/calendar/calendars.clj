@@ -56,11 +56,6 @@
 
    })
 
-(defn intraday? [{:keys [open close] :as calendar}]
-  (t/< open close))
-
-(defn overnight? [{:keys [open close] :as calendar}]
-  (t/>= open close))
 
 
 

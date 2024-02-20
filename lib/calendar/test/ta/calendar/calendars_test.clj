@@ -1,11 +1,10 @@
 (ns ta.calendar.calendars-test
   (:require [clojure.test :refer :all]
             [tick.core :as t]
-            [ta.calendar.day :refer [day-open? day-closed?]]
-            [ta.calendar.intraday :refer [time-closed?
-                                          time-open?
-                                          before-trading-hours?
-                                          after-trading-hours?]]
+            [ta.calendar.helper :refer [day-open? day-closed?
+                                        time-closed? time-open?
+                                        before-trading-hours? after-trading-hours?]]
+            [ta.calendar.intraday :refer []]
             [ta.calendar.calendars :as cal]))
 
 (deftest trading-days
@@ -139,6 +138,7 @@
   ; TODO: time shifting
   ; TODO: time zones
   ; TODO: DST
+  ; TODO: more tests for after-trading-hours? before-trading-hours? (calender with 3 days or scattered days, overnight but not consecutive trading time ... etc)
 
   ;(let [aest-winter (t/zoned-date-time "2024-01-01T07:00:00Z[Australia/Sydney]")
   ;      aest-summer (t/zoned-date-time "2024-07-01T07:00:00Z[Australia/Sydney]")
