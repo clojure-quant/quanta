@@ -1,4 +1,4 @@
-(ns ta.db.asset.symbol-db
+(ns ta.db.asset.db
   (:require
    [clojure.string :refer [includes? lower-case blank?]]
    [taoensso.timbre :refer [trace debug info warnf error]]

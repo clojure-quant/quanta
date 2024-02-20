@@ -1,7 +1,7 @@
 (ns ta.tradingview.chart.maker
   (:require
    [nano-id.core :refer [nano-id]]
-   [ta.db.asset.symbol-db :refer [instrument-details]]
+   [ta.db.asset.db :refer [instrument-details]]
    [ta.tradingview.db-ts :refer [save-chart now-epoch chart-list load-chart load-chart-boxed]]
    [ta.tradingview.db-instrument :refer [inst-type]]
    [ta.tradingview.chart.template.mainseries :refer [template-mainseries]]

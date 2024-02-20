@@ -5,7 +5,7 @@
    [clojure.edn :as edn]
    [taoensso.timbre :refer [debug info warnf error]]
    [modular.config :refer [get-in-config] :as config]
-   [ta.db.asset.symbol-db :as db]
+   [ta.db.asset.db :as db]
    ))
 
 (defn get-lists []

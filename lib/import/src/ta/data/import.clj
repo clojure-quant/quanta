@@ -4,7 +4,7 @@
     [tablecloth.api :as tc]
      ; db
     [ta.db.asset.symbollist :refer [load-list]]
-    [ta.db.asset.symbol-db :as db]
+    [ta.db.asset.db :as db]
     [ta.warehouse :refer [load-series exists-series?]]
     ; import
     [ta.data.import.warehouse :refer [save-series]]

@@ -7,7 +7,7 @@
    [tech.v3.dataset :as tds]
    [tech.v3.datatype.argops :as argops]
    [tablecloth.api :as tc]
-   [ta.db.asset.symbol-db :as db]
+   [ta.db.asset.db :as db]
    [ta.import.provider.kibot.raw :as kibot]))
 
 (defn string->stream [s]
