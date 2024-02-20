@@ -5,7 +5,7 @@
    [tech.v3.datatype.functional :as dfn]
    [ta.helper.print :refer [print-all]]
    [ta.helper.ds :refer [ds->str ds->map]]
-   ;[ta.helper.stats :refer [mean]]
+   ;[ta.math.stats :refer [mean]]
    [ta.warehouse :as wh]
    ;[medley.core :as m]
    ;[clj-time.core :as t]
@@ -19,7 +19,7 @@
    [ta.series.indicator :refer [sma]]
    ;[ta.trade.signal :refer [buy-above]]
    [ta.trade.roundtrip-backtest :refer [run-backtest run-backtest-parameter-range]]
-   [ta.trade.metrics.roundtrip-stats :refer [roundtrip-performance-metrics backtests->performance-metrics]]
+   [ta.trade.metrics.roundtrip-stats :refer [roundtrip-metrics backtests->performance-metrics]]
    [ta.trade.print]
    [reval.document.manager :refer [save]];  save [data ns name-no-ext format]
    ))
@@ -151,8 +151,8 @@
 (def backtest-all (trade-sma-monthly-portfolio nil (assoc o :max-pos 0)))
 (def backtest-5 (trade-sma-monthly-portfolio nil (assoc o :max-pos 5)))
 
-(roundtrip-performance-metrics backtest-5)
-(roundtrip-performance-metrics backtest-all)
+(roundtrip-metrics backtest-5)
+(roundtrip-metrics backtest-all)
 
 ^:R
 [:p/table [{:avg-win-log 0.01641819674252593
@@ -167,7 +167,7 @@
             :avg-bars-loss 19.97831978319783}]]
 
 ^:R
-[:p/table (->> (roundtrip-performance-metrics backtest-all)
+[:p/table (->> (roundtrip-metrics backtest-all)
                ds->map
                first
                (merge {}))]

@@ -3,7 +3,7 @@
    [clojure.set]
    [tablecloth.api :as tc]
    [tech.v3.dataset :as tds]
-   [ta.helper.stats :refer [mean]]
+   [ta.math.stats :refer [mean]]
    [ta.trade.drawdown :refer [max-drawdown]]))
 
 (defn calc-roundtrip-stats [roundtrips-ds group-by]
@@ -93,7 +93,7 @@
                     :avg-bars-win :avg-bars-loss])
 
 (defn backtests->performance-metrics [backtest-results]
-  (as-> (map roundtrip-performance-metrics backtest-results) x
+  (as-> (map roundtrip-metrics backtest-results) x
     (apply tc/concat x)
     (tc/select-columns x cols-rt-stats)
        ;(reduce tc/append (tc/dataset {}))

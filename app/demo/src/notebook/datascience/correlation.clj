@@ -2,7 +2,7 @@
   (:require
    [tech.v3.datatype.functional :as fun]
    [fastmath.stats :as stats]
-   [ta.helper.stats :refer [standardize rand-numbers]]))
+   [ta.math.stats :refer [standardize rand-numbers]]))
 
 (let [n  100
       xs (repeatedly n #(* 100 (rand)))

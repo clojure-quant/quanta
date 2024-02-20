@@ -4,8 +4,8 @@
  :deps {org.clojure/clojure {:mvn/version "1.11.1"}
         io.github.adam-james-v/svg-clj {:mvn/version "0.0.11"}
         cljplot/cljplot {:mvn/version "0.0.3"}
-        org.scicloj/wadogo {:mvn/version "1.0.0-SNAPSHOT"}
-        org.pinkgorilla/modular {:mvn/version "0.0.38"}
+        org.scicloj/wadogo {:mvn/version "1.0.0"}
+                org.pinkgorilla/modular {:mvn/version "0.0.38"}
         ta/trateg {:local/root "../../lib/trateg" :deps/manifest :deps}}
 ;
  }

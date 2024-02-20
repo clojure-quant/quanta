@@ -10,7 +10,7 @@
    [loom.alg]
    [ta.warehouse :as wh]
    [ta.warehouse.overview :refer [load-datasets concatenate-datasets overview-view]]
-   [ta.helper.stats :refer [standardize]]
+   [ta.math.stats :refer [standardize]]
    [ta.helper.multiple :as m :refer [make-full-datasets make-full-symbols]]))
 
 (def symbols

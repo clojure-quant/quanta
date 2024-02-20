@@ -60,7 +60,7 @@ r-d
 (p/print-roundtrip-stats r-15)
 (p/print-roundtrips r-15)
 (p/print-roundtrips-pl-desc r-15)
-(s/roundtrip-performance-metrics r-15)
+(s/roundtrip-metrics r-15)
 (p/viz-roundtrips r-15)
 (p/print-nav r-15)
 
@@ -77,7 +77,7 @@ r-d
 (p/print-roundtrip-stats r-15-rand)
 (p/print-roundtrips r-15-rand)
 (p/print-roundtrips-pl-desc r-15-rand)
-(s/roundtrip-performance-metrics r-15-rand)
+(s/roundtrip-metrics r-15-rand)
 (p/viz-roundtrips r-15-rand)
 
 ;; check if statistics are correct

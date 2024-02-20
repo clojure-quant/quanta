@@ -1,4 +1,4 @@
-(ns ta.helper.bin)
+(ns ta.math.bin)
 
 (defn bin-full [n-bins xs]
   (let [min-x    (apply min xs)

@@ -60,7 +60,7 @@
 (p/print-roundtrips r-15)
 (p/print-nav r-15)
 (p/print-roundtrip-stats r-15)
-(s/roundtrip-performance-metrics r-15)
+(s/roundtrip-metrics r-15)
 
 (-> (run-backtest buy-hold-signal options-15)
     p/print-nav)

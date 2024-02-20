@@ -5,7 +5,7 @@
    [ta.trade.roundtrip-backtest :refer [run-backtest]]
    [ta.trade.print :refer [print-overview-stats print-roundtrip-stats
                               print-roundtrips print-roundtrips-pl-desc]]
-   [ta.trade.metrics.roundtrip-stats :refer [roundtrip-performance-metrics]]
+   [ta.trade.metrics.roundtrip-stats :refer [roundtrip-metrics]]
    [ta.algo.buy-hold :refer [buy-hold-signal]]
    [ta.viz.table :refer [print-table]]))
 
@@ -40,7 +40,7 @@ r
 (print-overview-stats r)
 (print-roundtrip-stats r)
 
-(roundtrip-performance-metrics r)
+(roundtrip-metrics r)
 
 (print-table (:ds-roundtrips r))
 

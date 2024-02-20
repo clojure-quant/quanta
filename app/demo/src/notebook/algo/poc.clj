@@ -4,7 +4,7 @@
    [tech.v3.datatype.functional :as fun]
    [tablecloth.api :as tc]
    [ta.helper.returns :refer [diff]]
-   [ta.helper.bin :as b]
+   [ta.math.bin :as b]
    [ta.calendar.core :as c]
    [ta.env.algo.core :refer [get-bars-lower-timeframe]]))
 

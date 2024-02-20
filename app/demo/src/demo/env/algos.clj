@@ -10,7 +10,6 @@
    [demo.algo.supertrend]
    [demo.algo.bollinger]
    ; astro
-   [demo.algo.moon]
    [demo.algo.astro]
    ; joseph
    [demo.algo.joseph]

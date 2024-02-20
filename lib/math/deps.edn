@@ -1,0 +1,8 @@
+{:paths ["src"]
+ :deps
+ {org.clojure/clojure    {:mvn/version "1.11.1"}
+  tick/tick              {:mvn/version "0.6.2"}
+  scicloj/tablecloth {:mvn/version "7.000-beta-51"} ; brings techml-dataset
+  }
+;
+ }

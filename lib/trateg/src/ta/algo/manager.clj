@@ -8,8 +8,8 @@
    [ta.helper.ds :refer [ds->map]]
    [ta.helper.date-ds :refer [ds-convert-col-instant->localdatetime ensure-roundtrip-date-localdatetime]]
    ; backtest
-   [ta.trade.roundtrip-backtest :refer [run-backtest]]
-   [ta.trade.metrics.roundtrip-stats :refer [roundtrip-performance-metrics]]
+   ;[ta.trade.roundtrip-backtest :refer [run-backtest]]
+   [ta.trade.metrics.roundtrip-stats :refer [roundtrip-metrics]]
    [ta.trade.metrics.nav :refer [nav-metrics nav]]
    [ta.series.signal :refer [select-signal-has]]
    [ta.trade.trades :refer [get-trades]]
@@ -82,7 +82,7 @@
 (defn backtest-stats [backtest]
   (let [ds-rts (-> (:ds-roundtrips backtest)
                    ensure-roundtrip-date-localdatetime)]
-    {:rt-metrics (-> (roundtrip-performance-metrics backtest) ds->map first) ; ds
+    {:rt-metrics (-> (roundtrip-metrics backtest) ds->map first) ; ds
      :nav-metrics (nav-metrics backtest)
      :nav (nav backtest)}))
 
@@ -101,7 +101,8 @@
 (defn algo-run [algo-name user-options]
   (if-let [{:keys [algo options charts]} (get-algo algo-name)]
     (let [options (merge options user-options)
-          {:keys [ds-study ds-roundtrips] :as backtest} (run-backtest algo options)]
+          {:keys [ds-study ds-roundtrips] :as backtest} {:ds-study nil :ds-roundtrips nil} ;(run-backtest algo options)
+          ]
       (merge
        {:name algo-name
         :options options
@@ -228,7 +229,7 @@
 
   (algo-run-browser "moon" {:symbol "GOOGL" :frequency "D"})
   (algo-run "moon" {:symbol "GOOGL" :frequency "D"})
-  (run-backtest "moon" {:symbol "GOOGL" :frequency "D"})
+  ;(run-backtest "moon" {:symbol "GOOGL" :frequency "D"})
   
 
 
