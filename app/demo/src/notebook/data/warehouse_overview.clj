@@ -1,6 +1,6 @@
 (ns notebook.data.warehouse-overview
   (:require
-   [ta.warehouse.overview :refer [warehouse-overview]]))
+   [ta.db.bars.overview :refer [warehouse-overview]]))
 
 (warehouse-overview :stocks "D")
 

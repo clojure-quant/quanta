@@ -4,7 +4,6 @@
    [reval.task :refer [nbeval]]
    [ta.helper.print :refer [print-all]]
    [ta.db.asset.symbollist :refer [load-list]]
-   [ta.warehouse.overview :refer [warehouse-overview]]
    ;[ta.gann.gann :refer [gann-symbols]]
    [ta.gann.chartmaker :refer [make-boxes-all-individual]]
    [ta.data.import :refer [import-series import-list]]
@@ -37,12 +36,6 @@
     (let [symbols (or symbols "crypto")
           _ (info "bybit-append list: " symbols)]
       (import-list symbols "D" :full))
-
-    :warehouse
-    (do (info "warehouse summary:")
-        (-> (warehouse-overview :stocks "D") print-all info)
-        (->  (warehouse-overview :crypto "D") print-all info)
-        (-> (warehouse-overview :crypto "15") print-all info))
 
     :shuffle
     (rr/create-crypto-shuffled)

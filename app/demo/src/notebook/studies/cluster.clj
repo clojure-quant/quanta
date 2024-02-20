@@ -1,4 +1,4 @@
-(ns notebook.studies.cluster-real
+(ns notebook.studies.cluster
   (:require
    [tech.v3.dataset.print :as print]
    [tech.v3.datatype.functional :as fun]
@@ -8,57 +8,39 @@
    [fastmath.clustering :as clustering]
    [loom.graph]
    [loom.alg]
-   [ta.warehouse :as wh]
-   [ta.warehouse.overview :refer [load-datasets concatenate-datasets overview-view]]
+   [modular.system]
    [ta.math.stats :refer [standardize]]
-   [ta.helper.multiple :as m :refer [make-full-datasets make-full-symbols]]))
+   [ta.calendar.core :as cal]
+   [ta.db.asset.symbollist :refer [load-list]]
+   [ta.db.bars.aligned :refer [get-bars-aligned-filled]]
+   ;[ta.db.bars.overview:refer [load-datasets concatenate-datasets overview-view]]
+   ;[ta.helper.multiple :as m :refer [make-full-datasets make-full-symbols]]
+   ))
 
-(def symbols
-  (wh/load-list "fidelity-select"))
+(def assets
+  (load-list "fidelity-select"))
 
-(def symbol->name
-  (->> "../resources/etf/fidelity-select.edn"
-       slurp
-       read-string
-       (map (juxt :symbol :name))
-       (into {})))
+assets
 
-symbol->name
+(def db (modular.system/system :bardb-dynamic))
 
-(def concatenated-dataset
-  (-> (load-datasets :stocks "D" symbols)
-      (concatenate-datasets)))
+(def window (cal/trailing-window2 [:us :d] 1000))
 
-(-> concatenated-dataset
-    (tc/random 10))
+window
 
-(->> concatenated-dataset
-     tc/columns
-     (map meta))
+(defn load-ds [asset]
+  (get-bars-aligned-filled db {:calendar [:us :d]
+                               :import :kibot
+                               :asset asset
+                               } window))
 
-(-> concatenated-dataset
-    (overview-view {:grouping-columns [:symbol :year :month]})
-    (print/print-range :all))
+(load-ds "MSFT")
+(load-ds "FSAGX")
 
-(-> concatenated-dataset
-    (overview-view {})
-    (print/print-range :all))
+(def bar-ds-list
+  (map load-ds assets))
 
-(-> concatenated-dataset
-    (overview-view {:pivot? false})
-    (print/print-range :all))
-
-(m/symbol-count-table concatenated-dataset)
-
-(def full-datasets
-  (make-full-datasets concatenated-dataset))
-
-full-datasets
-
-(def full-symbols
-  (make-full-symbols concatenated-dataset))
-
-full-symbols
+bar-ds-list
 
 (def corrs
   (->> full-datasets

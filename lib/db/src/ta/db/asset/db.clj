@@ -72,31 +72,11 @@
   (->> @db vals (map :symbol)))
 
 
-(comment 
-  (require '[clojure.pprint :refer [print-table]])
-  (-> (get-instruments)  
-      print-table
-   )
-  ;
-  )
-
-
-
 (defn symbols-available [category]
   (->> (get-instruments)
        (filter #(= category (:category %)))
        (map :symbol)
    ))
-
-(comment 
-   (get-instruments)
-   (symbols-available :crypto)
-   (symbols-available :etf)
-   (symbols-available :equity)
-   (symbols-available :fx)
-  
-  ;
-  )
 
 (defn q? [q]
   (fn [{:keys [name symbol]}]
@@ -133,30 +113,11 @@
          (filter-eventually =category? c)
          (filter-eventually q? q)))))
 
-
-(comment 
-  ;(search "P")
-  (search "Bitc")
-  (search "BT")
-
-  (search "BT" :crypto)
-  (search "B" :equity)
-  (search "B" :equity "SG")
-  (search "B" nil nil)
-  (search "B" "" "")
-
-  (instrument-details "BTCUSD")
-  (instrument-details "EURUSD")
-;  
-  )
-
 (defn instrument-details [s]
   (if-let [f (is-future? s)]
     (let [data (get @db (:symbol-root f))]
       (future-symbol f data))
      (get @db s)))
-
-
 
 (defn get-instrument-by-provider [provider s]
   (some (fn [instrument]
@@ -165,20 +126,5 @@
                 instrument
                 )))
           (vals @db)))
-
-
-(comment 
-  (instrument-details "NG0")
-  ;; => {:symbol "NG0", :kibot "NG", :name "CONTINUOUS NATURAL GAS CONTRACT", :category :future, :exchange "SG"}
-  (instrument-details "NG1223")
-  ;; => {:symbol "NG1223", :kibot "NGZ23", :name "CONTINUOUS NATURAL GAS CONTRACT", :category :future, :exchange "SG"}
-
-  (vals @db)
-  (get-instrument-by-provider :kibot "NG")
-  (get-instrument-by-provider :kibot "XXXXXX")
-  
-  )
-
-
 
 

@@ -3,7 +3,7 @@
    [tablecloth.api :as tc]
    [tech.v3.dataset.print :as print]
    [ta.warehouse.random :refer [random-datasets]]
-   [ta.warehouse.overview :refer [concatenate-datasets overview-view]]))
+   [ta.db.bars.overview :refer [concatenate-datasets overview-view]]))
 
 (def concatenated-dataset
   (-> (random-datasets 3 10)
