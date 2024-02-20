@@ -304,9 +304,9 @@
   ;
   (deftest next-open-intraday
     (testing "dt inside interval"
-      (is (t/= dt-friday-12-45 (next-open-dt us-cal 15 :minutes dt-friday-12-34)))
-      (is (not (t/= dt-friday-12-15 (next-open-dt us-cal 15 :minutes dt-friday-12-34))))
-      (is (not (t/= dt-friday-12-30 (next-open-dt us-cal 15 :minutes dt-friday-12-34)))))
+      (is (t/= dt-friday-12-45 (next-open-dt us-cal 15 :minutes dt-friday-12-34-56)))
+      (is (not (t/= dt-friday-12-15 (next-open-dt us-cal 15 :minutes dt-friday-12-34-56))))
+      (is (not (t/= dt-friday-12-30 (next-open-dt us-cal 15 :minutes dt-friday-12-34-56)))))
     (testing "dt on interval boundary"
       (is (t/= dt-friday-12-45 (next-open-dt us-cal 15 :minutes dt-friday-12-30)))
       (is (not (t/= dt-friday-12-30 (next-open-dt us-cal 15 :minutes dt-friday-12-30))))

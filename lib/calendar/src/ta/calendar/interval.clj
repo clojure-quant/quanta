@@ -18,25 +18,38 @@
   (fn ([calendar] (current-close-aligned calendar (t/now) align-unit next-fn))
       ([calendar dt] (current-close-aligned calendar dt align-unit next-fn))))
 
+(defn gen-intraday-step-fn [n unit]
+  {:next-close    (fn ([calendar] (intraday/next-close-dt calendar n unit))
+                      ([calendar dt] (intraday/next-close-dt calendar n unit dt)))
+
+   :prior-close   (fn ([calendar] (intraday/prior-close-dt calendar n unit))
+                      ([calendar dt] (intraday/prior-close-dt calendar n unit dt)))
+
+   :current-close (fn ([calendar] (intraday/current-close-dt calendar n unit))
+                      ([calendar dt] (intraday/current-close-dt calendar n unit dt)))
+
+   ; open
+   :next-open    (fn ([calendar] (intraday/next-open-dt calendar n unit))
+                     ([calendar dt](intraday/next-open-dt calendar n unit dt)))
+
+   :prior-open   (fn ([calendar] (intraday/prior-open-dt calendar n unit))
+                     ([calendar dt] (intraday/prior-open-dt calendar n unit dt)))
+
+   :current-open (fn ([calendar] (intraday/current-open-dt calendar n unit))
+                     ([calendar dt] (intraday/current-open-dt calendar n unit dt)))
+
+   ; duration
+   :duration (t/divide (t/new-duration n unit) (t/new-duration 1 :seconds))
+   })
 
 (def intervals
-  {:d {:next-close day/next-close
-       :prior-close day/prior-close
-       :current-close (gen-current-close align-d day/next-close)}
-   :h {:next-close next-hour
-       :prior-close prior-hour
-       :current-close (gen-current-close align-h next-hour)
-       :duration (* 60 60)}
-   :m {:next-close next-minute
-       :prior-close prior-minute
-       :current-close (gen-current-close align-m next-minute)
-       :duration 60
-       }
-   :m30 {:next-close next-minute30
-         :prior-close prior-minute30
-         :current-close (gen-current-close align-h next-minute)
-         :duration 30
-         }
+  {:d   {:next-close    day/next-close
+         :prior-close   day/recent-close
+         :current-close (gen-current-close :minutes day/upcoming-close)}
+   :h   (gen-intraday-step-fn 1 :hours)
+   :m   (gen-intraday-step-fn 1 :minutes)
+   :m15 (gen-intraday-step-fn 15 :minutes)
+   :m30 (gen-intraday-step-fn 30 :minutes)
    })
 
 (comment

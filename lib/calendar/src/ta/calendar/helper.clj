@@ -35,7 +35,6 @@
     (cond
       (intraday? calendar) (t/< time open)
       (overnight? calendar) (and (t/< time open)
-                                 ; TODO: nur für wochenende????
                                  (day-closed? calendar day-before)))))
 
 (defn after-trading-hours? [{:keys [open close] :as calendar} dt]

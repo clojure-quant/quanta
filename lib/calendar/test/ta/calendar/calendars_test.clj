@@ -130,11 +130,6 @@
       ;(is (before-trading-hours? (:forex cal/calendars) dt-sunday12))
     )
 
-
-  ; TODO: now-calendar ...
-  ; TODO: between close/open
-  ; TODO: exact open/close
-
   ; TODO: time shifting
   ; TODO: time zones
   ; TODO: DST

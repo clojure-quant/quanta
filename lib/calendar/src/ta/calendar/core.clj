@@ -27,7 +27,7 @@
         prior-close-dt (:prior-close interval)]
     (prior-close-dt calendar dt)))
 
-(defn current-close [calendar-kw interval-kw]
+(defn current-close [calendar-kw interval-kw & [dt]]
   (let [calendar (calendar-kw calendars)
         interval (interval-kw intervals)
         ;_ (println "calendar: " calendar)
@@ -35,7 +35,9 @@
         _ (assert calendar)
         _ (assert interval)
         current-close-dt (:current-close interval)]
-    (current-close-dt calendar)))
+    (if dt
+      (current-close-dt calendar dt)
+      (current-close-dt calendar))))
 
 
 (defn calendar-seq [calendar-kw interval-kw]
@@ -47,18 +49,20 @@
   (->> (calendar-seq calendar-kw interval-kw)
        (map t/instant)))
 
-(defn calendar-seq-prior [calendar-kw interval-kw end-dt]
-  ; TODO: end-dt has to be checked if it is a trading day
-  (let [prior-dt (partial prior-close calendar-kw interval-kw)]
-    (iterate prior-dt end-dt)))
+(defn calendar-seq-prior [calendar-kw interval-kw dt]
+  (let [cur-dt (current-close calendar-kw interval-kw dt)
+        prev-dt (prior-close calendar-kw interval-kw dt)
+        start-dt (if (t/= cur-dt dt) ; dt on interval boudary
+                   cur-dt
+                   prev-dt)
+        prior-fn (partial prior-close calendar-kw interval-kw)]
+    (iterate prior-fn start-dt)))
 
 (defn trailing-window 
-  ([calendar-kw interval-kw n end-dt] ; dt-end
-    (take n (calendar-seq-prior calendar-kw interval-kw end-dt)))
-  ([calendar-kw interval-kw n] 
-   (let [end (current-close calendar-kw interval-kw)
-         end-dt (prior-close calendar-kw interval-kw end)]
-     (take n (calendar-seq-prior calendar-kw interval-kw end-dt)))))
+  ([calendar-kw interval-kw n end-dt]
+   (take n (calendar-seq-prior calendar-kw interval-kw end-dt)))
+  ([calendar-kw interval-kw n]
+   (take n (calendar-seq-prior calendar-kw interval-kw (now-calendar calendar-kw)))))
 
 (defn trailing-window2
   ([[calendar-kw interval-kw] n end-dt] ; dt-end
