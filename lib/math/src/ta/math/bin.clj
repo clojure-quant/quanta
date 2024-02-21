@@ -9,6 +9,19 @@
   (assert (or n step) "binner opts require :bin-number or :bin-step key")
   (let [min-x    (apply min xs)
         max-x    (apply max xs)
+        min-x (if n 
+                 min-x 
+                 (-> (/ min-x step)
+                     (Math/ceil)
+                     (int)
+                     (* step)))
+        max-x (if n
+                 max-x
+                 (-> (/ max-x step)
+                     (Math/ceil)
+                     (int)
+                     (inc)
+                     (* step)))
         range-x  (- max-x min-x)
         n-bins (if n
                  n

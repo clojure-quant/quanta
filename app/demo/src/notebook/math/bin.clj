@@ -32,5 +32,13 @@
   (b/bin-middle {:n-bins 5 :min-x 10 :max-x 110 :range-x 100} 4)
   ; 100
 
-  (bin {:step 3.0} (range 15))
+  (def v (range 15))
+  (def br (b/bin-full {:step 3.0} v))
+
+  (b/bin-result br)
+
+  (b/bin-middle br 0)
+  
+
+
 
