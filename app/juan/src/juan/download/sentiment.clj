@@ -1,4 +1,4 @@
-(ns juan.sentiment
+(ns juan.download.sentiment
   (:require
    [taoensso.timbre :as timbre :refer [info warn error]]
    [clojure.string :as str]
@@ -8,10 +8,9 @@
    [ring.util.response :as response]
    [ring.middleware.multipart-params :refer [wrap-multipart-params]]
    [modular.webserver.middleware.api :refer [wrap-api-handler]]
-    [ring.util.request :refer  [body-string]]
+   [ring.util.request :refer  [body-string]]
    ;[modular.webserver.middleware.cors :refer [wrap-allow-cross-origin]]
-   [ring.middleware.cors :refer [wrap-cors]]
-   ))
+   [ring.middleware.cors :refer [wrap-cors]]))
 
 
 ;; download 
@@ -131,15 +130,15 @@
 
 (defn sentiment-cookies [{:keys [query-params form-params params] :as req}]
   (let [s (body-string req)]
-   (info "sentiment cookies: " s)
-   (info "sentiment form-params: " form-params)
-   (info "req: " req)
-   (response/content-type
-       {:status 200
-        :body "<html> hi </html"}
-       "text/html")))
+    (info "sentiment cookies: " s)
+    (info "sentiment form-params: " form-params)
+    (info "req: " req)
+    (response/content-type
+     {:status 200
+      :body "<html> hi </html"}
+     "text/html")))
 
-(def sentiment-cookies-wrapped 
+(def sentiment-cookies-wrapped
   (-> sentiment-cookies
       (wrap-cors :access-control-allow-origin [#"http://localhost:8080"]
                  :access-control-allow-methods [:get :put :post :delete])
@@ -156,21 +155,21 @@
       (:body))
 
 
-    
+
   (download-sentiment)
 
   (-> (download-sentiment)
       (calc-sentiment))
-  
+
   (require '[clojure.pprint :refer [print-table]])
   (->> (download-sentiment)
-       (calc-sentiment) 
+       (calc-sentiment)
        (sort-by :symbol)
        print-table)
 
   (-> (download-sentiment)
       (sentiment-dict))
-  
+
 
 
 ;  

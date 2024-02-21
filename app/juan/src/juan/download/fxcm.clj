@@ -1,4 +1,4 @@
-(ns juan.fxcm
+(ns juan.download.fxcm
   (:require
    [clj-http.client :as http]
    [clojure.xml :as xml]))
