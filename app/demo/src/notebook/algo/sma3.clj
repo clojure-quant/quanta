@@ -1,7 +1,7 @@
 (ns notebook.algo.sma3
   (:require
    [tablecloth.api :as tc]
-   [ta.indicator.atr :refer [sma]]))
+   [ta.indicator :refer [sma]]))
 
 (def info
   {:name "sma-trendfollow"
@@ -16,8 +16,8 @@
 (defn- add-sma-indicator
   [ds {:keys [sma-length-st sma-length-lt] #_:as #_options}]
   (-> ds
-      (tc/add-column :sma-st (sma ds {:n sma-length-st}))
-      (tc/add-column :sma-lt (sma ds {:n sma-length-lt}))))
+      (tc/add-column :sma-st (sma {:n sma-length-st} ds))
+      (tc/add-column :sma-lt (sma {:n sma-length-lt} ds))))
 
 (defn- calc-sma-signal [sma-st sma-lt]
   (if (and sma-st sma-lt)

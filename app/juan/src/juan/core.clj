@@ -4,7 +4,7 @@
    [tablecloth.api :as tc]
    [tech.v3.datatype.functional :as fun]
    [ta.warehouse :refer [load-symbol]]
-   [ta.indicator.atr :refer [atr]]
+   [ta.indicator :refer [atr]]
    [juan.sentiment :refer [sentiment-dict]]
    [juan.data :refer [settings instruments]]))
 
