@@ -24,12 +24,18 @@ dt
 
 ;; KIBOT
 (-> (get-bars {:asset "NG0" ; future
+               :calendar [:us :d]
+               :import :kibot}
+              {:start dt})
+    date-type)
+    
+(get-bars {:asset "EURUSD" ; forex
            :calendar [:us :d]
            :import :kibot}
           {:start dt})
- date-type)
-    
 
-
-
+(get-bars {:asset "EU0" ; future(forex)
+           :calendar [:us :d]
+           :import :kibot}
+          {:start dt})
 

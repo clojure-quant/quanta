@@ -46,6 +46,8 @@
   nil ; Important not to return by chance the key, as this would be shown in the repl.
   )
 
+api-key
+
 ; 
 
 (defn extract-error [body]
@@ -170,6 +172,10 @@
             :interval "daily"
             :period 10})
 
+   (history {:symbol "AAPL"
+            :interval 60
+            :period 1})
+
 
   (history {:symbol "SIL" ; SIL - ETF
             :interval "daily"
@@ -214,7 +220,7 @@
             :symbol "EURUSD",
                ;:startdate "2023-09-01",
             :period 1
-            :interval 1 ; "daily"
+            :interval "1" ; "daily"
             :timezone "UTC"})
 
   (history {:symbol "JY"

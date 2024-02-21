@@ -3,12 +3,11 @@
    [clojure.set :as set]
    [babashka.fs :as fs]
    [miner.ftp :as ftp]
-   [babashka.process :refer [shell process exec]]))
+   [babashka.process :refer [shell process exec]]
+   [ta.import.provider.kibot.raw :refer [api-key]]))
 
 (def config
-  {:local-dir "/home/florian/repo/clojure-quant/trateg/output/kibot-incremental/"
-   :user "hoertlehner@gmail.com"
-   :password "282m2fhgh"})
+  {:local-dir "/home/florian/repo/clojure-quant/trateg/output/kibot-incremental/"})
 
 ;; categories and intervals 
 ;; reflect how ftp://ftp.kibot.com is organized
@@ -59,8 +58,8 @@
 (defn download-file [category interval file-remote]
   (ftp/with-ftp [client ;(str "ftp://ftp.kibot.com/Updates/All%20Stocks/Daily")
                         (str "ftp://ftp.kibot.com" (ftp-path-category category interval)) 
-                 :username (:user config)
-                 :password (:password config)
+                 :username (:user @api-key)
+                 :password (:password @api-key)
                  :local-data-connection-mode :active
                  :file-type :binary
                  :default-timeout-ms 30000]
