@@ -1,4 +1,4 @@
-(ns notebook.datascience.correlation
+(ns notebook.math.correlation
   (:require
    [tech.v3.datatype.functional :as fun]
    [fastmath.stats :as stats]

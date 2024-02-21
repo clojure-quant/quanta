@@ -16,6 +16,7 @@
 
 (db/instrument-details "BTCUSD")
 (db/instrument-details "EURUSD")
+(db/instrument-name "BTCUSD")
 
 (-> (db/get-instruments)
     print-table)

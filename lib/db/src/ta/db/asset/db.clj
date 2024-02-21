@@ -119,6 +119,10 @@
       (future-symbol f data))
      (get @db s)))
 
+
+(defn instrument-name [asset]
+  (-> asset instrument-details :name))
+
 (defn get-instrument-by-provider [provider s]
   (some (fn [instrument]
             (let [ps (provider instrument)]
