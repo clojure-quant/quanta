@@ -28,6 +28,7 @@
 (db/symbols-available :etf)
 (db/symbols-available :equity)
 (db/symbols-available :fx)
+(db/symbols-available :future)
 
 
 (db/instrument-details "NG0")
@@ -40,3 +41,8 @@
  
 (db/get-instrument-by-provider :kibot "NG")
 (db/get-instrument-by-provider :kibot "XXXXXX")
+
+
+(db/modify {:symbol "MSFT" :super 3})
+
+(db/instrument-details "MSFT")

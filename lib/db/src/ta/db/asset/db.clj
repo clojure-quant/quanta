@@ -50,6 +50,12 @@
   ;
   )
 
+(defn instrument-details [s]
+  (if-let [f (is-future? s)]
+    (let [data (get @db (:symbol-root f))]
+      (future-symbol f data))
+    (get @db s)))
+
 
 (defn add [{:keys [symbol] :as instrument}]
   (let [instrument (-> instrument 
@@ -58,6 +64,10 @@
                        sanitize-exchange)]
    (swap! db assoc symbol instrument)))
 
+(defn modify [{:keys [symbol] :as instrument}]
+  (let [old (instrument-details symbol)
+        merged (merge old instrument)]
+    (swap! db assoc symbol instrument)))
 
 (comment 
    (add {:symbol "MSFT" :name "Microsoft"})
@@ -113,11 +123,6 @@
          (filter-eventually =category? c)
          (filter-eventually q? q)))))
 
-(defn instrument-details [s]
-  (if-let [f (is-future? s)]
-    (let [data (get @db (:symbol-root f))]
-      (future-symbol f data))
-     (get @db s)))
 
 
 (defn instrument-name [asset]
