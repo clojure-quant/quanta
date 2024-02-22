@@ -1,4 +1,4 @@
-(ns juan.algo.pivot
+(ns juan.algo.pivot-volume
   (:require
    [tech.v3.datatype.functional :as fun]
    [tablecloth.api :as tc]
@@ -53,7 +53,7 @@
                                       fun/sum))}))))
 
   
-(defn pivots [env {:keys [percentile] :as opts} ds-bars]
+(defn pivot-volume [env {:keys [percentile] :as opts} ds-bars]
   (assert percentile "pivot calculation needs :percentile 0-100")
   (let [dist (bars->volume-distribution opts ds-bars)
         cutoff-volume (p/percentile percentile (:volume dist))

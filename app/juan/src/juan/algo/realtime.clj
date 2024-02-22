@@ -1,4 +1,4 @@
-(ns juan.realtime
+(ns juan.algo.realtime
   (:require
    [taoensso.timbre :as log :refer [tracef debug debugf info infof warn error errorf]]
    [juan.data :refer [settings]]

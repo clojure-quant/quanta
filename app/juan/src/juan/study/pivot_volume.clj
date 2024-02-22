@@ -1,14 +1,11 @@
-(ns juan.study.pivot
+(ns juan.study.pivot-volume
   (:require
-   [tablecloth.api :as tc]
-   [tech.v3.datatype :as dtype]
-   [tech.v3.datatype.functional :as fun]
    [ta.env.javelin.core :refer [backtest-single-bar-strategy]]))
 
 ;; 1. calculate algo
 
 (def algo-spec {:calendar [:us :d]
-                :algo  'juan.algo.pivot/pivots
+                :algo  'juan.algo.pivot-volume/pivot-volume
                 :asset "SPY"
                 :import :kibot
                 :trailing-n 1000

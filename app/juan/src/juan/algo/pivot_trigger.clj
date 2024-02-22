@@ -1,4 +1,4 @@
-(ns juan.pivot
+(ns juan.algo.pivot-trigger
   (:require 
    [juan.data :refer [instruments]]))
 

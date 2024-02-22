@@ -5,6 +5,7 @@
    [manifold.deferred :as d]
    [clj-commons.byte-streams :as bs]))
 
+
 (defn load-links [asset-type]
   (-> (str "../resources/kibot-" asset-type ".txt")
       (slurp)

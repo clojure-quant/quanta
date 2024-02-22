@@ -1,8 +1,5 @@
 (ns juan.study.doji
   (:require
-   [tablecloth.api :as tc]
-   [tech.v3.datatype :as dtype]
-   [tech.v3.datatype.functional :as fun]
    [ta.trade.signal :refer [filter-signal]]
    [ta.env.javelin.core :refer [backtest-single-bar-strategy]]))
 
