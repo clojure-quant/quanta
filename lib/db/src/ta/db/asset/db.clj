@@ -67,7 +67,7 @@
 (defn modify [{:keys [symbol] :as instrument}]
   (let [old (instrument-details symbol)
         merged (merge old instrument)]
-    (swap! db assoc symbol instrument)))
+    (swap! db assoc symbol merged)))
 
 (comment 
    (add {:symbol "MSFT" :name "Microsoft"})

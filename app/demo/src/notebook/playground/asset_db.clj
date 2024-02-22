@@ -31,6 +31,7 @@
 (db/symbols-available :future)
 
 
+
 (db/instrument-details "NG0")
 ;; => {:symbol "NG0", :kibot "NG", :name "CONTINUOUS NATURAL GAS CONTRACT", :category :future, :exchange "SG"}
 

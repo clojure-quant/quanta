@@ -231,7 +231,12 @@
       (doall (map (partial create-table session)
                   [[:us :m]
                    [:us :h]
-                   [:us :d]])))))
+                   [:us :d]
+                   [:forex :d]
+                   [:forex :m]
+                   [:crypto :d]
+                   [:crypto :m]
+                   ])))))
 
 (defrecord bardb-duck [db conn new?]
   bardb

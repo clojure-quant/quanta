@@ -91,7 +91,7 @@ api-key
 
 (defn login []
   (let [{:keys [user password]} @api-key]
-    (info "loing user: " user "pwd: " password)
+    (info "login user: " user)
     (make-request base-url
                   {:action "login"
                    :user user
