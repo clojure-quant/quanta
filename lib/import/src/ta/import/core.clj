@@ -3,11 +3,13 @@
     [tablecloth.api :as tc]
     ; import providers
     [ta.import.provider.kibot.ds :as kibot]
+    [ta.import.provider.kibot-http.ds :as kibot-http]
     [ta.import.provider.alphavantage.ds :as av]
     [ta.import.provider.bybit.ds :as bybit]))
 
 (def dict-provider
-  {:kibot kibot/get-bars
+  {:kibot kibot/get-bars 
+   :kibot-http kibot-http/get-bars
    :alphavantage av/get-bars
    :bybit bybit/get-bars})
 
