@@ -2,11 +2,8 @@
   (:require
    [taoensso.timbre :refer [trace debug info warnf error]]
    [reval.task :refer [nbeval]]
-   [ta.helper.print :refer [print-all]]
-   [ta.db.asset.symbollist :refer [load-list]]
    ;[ta.gann.gann :refer [gann-symbols]]
    [ta.gann.chartmaker :refer [make-boxes-all-individual]]
-   [ta.data.import :refer [import-series import-list]]
    [demo.data-import.create-random :as rr]
    [demo.goldly.reval] ; side-effects
    ))
@@ -15,27 +12,6 @@
 
 (defn run  [{:keys [task symbols provider]}]
   (case task
-
-    :import-series
-    (let [provider (or provider :alphavantage)
-          symbols (or symbols "MSFT")]
-      (info "import symbol: " symbols)
-      (import-series provider symbols "D" :full))
-
-    :import
-    (let [symbols (or symbols "fidelity-select")]
-      (info "import list: " symbols)
-      (import-list symbols "D" :full))
-
-    :import-15
-    (let [symbols (or symbols "crypto")
-          _ (info "import 15 min bars for list: " symbols)]
-      (import-list symbols "15" :full))
-
-    :append
-    (let [symbols (or symbols "crypto")
-          _ (info "bybit-append list: " symbols)]
-      (import-list symbols "D" :full))
 
     :shuffle
     (rr/create-crypto-shuffled)

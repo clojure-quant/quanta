@@ -12,7 +12,7 @@
     ;                      (:ns-clj (deref (clip/ref :config))))}
 
 
-  :symbol-lists {:start (ta.db.asset.symbollist/add-lists-to-db)}
+  :asset-db {:start (demo.asset-db/add-assets)}
 
   :alphavantage {:start (ta.import.provider.alphavantage.raw/set-key!
                          (:alphavantage (clip/ref :secrets)))}

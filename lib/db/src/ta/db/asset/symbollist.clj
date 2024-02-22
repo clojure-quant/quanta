@@ -3,17 +3,11 @@
    [clojure.string :refer [includes? lower-case]]
    [clojure.java.io :as java-io]
    [clojure.edn :as edn]
-   [taoensso.timbre :refer [debug info warnf error]]
-   [modular.config :refer [get-in-config] :as config]
-   [ta.db.asset.db :as db]
-   ))
+   [taoensso.timbre :refer [debug info warnf error]]))
 
-(defn get-lists []
-  (get-in-config [:ta :warehouse :lists]))
-
-(defn load-list-raw [name]
+(defn load-list-raw [file-name]
   (try
-    (->> (str (get-in-config [:ta :warehouse :list]) name ".edn")
+    (->> file-name
          slurp
          edn/read-string)
     (catch Exception _
@@ -41,43 +35,19 @@
   (->> (load-list-full name)
        (map :symbol)))
 
-(defn load-lists [names]
-  (->> (map load-list names)
+(defn load-lists [file-names]
+  (->> (map load-list file-names)
        (apply concat)))
 
-
-(defn add-lists-to-db []
-  ; used in the services config. builds instrument db on start.
-  (let [symbols (load-lists-full (get-in-config [:ta :warehouse :lists]))]
-    (doall (map db/add symbols))
-    
-    ))
-  
-
-
-
 (comment
-
-  (get-lists)
-
   (def directory (clojure.java.io/file "/path/to/directory"))
   (def files (file-seq directory))
   (take 10 files)
 
-  (load-list "bonds")
+  (load-list "../resources/symbollist/bonds.edn")
 
-  (load-list-full "fidelity-select")
-  (load-lists-full ["crypto"
-                    "fidelity-select"
-                    "bonds"
-                    "commodity-industry"
-                    "commodity-sector"
-                    "currency-spot"
-                    "equity-region"
-                    "equity-region-country"
-                    "equity-sector-industry"
-                    "equity-style"
-                    "test"])
+  (load-list-full "../resources/symbollist/fidelity-select.edn")
+
 
 
 ; 

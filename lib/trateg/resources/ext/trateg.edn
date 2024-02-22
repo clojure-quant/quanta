@@ -2,8 +2,8 @@
  :clj-services {:name "trateg services"
                 :permission  #{}
                 :symbols [; db
-                          ta.db.asset.symbollist/get-lists
-                          ta.db.asset.symbollist/load-list
+                          ;ta.db.asset.symbollist/get-lists
+                          ;ta.db.asset.symbollist/load-list
                           ;ta.warehouse.overview/overview-map
                           ta.warehouse.load/load-series
                           ; algo

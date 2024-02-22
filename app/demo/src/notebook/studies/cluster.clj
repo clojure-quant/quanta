@@ -18,7 +18,7 @@
 
 ; fidelity-select are mutualfunds, which are not supported by kibot. 
 ;(def assets (load-list "fidelity-select"))
-(def assets (load-list "equity-sector"))
+(def assets (load-list "../resources/symbollist/equity-sector/.edn"))
 
 assets
 (count assets)

@@ -18,6 +18,6 @@
   :quandl {:start (ta.data.api.quandl/set-key!
                   (:quandl (clip/ref :secrets)))}
   
-  :symbol-lists {:start  (ta.db.asset.symbollist/add-lists-to-db)}
+  :asset-db {:start (demo.asset-db/add-assets)}
 ;
   }}
