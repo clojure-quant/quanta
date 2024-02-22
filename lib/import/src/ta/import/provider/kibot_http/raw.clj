@@ -18,7 +18,8 @@
 
 (defn download-link [url]
   (info "downloading link: " url)
-  (let [request @(http/get url)
+  (let [request @(http/get url {:socket-timeout 30000 
+                                :connection-timeout 30000})
         asset (get-asset request)]
     {:asset asset
      :data (bs/to-string (:body request))}))

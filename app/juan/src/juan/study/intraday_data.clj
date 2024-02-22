@@ -1,7 +1,8 @@
 (ns juan.study.intraday-data
   (:require
-   [ta.db.asset.db :as db]
+   [taoensso.timbre :refer [info warn error]]
    [modular.system]
+   [ta.db.asset.db :as db]
    ;[ta.import.core :refer [get-bars]]
    [ta.calendar.core :as cal]
    [ta.db.bars.protocol :as b]
@@ -12,26 +13,25 @@
 
 (def db (modular.system/system :bardb-dynamic))
 
-(def window-intraday
-  (cal/trailing-range-current [:forex :m] 100000))
-
-
-(defn get-forex-intraday [asset]
-  (b/get-bars db {:asset asset
-                  :calendar [:forex :m]
-                  :import :kibot-http}
-          window-intraday))
-
-
 (def window-daily
   (cal/trailing-range-current [:forex :d] 1000))
 
-
 (defn get-forex-daily [asset]
+  (info "getting intraday forex for: " asset)
   (b/get-bars db {:asset asset
                   :calendar [:forex :d]
                   :import :kibot}
               window-daily))
+
+(def window-intraday
+  (cal/trailing-range-current [:forex :m] 100000))
+
+(defn get-forex-intraday [asset]
+  (info "getting intraday forex for: " asset)
+  (b/get-bars db {:asset asset
+                  :calendar [:forex :m]
+                  :import :kibot-http}
+          window-intraday))
 
 
 ;; import one forex
@@ -44,9 +44,12 @@
 
 asset-pairs
 
-(for [pair asset-pairs]
-  (get-forex-daily (:fx pair)))
+(doall 
+  (for [pair asset-pairs]
+    (get-forex-daily (:fx pair))))
 
-(for [pair asset-pairs]
-  (get-forex-intraday (:fx pair)))
+(doall 
+  (for [pair asset-pairs]
+    (get-forex-intraday (:fx pair))))
+
 
