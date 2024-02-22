@@ -44,8 +44,7 @@
                        ;:demo-cljs [:cljs "demo/notebook/"]
                        }}
 
- :ta {:warehouse {:list "../resources/symbollist/"
-                  :series  {:default "../../output/db/default/"
+ :ta {:warehouse {:series  {:default "../../output/db/default/"
                             :crypto "../../output/db/crypto/"
                             :stocks "../../output/db/stocks/"
                             :fx "../../output/db/fx/"
@@ -54,20 +53,7 @@
                             :shuffled  "../../output/db/shuffled/"
                             :seasonal "../../output/db/seasonal/"
                             :juan "../../output/db/juan/"
-                            }
-                  :lists ["crypto"
-                          "fidelity-select"
-                          "bonds"
-                          "commodity-industry"
-                          "commodity-sector"
-                          "currency-spot"
-                          "equity-region"
-                          "equity-region-country"
-                          "equity-sector-industry"
-                          "equity-style"
-                          "test"
-                          "futures-kibot"
-                          ]}
+                            }}
       :tradingview {:charts-path   "../../output/tradingview-charts/"
                     :template-path "../resources/tradingview-templates/"
                     :marks-path "../../data/"}}
