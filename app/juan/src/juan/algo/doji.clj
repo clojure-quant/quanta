@@ -6,7 +6,7 @@
    [ta.indicator :as ind]))
 
 (defn doji-signal-one [{:keys [max-open-close-over-low-high]} open close open-close-over-low-high volume volume-sma]
-  (println "doji-signal-one "
+  #_(println "doji-signal-one "
            "open: " open "close: " close
            "open-close-over-low-high"  open-close-over-low-high
            "volume: " volume
