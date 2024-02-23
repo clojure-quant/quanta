@@ -26,7 +26,7 @@ assets
 
 (def db (modular.system/system :bardb-dynamic))
 
-(def window (cal/trailing-window2 [:us :d] 1000))
+(def window (cal/trailing-window [:us :d] 1000))
 
 window
 

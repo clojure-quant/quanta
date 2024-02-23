@@ -12,6 +12,6 @@
   (let [env (create-env bar-db-kw)
         calendar (:calendar algo-spec)
         strategy (dsl/add-bar-strategy env algo-spec)
-        window (cal/trailing-range-current calendar 1)]
+        window (cal/trailing-range calendar 1)]
     (run-backtest env window)
     @strategy))

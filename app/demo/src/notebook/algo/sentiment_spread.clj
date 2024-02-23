@@ -60,7 +60,7 @@
    all spreads that can be calculated will be added as columns."
   [env {:keys [calendar trailing-n spreads] :as spec} time]
   (info "calculating sentiment-spreads ending: " time)
-  (let [cal-seq (cal/trailing-window2 calendar trailing-n time)
+  (let [cal-seq (cal/trailing-window calendar trailing-n time)
         date-col (reverse (map t/instant cal-seq))
         assets (assets spreads) ; for live env, we somehow have to add realtime-data to bar-generator for all assets
         ok? (fn [[_spread-name diff]]

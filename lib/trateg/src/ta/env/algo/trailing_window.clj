@@ -11,8 +11,7 @@
   (assert calendar)
   (fn [env spec time]
     (when time
-      (let [[c i] calendar
-            time-seq (trailing-window c i trailing-n time)
+      (let [time-seq (trailing-window calendar trailing-n time)
             dend  (first time-seq)
             dstart (last time-seq)
             dend-instant (t/instant dend)

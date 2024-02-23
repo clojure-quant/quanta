@@ -11,7 +11,7 @@
    [ta.env.javelin.algo :as dsl]))
 
 (defn get-aligned [env {:keys [calendar trailing-n] :as opts} time]
-  (let [cal-seq (cal/trailing-window2 calendar trailing-n time)
+  (let [cal-seq (cal/trailing-window calendar trailing-n time)
         bars (get-bars-aligned-filled env opts cal-seq)
         ]
     {:time time
@@ -21,7 +21,7 @@
 
 
 
-(def window (-> (cal/trailing-range-current [:us :d] 1)
+(def window (-> (cal/trailing-range [:us :d] 1)
                    ;(window-as-date-time)
                 ))
 

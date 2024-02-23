@@ -1,6 +1,7 @@
-(ns juan.study.intraday-data
+(ns juan.study.download-data
   (:require
    [taoensso.timbre :refer [info warn error]]
+   [tick.core :as t]
    [modular.system]
    [ta.db.asset.db :as db]
    ;[ta.import.core :refer [get-bars]]
@@ -13,8 +14,12 @@
 
 (def db (modular.system/system :bardb-dynamic))
 
+(cal/trailing-range [:forex :d] 1000)
+
 (def window-daily
-  (cal/trailing-range-current [:forex :d] 1000))
+  (cal/trailing-range [:forex :d] 1000 (t/zoned-date-time "2024-02-20T16:30-05:00[America/New_York]")))
+
+window-daily
 
 (defn get-forex-daily [asset]
   (info "getting intraday forex for: " asset)
@@ -24,7 +29,9 @@
               window-daily))
 
 (def window-intraday
-  (cal/trailing-range-current [:forex :m] 100000))
+  (cal/trailing-range [:forex :m] 90000 (t/zoned-date-time "2024-02-20T16:30-05:00[America/New_York]")))
+
+window-intraday
 
 (defn get-forex-intraday [asset]
   (info "getting intraday forex for: " asset)

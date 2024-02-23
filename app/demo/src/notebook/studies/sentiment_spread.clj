@@ -27,7 +27,7 @@
                           ]})
 
 
-(def window (-> (cal/trailing-range-current [:us :d] 1)
+(def window (-> (cal/trailing-range [:us :d] 1)
                    ;(window-as-date-time)
                 ))
 

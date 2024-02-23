@@ -70,7 +70,7 @@ db-dynamic
   {:start (t/date-time (:start window))
    :end (t/date-time (:end window))})
 
-(def window (-> (cal/trailing-range-current [:us :d] 10)
+(def window (-> (cal/trailing-range [:us :d] 10)
                 (window-as-date-time)))
 
 window
@@ -126,7 +126,7 @@ window
                              :import :kibot}
                             window)
 
-(def window100 (-> (cal/trailing-range-current [:us :d] 100)
+(def window100 (-> (cal/trailing-range [:us :d] 100)
                    (window-as-date-time)))
 
 window100
