@@ -104,7 +104,7 @@
   :label-monitor {:start (ta.env.tools.label-monitor/label-monitor-start (clip/ref :live))}
 
   ;; result printer is here mainly for debugging.
-  :result-printer {:start (notebook.live.result-printer/start-print-results (clip/ref :live))}
+  :result-printer {:start (notebook.playground.live.result-printer/start-print-results (clip/ref :live))}
 
   
   
