@@ -10,7 +10,7 @@
    [ta.trade.metrics.nav :as nav]
    [notebook.algo.moon :refer [moon-indicator]]
    [ta.algo.buy-hold :refer [buy-hold-signal]]
-   [ta.env.javelin.core :refer [backtest-single-bar-strategy]]))
+   [ta.backtest.core :refer [backtest-algo]]))
 
 ;; 1. calculate algo, observe moon-phase.
 
@@ -22,7 +22,7 @@
                 :normalize? false})
 
 (def moon-ds
-  (backtest-single-bar-strategy :bardb-dynamic algo-spec))
+  (backtest-algo :bardb-dynamic algo-spec))
 
 moon-ds
 
@@ -65,7 +65,7 @@ moon-ds
                 :normalize? false})
 
 (def result-ds
-  (backtest-single-bar-strategy :bardb-dynamic algo-spec))
+  (backtest-algo :bardb-dynamic algo-spec))
 
 
 (distribution result-ds)
@@ -83,7 +83,7 @@ moon-ds
 
 ;; distribution for nasdaq
 (def result-qqq-ds 
-  (backtest-single-bar-strategy :bardb-dynamic (assoc algo-spec :asset "QQQ")))
+  (backtest-algo :bardb-dynamic (assoc algo-spec :asset "QQQ")))
 (distribution result-qqq-ds)
 ;;    | :moon-phase | :count |       :mean |
 ;;    |-------------|-------:|------------:|
@@ -99,7 +99,7 @@ moon-ds
 
 ;; distribution for gold
 (def result-gld-ds 
-  (backtest-single-bar-strategy :bardb-dynamic (assoc algo-spec :asset "GLD")))
+  (backtest-algo :bardb-dynamic (assoc algo-spec :asset "GLD")))
 (distribution result-gld-ds)
 ;;    | :moon-phase | :count |       :mean |
 ;;    |-------------|-------:|------------:|

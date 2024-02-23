@@ -6,8 +6,8 @@
    [tablecloth.api :as tc]
    [ta.env.core :refer [get-bars-aligned-filled]]
    [ta.calendar.core :as cal]
-   [ta.env.javelin.backtest :refer [run-backtest]]
-   [ta.env.javelin.env :refer [create-env]]
+   [ta.backtest.core :refer [run-backtest]]
+   [ta.env.javelin :refer [create-env]]
    [ta.env.javelin.algo :as dsl]))
 
 (defn get-aligned [env {:keys [calendar trailing-n] :as opts} time]

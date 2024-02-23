@@ -7,8 +7,8 @@
   (:require
    [tablecloth.api :as tc]
    [ta.calendar.core :as cal]
-   [ta.env.javelin.backtest :refer [run-backtest]]
-   [ta.env.javelin.env :refer [create-env]]
+   [ta.backtest.core :refer [run-backtest]]
+   [ta.env.javelin :refer [create-env]]
    [ta.env.javelin.algo :as dsl]
    [notebook.algo.sentiment-spread :refer [sentiment-spread]]))
 

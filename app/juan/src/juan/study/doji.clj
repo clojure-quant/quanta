@@ -2,7 +2,7 @@
   (:require
    [tablecloth.api :as tc]
    [ta.trade.signal :refer [filter-signal]]
-   [ta.env.javelin.core :refer [backtest-single-bar-strategy]]))
+   [ta.backtest.core :refer [backtest-algo]]))
 
 ;; 1. calculate algo
 
@@ -22,7 +22,7 @@
 algo-spec-doji
 
 (def dojis
-  (backtest-single-bar-strategy :bardb-dynamic algo-spec-doji))
+  (backtest-algo :bardb-dynamic algo-spec-doji))
 
 dojis
 ;; => :_unnamed [965 13]:
@@ -127,7 +127,7 @@ dojis
 algo-spec-doji-forex-intraday
 
 (def dojis-forex-intraday
-  (backtest-single-bar-strategy :bardb-dynamic algo-spec-doji-forex-intraday))
+  (backtest-algo :bardb-dynamic algo-spec-doji-forex-intraday))
 
 dojis-forex-intraday
 ;; => :_unnamed [577104 13]:

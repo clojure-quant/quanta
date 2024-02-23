@@ -1,6 +1,6 @@
 (ns juan.study.pivot-volume
   (:require
-   [ta.env.javelin.core :refer [backtest-single-bar-strategy]]))
+   [ta.backtest.core :refer [backtest-algo]]))
 
 ;; 1. calculate algo
 
@@ -14,7 +14,7 @@
                 })
 
 (def pivots
-  (backtest-single-bar-strategy :bardb-dynamic algo-spec))
+  (backtest-algo :bardb-dynamic algo-spec))
 
 (:dist pivots)
 ;; => _unnamed [23 4]:

@@ -3,8 +3,8 @@
    [tick.core :as t]
    [ta.calendar.core :as cal]
    [ta.db.bars.protocol :as b]
-   [ta.env.javelin.backtest :refer [run-backtest]]
-   [ta.env.javelin.env :refer [create-env]]
+   [ta.backtest.core :refer [run-backtest]]
+   [ta.env.javelin :refer [create-env]]
    [ta.env.javelin.algo :as dsl]))
 
 ;; an environment needs to be created for each backtest;

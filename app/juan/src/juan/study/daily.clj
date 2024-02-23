@@ -1,7 +1,7 @@
 (ns juan.study.daily
   (:require
    [tablecloth.api :as tc]
-   [ta.env.javelin.core :refer [backtest-single-bar-strategy]]))
+   [ta.backtest.core :refer [backtest-algo]]))
 
 ;; 1. calculate algo
 
@@ -16,7 +16,7 @@
                 :percentile 70})
 
 (def ds
-  (backtest-single-bar-strategy :bardb-dynamic algo-spec))
+  (backtest-algo :bardb-dynamic algo-spec))
 
 ds
 

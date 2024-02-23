@@ -13,9 +13,7 @@
   org.clojure/algo.generic {:mvn/version "0.1.3"}
   generateme/fastmath {:mvn/version "2.1.8"}
   try-let/try-let {:mvn/version "1.3.1"}
-  hoplon/javelin {:mvn/version "3.9.3"}
-
-
+ 
   io.github.clojure-quant/vector-math {:git/url "https://github.com/clojure-quant/techml.vector-math.git"
                                        :sha "9c5a959ea1b8ea7861d953c5541209169b7fe7f0"}
   ta/db {:local/root "../db" :deps/manifest :deps}
@@ -25,8 +23,8 @@
   ta/trade {:local/root "../trade" :deps/manifest :deps}
   ta/math {:local/root "../math" :deps/manifest :deps}
   ta/indicator {:local/root "../indicator" :deps/manifest :deps}
-  ta/algo {:local/root "../algo" :deps/manifest :deps}
-  }
+  ta/env {:local/root "../env" :deps/manifest :deps}
+  ta/algo {:local/root "../algo" :deps/manifest :deps}}
  :aliases
  {:garamond
   {:main-opts ["-m" "garamond.main"]

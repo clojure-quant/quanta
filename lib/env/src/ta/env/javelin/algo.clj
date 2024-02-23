@@ -4,7 +4,7 @@
     [javelin.core-clj :refer [cell=]]
     [ta.env.javelin.calendar :refer [get-calendar]]))
 
-(defn add-algo ; add-time-strategy
+(defn add-algo
   "returns a cell that calculates the strategy
    throws once if required parameters are missing"
   [env {:keys [type calendar] :as spec}]
