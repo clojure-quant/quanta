@@ -2,7 +2,7 @@
   (:require 
     [tablecloth.api :as tc]
     [taoensso.timbre :refer [trace debug info warn error]]
-    [ta.algo.chain :refer [make-chain]]
+    [ta.algo.parser.chain :refer [make-chain]]
     [ta.algo.env.trailing-window :refer [create-trailing-bar-loader]]))
 
 (defn run-algo-safe [algo-fn env spec ds-bars]

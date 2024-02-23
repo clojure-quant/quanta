@@ -1,7 +1,7 @@
 (ns ta.algo.type.time
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
-   [ta.algo.chain :refer [make-chain]]))
+   [ta.algo.parser.chain :refer [make-chain]]))
 
 (defn create-time-algo [{:keys [algo] :as spec}]
   (assert algo)

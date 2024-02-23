@@ -1,4 +1,4 @@
-(ns ta.algo.chain
+(ns ta.algo.parser.chain
   "executes a chained algo (similar to a threading macro,
    but passes in also env and opts). It is useful to 
    easily create calendar based calculations. Functions
@@ -63,7 +63,7 @@
       :sma 30}
      store-time
      store-secret
-     'ta.algo.chain/store-opts])
+     'ta.algo.parser.chain/store-opts])
 
   (def time-fun
     (make-chain chain-demo))
@@ -72,7 +72,7 @@
   ;; => {:time :now, :big-question 42, :opts {:asset "EUR/USD", :secret 42, :sma 30}}
 
   (def chain-simple 
-    'ta.algo.chain/store-time)
+    'ta.algo.parser.chain/store-time)
   
   (def simple-fun
      (make-chain chain-simple))

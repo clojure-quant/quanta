@@ -2,17 +2,12 @@
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [manifold.stream :as s]
-   [ta.algo.chain :refer [make-chain]]
+   [ta.algo.parser.chain :refer [make-chain]]
+   [ta.algo.parser.multi :as parser]
    [ta.env.live-bargenerator :as live-env]
    [ta.env.tools.stream-combiner :refer [stream-combiner]]))
 
 ;; COMBINER
-
-(defn- combined?  [[calendar interval]]
-  (and (= calendar :*) (= interval :*)))
-
-(defn- barcategory-combined? [{:keys [bar-category]}]
-  (combined? bar-category))
 
 (defn- add-algo-combiner [env v ids]
   (info "adding algo-combiner for algo ids: " ids "chain:" v)
@@ -24,37 +19,6 @@
                result-s)
     id))
 
-;; PARSER
-
-(defn- parse-part [market interval chain]
-  (let [calendar [market interval]]
-    {:bar-category calendar
-     :algo (make-chain chain)
-     :type :multi-calendar-chain
-     :spec chain}))
-
-(defn- parse
-  "parses a multi-calendar definition, and returns a 
-   normalized datastructure that can be used to add 
-   it to an environment."
-  [v]
-  ;(println "create-meta-algo ..")
-  (let [f (first v)
-        f? (map? f)
-        ; _ (println "f: " f " f?: " f?)
-        opts (if f? f {})
-        v' (if f? (rest v) v)
-        params (partition 3 v')
-        chain (map (fn [[market interval chain]]
-                     (parse-part market interval chain))
-                   params)
-        combined (-> (filter barcategory-combined? chain)
-                     first)
-        chain (remove barcategory-combined? chain)]
-    {:opts opts
-     :chain chain
-     :combined combined}))
-
 
 ;; CREATE
 
@@ -65,7 +29,7 @@
    :spec spec})
 
 (defn- create [v]
-  (let [{:keys [opts chain combined]} (parse v)]
+  (let [{:keys [opts chain combined]} (parser/parse v)]
     {:calendar-algos (map #(create-part opts %) chain)
      :combined-algo combined}))
 
@@ -85,17 +49,7 @@
 
 
 (comment
-  (combined? [:us :m])
-  (combined? [:* :*])
-  (combined? [:us :*])
-
-  (require '[notebook.algo-config.multicalendar-sma :refer [multi-calendar-algo-demo]])
-
-  (parse multi-calendar-algo-demo)
-  ;; => {:opts {:asset "EUR/USD", :feed :fx}, :chain create-meta-algo-part ..
-  ;;    ({:bar-category [:us :d], :algo #function[ta.env.chain/make-chain-impl/fn--118841]}create-meta-algo-part ..
-  ;;     {:bar-category [:us :h], :algo #function[ta.env.chain/make-chain-impl/fn--118841]})}
-
+ 
   (create multi-calendar-algo-demo)
   ;; => ({:algo-opts {:asset "EUR/USD", :feed :fx, :bar-category [:us :d]},
   ;;      :algo #function[ta.env.chain/make-chain-impl/fn--118841]}
