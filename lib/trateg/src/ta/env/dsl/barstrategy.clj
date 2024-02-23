@@ -1,7 +1,7 @@
 (ns ta.env.dsl.barstrategy
   (:require
     [taoensso.timbre :refer [trace debug info warn error]]
-    [ta.env.algo.bar-strategy :refer [trailing-window-barstrategy]]
+    [ta.algo.type.bar-strategy :refer [trailing-window-barstrategy]]
     [ta.algo.core :refer [get-algo-calc]]
     [ta.env.live-bargenerator :refer [add]]))
 

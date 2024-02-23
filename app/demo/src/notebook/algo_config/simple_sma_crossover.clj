@@ -2,7 +2,8 @@
   (:require
    [ta.algo.permutate :refer [->assets]]))
 
-(def base {:algo 'notebook.algo.sma3/bar-strategy
+(def base {:type :trailing-bar
+           :algo 'notebook.algo.sma3/bar-strategy
            :label :sma-crossover-1m
            :bar-category [:us :m]
            :calendar [:us :m] ; hack for dsl-javelin

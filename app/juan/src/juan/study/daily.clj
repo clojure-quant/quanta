@@ -5,14 +5,15 @@
 
 ;; 1. calculate algo
 
-(def algo-spec {:calendar [:us :d]
+(def algo-spec {:type :trailing-bar
                 :algo  'juan.algo.daily/daily
+                :calendar [:us :d]
                 :asset "EURUSD"
                 :import :kibot
                 :trailing-n 200
+                :atr-n 10
                 :step 10.0
-                :percentile 70
-                })
+                :percentile 70})
 
 (def ds
   (backtest-single-bar-strategy :bardb-dynamic algo-spec))
@@ -20,7 +21,7 @@
 ds
 
 
-(-> pivots tc/last :pivots-price last)
+(-> ds tc/last :pivots-price last)
 ;; => _unnamed [6 2]:
 ;;    
 ;;    |       :name |  :price |
@@ -34,7 +35,7 @@ ds
 
 
 ;; get pivot points 5 days ago.
-(-> pivots :pivots-price (get -5))
+(-> ds :pivots-price (get -5))
 ;; => _unnamed [6 2]:
 ;;    
 ;;    |       :name |  :price |

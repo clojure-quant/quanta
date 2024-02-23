@@ -30,16 +30,17 @@ bdb
                  :calendar [:us :d]
                  :import :kibot} window)
 
-(def algo {:algo 'notebook.algo.sma3/bar-strategy
-           :calendar [:us :d]
-           :asset "AAPL"
-           :import :kibot
+(def algo-spec {:type :trailing-bar
+                :algo 'notebook.algo.sma3/bar-strategy
+                :calendar [:us :d]
+                :asset "AAPL"
+                :import :kibot
            ; algo parameter:
-           :trailing-n 1000
-           :sma-length-st 10
-           :sma-length-lt 59})
+                :trailing-n 1000
+                :sma-length-st 10
+                :sma-length-lt 59})
 
-(def strategy (dsl/add-bar-strategy env algo))
+(def strategy (dsl/add-algo env algo-spec))
 strategy
 
 (def window-4y (-> (cal/trailing-range [:us :d] 1)

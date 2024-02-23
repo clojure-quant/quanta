@@ -1,4 +1,4 @@
-(ns ta.env.algo.bar-strategy
+(ns ta.algo.type.bar-strategy
   (:require 
     [tablecloth.api :as tc]
     [taoensso.timbre :refer [trace debug info warn error]]

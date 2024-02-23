@@ -17,11 +17,14 @@ env
 ; start calculations with time=nil 
 ; returns seq of javelin cells, which can be used for further 
 ; processing
-(def strategies (dsl/add-bar-strategies env algos-fx))
+(def strategies (dsl/add-algos env algos-fx))
 
-(def  w (win/recent-days-window 1))
-w
-(run-backtest env w)
+(def window (cal/trailing-range [:us :d] 10))
+
+window
+
+
+(run-backtest env window)
 
 
 strategies

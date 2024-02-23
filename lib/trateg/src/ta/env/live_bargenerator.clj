@@ -36,7 +36,6 @@
     (doall
      (map #(s/connect % global-quote-stream) feed-streams))
     {:feed feed
-     ;:duckdb bar-db
      :bar-categories (atom {})
      :algos (atom {})
      :env {:bar-db bar-db}

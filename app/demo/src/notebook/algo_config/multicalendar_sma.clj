@@ -2,7 +2,8 @@
 
 
  (def multi-calendar-algo-demo
-  [{:asset "EUR/USD"
+  [{:type :multi-calendar
+    :asset "EUR/USD"
     :feed :fx
     :label :multi-calendar}
    :us :h [{:trailing-n 100
