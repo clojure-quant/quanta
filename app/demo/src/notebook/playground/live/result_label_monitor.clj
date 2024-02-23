@@ -1,4 +1,4 @@
-(ns notebook.live.result-label-monitor
+(ns notebook.playground.live.result-label-monitor
   (:require
    [modular.system]
    [ta.env.tools.label-monitor :refer [monitor-label snapshot]]

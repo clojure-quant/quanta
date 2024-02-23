@@ -1,6 +1,6 @@
-(ns notebook.live.bar-generator
+(ns notebook.playground.live.bar-generator
   (:require
-   [ta.tickerplant.bar-generator :as bg]
+   [ta.live.bar-generator :as bg]
    [manifold.stream :as s]))
 
 ;; 1. create bargenerator

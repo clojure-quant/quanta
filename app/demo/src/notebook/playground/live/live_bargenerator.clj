@@ -1,4 +1,4 @@
-(ns notebook.live.live-bargenerator
+(ns notebook.playground.live.live-bargenerator
   (:require
    [taoensso.timbre :as timbre :refer [info warn error]]
    [manifold.stream :as s]

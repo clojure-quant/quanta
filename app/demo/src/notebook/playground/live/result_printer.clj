@@ -1,4 +1,4 @@
-(ns notebook.live.result-printer
+(ns notebook.playground.live.result-printer
   (:require
    [taoensso.timbre :as timbre :refer [info warn error]]
    [manifold.stream :as s]

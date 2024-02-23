@@ -1,4 +1,4 @@
-(ns notebook.live.quotefeed-fix
+(ns notebook.playground.live.quotefeed-fix
   (:require
     [taoensso.timbre :as timbre :refer [info warn error]]
     [manifold.stream :as s]
