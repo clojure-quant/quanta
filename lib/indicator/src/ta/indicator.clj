@@ -1,21 +1,20 @@
 (ns ta.indicator
   (:require
    [tech.v3.datatype.functional :as fun]
-   [tech.v3.dataset.rolling :refer [rolling mean last]]
+   [tech.v3.dataset.rolling :as r :refer [rolling mean]]
    [tablecloth.api :as tc]
-   [ta.helper.ds :refer [has-col]]
-   ))
+   [ta.helper.ds :refer [has-col]]))
 
 (defn prior [{:keys [of]
-            :or {of :close}}
-           ds]
+              :or {of :close}}
+             ds]
   (:sma (rolling ds {:window-size 1
                      :relative-window-position :left}
-                 {:sma (last of)})))
+                 {:sma (r/last of)})))
 
 
 (defn sma [{:keys [n of]
-            :or {of :close}} 
+            :or {of :close}}
            ds]
   (:sma (rolling ds {:window-size n
                      :relative-window-position :left}
@@ -34,8 +33,8 @@
   (assert n "atr needs :n option")
   (let [ds (tc/add-column bar-ds :tr (tr bar-ds))]
     (:atr (rolling ds {:window-size n
-                 :relative-window-position :left}
-             {:atr (mean :tr)}))))
+                       :relative-window-position :left}
+                   {:atr (mean :tr)}))))
 
 (defn add-atr [opts bar-ds]
   (tc/add-column bar-ds :atr (atr opts bar-ds)))
@@ -52,13 +51,13 @@
                  {:open 100 :high 160 :low 90 :close 110}]))
 
   (tr ds)
-  
+
   (atr {:n 2} ds)
   (add-atr {:n 2} ds)
 
   (sma {:n 2} ds)
 
-  
+
  ; 
   )
 

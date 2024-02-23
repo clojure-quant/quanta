@@ -5,7 +5,7 @@
    [ta.db.bars.protocol :as b]
    [ta.backtest.core :refer [run-backtest]]
    [ta.env.javelin :refer [create-env]]
-   [ta.env.javelin.algo :as dsl]))
+   [ta.env.protocol :as p]))
 
 ;; an environment needs to be created for each backtest;
 ;; this is because the excel-style calculation tree should only
@@ -40,7 +40,7 @@ bdb
                 :sma-length-st 10
                 :sma-length-lt 59})
 
-(def strategy (dsl/add-algo env algo-spec))
+(def strategy (p/add-algo env algo-spec))
 strategy
 
 (def window-4y (-> (cal/trailing-range [:us :d] 1)

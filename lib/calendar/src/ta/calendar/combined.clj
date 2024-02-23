@@ -3,7 +3,7 @@
    takes "
   (:require
    [tick.core :as t]
-   [ta.calendar.core :refer [next-close prior-close]]))
+   [ta.calendar.core :as cal]))
 
 ;; calendar-reader
 
@@ -11,10 +11,10 @@
   "returns a reader, a function without arguments that always returns the 
    next date for the sequence"
   [dt-start [calendar-kw interval-kw]]
-  (let [start (prior-close calendar-kw interval-kw dt-start)
+  (let [start (cal/prior-close calendar-kw interval-kw dt-start)
         state (atom start)
         read-next (fn []
-                    (let [dt (next-close calendar-kw interval-kw @state)]
+                    (let [dt (cal/next-close calendar-kw interval-kw @state)]
                       (reset! state dt)
                       dt))]
     read-next))
@@ -65,7 +65,7 @@
     (repeatedly next)))
 
 (defn- end-dates [end-dt windows]
-  (map #(next-close (first %) (last %) end-dt) windows))
+  (map #(cal/next-close (first %) (last %) end-dt) windows))
 
 
 (defn combined-event-seq
@@ -86,15 +86,15 @@
   ;; window
  (require '[ta.calendar.window :refer [recent-days-window]])
   
-  (def days10 (recent-days-window 10))
-  days10
+  (def r (cal/trailing-range [:us :d] 10))
+  r
 
 
   ;; reader
 
   
 
-  (def reader (calendar-seq-reader (:start days10) [:crypto :h]))
+  (def reader (calendar-seq-reader r [:us :d]))
   ; reader will return with each call the next date
   (reader)
 
@@ -137,9 +137,9 @@
 
  
 
-  (combined-event-seq days10 calendars)
+  (combined-event-seq r calendars)
 
-  (->> (combined-event-seq days10 calendars)
+  (->> (combined-event-seq r calendars)
        (print-table))
   
 

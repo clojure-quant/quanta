@@ -13,7 +13,7 @@
   (or (get @(:calendars env) calendar)
       (create-calendar env calendar)))
 
-(defn set-calendar! [env calendar time]
+(defn set-calendar! [env {:keys [calendar time]}]
     ;(println "set-calendar! cal: " calendar " time: " time "data: " data)
   (let [c (get-calendar env calendar)]
       ; we need to set time by calendar to env!!!!!

@@ -15,6 +15,7 @@
                 :step 10.0
                 :percentile 70})
 
+
 (def ds
   (backtest-algo :bardb-dynamic algo-spec))
 
