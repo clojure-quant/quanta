@@ -1,8 +1,8 @@
-(ns ta.env.algo.trailing-window
+(ns ta.algo.env.trailing-window
   (:require
    [tick.core :as t]
    [ta.calendar.core :refer [trailing-window]]
-   [ta.env.core :as env]))
+   [ta.algo.env.core :as env]))
 
 (defn create-trailing-bar-loader [{:keys [asset calendar trailing-n] :as _spec}]
   ; fail once, when required parameters are missing

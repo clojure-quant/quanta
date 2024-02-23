@@ -6,7 +6,7 @@
    [ta.helper.returns :refer [diff]]
    [ta.math.bin :as b]
    [ta.calendar.core :as c]
-   [ta.env.algo.core :refer [get-bars-lower-timeframe]]))
+   [ta.algo.env.core :refer [get-bars-lower-timeframe]]))
 
 ; port of tradingview-indicator
 ;https://www.tradingview.com/script/nY63MyD9-Time-volume-point-of-control-quantifytools/

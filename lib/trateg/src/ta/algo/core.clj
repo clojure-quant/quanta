@@ -5,7 +5,7 @@
    [ta.viz.study-highchart :refer [study-highchart] :as hc]
    [ta.calendar.core :refer [trailing-window]]
    [ta.algo.ds :refer [has-col?]]
-   [ta.env.core :as env]
+   [ta.algo.env.core :as env]
    ))
 
 (defn- get-symbol [algo-ns algo-symbol]

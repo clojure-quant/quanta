@@ -1,15 +1,10 @@
-(ns ta.env.core
-  "environment functions that are predominantly used by algos."
-  (:require
-   [taoensso.timbre :refer [trace debug info warn error]]
+(ns ta.algo.env.core
+  (:require 
+   [ta.calendar.core :refer [trailing-window get-bar-window]]
    [ta.db.bars.protocol :as bardb]
    [ta.db.bars.aligned :as aligned]
-   ))
+   [ta.algo.spec :as s]))
 
-(defn set-env-bardb
-  "creates environment to load series via duckdb"
-  [env bar-db]
-  (assoc env :bar-db bar-db))
 
 (defn get-bars
   "returns bars for asset/calendar/window"
@@ -20,7 +15,7 @@
   (assert window "cannot get-bars for unknown window!")
   (bardb/get-bars bar-db opts window))
 
-(defn get-bars-aligned-filled 
+(defn get-bars-aligned-filled
   "returns bars for asset/calendar/window"
   [{:keys [bar-db] :as env} {:keys [asset calendar] :as opts} calendar-seq]
   (assert bar-db "environment does not provide bar-db!")
@@ -44,4 +39,22 @@
     (assert calendar-time "environment does not provide calendar-time!")
     (get @calendar-time calendar)))
 
-  
+(defn get-trailing-bars [env spec bar-close-date]
+  (let [calendar (s/get-calendar spec)
+        asset (s/get-asset spec)
+        n (s/get-trailing-n spec)
+        window (trailing-window calendar n bar-close-date)]
+     (get-bars env {:asset asset 
+                      :calendar calendar} window)))
+
+(defn get-bars-lower-timeframe [env spec lower-timeframe]
+  (let [calendar (s/get-calendar spec)
+        market (first calendar)
+        calendar-lower [market lower-timeframe]
+        asset (s/get-asset spec)
+        time (get-calendar-time env calendar)
+        window (get-bar-window calendar time)]
+    (get-bars env {:asset asset
+                     :calendar calendar-lower} window)))
+
+

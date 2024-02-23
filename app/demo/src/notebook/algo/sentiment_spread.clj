@@ -10,7 +10,7 @@
    [tablecloth.api :as tc]
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as fun]
-   [ta.env.core :refer [get-bars-aligned-filled]]
+   [ta.algo.env.core :refer [get-bars-aligned-filled]]
    [ta.calendar.core :as cal]
    [ta.helper.returns :refer [diff]]))
 

@@ -8,11 +8,11 @@
     :label :multi-calendar}
    :us :h [{:trailing-n 100
             :sma 30}
-           'ta.env.algo.trailing-window/trailing-window-load-bars
+           'ta.algo.env.trailing-window/trailing-window-load-bars
            'notebook.algo.sma3/bar-strategy]
    :us :m [{:trailing-n 60
             :sma 20}
-           'ta.env.algo.trailing-window/trailing-window-load-bars
+           'ta.algo.env.trailing-window/trailing-window-load-bars
            'notebook.algo.sma3/bar-strategy]
     :* :*  ['ta.algo.ds/get-current-positions
             'ta.algo.ds/all-positions-agree]
