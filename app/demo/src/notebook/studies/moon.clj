@@ -10,7 +10,7 @@
    [ta.trade.metrics.nav :as nav]
    [notebook.algo.moon :refer [moon-indicator]]
    [ta.algo.buy-hold :refer [buy-hold-signal]]
-   [ta.backtest.core :refer [backtest-algo]]))
+   [ta.env.backtest :refer [backtest-algo]]))
 
 ;; 1. calculate algo, observe moon-phase.
 

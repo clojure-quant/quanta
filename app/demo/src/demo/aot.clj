@@ -6,6 +6,5 @@
    ;[ta.date]
    [ta.warehouse]
    [ta.series.indicator]
-   ;[ta.backtest.core]
    ))
 

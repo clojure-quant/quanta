@@ -6,7 +6,7 @@
    [tablecloth.api :as tc]
    [ta.algo.env.core :refer [get-bars-aligned-filled]]
    [ta.calendar.core :as cal]
-   [ta.backtest.core :refer [run-backtest]]
+   [ta.env.backtest :refer [run-backtest]]
    [ta.engine.javelin :refer [create-env]]
    [ta.engine.javelin.algo :as dsl]))
 

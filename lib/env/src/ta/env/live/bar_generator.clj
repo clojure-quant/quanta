@@ -1,4 +1,4 @@
-(ns ta.live.bar-generator
+(ns ta.env.live.bar-generator
   (:require
    [taoensso.timbre :as timbre :refer [info warn error]]
    [clojure.pprint :refer [print-table]]

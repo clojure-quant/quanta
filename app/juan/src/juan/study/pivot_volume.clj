@@ -1,6 +1,6 @@
 (ns juan.study.pivot-volume
   (:require
-   [ta.backtest.core :refer [backtest-algo]]))
+   [ta.env.backtest :refer [backtest-algo]]))
 
 ;; 1. calculate algo
 

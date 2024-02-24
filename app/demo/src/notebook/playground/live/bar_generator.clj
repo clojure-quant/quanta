@@ -1,6 +1,6 @@
 (ns notebook.playground.live.bar-generator
   (:require
-   [ta.live.bar-generator :as bg]
+   [ta.env.live.bar-generator :as bg]
    [manifold.stream :as s]))
 
 ;; 1. create bargenerator

@@ -1,4 +1,4 @@
-(ns ta.backtest.core
+(ns ta.env.backtest
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [ta.calendar.core :as cal]

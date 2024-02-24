@@ -2,9 +2,10 @@
   (:require
    [ta.calendar.core :as cal]
    [ta.algo.create :as a]
-   [ta.backtest.core :refer [backtest-algo run-backtest]]
    [ta.engine.protocol :as env]
-   [ta.engine.javelin :refer [create-env]]))
+   [ta.engine.javelin :refer [create-env]]
+   [ta.env.backtest :refer [backtest-algo run-backtest]]
+   ))
 
 ;; 1. time-based algo spec
 

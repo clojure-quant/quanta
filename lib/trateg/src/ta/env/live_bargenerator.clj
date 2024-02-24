@@ -23,7 +23,7 @@
    [tablecloth.api :as tc]
    [ta.db.bars.protocol :as b]
   ; [ta.db.bars.duckdb :as duck]
-   [ta.live.bar-generator :as bg]
+   [ta.env.live.bar-generator :as bg]
    [ta.quote.core :refer [subscribe quote-stream]]
    [ta.env.tools.last-msg-summary :as summary]
    [ta.env.tools.id-bus :refer [create-id-bus]]))

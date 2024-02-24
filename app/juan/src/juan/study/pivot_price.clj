@@ -1,7 +1,7 @@
 (ns juan.study.pivot-price
   (:require
    [tablecloth.api :as tc]
-   [ta.backtest.core :refer [backtest-algo]]))
+   [ta.env.backtest :refer [backtest-algo]]))
 
 ;; 1. calculate algo
 

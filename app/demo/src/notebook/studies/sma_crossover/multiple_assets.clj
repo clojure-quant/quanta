@@ -1,8 +1,8 @@
 (ns notebook.studies.sma-crossover.multiple-assets
   (:require
-   [ta.backtest.core :refer [run-backtest]]
    [ta.engine.javelin :refer [create-env]]
    [ta.engine.javelin.algo :as dsl]
+   [ta.env.backtest :refer [run-backtest]]
    [notebook.algo-config.simple-sma-crossover :refer [algos-fx]]
    [ta.db.bars.protocol :as b]
    [tick.core :as t]

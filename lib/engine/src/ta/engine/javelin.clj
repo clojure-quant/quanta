@@ -11,7 +11,7 @@
   (get-bar-db [this]
     (:bar-db this))
   ; algo
-  (add-algo [this spec]
+  (add-calendar-cell [this spec]
     (j-algo/add-algo this spec))
   (add-algos [this spec-seq]
     (j-algo/add-algos this spec-seq))

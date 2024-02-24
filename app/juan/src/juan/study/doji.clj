@@ -2,7 +2,7 @@
   (:require
    [tablecloth.api :as tc]
    [ta.trade.signal :refer [filter-signal]]
-   [ta.backtest.core :refer [backtest-algo]]))
+   [ta.env.backtest :refer [backtest-algo]]))
 
 ;; 1. calculate algo
 

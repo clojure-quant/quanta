@@ -3,7 +3,7 @@
    [tick.core :as t]
    [ta.calendar.core :as cal]
    [ta.db.bars.protocol :as b]
-   [ta.backtest.core :refer [run-backtest]]
+   [ta.env.backtest :refer [run-backtest]]
    [ta.engine.protocol :as p]
    [ta.engine.javelin :refer [create-env]]
    ))
