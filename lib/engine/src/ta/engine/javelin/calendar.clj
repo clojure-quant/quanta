@@ -1,4 +1,4 @@
-(ns ta.env.javelin.calendar
+(ns ta.engine.javelin.calendar
   (:require
    [javelin.core-clj :refer [cell cell=]]))
 

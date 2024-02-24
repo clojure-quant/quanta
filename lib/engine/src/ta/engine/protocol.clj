@@ -1,4 +1,4 @@
-(ns ta.env.protocol)
+(ns ta.engine.protocol)
 
 (defprotocol env
   (get-bar-db [this])

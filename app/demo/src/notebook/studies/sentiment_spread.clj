@@ -8,8 +8,8 @@
    [tablecloth.api :as tc]
    [ta.calendar.core :as cal]
    [ta.backtest.core :refer [run-backtest]]
-   [ta.env.javelin :refer [create-env]]
-   [ta.env.javelin.algo :as dsl]
+   [ta.engine.javelin :refer [create-env]]
+   [ta.engine.javelin.algo :as dsl]
    [notebook.algo.sentiment-spread :refer [sentiment-spread]]))
 
 

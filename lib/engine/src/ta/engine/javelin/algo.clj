@@ -1,8 +1,8 @@
-(ns ta.env.javelin.algo
+(ns ta.engine.javelin.algo
   (:require
     [ta.algo.create :as a] 
     [javelin.core-clj :refer [cell=]]
-    [ta.env.javelin.calendar :refer [get-calendar]]))
+    [ta.engine.javelin.calendar :refer [get-calendar]]))
 
 (defn add-algo
   "returns a cell that calculates the strategy

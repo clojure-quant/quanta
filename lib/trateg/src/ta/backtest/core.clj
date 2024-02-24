@@ -3,8 +3,8 @@
    [taoensso.timbre :refer [trace debug info warn error]]
    [ta.calendar.core :as cal]
    [ta.calendar.combined :refer [combined-event-seq]]
-   [ta.env.protocol :as env]
-   [ta.env.javelin :refer [create-env]]))
+   [ta.engine.protocol :as env]
+   [ta.engine.javelin :refer [create-env]]))
 
 (defn run-backtest [e w]
   (let [cals (env/active-calendars e)
@@ -29,7 +29,7 @@
 
 (comment
 
-  (require '[ta.env.javelin :as e])
+  (require '[ta.engine.javelin :as e])
   (require '[javelin.core-clj :refer [cell cell=]])
   (require '[ta.env.tools.window :as tw])
 

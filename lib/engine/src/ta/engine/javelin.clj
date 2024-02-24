@@ -1,9 +1,9 @@
-(ns ta.env.javelin
+(ns ta.engine.javelin
   (:require
    [modular.system]
-   [ta.env.protocol :refer [env]]
-   [ta.env.javelin.algo :as j-algo]
-   [ta.env.javelin.calendar :as j-cal]))
+   [ta.engine.protocol :refer [env]]
+   [ta.engine.javelin.algo :as j-algo]
+   [ta.engine.javelin.calendar :as j-cal]))
 
 (defrecord env-javelin [bar-db calendars]
   env

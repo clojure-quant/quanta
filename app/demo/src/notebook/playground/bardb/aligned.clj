@@ -7,8 +7,8 @@
    [ta.algo.env.core :refer [get-bars-aligned-filled]]
    [ta.calendar.core :as cal]
    [ta.backtest.core :refer [run-backtest]]
-   [ta.env.javelin :refer [create-env]]
-   [ta.env.javelin.algo :as dsl]))
+   [ta.engine.javelin :refer [create-env]]
+   [ta.engine.javelin.algo :as dsl]))
 
 (defn get-aligned [env {:keys [calendar trailing-n] :as opts} time]
   (let [cal-seq (cal/trailing-window calendar trailing-n time)

@@ -4,8 +4,9 @@
    [ta.calendar.core :as cal]
    [ta.db.bars.protocol :as b]
    [ta.backtest.core :refer [run-backtest]]
-   [ta.env.javelin :refer [create-env]]
-   [ta.env.protocol :as p]))
+   [ta.engine.protocol :as p]
+   [ta.engine.javelin :refer [create-env]]
+   ))
 
 ;; an environment needs to be created for each backtest;
 ;; this is because the excel-style calculation tree should only
