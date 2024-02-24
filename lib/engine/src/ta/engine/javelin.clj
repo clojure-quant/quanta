@@ -1,20 +1,19 @@
 (ns ta.engine.javelin
   (:require
    [modular.system]
-   [ta.engine.protocol :refer [env]]
-   [ta.engine.javelin.algo :as j-algo]
+   [ta.engine.protocol :refer [eng]]
+   [ta.engine.javelin.cell :as j-cell]
    [ta.engine.javelin.calendar :as j-cal]))
 
-(defrecord env-javelin [bar-db calendars]
-  env
-  ; bar-db
-  (get-bar-db [this]
-    (:bar-db this))
-  ; algo
-  (add-calendar-cell [this spec]
-    (j-algo/add-algo this spec))
-  (add-algos [this spec-seq]
-    (j-algo/add-algos this spec-seq))
+(defrecord env-javelin [calendars]
+  eng
+  ; cell
+  (calendar-cell [this time-fn calendar]
+    (j-cell/calendar-cell this time-fn calendar))
+  (formula-cell [this formula-fn cell-seq]
+    (j-cell/formula-cell this formula-fn cell-seq))
+  (value-cell [this v]
+    (j-cell/value-cell this v))
   ; calendar
   (create-calendar [this calendar]
     (j-cal/create-calendar this calendar))
@@ -25,7 +24,6 @@
   (active-calendars [this]
     (j-cal/active-calendars this)))
 
-(defn create-env [bar-db-kw]
-  (let [bar-db (bar-db-kw modular.system/system)
-        calendars (atom {})]
-    (env-javelin. bar-db calendars)))
+(defn create-engine-javelin []
+  (let [calendars (atom {})]
+    (env-javelin. calendars)))

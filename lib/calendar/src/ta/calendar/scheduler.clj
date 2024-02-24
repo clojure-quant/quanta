@@ -14,7 +14,7 @@
 
 (defn start [[calendar-kw interval-kw] f]
   (info "scheduler start: " calendar-kw interval-kw)
-  (let [date-seq (calendar-seq-instant calendar-kw interval-kw)]
+  (let [date-seq (calendar-seq-instant [calendar-kw interval-kw])]
     (chime/chime-at 
       date-seq f
       {:on-finished log-finished 

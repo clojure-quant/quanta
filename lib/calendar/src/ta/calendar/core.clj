@@ -45,7 +45,7 @@
         next-dt (partial next-close calendar-kw interval-kw)]
     (iterate next-dt start)))
 
-(defn calendar-seq-instant [calendar-kw interval-kw]
+(defn calendar-seq-instant [[calendar-kw interval-kw]]
   (->> (calendar-seq calendar-kw interval-kw)
        (map t/instant)))
 

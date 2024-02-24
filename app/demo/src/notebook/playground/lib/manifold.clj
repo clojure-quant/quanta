@@ -1,4 +1,4 @@
-(ns notebook.live.manifold
+(ns notebook.playground.lib.manifold
   (:require
     [manifold.stream :as s]))
 

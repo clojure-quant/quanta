@@ -1,4 +1,4 @@
-(ns notebook.playground.svg
+(ns notebook.playground.lib.svg
   (:require
    [svg-clj.utils :as utils]
    [svg-clj.elements :as el]

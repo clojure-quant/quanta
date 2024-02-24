@@ -1,4 +1,4 @@
-(ns notebook.playground.throttle
+(ns notebook.playground.lib.throttle
   (:require
    [throttler.core]))
 

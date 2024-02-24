@@ -1,4 +1,4 @@
-(ns notebook.playground.javelin
+(ns notebook.playground.engine.javelin
   (:require
    [javelin.core-clj :refer [cell cell=]]))
 

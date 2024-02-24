@@ -107,7 +107,7 @@
 (defn bargenerator-start [bar-category]
   (info "bargenerator-start : " bar-category)
   (let [[calendar-kw interval-kw] bar-category
-        date-seq (calendar-seq-instant calendar-kw interval-kw)
+        date-seq (calendar-seq-instant [calendar-kw interval-kw])
         db (atom {})
         bar-close-stream (s/stream)]
     {:db db
