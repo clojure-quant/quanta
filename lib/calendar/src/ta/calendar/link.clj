@@ -35,7 +35,7 @@
     [bar-ds remote-ds remote-col nil-val]
     (let [align (make-aligner remote-ds remote-col nil-val)
           t (col-type remote-ds remote-col)]
-      (println "link-bars type: " t)
+      ;(println "link-bars type: " t)
       (dtype/emap align t (:date bar-ds))))
       
 
