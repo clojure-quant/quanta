@@ -8,7 +8,7 @@
   (let [m (dec (tc/row-count ds))
         c (atom 0)
         move-next (fn [] (swap! c inc))
-        date-current (fn [] (-> ds :date (get @c)))
+        date-current (fn [] (-> ds :date (get (min @c m))))
         date-next    (fn [] (-> ds :date (get (min m (inc @c)))))
         get-val (fn [] (-> ds col (get (min @c m))))]
     (fn [date]
@@ -33,16 +33,17 @@
      does not have a value yet, in case nil-val is returned.
      Useful to link to remote time-series that are of lower frequency."
     [bar-ds remote-ds remote-col nil-val]
-    (let [align (make-aligner remote-ds remote-col nil-val)]
-      (dtype/emap align (col-type remote-ds remote-col) (:date bar-ds))))
-
-
+    (let [align (make-aligner remote-ds remote-col nil-val)
+          t (col-type remote-ds remote-col)]
+      (println "link-bars type: " t)
+      (dtype/emap align t (:date bar-ds))))
+      
 
 (comment 
   (def daily-ds (tc/dataset [{:date (t/date-time "2024-01-01T17:00:00") :a 1}
                              {:date (t/date-time "2024-01-02T17:00:00") :a 2}
                              {:date (t/date-time "2024-01-03T17:00:00") :a 3}]))
-  (col-type daily-ds :a)  
+  (col-type daily-ds :a)
   (-> daily-ds :a (get 2))
   (def hour-ds (tc/dataset [{:date (t/date-time "2024-01-01T15:00:00") } ; 0
                             {:date (t/date-time "2024-01-01T16:00:00") } ; 0
