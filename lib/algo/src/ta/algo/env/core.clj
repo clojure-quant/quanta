@@ -1,5 +1,6 @@
 (ns ta.algo.env.core
   (:require
+   ;[taoensso.timbre :refer [trace debug info warn error]]
    [tick.core :as t]
    [ta.calendar.core :refer [trailing-window get-bar-window]]
    [ta.db.bars.protocol :as bardb]
@@ -12,7 +13,7 @@
   [env spec window]
   (let [calendar (s/get-calendar spec)
         asset (s/get-asset spec)
-        bar-db (algo-env/get-engine env)]
+        bar-db (algo-env/get-bar-db env)]
     (assert bar-db "environment does not provide bar-db!")
     (assert asset "cannot get-bars for unknown asset!")
     (assert calendar "cannot get-bars for unknown calendar!")
@@ -22,7 +23,7 @@
 (defn get-bars-aligned-filled
   "returns bars for asset/calendar/window"
   [env {:keys [asset calendar] :as opts} calendar-seq]
-  (let [bar-db (algo-env/get-engine env)]
+  (let [bar-db (algo-env/get-bar-db env)]
     (assert bar-db "environment does not provide bar-db!")
     (assert asset "cannot get-bars for unknown asset!")
     (assert calendar "cannot get-bars for unknown calendar!")
@@ -33,7 +34,7 @@
 (defn add-bars
   "returns bars for asset/calendar/window"
   [env {:keys [calendar] :as opts} ds-bars]
-  (let [bar-db (algo-env/get-engine env)]
+  (let [bar-db (algo-env/get-bar-db env)]
     (assert bar-db "environment does not provide bar-db!")
     (assert calendar "can not execute add-bars - needs calendar parameter.")
     (assert ds-bars "can not execute add-bars - needs ds-bars parameter.")
@@ -55,6 +56,7 @@
      :end dend-instant}))
 
 (defn get-trailing-bars [env spec bar-close-date]
+  ;(info "get-trailing-bars " bar-close-date)
   (let [trailing-n (s/get-trailing-n spec)
         calendar (s/get-calendar spec)
         calendar-seq (trailing-window calendar trailing-n bar-close-date)

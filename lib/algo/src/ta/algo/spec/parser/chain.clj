@@ -13,7 +13,10 @@
 
    TODO:
    - It would be good to give all fns a subset of the opts; a opts-getter.
-   ")
+   "
+   (:require
+   [taoensso.timbre :refer [trace debug info warn error]])
+  )
    
 
 (defn- execute-next [env opts result f]
@@ -31,14 +34,12 @@
     fun))
 
 (defn make-chain
-  "env - the environment (live/simulation)
-   opts - opts for the algo chain
-   v - a vector of functions that are threaded through;
+  "v - a vector of functions that are threaded through;
        optionally can have a options map as the first 
        element in the vector
    returns a function that expects [env opts time/result]"
   [v]
-  ;(println "make-chain: " v)
+  (info "make-chain: " v)
   (if (symbol? v)
     (preprocess-fun v)
     (let [has-opts (map? (first v))

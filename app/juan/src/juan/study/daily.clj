@@ -1,9 +1,9 @@
 (ns juan.study.daily
   (:require
    [tablecloth.api :as tc]
-   [ta.algo.env.backtest :refer [backtest-algo]]))
+   [ta.algo.backtest :refer [backtest-algo]]))
 
-;; 1. calculate algo
+;; 1. backtest daily algo
 
 (def algo-spec {:type :trailing-bar
                 :algo  'juan.algo.daily/daily
@@ -15,14 +15,42 @@
                 :step 10.0
                 :percentile 70})
 
-
 (def ds
   (backtest-algo :bardb-dynamic algo-spec))
 
-ds
+;; 2. check if close and atr is ok.
 
+(tc/select-columns @ds [:date :atr :close])
+;; => :_unnamed [200 3]:
+;;    
+;;    |                :date |     :atr |  :close |
+;;    |----------------------|---------:|--------:|
+;;    | 2023-05-24T05:00:00Z | 0.005330 | 1.07494 |
+;;    | 2023-05-25T05:00:00Z | 0.005293 | 1.07251 |
+;;    | 2023-05-26T05:00:00Z | 0.005331 | 1.07224 |
+;;    | 2023-05-29T05:00:00Z | 0.005178 | 1.07065 |
+;;    | 2023-05-30T05:00:00Z | 0.005387 | 1.07342 |
+;;    | 2023-05-31T05:00:00Z | 0.005861 | 1.06887 |
+;;    | 2023-06-01T05:00:00Z | 0.006397 | 1.07615 |
+;;    | 2023-06-02T05:00:00Z | 0.006606 | 1.07066 |
+;;    | 2023-06-05T05:00:00Z | 0.006552 | 1.07121 |
+;;    | 2023-06-06T05:00:00Z | 0.006679 | 1.06925 |
+;;    |                  ... |      ... |     ... |
+;;    | 2024-02-13T05:00:00Z | 0.006680 | 1.07085 |
+;;    | 2024-02-14T05:00:00Z | 0.006147 | 1.07274 |
+;;    | 2024-02-15T05:00:00Z | 0.005810 | 1.07724 |
+;;    | 2024-02-16T05:00:00Z | 0.005193 | 1.07743 |
+;;    | 2024-02-19T05:00:00Z | 0.004834 | 1.07769 |
+;;    | 2024-02-20T05:00:00Z | 0.005208 | 1.08075 |
+;;    | 2024-02-20T05:00:00Z | 0.005628 | 1.08075 |
+;;    | 2024-02-21T05:00:00Z | 0.005499 | 1.08189 |
+;;    | 2024-02-22T05:00:00Z | 0.006021 | 1.08226 |
+;;    | 2024-02-22T05:00:00Z | 0.006380 | 1.08226 |
+;;    | 2024-02-23T05:00:00Z | 0.005715 | 1.08175 |
 
-(-> ds tc/last :pivots-price last)
+; 3. show price-pivots for last day
+
+(-> @ds tc/last :pivots-price last)
 ;; => _unnamed [6 2]:
 ;;    
 ;;    |       :name |  :price |
@@ -35,8 +63,9 @@ ds
 ;;    |  :pweek-low | 1.06949 |
 
 
-;; get pivot points 5 days ago.
-(-> ds :pivots-price (get -5))
+;; 4. get pivot points 5 days ago.
+
+(-> @ds :pivots-price (get -5))
 ;; => _unnamed [6 2]:
 ;;    
 ;;    |       :name |  :price |
