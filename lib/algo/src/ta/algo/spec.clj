@@ -1,7 +1,9 @@
 (ns ta.algo.spec
   (:require 
    [algo.env :as algo-env]
-   [ta.algo.spec.type :refer [create-algo]]))
+   [ta.algo.spec.type :refer [create-algo]]
+   [ta.algo.spec.type.formula :refer [create-formula-algo]]
+   ))
 
 (defn get-asset [spec] 
   (:asset spec))
@@ -24,7 +26,7 @@
       calendar
       {:calendar calendar :time-fn (->> spec create-algo (wrap-env env spec))}
       formula
-      {:formula formula :formula-fn (->> spec create-algo (wrap-env env spec))}
+      {:formula formula :formula-fn (->> spec create-formula-algo (wrap-env env spec))}
       value
       {:value value})))
 

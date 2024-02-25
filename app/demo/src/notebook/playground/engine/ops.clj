@@ -11,7 +11,7 @@
 
 
 (def ops-1
-  [0 {:calendar [:us :d] :time-fn time-as-map}])
+  [[0 {:calendar [:us :d] :time-fn time-as-map}]])
 
 (def c (add-ops e ops-1))
 c
@@ -20,14 +20,16 @@ c
 (p/set-calendar! e {:calendar [:us :d]
                     :time :much-later})
 
-@(first c)
+@c
 
 (def ops-multiple
-  [0 {:calendar [:us :d] :time-fn time-as-map}
-   1 {:calendar [:us :h] :time-fn time-as-map}
-   2 {:formula [0 1] :formula-fn concat}
-   3 {:value 27}
-   4 {:formula [3] :formula-fn inc}])
+  [[0 {:calendar [:us :d] :time-fn time-as-map}]
+   [1 {:calendar [:us :h] :time-fn time-as-map}]
+   [2 {:formula [0 1] :formula-fn concat}]
+   [3 {:value 27}]
+   [4 {:formula [3] :formula-fn inc}]
+   [5 {:formula [3 4] :formula-fn +}]
+   ])
 
 (def cells (add-ops e ops-multiple))
 

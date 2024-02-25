@@ -54,15 +54,19 @@ e
 
 ;; 5. backtest with formulas.
 
-(defn combine [ & args]
+(defn combine [env spec & args]
 { :args args})
   
+(defn sum [env spec & args]
+  (apply + args)) 
+
 (def combined-spec 
   [:a {:calendar [:us :d] :algo 'notebook.playground.algo.dummy/secret :type :time}
    :b {:type :time :calendar [:us :d] :data 42 :algo 'notebook.playground.algo.dummy/secret}
    :c {:value 4444}
-   ;:c {:formula [:a :b] :algo 'notebook.playground.algo.dummy/combine :type :time}
-
+   :d {:formula [:a :b] :algo 'notebook.playground.algo.dummy/combine :type :time}
+   :e {:value 2222}
+   :f {:formula [:c :e] :algo 'notebook.playground.algo.dummy/sum :type :time}
    ])
 
 (require '[ta.algo.spec :refer [spec->ops]])
@@ -76,4 +80,6 @@ e
 @(:a combined-result)
 @(:b combined-result)
 @(:c combined-result)
+@(:d combined-result)
+@(:f combined-result)
 combined-result
