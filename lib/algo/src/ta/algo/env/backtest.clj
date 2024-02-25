@@ -22,11 +22,11 @@
   [bar-db-kw algo-spec]
   (let [bar-db  (modular.system/system bar-db-kw)
         env (algo-env/create-env-javelin bar-db)
-        calendar (:calendar algo-spec)
         strategy (algo-env/add-algo env algo-spec)
+        calendar [:us :d]
         window (cal/trailing-range calendar 1)]
     (run-backtest env window)
-    @strategy))
+    strategy))
 
 
 (comment

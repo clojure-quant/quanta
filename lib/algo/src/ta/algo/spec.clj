@@ -31,10 +31,11 @@
 
 (defn spec->ops [env spec]
   (if (map? spec)
-      [1 (spec->op env spec)]
-      (map (fn [[id spec]]
-                [id (spec->op env spec)])
-           (partition 2 spec))))
+      [[1 (spec->op env spec)]]
+      (->> (map (fn [[id spec]]
+                  [id (spec->op env spec)])
+                (partition 2 spec))
+           (into []))))
 
 (comment 
   (def e (algo-env/create-env-javelin nil))
@@ -52,7 +53,6 @@
                 :b {:calendar [:us :m] :algo 'ta.algo.spec/dummy :type :time}
                 :c {:formula [:a] :algo 'ta.algo.spec/combine :type :time}
                 ])
-
 
   ;
   )

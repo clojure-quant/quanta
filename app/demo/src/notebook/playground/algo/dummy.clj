@@ -31,6 +31,8 @@ engine
 
 algo
 @algo
+;; => "the spec is: {:type :time, :calendar [:us :d], :data 42, :algo notebook.playground.algo.dummy/secret} (calculated: :evening)"
+
 
 ;; 3. backtest with complex syntax
 
@@ -42,14 +44,13 @@ e
 @algo
 ;; => "the spec is: {:type :time, :calendar [:us :d], :data 42, :algo notebook.playground.algo.dummy/secret} (calculated: 2024-02-26T17:00-05:00[America/New_York])"
 
-
 ;; 4. backtest with simple syntax
 
 (def result
   (backtest-algo :duckdb spec))
 
-result
-;; => "the spec is: {:type :time, :calendar [:us :d], :data 42, :algo notebook.playground.algo.dummy/secret} (calculated: 2024-02-23T17:00-05:00[America/New_York])"
+@result
+;; => "the spec is: {:type :time, :calendar [:us :d], :data 42, :algo notebook.playground.algo.dummy/secret} (calculated: 2024-02-26T17:00-05:00[America/New_York])"
 
 ;; 5. backtest with formulas.
 
@@ -57,16 +58,19 @@ result
 {:spec spec :args args})
   
 (def combined-spec 
-  [:a {:calendar [:us :h] :algo 'notebook.playground.algo.dummy/secret :type :time}
-   :b {:calendar [:us :m] :algo 'notebook.playground.algo.dummy/combine :type :time}
+  [:a {:calendar [:us :d] :algo 'notebook.playground.algo.dummy/secret :type :time}
+   :b {:type :time :calendar [:us :d] :data 42 :algo 'notebook.playground.algo.dummy/secret}
    ;:c {:formula [:a :b] :algo 'notebook.playground.algo.dummy/combine :type :time}
    ])
 
 (require '[ta.algo.spec :refer [spec->ops]])
+(spec->ops e spec)
 (spec->ops e combined-spec)
-
 
 
 (def combined-result
   (backtest-algo :duckdb combined-spec))
 
+@(:a combined-result)
+@(:b combined-result)
+combined-result

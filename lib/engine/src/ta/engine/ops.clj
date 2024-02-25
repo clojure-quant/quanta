@@ -1,6 +1,7 @@
 (ns ta.engine.ops
- (:require 
-  [ta.engine.protocol :as ep]))
+  (:require 
+    [taoensso.timbre :refer [trace debug info warn error]]
+    [ta.engine.protocol :as ep]))
 
 (defn add-ops 
   "construct a graph of cells (that can be value-cells, formula-cells, calendar-cells),
@@ -14,7 +15,8 @@
                            (get @db id)) ids))
         add-op (fn [[id {:keys [calendar time-fn
                                 formula formula-fn
-                                value]}]]
+                                value] :as opts}]]
+                 (info "adding id: " id " opts: " opts)
                  (assert (or calendar formula value))
                  (let [r (cond
                             calendar 
@@ -25,9 +27,9 @@
                             (ep/value-cell engine value))]
                    (swap! db assoc id r)
                   [id r]))
-        result-map (->> (map add-op (partition 2 ops))
+        result-map (->> (map add-op ops)
                         (into {}))]
-    (if (= 2 (count ops)) ; 2 means [:id {:value 5}]
+    (if (= 1 (count ops)) 
         (-> result-map vals first)
        result-map)))
 

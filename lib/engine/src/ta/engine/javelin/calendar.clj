@@ -1,10 +1,11 @@
 (ns ta.engine.javelin.calendar
   (:require
-   [javelin.core-clj :refer [cell cell=]]))
+    [taoensso.timbre :refer [trace debug info warn error]]
+    [javelin.core-clj :refer [cell cell=]]))
 
 (defn create-calendar [env calendar]
   (assert (vector? calendar) "calendar needs to be [:market :interval]")
-  (println "creating calendar: " calendar)
+  (info "creating calendar: " calendar)
   (let [c (cell nil)] ; (nom/error “not started”)
     (swap! (:calendars env) assoc calendar c)
     c))
@@ -14,7 +15,7 @@
       (create-calendar env calendar)))
 
 (defn set-calendar! [env {:keys [calendar time]}]
-    ;(println "set-calendar! cal: " calendar " time: " time "data: " data)
+  (info "set-calendar! cal: " calendar " time: " time)
   (let [c (get-calendar env calendar)]
       ; we need to set time by calendar to env!!!!!
     (reset! c time)))

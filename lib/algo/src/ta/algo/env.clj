@@ -1,5 +1,6 @@
 (ns ta.algo.env
   (:require
+   [taoensso.timbre :refer [trace debug info warn error]]
    [modular.system]
    [ta.engine.javelin :refer [create-engine-javelin]]
    [ta.engine.ops :as ops]
@@ -22,7 +23,8 @@
     (:engine this))
   (add-algo [this spec]
     (let [e (get-engine this)
-          ops (spec/spec->ops this spec)]
+          ops (spec/spec->ops this spec)] 
+      (info "adding engine ops: " ops)
       (ops/add-ops e ops)))
   (remove-algo [this spec]
     nil))
