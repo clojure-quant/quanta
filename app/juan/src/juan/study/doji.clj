@@ -2,11 +2,12 @@
   (:require
    [tablecloth.api :as tc]
    [ta.trade.signal :refer [filter-signal]]
-   [ta.env.backtest :refer [backtest-algo]]))
+   [ta.algo.backtest :refer [backtest-algo]]))
 
 ;; 1. calculate algo
 
 (def algo-spec {:calendar [:us :d]
+                :type :trailing-bar
                 :algo  'juan.algo.doji/doji-signal
                 :asset "SPY"
                 :import :kibot
@@ -21,10 +22,10 @@
 
 algo-spec-doji
 
-(def dojis
-  (backtest-algo :bardb-dynamic algo-spec-doji))
+(def dojis (backtest-algo :bardb-dynamic algo-spec-doji))
 
-dojis
+
+@dojis
 ;; => :_unnamed [965 13]:
 ;;    
 ;;    |   :open | :epoch |                :date |  :close |        :volume |   :high |    :low | :ticks | :asset | :open-close | :open-close-over-low-high |    :volume-sma | :doji-signal |
@@ -54,7 +55,7 @@ dojis
 
 
 (filter-signal {:signal :long
-                :of :doji-signal} dojis)
+                :of :doji-signal} @dojis)
 ;; => :_unnamed [52 13]:
 ;;    
 ;;    |  :open | :epoch |                :date | :close |        :volume |    :high |     :low | :ticks | :asset | :open-close | :open-close-over-low-high |    :volume-sma | :doji-signal |
@@ -83,7 +84,7 @@ dojis
 ;;    | 467.49 |      0 | 2024-01-05T05:00:00Z | 467.96 | 6.44773710E+07 | 470.4400 | 466.4300 |      0 |    SPY |        0.47 |                0.11720698 | 5.65504932E+07 |        :long |
 
 (filter-signal {:signal :short
-                :of :doji-signal} dojis)
+                :of :doji-signal} @dojis)
 ;; => :_unnamed [212 13]:
 ;;    
 ;;    |  :open | :epoch |                :date | :close |        :volume |    :high |     :low | :ticks | :asset | :open-close | :open-close-over-low-high |    :volume-sma | :doji-signal |
@@ -113,6 +114,7 @@ dojis
 
 (def algo-spec-intraday {:calendar [:forex :m]
                          :algo  'juan.algo.doji/doji-signal
+                         :type :trailing-bar
                          :asset "EURUSD"
                          :import :kibot-http
                          :trailing-n 100000
@@ -126,42 +128,45 @@ dojis
 
 algo-spec-doji-forex-intraday
 
-(def dojis-forex-intraday
-  (backtest-algo :bardb-dynamic algo-spec-doji-forex-intraday))
+(def dojis-forex-intraday (backtest-algo :duckdb algo-spec-doji-forex-intraday))
+;(def dojis-forex-intraday (backtest-algo :bardb-dynamic algo-spec-doji-forex-intraday))
 
-dojis-forex-intraday
-;; => :_unnamed [577104 13]:
+(-> @dojis-forex-intraday
+   (tc/unique-by :date)
+   (tc/select-columns [:date :volume :close  ;bar-ds
+                       :open-close-over-low-high :volume-sma ; intermediary columns
+                       :doji-signal ; what we really are interested in
+                        ]))
+;; => :_unnamed [96517 6]:
 ;;    
-;;    |   :open | :epoch |                :date |  :close | :volume |   :high |    :low | :ticks | :asset | :open-close | :open-close-over-low-high |  :volume-sma | :doji-signal |
-;;    |--------:|-------:|----------------------|--------:|--------:|--------:|--------:|-------:|--------|------------:|--------------------------:|-------------:|--------------|
-;;    | 1.08506 |      0 | 2023-11-17T05:16:00Z | 1.08504 |    36.0 | 1.08511 | 1.08504 |      0 | EURUSD |    -0.00002 |               -0.28571429 |  36.00000000 |       :short |
-;;    | 1.08506 |      0 | 2023-11-17T05:16:00Z | 1.08504 |    36.0 | 1.08511 | 1.08504 |      0 | EURUSD |    -0.00002 |               -0.28571429 |  36.00000000 |       :short |
-;;    | 1.08506 |      0 | 2023-11-17T05:16:00Z | 1.08504 |    36.0 | 1.08511 | 1.08504 |      0 | EURUSD |    -0.00002 |               -0.28571429 |  36.00000000 |       :short |
-;;    | 1.08506 |      0 | 2023-11-17T05:16:00Z | 1.08504 |    36.0 | 1.08511 | 1.08504 |      0 | EURUSD |    -0.00002 |               -0.28571429 |  36.00000000 |       :short |
-;;    | 1.08506 |      0 | 2023-11-17T05:16:00Z | 1.08504 |    36.0 | 1.08511 | 1.08504 |      0 | EURUSD |    -0.00002 |               -0.28571429 |  36.00000000 |       :short |
-;;    | 1.08506 |      0 | 2023-11-17T05:16:00Z | 1.08504 |    36.0 | 1.08511 | 1.08504 |      0 | EURUSD |    -0.00002 |               -0.28571429 |  36.00000000 |       :short |
-;;    | 1.08505 |      0 | 2023-11-17T05:17:00Z | 1.08505 |    42.0 | 1.08506 | 1.08500 |      0 | EURUSD |     0.00000 |                0.00000000 |  36.20000000 |        :long |
-;;    | 1.08505 |      0 | 2023-11-17T05:17:00Z | 1.08505 |    42.0 | 1.08506 | 1.08500 |      0 | EURUSD |     0.00000 |                0.00000000 |  36.40000000 |        :long |
-;;    | 1.08505 |      0 | 2023-11-17T05:17:00Z | 1.08505 |    42.0 | 1.08506 | 1.08500 |      0 | EURUSD |     0.00000 |                0.00000000 |  36.60000000 |        :long |
-;;    | 1.08505 |      0 | 2023-11-17T05:17:00Z | 1.08505 |    42.0 | 1.08506 | 1.08500 |      0 | EURUSD |     0.00000 |                0.00000000 |  36.80000000 |        :long |
-;;    |     ... |    ... |                  ... |     ... |     ... |     ... |     ... |    ... |    ... |         ... |                       ... |          ... |          ... |
-;;    | 1.08145 |      0 | 2024-02-22T17:10:00Z | 1.08132 |   136.0 | 1.08145 | 1.08132 |      0 | EURUSD |    -0.00013 |               -1.00000000 | 149.06666667 |        :flat |
-;;    | 1.08145 |      0 | 2024-02-22T17:10:00Z | 1.08132 |   136.0 | 1.08145 | 1.08132 |      0 | EURUSD |    -0.00013 |               -1.00000000 | 148.10000000 |        :flat |
-;;    | 1.08145 |      0 | 2024-02-22T17:10:00Z | 1.08132 |   136.0 | 1.08145 | 1.08132 |      0 | EURUSD |    -0.00013 |               -1.00000000 | 147.13333333 |        :flat |
-;;    | 1.08145 |      0 | 2024-02-22T17:10:00Z | 1.08132 |   136.0 | 1.08145 | 1.08132 |      0 | EURUSD |    -0.00013 |               -1.00000000 | 146.16666667 |        :flat |
-;;    | 1.08145 |      0 | 2024-02-22T17:10:00Z | 1.08132 |   136.0 | 1.08145 | 1.08132 |      0 | EURUSD |    -0.00013 |               -1.00000000 | 145.20000000 |        :flat |
-;;    | 1.08132 |      0 | 2024-02-22T17:11:00Z | 1.08131 |   168.0 | 1.08134 | 1.08123 |      0 | EURUSD |    -0.00001 |               -0.09090909 | 144.26666667 |       :short |
-;;    | 1.08132 |      0 | 2024-02-22T17:11:00Z | 1.08131 |   168.0 | 1.08134 | 1.08123 |      0 | EURUSD |    -0.00001 |               -0.09090909 | 143.33333333 |       :short |
-;;    | 1.08132 |      0 | 2024-02-22T17:11:00Z | 1.08131 |   168.0 | 1.08134 | 1.08123 |      0 | EURUSD |    -0.00001 |               -0.09090909 | 142.40000000 |       :short |
-;;    | 1.08132 |      0 | 2024-02-22T17:11:00Z | 1.08131 |   168.0 | 1.08134 | 1.08123 |      0 | EURUSD |    -0.00001 |               -0.09090909 | 141.46666667 |       :short |
-;;    | 1.08132 |      0 | 2024-02-22T17:11:00Z | 1.08131 |   168.0 | 1.08134 | 1.08123 |      0 | EURUSD |    -0.00001 |               -0.09090909 | 140.53333333 |       :short |
-;;    | 1.08132 |      0 | 2024-02-22T17:11:00Z | 1.08131 |   168.0 | 1.08134 | 1.08123 |      0 | EURUSD |    -0.00001 |               -0.09090909 | 139.60000000 |       :short |
-
-
+;;    |                :date | :volume |  :close | :open-close-over-low-high | :volume-sma | :doji-signal |
+;;    |----------------------|--------:|--------:|--------------------------:|------------:|--------------|
+;;    | 2023-11-20T04:36:00Z |    37.0 | 1.09266 |                1.00000000 | 37.00000000 |        :flat |
+;;    | 2023-11-20T04:37:00Z |    42.0 | 1.09266 |                0.33333333 | 37.16666667 |        :flat |
+;;    | 2023-11-20T04:38:00Z |    44.0 | 1.09269 |                0.33333333 | 38.40000000 |        :flat |
+;;    | 2023-11-20T04:39:00Z |    15.0 | 1.09267 |               -1.00000000 | 39.06666667 |        :flat |
+;;    | 2023-11-20T04:40:00Z |    55.0 | 1.09258 |               -0.69230769 | 35.26666667 |       :short |
+;;    | 2023-11-20T04:41:00Z |    52.0 | 1.09266 |                0.60000000 | 39.36666667 |        :flat |
+;;    | 2023-11-20T04:42:00Z |    42.0 | 1.09268 |                0.20000000 | 41.53333333 |        :long |
+;;    | 2023-11-20T04:43:00Z |    22.0 | 1.09270 |                0.50000000 | 40.46666667 |        :flat |
+;;    | 2023-11-20T04:44:00Z |    39.0 | 1.09271 |                0.20000000 | 41.70000000 |        :flat |
+;;    | 2023-11-20T04:45:00Z |    39.0 | 1.09267 |               -0.75000000 | 39.30000000 |        :flat |
+;;    |                  ... |     ... |     ... |                       ... |         ... |          ... |
+;;    | 2024-02-23T21:49:00Z |    20.0 | 1.08208 |               -1.00000000 | 35.76666667 |        :flat |
+;;    | 2024-02-23T21:50:00Z |    45.0 | 1.08211 |                0.66666667 | 35.50000000 |        :flat |
+;;    | 2024-02-23T21:51:00Z |    61.0 | 1.08210 |               -0.50000000 | 35.93333333 |       :short |
+;;    | 2024-02-23T21:52:00Z |    15.0 | 1.08209 |               -0.20000000 | 35.76666667 |        :flat |
+;;    | 2024-02-23T21:53:00Z |    51.0 | 1.08219 |                0.81818182 | 36.80000000 |        :flat |
+;;    | 2024-02-23T21:54:00Z |   105.0 | 1.08209 |               -0.73333333 | 39.73333333 |       :short |
+;;    | 2024-02-23T21:55:00Z |    37.0 | 1.08208 |                0.50000000 | 39.30000000 |        :flat |
+;;    | 2024-02-23T21:56:00Z |    77.0 | 1.08195 |               -0.50000000 | 41.16666667 |       :short |
+;;    | 2024-02-23T21:57:00Z |    40.0 | 1.08196 |                0.33333333 | 41.80000000 |        :flat |
+;;    | 2024-02-23T21:58:00Z |    66.0 | 1.08185 |               -0.68421053 | 42.50000000 |       :short |
+;;    | 2024-02-23T21:59:00Z |    68.0 | 1.08175 |                0.38461538 | 43.96666667 |        :flat |
 
 (-> 
 (filter-signal {:signal :short
-                :of :doji-signal} dojis-forex-intraday)
+                :of :doji-signal} @dojis-forex-intraday)
 (tc/unique-by :date))
 ;; => :_unnamed [22073 13]:
 ;;    
@@ -191,7 +196,7 @@ dojis-forex-intraday
 ;;    | 1.08132 |      0 | 2024-02-22T17:11:00Z | 1.08131 |   168.0 | 1.08134 | 1.08123 |      0 | EURUSD |    -0.00001 |               -0.09090909 | 144.26666667 |       :short |
 
 (-> (filter-signal {:signal :long
-                    :of :doji-signal} dojis-forex-intraday)
+                    :of :doji-signal} @dojis-forex-intraday)
     (tc/unique-by :date))
 ;; => :_unnamed [8158 13]:
 ;;    
@@ -221,5 +226,5 @@ dojis-forex-intraday
 ;;    | 1.08141 |      0 | 2024-02-22T17:09:00Z | 1.08144 |   154.0 | 1.08148 | 1.08127 |      0 | EURUSD |     0.00003 |                0.14285714 | 148.66666667 |        :long |
 
 (-> (filter-signal {:signal :short
-                    :of :doji-signal} dojis-forex-intraday)
+                    :of :doji-signal} @dojis-forex-intraday)
     (tc/unique-by :date))

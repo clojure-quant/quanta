@@ -25,4 +25,3 @@
    ; gbp pairs
    {:fx "GBPJPY" :future "PJY" :pip 0.1}
    ])
-
