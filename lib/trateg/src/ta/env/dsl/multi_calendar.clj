@@ -2,8 +2,8 @@
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [manifold.stream :as s]
-   [ta.algo.parser.chain :refer [make-chain]]
-   [ta.algo.parser.multi :as parser]
+   [ta.algo.spec.parser.chain :refer [make-chain]]
+   [ta.algo.spec.parser.multi :as parser]
    [ta.env.live-bargenerator :as live-env]
    [ta.env.tools.stream-combiner :refer [stream-combiner]]))
 

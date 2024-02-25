@@ -5,7 +5,7 @@
    [ta.engine.javelin.cell :as j-cell]
    [ta.engine.javelin.calendar :as j-cal]))
 
-(defrecord env-javelin [calendars]
+(defrecord engine-javelin [calendars]
   eng
   ; cell
   (calendar-cell [this time-fn calendar]
@@ -26,4 +26,4 @@
 
 (defn create-engine-javelin []
   (let [calendars (atom {})]
-    (env-javelin. calendars)))
+    (engine-javelin. calendars)))

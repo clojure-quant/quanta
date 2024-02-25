@@ -1,11 +1,11 @@
-(ns ta.algo.type.time
+(ns ta.algo.spec.type.time
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
-   [ta.algo.parser.chain :refer [make-chain]]))
+   [ta.algo.spec.parser.chain :as chain]))
 
 (defn create-time-algo [{:keys [algo] :as spec}]
   (assert algo)
-  (let [algo-fn (make-chain algo)]
+  (let [algo-fn (chain/make-chain algo)]
     (fn [env spec time]
       (try
         (algo-fn env spec time)

@@ -1,27 +1,29 @@
-(ns ta.env.backtest
+(ns ta.algo.env.backtest ;   ta.env.backtest
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
+   [modular.system]
    [ta.calendar.core :as cal]
    [ta.calendar.combined :refer [combined-event-seq]]
-   [ta.engine.protocol :as env]
-   [ta.engine.javelin :refer [create-env]]))
+   [ta.engine.protocol :as eng]
+   [ta.algo.env :as algo-env]))
 
-(defn run-backtest [e w]
-  (let [cals (env/active-calendars e)
-        event-seq (combined-event-seq w cals)]
-    (info "backtesting window: " w " ..")
-    (doall (map #(env/set-calendar! e %) event-seq))
-    (info "backtesting window: " w "finished!")
+(defn run-backtest [env window]
+  (let [engine (algo-env/get-engine env)
+        cals (eng/active-calendars engine)
+        event-seq (combined-event-seq window cals)]
+    (info "backtesting window: " window " ..")
+    (doall (map #(eng/set-calendar! engine %) event-seq))
+    (info "backtesting window: " window "finished!")
     :backtest-finished))
-
 
 (defn backtest-algo
   "run a single bar-strategy with data powered by bar-db-kw.
    returns the result of the strategy."
   [bar-db-kw algo-spec]
-  (let [env (create-env bar-db-kw)
+  (let [bar-db  (modular.system/system bar-db-kw)
+        env (algo-env/create-env-javelin bar-db)
         calendar (:calendar algo-spec)
-        strategy (env/add-algo env algo-spec)
+        strategy (algo-env/add-algo env algo-spec)
         window (cal/trailing-range calendar 1)]
     (run-backtest env window)
     @strategy))

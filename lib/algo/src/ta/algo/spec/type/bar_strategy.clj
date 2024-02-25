@@ -1,8 +1,8 @@
-(ns ta.algo.type.bar-strategy
+(ns ta.algo.spec.type.bar-strategy
   (:require 
     [tablecloth.api :as tc]
     [taoensso.timbre :refer [trace debug info warn error]]
-    [ta.algo.parser.chain :refer [make-chain]]
+    [ta.algo.spec.parser.chain :as chain]
     [ta.algo.env.trailing-window :refer [create-trailing-bar-loader]]))
 
 (defn run-algo-safe [algo-fn env spec ds-bars]
@@ -17,7 +17,7 @@
   (assert trailing-n)
   (assert asset)
   (assert algo)
-  (let [algo-fn (make-chain algo)
+  (let [algo-fn (chain/make-chain algo)
         load-fn (create-trailing-bar-loader spec)]
      (assert algo-fn)
      (fn [env _spec time]

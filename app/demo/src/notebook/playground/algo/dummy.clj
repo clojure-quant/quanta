@@ -1,11 +1,9 @@
 (ns notebook.playground.algo.dummy
   (:require
    [ta.calendar.core :as cal]
-   [ta.algo.create :as a]
-   [ta.engine.protocol :as env]
-   [ta.engine.javelin :refer [create-env]]
-   [ta.env.backtest :refer [backtest-algo run-backtest]]
-   ))
+   [ta.engine.protocol :as eng]
+   [ta.algo.env :as algo-env]
+   [ta.algo.env.backtest :refer [backtest-algo run-backtest]]))
 
 ;; 1. time-based algo spec
 
@@ -17,15 +15,35 @@
            :data 42
            :algo 'notebook.playground.algo.dummy/secret})
 
-;; 2. test algo calculation
+(def e (algo-env/create-env-javelin nil))
 
-(def algo (a/create-algo spec))
+(def algo (algo-env/add-algo e spec))
 
 algo
 
-(algo nil {:data :v42} :now)
+;; 2. test algo calculation
 
-;; 3. backtest with simple syntax
+(def engine (algo-env/get-engine e))
+
+engine
+
+(eng/set-calendar! engine {:calendar [:us :d] :time :evening})
+
+algo
+@algo
+
+;; 3. backtest with complex syntax
+
+(def window (cal/trailing-range [:us :d] 1))
+
+e
+(run-backtest e window)
+
+@algo
+;; => "the spec is: {:type :time, :calendar [:us :d], :data 42, :algo notebook.playground.algo.dummy/secret} (calculated: 2024-02-26T17:00-05:00[America/New_York])"
+
+
+;; 4. backtest with simple syntax
 
 (def result
   (backtest-algo :duckdb spec))
@@ -33,20 +51,22 @@ algo
 result
 ;; => "the spec is: {:type :time, :calendar [:us :d], :data 42, :algo notebook.playground.algo.dummy/secret} (calculated: 2024-02-23T17:00-05:00[America/New_York])"
 
+;; 5. backtest with formulas.
 
-;; 4. backtest with compex syntax
+(defn combine [_env spec & args]
+{:spec spec :args args})
+  
+(def combined-spec 
+  [:a {:calendar [:us :h] :algo 'notebook.playground.algo.dummy/secret :type :time}
+   :b {:calendar [:us :m] :algo 'notebook.playground.algo.dummy/combine :type :time}
+   ;:c {:formula [:a :b] :algo 'notebook.playground.algo.dummy/combine :type :time}
+   ])
 
-(def env (create-env :duckdb))
+(require '[ta.algo.spec :refer [spec->ops]])
+(spec->ops e combined-spec)
 
-(def window (cal/trailing-range [:us :d] 1))
 
-window
 
-(def strategy (env/add-algo env spec))
+(def combined-result
+  (backtest-algo :duckdb combined-spec))
 
-strategy
-
-(run-backtest env window)
-
-@strategy
-;; => "the spec is: {:type :time, :calendar [:us :d], :data 42, :algo notebook.playground.algo.dummy/secret} (calculated: 2024-02-23T17:00-05:00[America/New_York])"

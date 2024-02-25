@@ -1,4 +1,4 @@
-(ns ta.algo.parser.multi
+(ns ta.algo.spec.parser.multi
   (:require
    [ta.algo.parser.chain :refer [make-chain]]))
 

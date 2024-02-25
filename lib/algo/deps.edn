@@ -1,6 +1,8 @@
 {:paths ["src"]
  :deps
  {org.clojure/clojure    {:mvn/version "1.11.1"}
+  ta/engine {:local/root "../engine" :deps/manifest :deps}
+  ta/env {:local/root "../env" :deps/manifest :deps}
  }
  :aliases
  {:test {:extra-paths ["test"]
