@@ -25,7 +25,9 @@
   ta/indicator {:local/root "../indicator" :deps/manifest :deps}
   ta/engine {:local/root "../engine" :deps/manifest :deps}
   ta/env {:local/root "../env" :deps/manifest :deps}
-  ta/algo {:local/root "../algo" :deps/manifest :deps}}
+  ta/algo {:local/root "../algo" :deps/manifest :deps}
+  ta/viz {:local/root "../viz" :deps/manifest :deps}
+  }
  :aliases
  {:garamond
   {:main-opts ["-m" "garamond.main"]
