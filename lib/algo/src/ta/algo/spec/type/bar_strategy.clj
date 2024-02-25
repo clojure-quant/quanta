@@ -3,7 +3,7 @@
     [tablecloth.api :as tc]
     [taoensso.timbre :refer [trace debug info warn error]]
     [ta.algo.spec.parser.chain :as chain]
-    [ta.algo.env.trailing-window :refer [create-trailing-bar-loader]]))
+    [ta.algo.env.core :refer [get-trailing-bars]]))
 
 (defn run-algo-safe [algo-fn env spec ds-bars]
   (try
@@ -12,6 +12,15 @@
       (error "exception in running algo.")
       (error "algo exception: " ex)
       {:error "Exception!"})))
+
+(defn create-trailing-bar-loader [{:keys [asset calendar trailing-n] :as _spec}]
+  ; fail once, when required parameters are missing
+  (assert trailing-n)
+  (assert asset)
+  (assert calendar)
+  (fn [env spec time]
+    (when time
+      (get-trailing-bars env spec time))))
 
 (defn create-trailing-barstrategy [{:keys [trailing-n asset algo] :as spec}]
   (assert trailing-n)

@@ -1,11 +1,12 @@
-(ns ta.algo.env.backtest ;   ta.env.backtest
+(ns ta.algo.backtest ;   ta.env.backtest
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [modular.system]
    [ta.calendar.core :as cal]
    [ta.calendar.combined :refer [combined-event-seq]]
    [ta.engine.protocol :as eng]
-   [ta.algo.env :as algo-env]))
+   [ta.algo.env.protocol :as algo-env]
+   [ta.algo.env :as algo-env-impl]))
 
 (defn run-backtest [env window]
   (let [engine (algo-env/get-engine env)
@@ -21,7 +22,7 @@
    returns the result of the strategy."
   [bar-db-kw algo-spec]
   (let [bar-db  (modular.system/system bar-db-kw)
-        env (algo-env/create-env-javelin bar-db)
+        env (algo-env-impl/create-env-javelin bar-db)
         strategy (algo-env/add-algo env algo-spec)
         calendar [:us :d]
         window (cal/trailing-range calendar 1)]

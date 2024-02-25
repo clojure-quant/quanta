@@ -1,7 +1,7 @@
 (ns juan.study.daily
   (:require
    [tablecloth.api :as tc]
-   [ta.env.backtest :refer [backtest-algo]]))
+   [ta.algo.env.backtest :refer [backtest-algo]]))
 
 ;; 1. calculate algo
 

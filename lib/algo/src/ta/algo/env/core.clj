@@ -1,20 +1,23 @@
 (ns ta.algo.env.core
   (:require
+   [tick.core :as t]
    [ta.calendar.core :refer [trailing-window get-bar-window]]
    [ta.db.bars.protocol :as bardb]
    [ta.db.bars.aligned :as aligned]
-   [ta.algo.env :as algo-env]
+   [ta.algo.env.protocol :as algo-env]
    [ta.algo.spec :as s]))
 
 (defn get-bars
   "returns bars for asset/calendar/window"
-  [env {:keys [asset calendar] :as opts} window]
-  (let [bar-db (algo-env/get-engine env)]
+  [env spec window]
+  (let [calendar (s/get-calendar spec)
+        asset (s/get-asset spec)
+        bar-db (algo-env/get-engine env)]
     (assert bar-db "environment does not provide bar-db!")
     (assert asset "cannot get-bars for unknown asset!")
     (assert calendar "cannot get-bars for unknown calendar!")
     (assert window "cannot get-bars for unknown window!")
-    (bardb/get-bars bar-db opts window)))
+    (bardb/get-bars bar-db spec window)))
 
 (defn get-bars-aligned-filled
   "returns bars for asset/calendar/window"
@@ -42,13 +45,21 @@
     (assert calendar-time "environment does not provide calendar-time!")
     (get @calendar-time calendar)))
 
+
+(defn calendar-seq->window [calendar-seq]
+  (let [dend  (first calendar-seq)
+        dstart (last calendar-seq)
+        dend-instant (t/instant dend)
+        dstart-instant (t/instant dstart)]
+    {:start dstart-instant
+     :end dend-instant}))
+
 (defn get-trailing-bars [env spec bar-close-date]
-  (let [calendar (s/get-calendar spec)
-        asset (s/get-asset spec)
-        n (s/get-trailing-n spec)
-        window (trailing-window calendar n bar-close-date)]
-    (get-bars env {:asset asset
-                   :calendar calendar} window)))
+  (let [trailing-n (s/get-trailing-n spec)
+        calendar (s/get-calendar spec)
+        calendar-seq (trailing-window calendar trailing-n bar-close-date)
+        window (calendar-seq->window calendar-seq)]
+    (get-bars env spec window)))
 
 (defn get-bars-lower-timeframe [env spec lower-timeframe]
   (let [calendar (s/get-calendar spec)
