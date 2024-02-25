@@ -26,7 +26,7 @@
       formula
       {:formula formula :formula-fn (->> spec create-algo (wrap-env env spec))}
       value
-      {:value 27})))
+      {:value value})))
 
 
 (defn spec->ops [env spec]
