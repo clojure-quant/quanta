@@ -35,9 +35,10 @@
             ; doji
             :max-open-close-over-low-high 0.3
             :volume-sma-n 30
-            ; pivots
-            :step 10.0
-            :percentile 70}
+            ; volume-pivots (currently not added)
+            ;:step 10.0
+            ;:percentile 70
+            }
    :signal {:formula [:day :minute]
             :spike-atr-prct-min 0.5
             :pivot-max-diff 0.001
@@ -141,6 +142,7 @@
 (require '[ta.helper.ds :refer [ds->str]])
 
 (->> (tc/select-columns @(:signal combined) [:date :daily-close :daily-atr :daily-pivotnr
+                                             :daily-date
                                             :close :spike :doji-signal
                                             :long :short])
     ds->str
@@ -151,4 +153,86 @@
      ds->str
      (spit "/tmp/juan-daily.txt"))
 
+(-> @(:day combined) tc/info
+    (tc/select-columns [:col-name  :datatype :n-valid :n-missing]))
+;; => :_unnamed: descriptive-stats [13 4]:
+;;    
+;;    |     :col-name |       :datatype | :n-valid | :n-missing |
+;;    |---------------|-----------------|---------:|-----------:|
+;;    |         :open |        :float64 |       79 |          0 |
+;;    |        :epoch |          :int64 |       79 |          0 |
+;;    |         :date | :packed-instant |       79 |          0 |
+;;    |        :close |        :float64 |       79 |          0 |
+;;    |       :volume |        :float64 |       79 |          0 |
+;;    |         :high |        :float64 |       79 |          0 |
+;;    |          :low |        :float64 |       79 |          0 |
+;;    |        :ticks |          :int64 |       79 |          0 |
+;;    |        :asset |         :string |       79 |          0 |
+;;    |          :atr |        :float64 |       79 |          0 |
+;;    |      :close-1 |        :float64 |       79 |          0 |
+;;    | :pivots-price |        :dataset |       79 |          0 |
+;;    |     :ppivotnr |          :int64 |       79 |          0 |
 
+
+(-> @(:minute combined) tc/info
+    (tc/select-columns [:col-name  :datatype :n-valid :n-missing]))
+;; => :_unnamed: descriptive-stats [13 4]:
+;;    
+;;    |                 :col-name |       :datatype | :n-valid | :n-missing |
+;;    |---------------------------|-----------------|---------:|-----------:|
+;;    |                     :open |        :float64 |    10008 |          0 |
+;;    |                    :epoch |          :int64 |    10008 |          0 |
+;;    |                     :date | :packed-instant |    10008 |          0 |
+;;    |                    :close |        :float64 |    10008 |          0 |
+;;    |                   :volume |        :float64 |    10008 |          0 |
+;;    |                     :high |        :float64 |    10008 |          0 |
+;;    |                      :low |        :float64 |    10008 |          0 |
+;;    |                    :ticks |          :int64 |    10008 |          0 |
+;;    |                    :asset |         :string |    10008 |          0 |
+;;    |               :open-close |        :float64 |    10008 |          0 |
+;;    | :open-close-over-low-high |        :float64 |     9919 |         89 |
+;;    |               :volume-sma |        :float64 |    10008 |          0 |
+;;    |              :doji-signal |        :keyword |    10008 |          0 |
+
+
+(-> @(:signal combined) tc/info
+    (tc/select-columns [:col-name  :datatype :n-valid :n-missing]))
+;; => :_unnamed: descriptive-stats [20 4]:
+;;    
+;;    |                 :col-name |       :datatype | :n-valid | :n-missing |
+;;    |---------------------------|-----------------|---------:|-----------:|
+;;    |                     :open |        :float64 |    10008 |          0 |
+;;    |                    :epoch |          :int64 |    10008 |          0 |
+;;    |                     :date | :packed-instant |    10008 |          0 |
+;;    |                    :close |        :float64 |    10008 |          0 |
+;;    |                   :volume |        :float64 |    10008 |          0 |
+;;    |                     :high |        :float64 |    10008 |          0 |
+;;    |                      :low |        :float64 |    10008 |          0 |
+;;    |                    :ticks |          :int64 |    10008 |          0 |
+;;    |                    :asset |         :string |    10008 |          0 |
+;;    |               :open-close |        :float64 |    10008 |          0 |
+;;    | :open-close-over-low-high |        :float64 |     9919 |         89 |
+;;    |               :volume-sma |        :float64 |    10008 |          0 |
+;;    |              :doji-signal |        :keyword |    10008 |          0 |
+;;    |                :daily-atr |        :float64 |    10008 |          0 |
+;;    |              :daily-close |        :float64 |     3178 |       6830 |
+;;    |             :daily-pivots |        :dataset |     2990 |       7018 |
+;;    |            :daily-pivotnr |          :int64 |    10008 |          0 |
+;;    |                    :spike |        :keyword |    10008 |          0 |
+;;    |                     :long |        :keyword |      606 |       9402 |
+;;    |                    :short |        :keyword |      967 |       9041 |
+
+
+;6 first
+;0 2024-02-13T23:34:00Z
+;6 2024-02-14T10:02:00Z
+;0 2024-02-14T12:05:00Z
+;6; 2024-02-14T21:10:00Z
+;0; 2024-02-14T22:50:00Z 
+;6 2024-02-15T08:20:00Z
+;0 2024-02-15T09:31:00Z
+;6 2024-02-16T06:36:00Z
+
+;daily close:
+;| 2024-02-22T21:41:00Z |    
+;| 2024-02-21T05:00:00Z | 0.005201 | 1.08189 |         6 |

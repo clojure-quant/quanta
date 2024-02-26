@@ -55,6 +55,33 @@
   
   (link-bars hour-ds daily-ds :a 0)
   ;; => [0 0 1 1 1 2]
+  (link-bars hour-ds daily-ds :date (t/date-time "2000-01-01T15:00:00"))
+
+  (-> daily-ds tc/info)
+
+   (def hour2-ds (tc/dataset [{:date (t/date-time "2024-01-02T09:00:00")} ; 1
+                            {:date (t/date-time "2024-01-02T16:00:00")} ; 1
+                            {:date (t/date-time "2024-01-02T17:00:00")} ; 2
+                            ]))
+
+   (link-bars hour2-ds daily-ds :date (t/date-time "2000-01-01T15:00:00"))
+
+    (def daily-inst-ds (tc/dataset [{:date (-> (t/date-time "2024-01-01T17:00:00") t/inst) :a 1}
+                                    {:date (-> (t/date-time "2024-01-02T17:00:00") t/inst) :a 2}
+                                   {:date (-> (t/date-time "2024-01-03T17:00:00")t/inst)  :a 3}]))
+
+ (def hour-inst-ds (tc/dataset [{:date (->(t/date-time "2024-01-01T15:00:00")t/inst)} ; 0
+                          {:date (-> (t/date-time "2024-01-01T16:00:00") t/inst)} ; 0
+                          {:date (-> (t/date-time "2024-01-01T17:00:00") t/inst)} ; 1
+                          {:date (-> (t/date-time "2024-01-02T09:00:00") t/inst)} ; 1
+                          {:date (-> (t/date-time "2024-01-02T16:00:00") t/inst)} ; 1
+                          {:date (-> (t/date-time "2024-01-02T17:00:00") t/inst)} ; 2
+                          ]))
+
+(link-bars hour-inst-ds daily-inst-ds :date (t/date-time "2000-01-01T15:00:00"))
+
+
+
 
 
  ; 
