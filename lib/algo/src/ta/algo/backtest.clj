@@ -2,6 +2,7 @@
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [modular.system]
+   [tick.core :as t]
    [ta.calendar.core :as cal]
    [ta.calendar.combined :refer [combined-event-seq]]
    [ta.engine.protocol :as eng]
@@ -27,6 +28,29 @@
         calendar [:us :d]
         window (cal/trailing-range calendar 1)]
     (run-backtest env window)
+    strategy))
+
+(defn backtest-algo-date
+  "run a single bar-strategy with data powered by bar-db-kw
+   as of date dt. returns the result of the strategy."
+  [bar-db-kw algo-spec dt]
+  (let [;dt (-> (t/now)
+        ;       (t/in "UTC"))
+        bar-db  (modular.system/system bar-db-kw)
+        env (algo-env-impl/create-env-javelin bar-db)
+        strategy (algo-env/add-algo env algo-spec)
+        engine (algo-env/get-engine env)
+        calendars (eng/active-calendars engine)
+        prior-dates (map (fn [[calendar-kw interval-kw]]
+                      (cal/prior-close calendar-kw interval-kw dt))
+                       calendars)
+        ;prior-dates-sorted (sort prior-dates)
+        event-seq (map (fn [cal dt]
+                        {:calendar cal :time dt}
+                       ) calendars prior-dates)
+        ]
+    (info "event-seq: " event-seq)
+    (doall (map #(eng/set-calendar! engine %) event-seq))
     strategy))
 
 

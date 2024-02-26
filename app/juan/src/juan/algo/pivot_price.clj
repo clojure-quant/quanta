@@ -1,6 +1,7 @@
 (ns juan.algo.pivot-price
   (:require
    [tablecloth.api :as tc]
+   [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as fun]
    [tech.v3.dataset.rolling :refer [rolling]]))
 
@@ -19,9 +20,17 @@
                                  :reducer pivots-price-one
                                  :datatype :object}})))
 
+(defn pivot-count [pivots]
+  (dtype/emap tc/row-count :int64 pivots))
+  
+
 
 (defn add-pivots-price [env opts bar-ds]
-  (tc/add-column bar-ds :pivots-price (pivots-price env opts bar-ds)))
+  (let [pivots (pivots-price env opts bar-ds)]
+    (tc/add-columns bar-ds {:pivots-price pivots
+                            :ppivotnr (pivot-count pivots)})  
+    )
+  )
 
 
 (comment 

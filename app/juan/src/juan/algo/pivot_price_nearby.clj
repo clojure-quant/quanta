@@ -35,20 +35,22 @@
 
 
 
-(defn nearby-pivots [{:keys [max-diff]} pivot-ds current-price]
-  (let [pivot-diff-ds (add-difference-pivot pivot-ds current-price)
-        pivot-nearby-ds (neareby-pivots max-diff pivot-diff-ds)
-        long-pivot (nearest-long-pivot pivot-nearby-ds)
-        short-pivot (nearest-short-pivot pivot-nearby-ds)]
-    {:pivot-long (when long-pivot 
-                   (-> long-pivot :name first))
-     :pivot-short (when short-pivot
-                   (-> short-pivot :name first))}))
+(defn nearby-pivots [max-diff pivot-ds current-price]
+  (if pivot-ds
+    (let [pivot-diff-ds (add-difference-pivot pivot-ds current-price)
+          pivot-nearby-ds (neareby-pivots max-diff pivot-diff-ds)
+          long-pivot (nearest-long-pivot pivot-nearby-ds)
+          short-pivot (nearest-short-pivot pivot-nearby-ds)]
+      {:pivot-long (when long-pivot
+                     (-> long-pivot :name first))
+       :pivot-short (when short-pivot
+                      (-> short-pivot :name first))})
+    {:pivot-long nil
+     :pivot-short nil}))
+
 
 
 (comment
-
-  (require '[tablecloth.api :as tc])
   (def pivot-ds (tc/dataset [{:name :p0-low :price 0.98544973}
                              {:name :p0-high :price 1.98544973}
                              {:name :p1-low  :price 0.96355819}
