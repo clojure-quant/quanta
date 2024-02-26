@@ -1,5 +1,6 @@
 (ns ta.algo.ds
   (:require
+   [tech.v3.datatype :as dtype]
    [tablecloth.api :as tc]))
 
 (defn has-col? [ds col-kw]
@@ -39,6 +40,12 @@
   ([_env _opts ds-position]
    (get-current-position ds-position)))
 
+(defn all-positions-agree-one
+  [& positions]
+   (if (apply = positions)
+     (first positions)
+     :flat))
+
 (defn all-positions-agree
   ([positions]
    (if (apply = positions)
@@ -47,17 +54,20 @@
   ([_env _opts positions]
    (all-positions-agree positions)))
 
+(defn all-positions-agree-ds [position-vecs]
+  (apply dtype/emap all-positions-agree-one :keyword position-vecs)
+  )
 
 (comment
   (def ds-position-a
     (tc/dataset
-     {:date [1 2 3]
-      :position [:flat :long :short]}))
+     {:date [1 2 3 4]
+      :position [:flat :long :short :long]}))
 
   (def ds-position-b
     (tc/dataset
-     {:date [1 2 3]
-      :position [:flat :long :long]}))
+     {:date [1 2 3 4]
+      :position [:flat :long :long :long]}))
 
   (tc/get-entry ds-position-a :position 2)
 
@@ -76,6 +86,13 @@
   (->> [ds-position-a ds-position-a]
        (get-current-positions)
        (all-positions-agree))
+   
+  
+  (all-positions-agree-ds 
+   [(:position ds-position-a) 
+    (:position ds-position-b) ]) 
+   
+  
   ;; => :short
 
   (->> [ds-position-b ds-position-b]

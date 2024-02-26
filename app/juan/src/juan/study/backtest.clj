@@ -79,10 +79,11 @@
 ;;    | 2024-02-22T05:00:00Z | 0.006380 | 1.08226 |         6 |
 ;;    | 2024-02-23T05:00:00Z | 0.005715 | 1.08175 |         6 |
 
-(tc/select-columns @(:minute combined) [:date :close :doji-signal])
+(tc/select-columns @(:minute combined) 
+                   [:date :close :doji])
 ;; => :_unnamed [9620 3]:
 ;;    
-;;    |                :date |  :close | :doji-signal |
+;;    |                :date |  :close | :doji        |
 ;;    |----------------------|--------:|--------------|
 ;;    | 2024-02-15T05:22:00Z | 1.07278 |        :flat |
 ;;    | 2024-02-15T05:23:00Z | 1.07283 |        :flat |
@@ -109,41 +110,42 @@
 
 
 (tc/select-columns @(:signal combined) [:date :daily-close :daily-atr 
-                                        :close :spike :doji-signal
+                                        :close :spike :doji :spike-doji
                                         :long :short])
-;; => :_unnamed [10008 8]:
+;; => :_unnamed [10008 9]:
 ;;    
-;;    |                :date | :daily-close | :daily-atr |  :close | :spike | :doji-signal |    :long |   :short |
-;;    |----------------------|-------------:|-----------:|--------:|--------|--------------|----------|----------|
-;;    | 2024-02-13T22:51:00Z |      1.07172 |   0.012298 | 1.07101 |  :long |        :flat |          |  :p0-low |
-;;    | 2024-02-13T22:52:00Z |      1.06997 |   0.011557 | 1.07101 | :short |        :flat |          |  :p1-low |
-;;    | 2024-02-13T22:55:00Z |      1.07090 |   0.010803 | 1.07100 | :short |        :flat |          | :p0-high |
-;;    | 2024-02-13T22:56:00Z |      1.06673 |   0.010135 | 1.07101 | :short |        :flat |          | :p1-high |
-;;    | 2024-02-13T22:57:00Z |      1.06842 |   0.009180 | 1.07103 | :short |        :flat |          |          |
-;;    | 2024-02-13T22:58:00Z |      1.06986 |   0.008270 | 1.07107 | :short |        :flat | :p0-high |          |
-;;    | 2024-02-13T22:59:00Z |      1.08787 |   0.008894 | 1.07106 |  :long |        :flat | :p1-high |          |
-;;    | 2024-02-13T23:00:00Z |      1.08464 |   0.008115 | 1.07081 |  :long |       :short |          |          |
-;;    | 2024-02-13T23:01:00Z |      1.08519 |   0.007450 | 1.07085 |  :long |        :flat |          |          |
-;;    | 2024-02-13T23:02:00Z |      1.09088 |   0.007021 | 1.07088 |  :long |        :flat |          |          |
-;;    |                  ... |          ... |        ... |     ... |    ... |          ... |      ... |      ... |
-;;    | 2024-02-22T21:49:00Z |      1.08189 |   0.005201 | 1.08230 | :short |        :flat |          | :p0-high |
-;;    | 2024-02-22T21:50:00Z |      1.08189 |   0.005201 | 1.08229 | :short |       :short |          | :p0-high |
-;;    | 2024-02-22T21:51:00Z |      1.08189 |   0.005201 | 1.08229 | :short |        :flat |          | :p0-high |
-;;    | 2024-02-22T21:52:00Z |      1.08189 |   0.005201 | 1.08231 | :short |        :long |          | :p0-high |
-;;    | 2024-02-22T21:53:00Z |      1.08189 |   0.005201 | 1.08234 | :short |        :flat |          | :p0-high |
-;;    | 2024-02-22T21:54:00Z |      1.08189 |   0.005201 | 1.08234 | :short |        :flat |          | :p0-high |
-;;    | 2024-02-22T21:55:00Z |      1.08189 |   0.005201 | 1.08229 | :short |       :short |          | :p0-high |
-;;    | 2024-02-22T21:56:00Z |      1.08189 |   0.005201 | 1.08222 | :short |       :short |          | :p0-high |
-;;    | 2024-02-22T21:57:00Z |      1.08189 |   0.005201 | 1.08220 | :short |       :short |          | :p0-high |
-;;    | 2024-02-22T21:58:00Z |      1.08189 |   0.005201 | 1.08229 | :short |        :flat |          | :p0-high |
-;;    | 2024-02-22T21:59:00Z |      1.08189 |   0.005201 | 1.08226 | :short |       :short |          | :p0-high |
+;;    |                :date | :daily-close | :daily-atr |  :close | :spike |  :doji | :spike-doji |    :long |   :short |
+;;    |----------------------|-------------:|-----------:|--------:|--------|--------|-------------|----------|----------|
+;;    | 2024-02-13T22:51:00Z |      1.07172 |   0.012298 | 1.07101 |  :long |  :flat |       :flat |          |  :p0-low |
+;;    | 2024-02-13T22:52:00Z |      1.06997 |   0.011557 | 1.07101 | :short |  :flat |       :flat |          |  :p1-low |
+;;    | 2024-02-13T22:55:00Z |      1.07090 |   0.010803 | 1.07100 | :short |  :flat |       :flat |          | :p0-high |
+;;    | 2024-02-13T22:56:00Z |      1.06673 |   0.010135 | 1.07101 | :short |  :flat |       :flat |          | :p1-high |
+;;    | 2024-02-13T22:57:00Z |      1.06842 |   0.009180 | 1.07103 | :short |  :flat |       :flat |          |          |
+;;    | 2024-02-13T22:58:00Z |      1.06986 |   0.008270 | 1.07107 | :short |  :flat |       :flat | :p0-high |          |
+;;    | 2024-02-13T22:59:00Z |      1.08787 |   0.008894 | 1.07106 |  :long |  :flat |       :flat | :p1-high |          |
+;;    | 2024-02-13T23:00:00Z |      1.08464 |   0.008115 | 1.07081 |  :long | :short |       :flat |          |          |
+;;    | 2024-02-13T23:01:00Z |      1.08519 |   0.007450 | 1.07085 |  :long |  :flat |       :flat |          |          |
+;;    | 2024-02-13T23:02:00Z |      1.09088 |   0.007021 | 1.07088 |  :long |  :flat |       :flat |          |          |
+;;    |                  ... |          ... |        ... |     ... |    ... |    ... |         ... |      ... |      ... |
+;;    | 2024-02-22T21:49:00Z |      1.08189 |   0.005201 | 1.08230 | :short |  :flat |       :flat |          | :p0-high |
+;;    | 2024-02-22T21:50:00Z |      1.08189 |   0.005201 | 1.08229 | :short | :short |      :short |          | :p0-high |
+;;    | 2024-02-22T21:51:00Z |      1.08189 |   0.005201 | 1.08229 | :short |  :flat |       :flat |          | :p0-high |
+;;    | 2024-02-22T21:52:00Z |      1.08189 |   0.005201 | 1.08231 | :short |  :long |       :flat |          | :p0-high |
+;;    | 2024-02-22T21:53:00Z |      1.08189 |   0.005201 | 1.08234 | :short |  :flat |       :flat |          | :p0-high |
+;;    | 2024-02-22T21:54:00Z |      1.08189 |   0.005201 | 1.08234 | :short |  :flat |       :flat |          | :p0-high |
+;;    | 2024-02-22T21:55:00Z |      1.08189 |   0.005201 | 1.08229 | :short | :short |      :short |          | :p0-high |
+;;    | 2024-02-22T21:56:00Z |      1.08189 |   0.005201 | 1.08222 | :short | :short |      :short |          | :p0-high |
+;;    | 2024-02-22T21:57:00Z |      1.08189 |   0.005201 | 1.08220 | :short | :short |      :short |          | :p0-high |
+;;    | 2024-02-22T21:58:00Z |      1.08189 |   0.005201 | 1.08229 | :short |  :flat |       :flat |          | :p0-high |
+;;    | 2024-02-22T21:59:00Z |      1.08189 |   0.005201 | 1.08226 | :short | :short |      :short |          | :p0-high |
+
 
 
 (require '[ta.helper.ds :refer [ds->str]])
 
-(->> (tc/select-columns @(:signal combined) [:date :daily-close :daily-atr :daily-pivotnr
-                                             :daily-date
-                                            :close :spike :doji-signal
+(->> (tc/select-columns @(:signal combined) [:date :daily-close :daily-atr ;:daily-pivotnr
+                                             ;:daily-date
+                                            :close :spike :doji :spike-doji
                                             :long :short])
     ds->str
     (spit "/tmp/juan.txt"))
@@ -191,7 +193,7 @@
 ;;    |               :open-close |        :float64 |    10008 |          0 |
 ;;    | :open-close-over-low-high |        :float64 |     9919 |         89 |
 ;;    |               :volume-sma |        :float64 |    10008 |          0 |
-;;    |              :doji-signal |        :keyword |    10008 |          0 |
+;;    |               :doji       |        :keyword |    10008 |          0 |
 
 
 (-> @(:signal combined) tc/info
@@ -212,7 +214,7 @@
 ;;    |               :open-close |        :float64 |    10008 |          0 |
 ;;    | :open-close-over-low-high |        :float64 |     9919 |         89 |
 ;;    |               :volume-sma |        :float64 |    10008 |          0 |
-;;    |              :doji-signal |        :keyword |    10008 |          0 |
+;;    |              :doji        |        :keyword |    10008 |          0 |
 ;;    |                :daily-atr |        :float64 |    10008 |          0 |
 ;;    |              :daily-close |        :float64 |    10008 |          0 |
 ;;    |             :daily-pivots |        :dataset |    10008 |          0 |

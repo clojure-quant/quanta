@@ -5,6 +5,7 @@
    [tablecloth.api :as tc]
    [tech.v3.datatype :as dtype]
    [ta.calendar.link :refer [link-bars link-bars2]]
+   [ta.algo.ds :refer [all-positions-agree-ds]]
    [juan.algo.spike :refer [spike-signal]]
    [juan.algo.pivot-price-nearby :refer [nearby-pivots]]))
 
@@ -57,8 +58,11 @@
                                                  :daily-pivotnr daily-pivotnr
                                                  ;:daily-date daily-date
                                                  })
-        intraday-spike (spike-signal spec combined-ds)]
+        intraday-spike (spike-signal spec combined-ds)
+        spike-doji (all-positions-agree-ds [(:doji intraday-ds) intraday-spike])
+        ]
     (tc/add-columns combined-ds {:spike intraday-spike
+                                 :spike-doji spike-doji
                                  :long (long-pivots pivot-max-diff daily-pivots (:close intraday-ds))
                                  :short (short-pivots pivot-max-diff daily-pivots (:close intraday-ds))})))
 

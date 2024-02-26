@@ -64,7 +64,7 @@
                     {:open-close open-close
                      :open-close-over-low-high open-close-over-low-high
                      :volume-sma volume-sma
-                     :doji-signal signal})))
+                     :doji signal})))
 
 
 (comment

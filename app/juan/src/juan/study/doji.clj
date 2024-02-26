@@ -28,7 +28,7 @@ algo-spec-doji
 @dojis
 ;; => :_unnamed [965 13]:
 ;;    
-;;    |   :open | :epoch |                :date |  :close |        :volume |   :high |    :low | :ticks | :asset | :open-close | :open-close-over-low-high |    :volume-sma | :doji-signal |
+;;    |   :open | :epoch |                :date |  :close |        :volume |   :high |    :low | :ticks | :asset | :open-close | :open-close-over-low-high |    :volume-sma | :doji        |
 ;;    |--------:|-------:|----------------------|--------:|---------------:|--------:|--------:|-------:|--------|------------:|--------------------------:|---------------:|--------------|
 ;;    | 280.740 |      0 | 2020-04-24T05:00:00Z | 283.040 | 6.34603700E+07 | 283.700 | 278.500 |      0 |    SPY |       2.300 |                0.44230769 | 6.34603700E+07 |        :flat |
 ;;    | 285.090 |      0 | 2020-04-27T05:00:00Z | 287.110 | 6.16133180E+07 | 288.270 | 284.620 |      0 |    SPY |       2.020 |                0.55342466 | 6.33988016E+07 |        :flat |
@@ -55,10 +55,10 @@ algo-spec-doji
 
 
 (filter-signal {:signal :long
-                :of :doji-signal} @dojis)
+                :of :doji} @dojis)
 ;; => :_unnamed [52 13]:
 ;;    
-;;    |  :open | :epoch |                :date | :close |        :volume |    :high |     :low | :ticks | :asset | :open-close | :open-close-over-low-high |    :volume-sma | :doji-signal |
+;;    |  :open | :epoch |                :date | :close |        :volume |    :high |     :low | :ticks | :asset | :open-close | :open-close-over-low-high |    :volume-sma | :doji        |
 ;;    |-------:|-------:|----------------------|-------:|---------------:|---------:|---------:|-------:|--------|------------:|--------------------------:|---------------:|--------------|
 ;;    | 302.10 |      0 | 2020-05-27T05:00:00Z | 303.48 | 8.51989400E+07 | 303.5700 | 296.8700 |      0 |    SPY |        1.38 |                0.20597015 | 7.43983189E+07 |        :long |
 ;;    | 325.90 |      0 | 2020-07-31T05:00:00Z | 326.55 | 6.49287320E+07 | 326.6100 | 321.3300 |      0 |    SPY |        0.65 |                0.12310606 | 6.15039700E+07 |        :long |
@@ -84,10 +84,10 @@ algo-spec-doji
 ;;    | 467.49 |      0 | 2024-01-05T05:00:00Z | 467.96 | 6.44773710E+07 | 470.4400 | 466.4300 |      0 |    SPY |        0.47 |                0.11720698 | 5.65504932E+07 |        :long |
 
 (filter-signal {:signal :short
-                :of :doji-signal} @dojis)
+                :of :doji} @dojis)
 ;; => :_unnamed [212 13]:
 ;;    
-;;    |  :open | :epoch |                :date | :close |        :volume |    :high |     :low | :ticks | :asset | :open-close | :open-close-over-low-high |    :volume-sma | :doji-signal |
+;;    |  :open | :epoch |                :date | :close |        :volume |    :high |     :low | :ticks | :asset | :open-close | :open-close-over-low-high |    :volume-sma | :doji        |
 ;;    |-------:|-------:|----------------------|-------:|---------------:|---------:|---------:|-------:|--------|------------:|--------------------------:|---------------:|--------------|
 ;;    | 291.02 |      0 | 2020-04-28T05:00:00Z | 285.77 | 8.77339870E+07 | 291.4000 | 285.4000 |      0 |    SPY |       -5.25 |               -0.87500000 | 6.42079222E+07 |       :short |
 ;;    | 291.71 |      0 | 2020-04-30T05:00:00Z | 290.39 | 1.02456394E+08 | 292.2350 | 288.5900 |      0 |    SPY |       -1.32 |               -0.36213992 | 6.68047664E+07 |       :short |
@@ -135,11 +135,11 @@ algo-spec-doji-forex-intraday
    (tc/unique-by :date)
    (tc/select-columns [:date :volume :close  ;bar-ds
                        :open-close-over-low-high :volume-sma ; intermediary columns
-                       :doji-signal ; what we really are interested in
+                       :doji ; what we really are interested in
                         ]))
 ;; => :_unnamed [96517 6]:
 ;;    
-;;    |                :date | :volume |  :close | :open-close-over-low-high | :volume-sma | :doji-signal |
+;;    |                :date | :volume |  :close | :open-close-over-low-high | :volume-sma | :doji        |
 ;;    |----------------------|--------:|--------:|--------------------------:|------------:|--------------|
 ;;    | 2023-11-20T04:36:00Z |    37.0 | 1.09266 |                1.00000000 | 37.00000000 |        :flat |
 ;;    | 2023-11-20T04:37:00Z |    42.0 | 1.09266 |                0.33333333 | 37.16666667 |        :flat |
@@ -166,11 +166,11 @@ algo-spec-doji-forex-intraday
 
 (-> 
 (filter-signal {:signal :short
-                :of :doji-signal} @dojis-forex-intraday)
+                :of :doji} @dojis-forex-intraday)
 (tc/unique-by :date))
 ;; => :_unnamed [22073 13]:
 ;;    
-;;    |   :open | :epoch |                :date |  :close | :volume |   :high |    :low | :ticks | :asset | :open-close | :open-close-over-low-high |  :volume-sma | :doji-signal |
+;;    |   :open | :epoch |                :date |  :close | :volume |   :high |    :low | :ticks | :asset | :open-close | :open-close-over-low-high |  :volume-sma | :doji        |
 ;;    |--------:|-------:|----------------------|--------:|--------:|--------:|--------:|-------:|--------|------------:|--------------------------:|-------------:|--------------|
 ;;    | 1.08506 |      0 | 2023-11-17T05:16:00Z | 1.08504 |    36.0 | 1.08511 | 1.08504 |      0 | EURUSD |    -0.00002 |               -0.28571429 |  36.00000000 |       :short |
 ;;    | 1.08510 |      0 | 2023-11-17T05:20:00Z | 1.08501 |    79.0 | 1.08511 | 1.08500 |      0 | EURUSD |    -0.00009 |               -0.81818182 |  38.03333333 |       :short |
@@ -196,11 +196,11 @@ algo-spec-doji-forex-intraday
 ;;    | 1.08132 |      0 | 2024-02-22T17:11:00Z | 1.08131 |   168.0 | 1.08134 | 1.08123 |      0 | EURUSD |    -0.00001 |               -0.09090909 | 144.26666667 |       :short |
 
 (-> (filter-signal {:signal :long
-                    :of :doji-signal} @dojis-forex-intraday)
+                    :of :doji} @dojis-forex-intraday)
     (tc/unique-by :date))
 ;; => :_unnamed [8158 13]:
 ;;    
-;;    |   :open | :epoch |                :date |  :close | :volume |   :high |    :low | :ticks | :asset | :open-close | :open-close-over-low-high |  :volume-sma | :doji-signal |
+;;    |   :open | :epoch |                :date |  :close | :volume |   :high |    :low | :ticks | :asset | :open-close | :open-close-over-low-high |  :volume-sma | :doji        |
 ;;    |--------:|-------:|----------------------|--------:|--------:|--------:|--------:|-------:|--------|------------:|--------------------------:|-------------:|--------------|
 ;;    | 1.08505 |      0 | 2023-11-17T05:17:00Z | 1.08505 |    42.0 | 1.08506 | 1.08500 |      0 | EURUSD |     0.00000 |                0.00000000 |  36.20000000 |        :long |
 ;;    | 1.08506 |      0 | 2023-11-17T05:18:00Z | 1.08506 |    49.0 | 1.08507 | 1.08504 |      0 | EURUSD |     0.00000 |                0.00000000 |  37.63333333 |        :long |
@@ -226,5 +226,5 @@ algo-spec-doji-forex-intraday
 ;;    | 1.08141 |      0 | 2024-02-22T17:09:00Z | 1.08144 |   154.0 | 1.08148 | 1.08127 |      0 | EURUSD |     0.00003 |                0.14285714 | 148.66666667 |        :long |
 
 (-> (filter-signal {:signal :short
-                    :of :doji-signal} @dojis-forex-intraday)
+                    :of :doji} @dojis-forex-intraday)
     (tc/unique-by :date))
