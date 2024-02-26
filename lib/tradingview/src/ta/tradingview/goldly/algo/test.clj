@@ -17,7 +17,7 @@ ctx
 (c/get-data ctx)
 
 (-> ctx c/get-data keys)
-;; => (:study-extra-cols :ds-roundtrips :highchart :name :ds-study :tradingview :options :charts :stats)
+;; => (:study-extra-cols :ds-roundtrips  :name :ds-study :tradingview :options :charts :stats)
 
 (:charts (c/get-data ctx))
 ;; => [nil {:volume "column"}]

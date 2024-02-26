@@ -2,11 +2,9 @@
   (:require
    [taoensso.timbre :refer [trace debug info warnf error]]
    [tablecloth.api :as tc]
-   [ta.viz.study-highchart :refer [study-highchart] :as hc]
    [ta.calendar.core :refer [trailing-window]]
-   [ta.algo.ds :refer [has-col?]]
-   [ta.algo.env.core :as env]
-   ))
+
+   [ta.algo.env.core :as env]))
 
 (defn- get-symbol [algo-ns algo-symbol]
   (require [algo-ns])
@@ -36,30 +34,9 @@
 
 
 
-(defn- default-algo-chart-spec [ds-algo]
-  (if (has-col? ds-algo :trade)
-    [{:trade "flags"}
-     {:volume "column"}]
-    [{:volume "column"}]))
-
-(defn highchart [{:keys [ds-algo algo-charts]}]
-  (let [axes-spec (if algo-charts
-                    algo-charts
-                    (default-algo-chart-spec ds-algo))]
-    (println "highchart axes spec:" axes-spec)
-    (-> (study-highchart ds-algo nil); axes-spec)
-        second)))
 
 
-(defn tap-highchart [data]
-  (let [data (highchart data)
-        ;data (assoc data :chart {:height 600 :width 1200})
-        ]
-    (tap> ^{:render-fn 'ui.highcharts/highstock}
-     {:data data
-      :box :lg
-      
-      })))
+
 
 (defn calculate-algo-trailing-window 
   "returns ds-strategy for the current bar-close-time"
@@ -81,18 +58,6 @@
   (require '[ta.db.bars.duckdb :as duckdb])
   (def env {:bar-db session})
 
-  (-> (run-algo env {:algo-ns 'demo.algo.sma3
-                     :algo-opts {:asset "MSFT"
-                                 :calendar "default"}})
-      ;(highchart)
-
-      (tap-highchart))
-
-  (tap> ^{:render-fn 'ui.clock/clock} [])
-
-  (tap>
-   ^{:render-fn 'reval.goldly.viz.render-fn/reagent}
-   [:p.bg-blue-500 "hello, world!"])
 
 
  ; 

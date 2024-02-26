@@ -13,8 +13,7 @@
    [ta.trade.metrics.nav :refer [nav-metrics nav]]
    [ta.series.signal :refer [select-signal-has]]
    [ta.trade.trades :refer [get-trades]]
-   ; viz
-   [ta.viz.study-highchart :refer [study-highchart] :as hc]))
+   ))
 
 (defonce algos (atom {}))
 
@@ -68,16 +67,7 @@
        ;(tc/select-rows (range 1000))
       (select-signal-has :trade)))
 
-(defn highchart [ds-study axes-spec]
-  (let [axes-spec (if axes-spec
-                    axes-spec
-                    (if (has-col? ds-study :trade)
-                      [{:trade "flags"}
-                       {:volume "column"}]
-                      [{:volume "column"}]))]
-    (println "highchart axes spec:" axes-spec)
-    (-> (study-highchart ds-study axes-spec)
-        second)))
+
 
 (defn backtest-stats [backtest]
   (let [ds-rts (-> (:ds-roundtrips backtest)
@@ -112,9 +102,7 @@
        (if ds-roundtrips
          {:stats (backtest-stats backtest)}
          {})
-        ;(if (:axes-spec options)
-       {:highchart (highchart ds-study (:axes-spec options))}
-         ; {})
+       
        ))
     {:name algo-name
      :error "Algo not found."}))
@@ -252,7 +240,6 @@
       ;keys
      ;:ds-study ;col-info (map :name)
       ;:ds-roundtrips   ;println
-   ;:highchart
    ;first
    ;rest
    ;last
@@ -269,13 +256,7 @@
         ;(has-col? :iii)
       )
 
-   ; (require '[ta.viz.study-highchart :refer [ds-epoch series-flags]])
-  #_(-> (algo-backtest "buy-hold s&p")
-      ;keys
-        :backtest
-        :ds-study
-        hc/ds-epoch
-        (hc/series-flags :trade))
+
 
 ; 
   )
