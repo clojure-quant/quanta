@@ -18,16 +18,15 @@
                                        :sha "9c5a959ea1b8ea7861d953c5541209169b7fe7f0"}
   ta/db {:local/root "../db" :deps/manifest :deps}
   ta/calendar {:local/root "../calendar" :deps/manifest :deps}
+  ta/engine {:local/root "../engine" :deps/manifest :deps}
   ta/import {:local/root "../import" :deps/manifest :deps}
   ta/quote {:local/root "../quote" :deps/manifest :deps}
   ta/trade {:local/root "../trade" :deps/manifest :deps}
   ta/math {:local/root "../math" :deps/manifest :deps}
   ta/indicator {:local/root "../indicator" :deps/manifest :deps}
-  ta/engine {:local/root "../engine" :deps/manifest :deps}
-  ta/env {:local/root "../env" :deps/manifest :deps}
   ta/algo {:local/root "../algo" :deps/manifest :deps}
-  ta/viz {:local/root "../viz" :deps/manifest :deps}
-  }
+  ta/env {:local/root "../env" :deps/manifest :deps}
+  ta/viz {:local/root "../viz" :deps/manifest :deps}}
  :aliases
  {:garamond
   {:main-opts ["-m" "garamond.main"]

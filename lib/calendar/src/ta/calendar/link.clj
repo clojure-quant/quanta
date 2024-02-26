@@ -69,6 +69,34 @@
     ;(info "remote-ds sorted: " (is-ds-sorted? remote-ds))
     (map align (:date bar-ds))))
 
+(defn link-bars3 
+  "ALTERNATIVE IMPLEMETATION WITH LOOP.
+   NOT YET READY.
+   IS TECHNICALLY BETTER THAN LINK-BARS and LINK-BARS2"
+  [local-ds remote-ds nil-val]
+  (loop [local-idx 0
+         remote-idx 0]
+    (let [idx-max 0
+          local-idx-max 0
+          col-name nil
+          col nil
+          mget (fn [ds col idx] :r)
+          mset! (fn [ds col v] :r)
+          dt-local (mget local-ds :date local-idx)
+          dt-remote (mget remote-ds :date remote-idx)
+          dt-remote-next (mget remote-ds col-name (min idx-max  (inc remote-idx)))]
+      (if (t/> dt-local dt-remote)
+        (mset! col local-idx nil-val)
+        (do (when (t/>= dt-remote-next dt-local)
+              ; recur: inc remote-idx
+              (recur local-idx (inc remote-idx)))
+            (mset! col local-idx (mget remote-ds col-name remote-idx))))
+      ;recur: inc local-idx
+      (when (< local-idx local-idx-max)
+        (recur (inc local-idx) remote-idx)))))
+
+
+
 (comment
   (def daily-ds (tc/dataset [{:date (t/date-time "2024-01-01T17:00:00") :a 1}
                              {:date (t/date-time "2024-01-02T17:00:00") :a 2}
@@ -89,7 +117,7 @@
   (dtype/make-reader (col-type daily-ds :date)
                      (tc/row-count hour-ds)
                      (get (:date hour-ds) idx))
-  
+
   (def align (make-aligner daily-ds :a 11))
   (dtype/make-reader (col-type daily-ds :a)
                      (tc/row-count hour-ds)
@@ -100,9 +128,9 @@
   (def t2 :local-date-time)
   (def t2 (col-type daily-ds :date))
   (dtype/make-reader t2 ; :local-date-time 
-                    (tc/row-count daily-ds)
-                    ((:date daily-ds) idx))
- 
+                     (tc/row-count daily-ds)
+                     ((:date daily-ds) idx))
+
   (link-bars hour-ds daily-ds :a 0)
   (link-bars2 hour-ds daily-ds :a 0)
   ;; => [0 0 1 1 1 2]
