@@ -4,7 +4,6 @@
    [juan.data :refer [settings]]
    [juan.fxcm :as fxcm]
    [juan.sentiment :as sentiment]
-   [juan.series :as series]
    [juan.core :refer [calc-core]]
    [juan.realtime :refer [calc-realtime]]))
 
@@ -69,10 +68,6 @@
 
 
 ;; TASKS
-
-(defn task-day [& args]
-  (series/get-daily :full)
-  (series/get-daily-futures :full (:future-month settings) (:future-year settings)))
 
 (defn task-hour [& args]
   (refresh-sentiment-dict)

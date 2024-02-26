@@ -4,15 +4,6 @@
    [tablecloth.api :as tc]
    [ta.algo.backtest :refer [backtest-algo backtest-algo-date]]))
 
-(def settings
-  {:atr-n 20 ; number days used for atr calculation
-   :sentiment-treshold 70.0
-   :spike-atr-min-prct 30.0 ; 75 (currently set lower for testing)
-   :future "23Z" ; used ?
-   :future-year 23 ; future year for volume pivots
-   :future-month 12 ; future month for volume pivots
-   :pivot-max-pip-distance 5.0})
-
 (def algo-spec
   [:day {:type :trailing-bar
          :algo   ['juan.algo.intraday/ensure-date-unique
