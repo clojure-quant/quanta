@@ -64,7 +64,8 @@
   ;                (clip/ref :symbol-lists))
   ;        :stop (juan.scheduler/stop! this)}
   
-  :duckdb {:start (ta.db.bars.duckdb/start-bardb-duck "../../output/duckdb/bars")
+  :duckdb {; todo: change /bars to /bars.ddb (duck-db db has .ddb extension)
+           :start (ta.db.bars.duckdb/start-bardb-duck "../../output/duckdb/bars")
            :stop (ta.db.bars.duckdb/stop-bardb-duck this)
            :post-start ta.db.bars.duckdb/init-tables}
   

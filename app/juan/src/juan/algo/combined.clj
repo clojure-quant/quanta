@@ -4,7 +4,7 @@
    [tick.core :as t]
    [tablecloth.api :as tc]
    [tech.v3.datatype :as dtype]
-   [ta.calendar.link :refer [link-bars]]
+   [ta.calendar.link :refer [link-bars link-bars2]]
    [juan.algo.spike :refer [spike-signal]]
    [juan.algo.pivot-price-nearby :refer [nearby-pivots]]))
 
@@ -38,16 +38,19 @@
   (info "intraday-combined: daily# " (tc/row-count daily-ds) "intraday# " (tc/row-count intraday-ds))
   (let [pivot-max-diff (:pivot-max-diff spec)
         _ (assert pivot-max-diff "intraday-combined needs :max-diff for pivot calculation")
-        daily-atr (link-bars intraday-ds daily-ds :atr 0.0)
-        daily-close (link-bars intraday-ds daily-ds :close nil)
-        daily-pivots (link-bars intraday-ds daily-ds :pivots-price nil)
-        _ (info "calculating pivot nr..")
-        daily-pivotnr (link-bars intraday-ds daily-ds :ppivotnr 0)
-        _ (info "calculating date ..")
+        daily-atr (link-bars2 intraday-ds daily-ds :atr 0.0)
+        daily-close (link-bars2 intraday-ds daily-ds :close 0.0)
+        daily-pivots (link-bars2 intraday-ds daily-ds :pivots-price nil)
+        ;_ (info "calculating pivot nr..")
+        daily-pivotnr (link-bars2 intraday-ds daily-ds :ppivotnr 0)
+        ;_ (info "calculating date ..")
         ;daily-date (link-bars intraday-ds daily-ds :date (-> (t/now) t/instant))
         ;daily-date (link-date intraday-ds daily-ds)
         ;_ (info "calculating date .. finished!")
         ;_ (info "daily-date: " daily-date)
+        ;_ (info "daily-atr: " daily-atr)
+        ;_ (info "daily-close: " daily-close)
+        ;_ (info "daily-close #: " (count daily-close))
         combined-ds (tc/add-columns intraday-ds {:daily-atr daily-atr
                                                  :daily-close daily-close
                                                  :daily-pivots daily-pivots
@@ -58,6 +61,7 @@
     (tc/add-columns combined-ds {:spike intraday-spike
                                  :long (long-pivots pivot-max-diff daily-pivots (:close intraday-ds))
                                  :short (short-pivots pivot-max-diff daily-pivots (:close intraday-ds))})))
+
 
 
 
