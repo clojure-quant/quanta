@@ -1,6 +1,8 @@
-(ns ta.viz.study-highchart
+(ns ta.viz.ds.highchart
   (:require
+   [tick.core :as t]
    [tech.v3.dataset :as tds]
+   [tablecloth.api :as tc]
    [ta.helper.date :as dt]
    [ta.series.signal :refer [select-signal-is select-signal-has]]))
 
@@ -28,13 +30,11 @@
 (defn series-flags
   "extracts one column from ds 
    in format needed by highchart
-   for signal plot
-   "
+   for signal plot"
   [ds-epoch col]
   (println "Series flags col:" col)
   (let [;ds-with-signal (select-signal-is ds-epoch col :buy)
         ds-with-signal (select-signal-has ds-epoch col)
-
         r (tds/mapseq-reader ds-with-signal)]
     (println "rows with signal: " (tds/row-count ds-with-signal))
     (into [] (map  (fn [row]
@@ -69,7 +69,7 @@
 ;; AXIS
 
 (def ohlc-height 600)
-(def other-height 10) 
+(def other-height 10)
 
 (def default-axis
   [{:resize {:enabled true}
@@ -95,7 +95,7 @@
      :series (concat series new-series)
      :no (inc no)}))
 
-(defn add-data [ds axes-spec]
+(defn highchart-data [ds axes-spec]
   (let [ds-e (ds-epoch ds)
         grouping {:units [["week" [1]] ; // unit name - allowed multiples
                           ["month" [1, 2, 3, 4, 6]]]}
@@ -110,38 +110,65 @@
              :no 0}
             axes-spec)))
 
-(defn study-highchart [ds axes-spec]
-  (let [spec-base {;:title {:text title}
-                   ;:xAxis {:categories (:labels data)}
-                   :tooltip {:style {:width "200px"}
-                             :valueDecimals 4
-                             ;:valueSuffix " %"
-                             :shared true}
-                   :chart {:height (+ ohlc-height
-                                      (* other-height (dec (count axes-spec)))
-                                      100 ; size of time window selector
-                                      )}
-                   :rangeSelector {; timeframe selector on the top
-                                   :verticalAlign "top"
-                                   ;:selected 1   
-                                   :x 0
-                                   :y 0}
-                   :plotOptions {:series {:animation 0
-                          ;:label {;:pointStart 2010
-                          ;        :connectorAllowed false}
-                                          }}
-                   :credits {:enabled false}}]
-    ^:R
-    ['ui.highcharts/highstock (merge spec-base (add-data ds axes-spec))]))
+(defn chart-pane-spec? [spec]
+  true)
+
+(defn chartpane-cols [spec]
+  (concat [:date :open :high :low :close]
+          []
+          ;(map :path (:cols spec))
+          ))
+
+(defn highchart-opts-default [axes-spec]
+  {;:title {:text title}
+                     ;:xAxis {:categories (:labels data)}
+   :tooltip {:style {:width "200px"}
+             :valueDecimals 4
+                               ;:valueSuffix " %"
+             :shared true}
+   :chart {:height (+ ohlc-height
+                      (* other-height (dec (count axes-spec)))
+                      100 ; size of time window selector
+                      )}
+   :rangeSelector {; timeframe selector on the top
+                   :verticalAlign "top"
+                                     ;:selected 1   
+                   :x 0
+                   :y 0}
+   :plotOptions {:series {:animation 0
+                            ;:label {;:pointStart 2010
+                            ;        :connectorAllowed false}
+                          }}
+   :credits {:enabled false}})
+
+
+(defn highstock-render-spec
+  "returns a render specification {:render-fn :spec :data}. 
+   spec must follow chart-pane format.
+   The ui shows a barchart with extra specified columns 
+   plotted with a specified style/position, 
+   created from the bar-algo-ds"
+  [env spec bar-algo-ds]
+  (let [axes-spec (:charts spec)] ; search for :axes-spec
+    (assert (chart-pane-spec? spec) "please comply with chart-pane-spec")
+    {:render-fn 'ta.viz.ui/highstock
+     :data (-> bar-algo-ds
+               (tc/select-columns (chartpane-cols axes-spec))
+               (highchart-data axes-spec))
+     :spec (highchart-opts-default spec)}))
 
 (comment
 
-  (require '[ta.warehouse :as wh])
-  (require '[tablecloth.api :as tc])
-  (-> (wh/load-symbol :crypto "D" "ETHUSD")
-      (tc/select-rows (range 10))
-      (study-highchart [])
-      second)
+  (def ds
+    (tc/dataset [{:date (t/date-time) :open 1 :high 2 :low 3 :close 4 :volume 5}
+                 {:date (t/date-time) :open 1 :high 2 :low 3 :close 4 :volume 5}
+                 {:date (t/date-time) :open 1 :high 2 :low 3 :close 4 :volume 5}
+                 {:date (t/date-time) :open 1 :high 2 :low 3 :close 4 :volume 5}]))
+
+  ds
+
+  (highstock-render-spec nil {} ds)
+
 
   {:chart {:height 400}
    :rangeSelector {:verticalAlign "top", :x 0, :y 0}

@@ -48,18 +48,6 @@
      {:data data
       :box :lg})))
 
-  (-> (run-algo env {:algo-ns 'demo.algo.sma3
-                   :algo-opts {:asset "MSFT"
-                               :calendar "default"}})
-      ;(highchart)
-
-    (tap-highchart))
-
- ;(if (:axes-spec options)
-       {:highchart (highchart ds-study (:axes-spec options))}
-         ; {})
-
-
    ; (require '[ta.viz.study-highchart :refer [ds-epoch series-flags]])
   #_(-> (algo-backtest "buy-hold s&p")
       ;keys
