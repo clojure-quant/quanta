@@ -1,7 +1,6 @@
 (ns ta.viz.publish
   (:require
    [taoensso.timbre :refer [info warn error]]
-   [tablecloth.api :as tc]
    [ta.viz.ds.highchart :refer [highstock-render-spec]]
    [ta.viz.ds.rtable :refer [rtable-render-spec]]))
 
@@ -11,7 +10,10 @@
   (keys @topics))
 
 (defn get-topic [k]
-  (get @topics k))
+  (info "get-topic: " k)
+  (let [v (get @topics k)]
+    (info "topic: " v)
+    v))
 
 (defn publish [env spec render-spec]
   (let [topic (:topic spec)]

@@ -151,7 +151,7 @@
   [env spec bar-algo-ds]
   (let [axes-spec (:charts spec)] ; search for :axes-spec
     (assert (chart-pane-spec? spec) "please comply with chart-pane-spec")
-    {:render-fn 'ta.viz.ui/highstock
+    {:render-fn 'ta.viz.renderfn.highcharts/highstock
      :data (-> bar-algo-ds
                (tc/select-columns (chartpane-cols axes-spec))
                (highchart-data axes-spec))
