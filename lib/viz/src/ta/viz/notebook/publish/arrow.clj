@@ -1,4 +1,4 @@
-(ns ta.viz.notebook.arrow
+(ns ta.viz.notebook.publish.arrow
   (:require
    [tech.v3.dataset :as dataset]
    [ta.viz.arrow :as a]))

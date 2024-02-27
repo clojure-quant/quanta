@@ -1,16 +1,9 @@
-(ns ta.viz.notebook.publish
+(ns ta.viz.notebook.publish.table
   (:require
    [tablecloth.api :as tc]
    [ta.viz.publish :as p]))
 
-; 1. publish demo
-
- (p/publish nil {:topic :demo} 
-            {:render-fn 'ta.viz.renderfn.demo/demo
-             :data [1 2 3]        
-             :spec {:x 3}})
- 
-; 2. publish dataset
+; publish dataset as table
 
 (def data-ds
   (tc/dataset [{:date :yesterday :open 100.0 :high 100.0 :low 100.0 :close 100.0 :volume 100.0}
@@ -27,18 +20,3 @@
              {:path :close}]})
  
 (p/publish-table nil table-spec data-ds)
-
-
-; 3. inspect published data.
-
-  (p/topic-keys)
-
-  (p/get-topic :demo)
-
-(->  (p/get-topic :test-ds)
-     :data
-     type)
- 
-  (p/get-topic [:juan :daily-history])
-
- 

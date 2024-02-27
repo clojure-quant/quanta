@@ -1,9 +1,8 @@
-(ns ta.viz.notebook.vega
+(ns ta.viz.notebook.publish.vega
   (:require
-   [ta.viz.publish :as p]
-   ))
+   [ta.viz.publish :as p]))
 
-(def spec 
+(def spec
   {;:width "1000"
    :box :sm
    ;:width "500" ;"100%"
@@ -26,8 +25,7 @@
    {:nav 140.0 :index 5}
    {:nav 150.0 :index 6}
    {:nav 160.0 :index 7}
-   {:nav 150.0 :index 8}
-   ])
+   {:nav 150.0 :index 8}])
 
 (p/publish nil {:topic :demo-vega}
            {:render-fn 'ta.viz.renderfn.vega/vega-lite
