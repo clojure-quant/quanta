@@ -10,6 +10,33 @@
     [:p.bg-blue-500 "hello, world!"])
 
 
+(tap>
+ ^{:render-fn 'ta.viz.render-spec}
+ {:render-fn 'ta.viz.ui.demo/demo
+  :spec {:some :specification}
+  :data "peace to the world"})
+
+
+
+(tap> 
+  ^{:render-fn 'ta.viz.ui.render-spec}
+   {:render-fn 'ta.viz.ui.rtable/rtable
+    :spec {:class "table-head-fixed padding-sm table-red table-striped table-hover"
+           :style {:width "50vw"
+                   :height "40vh"
+                   :border "3px solid green"}
+           :columnss [{:path :close }
+                      {:path :sma}]}
+    :data [{:close 10 :sma 10}
+           {:close 14 :sma 12}
+           {:close 9 :sma 11}
+           {:close 16 :sma 13}
+           {:close 11 :sma 12}
+           {:close 10 :sma 11}]})
+ 
+
+
+
 [ta.algo.ds :refer [has-col?]]
 (defn- default-algo-chart-spec [ds-algo]
   (if (has-col? ds-algo :trade)

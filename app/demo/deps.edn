@@ -40,7 +40,7 @@
                     :run demo.env.task/run}
         :jvm-opts ["-Xmx4G"] ;; or more
         }
-
+ 
   :docs ; RUN SERVICES (keep running)
   {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.639"}
                 org.pinkgorilla/modular {:mvn/version "0.0.40"}

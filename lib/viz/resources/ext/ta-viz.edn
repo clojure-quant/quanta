@@ -1,0 +1,5 @@
+{:sci-cljs-ns [ta.viz.ui
+               ta.viz.renderfn
+               ta.viz.renderfn.rtable
+               ta.viz.renderfn.highstock
+               ta.viz.renderfn.demo]}
