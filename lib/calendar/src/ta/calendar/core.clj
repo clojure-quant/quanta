@@ -1,7 +1,7 @@
 (ns ta.calendar.core
   (:require
    [tick.core :as t]
-   [ta.calendar.interval :refer [intervals] :as interval]
+   [ta.calendar.interval :refer [intervals get-calendar-day-duration] :as interval]
    [ta.calendar.calendars :refer [calendars]]
    [ta.calendar.core :as cal]))
 
@@ -107,7 +107,7 @@
   "returns duration in seconds of the given calendar"
   [[calendar-kw interval-kw]]
   (if (= interval-kw :d)
-    1000 ; TODO: improve. should depend on open/close time or the calendar-kw.
+    (get-calendar-day-duration calendar-kw)
     (get-in intervals [interval-kw :duration])))
 
 

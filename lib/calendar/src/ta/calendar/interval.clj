@@ -3,20 +3,18 @@
    [tick.core :as t]
    [ta.calendar.day :as day]
    [ta.calendar.intraday :as intraday]
+   [ta.calendar.calendars :refer [calendars]]
+   [ta.calendar.helper :refer [intraday?]]
    [ta.helper.date :refer [align-field now-in-zone]]))
 
 (defn now-calendar [{:keys [timezone] :as calendar}]
   (now-in-zone timezone))
 
-(defn current-close-aligned [calendar dt align-unit next-fn]
-  (let [zoned (t/in dt (:timezone calendar))
-        aligned (align-field zoned align-unit)
-        dt-next (next-fn calendar aligned)]
-    dt-next))
-
-(defn gen-current-close [align-unit next-fn]
-  (fn ([calendar] (current-close-aligned calendar (t/now) align-unit next-fn))
-      ([calendar dt] (current-close-aligned calendar dt align-unit next-fn))))
+(defn get-calendar-day-duration [calendar-kw]
+  (let [{:keys [open close] :as calendar} (calendar-kw calendars)]
+    (if (intraday? calendar)
+      (t/divide (t/between open close) (t/new-duration 1 :seconds))
+      (t/divide (t/between close open) (t/new-duration 1 :seconds)))))
 
 (defn gen-intraday-step-fn [n unit]
   ; close
@@ -46,7 +44,8 @@
 (def intervals
   {:d   {:next-close    day/next-close-dt
          :prior-close   day/prior-close-dt
-         :current-close (gen-current-close :minutes day/current-close)}
+         :current-close day/current-close
+         :current-open  day/current-open}
    :h   (gen-intraday-step-fn 1 :hours)
    :m   (gen-intraday-step-fn 1 :minutes)
    :m15 (gen-intraday-step-fn 15 :minutes)
