@@ -26,24 +26,92 @@
 
 
 (defn print-seq [s]
-  (for [index (range 0 (count s))
-        :let [element (nth s index)]]
-    (println index ": " element)))
+  (for [i (range 0 (count s))]
+    (println i ": " (nth s i))))
 
 
 ;(doall (print-seq window-10d))
 ;(doall (print-seq window-10))
 ;(doall (print-seq next-10))
 
-(doall (print-seq (fixed-window [:us :d ] {:start (t/date-time "2023-01-01T00:00:00")
-                                           :end (t/date-time "2023-02-01T00:00:00")})))
+;(doall (print-seq (fixed-window [:us :d ] {:start (t/date-time "2023-01-01T00:00:00")
+;                                           :end (t/date-time "2023-02-01T00:00:00")})))
 
 
-(deftest trailing-window--test
-  (testing "trailing window 20 h"
-    ;(is )
-    ))
 
-; calendar-seq-instant
+(let [dt-prev-friday-17-00 (to-est "2024-02-02T17:00:00")
+      dt-monday-17-00 (to-est "2024-02-05T17:00:00")
+      dt-tuesday-17-00 (to-est "2024-02-06T17:00:00")
+      dt-wednesday-17-00 (to-est "2024-02-07T17:00:00")
+      dt-thursday-17-00 (to-est "2024-02-08T17:00:00")
+      dt-friday-17-00 (to-est "2024-02-09T17:00:00")
+
+
+      dt-thursday-23-00 (to-est "2024-02-08T23:00:00")
+
+      dt-friday-06-00 (to-est "2024-02-09T06:00:00")
+      dt-friday-12-34-56 (to-est "2024-02-09T12:34:56")]
+  (deftest calendar-seq-forwards
+    (testing "1 day seq"
+      ;(let [dt-friday-12-34-56 (to-est "2024-02-09T12:34:56")
+      ;      seq-5-us-d (take 5 (calendar-seq-next :us :d (to-est "2024-02-09T12:34:56")))]
+      ;  ())
+      )
+    (testing "1 min seq"
+      ))
+
+  (deftest calendar-seq-backwards
+    (testing ".."
+
+      ))
+
+  (deftest trailing-window-test
+    (testing "trailing window 20 h"
+
+      ))
+
+  (deftest fixed-window-test
+    (testing "dt inside interval"
+      (let [window-5-us-d (trailing-window [:us :d] 5 dt-friday-12-34-56)]
+        (is (= (nth window-5-us-d 0) dt-thursday-17-00))
+        (is (= (nth window-5-us-d 1) dt-wednesday-17-00))
+        (is (= (nth window-5-us-d 2) dt-tuesday-17-00))
+        (is (= (nth window-5-us-d 3) dt-monday-17-00))
+        (is (= (nth window-5-us-d 4) dt-prev-friday-17-00))))
+    (testing "dt on interval boundary"
+      (let [window-5-us-d (trailing-window [:us :d] 5 dt-thursday-17-00)]
+        (is (= (nth window-5-us-d 0) dt-thursday-17-00))
+        (is (= (nth window-5-us-d 1) dt-wednesday-17-00))
+        (is (= (nth window-5-us-d 2) dt-tuesday-17-00))
+        (is (= (nth window-5-us-d 3) dt-monday-17-00))
+        (is (= (nth window-5-us-d 4) dt-prev-friday-17-00))))
+    (testing "dt before trading hours"
+      (let [window-5-us-d (trailing-window [:us :d] 5 dt-friday-06-00)]
+        (is (= (nth window-5-us-d 0) dt-thursday-17-00))
+        (is (= (nth window-5-us-d 1) dt-wednesday-17-00))
+        (is (= (nth window-5-us-d 2) dt-tuesday-17-00))
+        (is (= (nth window-5-us-d 3) dt-monday-17-00))
+        (is (= (nth window-5-us-d 4) dt-prev-friday-17-00))))
+    (testing "dt after trading hours"
+      (let [window-5-us-d (trailing-window [:us :d] 5 dt-thursday-23-00)]
+        (is (= (nth window-5-us-d 0) dt-thursday-17-00))
+        (is (= (nth window-5-us-d 1) dt-wednesday-17-00))
+        (is (= (nth window-5-us-d 2) dt-tuesday-17-00))
+        (is (= (nth window-5-us-d 3) dt-monday-17-00))
+        (is (= (nth window-5-us-d 4) dt-prev-friday-17-00))))
+    )
+
+  (deftest seq-range
+    (testing "trailing-range"
+
+      )
+    (testing "calendar-seq->range"
+
+      )
+    (testing "get-bar-window"
+
+      )))
+
+
 
 ; current-, prior-, next-close

@@ -39,11 +39,14 @@
       (current-close-dt calendar dt)
       (current-close-dt calendar))))
 
-
-(defn calendar-seq [calendar-kw interval-kw]
-  (let [start (current-close calendar-kw interval-kw)
-        next-dt (partial next-close calendar-kw interval-kw)]
-    (iterate next-dt start)))
+(defn calendar-seq
+  ([calendar-kw interval-kw]
+   (let [cur-dt (current-close calendar-kw interval-kw)]
+     (calendar-seq calendar-kw interval-kw cur-dt)))
+  ([calendar-kw interval-kw dt]
+    (let [cur-dt (current-close calendar-kw interval-kw dt)
+          next-dt (partial next-close calendar-kw interval-kw)]
+      (iterate next-dt cur-dt))))
 
 (defn calendar-seq-instant [[calendar-kw interval-kw]]
   (->> (calendar-seq calendar-kw interval-kw)
@@ -51,12 +54,8 @@
 
 (defn calendar-seq-prior [calendar-kw interval-kw dt]
   (let [cur-dt (current-close calendar-kw interval-kw dt)
-        prev-dt (prior-close calendar-kw interval-kw dt)
-        start-dt (if (t/= cur-dt dt) ; dt on interval boudary
-                   cur-dt
-                   prev-dt)
         prior-fn (partial prior-close calendar-kw interval-kw)]
-    (iterate prior-fn start-dt)))
+    (iterate prior-fn cur-dt)))
 
 
 
@@ -70,9 +69,8 @@
       (take n (calendar-seq-prior calendar-kw interval-kw end-dt))))
   ([calendar n]
    (let [[calendar-kw interval-kw] calendar
-         end (current-close calendar-kw interval-kw)
-         end-dt (prior-close calendar-kw interval-kw end)]
-     (take n (calendar-seq-prior calendar-kw interval-kw end-dt)))))
+         cur-dt (current-close calendar-kw interval-kw)]
+     (take n (calendar-seq-prior calendar-kw interval-kw cur-dt)))))
 
 (defn trailing-range
   "returns a calendar-range for a calendar of n rows
@@ -117,30 +115,30 @@
   (now-calendar :us)
   (now-calendar :eu)
 
-  (next-close :us :day (now-calendar :us))
+  (next-close :us :d (now-calendar :us))
   (next-close :us :h (now-calendar :us))
 
-  (prior-close :us :day (now-calendar :us))
+  (prior-close :us :d (now-calendar :us))
   (prior-close :us :h (now-calendar :us))
 
-  (current-close :us :day)
+  (current-close :us :d)
   (current-close :us :h)
   (current-close :us :m)
 
-  (take 5 (calendar-seq :us :day))
-  (take 5 (calendar-seq-instant :us :day))
+  (take 5 (calendar-seq :us :d))
+  (take 5 (calendar-seq-instant :us :d))
 
-  (take 5 (calendar-seq :eu :day))
-  (take 30 (calendar-seq :us :day))
+  (take 5 (calendar-seq :eu :d))
+  (take 30 (calendar-seq :us :d))
   (take 100 (calendar-seq :eu :h))
   (take 100 (calendar-seq-prior :eu :h))
 
 
   (take 5 (calendar-seq :eu :h))
 
-  (trailing-window :us :day 5)
-  (trailing-window :us :day 10)
-  (trailing-window :us :h 5)
+  (trailing-window [:us :d] 5)
+  (trailing-window [:us :d] 10)
+  (trailing-window [:us :h] 5)
 
 
   (get-bar-duration [:us :d])
