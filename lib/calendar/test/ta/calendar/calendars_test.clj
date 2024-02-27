@@ -123,17 +123,23 @@
     (testing "trading hours"
       (is (time-open? (:forex cal/calendars) dt-friday06))
       (is (not (time-closed? (:forex cal/calendars) dt-friday12)))
-      (is (time-closed? (:forex cal/calendars) dt-friday18)))
-      ; TODO
-      ;(is (not (before-trading-hours? (:forex cal/calendars) dt-friday06)))
-      ;(is (after-trading-hours? (:forex cal/calendars) dt-friday18)))
-      ;(is (before-trading-hours? (:forex cal/calendars) dt-sunday12))
-    )
+      (is (time-closed? (:forex cal/calendars) dt-friday18))
+      (is (before-trading-hours? (:forex cal/calendars) dt-sunday12))
+      (is (not (before-trading-hours? (:forex cal/calendars) dt-sunday18)))
+      (is (after-trading-hours? (:forex cal/calendars) dt-friday18))
+      (is (not (after-trading-hours? (:forex cal/calendars) dt-friday12)))))
 
-  ; TODO: time shifting
   ; TODO: time zones
   ; TODO: DST
-  ; TODO: more tests for after-trading-hours? before-trading-hours? (calender with 3 days or scattered days, overnight but not consecutive trading time ... etc)
+  ; TODO: leap seconds
+  ; 31 December 2005, 23:59:60 UTC was 31 December 2005, 18:59:60 (6:59:60 p.m.) in U.S. Eastern Standard Time
+  ; and 1 January 2006, 08:59:60 (a.m.) in Japan Standard Time.
+
+  ;(t/- (t/date-time "2005-12-31T23:59:59") (t/date-time "2006-01-01T00:00:00"))
+
+  ;(deftest leap-second
+  ;  (testing "2005 => 2006"
+  ;    (is ())))
 
   ;(let [aest-winter (t/zoned-date-time "2024-01-01T07:00:00Z[Australia/Sydney]")
   ;      aest-summer (t/zoned-date-time "2024-07-01T07:00:00Z[Australia/Sydney]")

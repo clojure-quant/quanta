@@ -19,33 +19,34 @@
       ([calendar dt] (current-close-aligned calendar dt align-unit next-fn))))
 
 (defn gen-intraday-step-fn [n unit]
-  {:next-close    (fn ([calendar] (intraday/next-close-dt calendar n unit))
-                      ([calendar dt] (intraday/next-close-dt calendar n unit dt)))
+  ; close
+  {:next-close     (fn ([calendar] (intraday/next-close-dt calendar n unit))
+                       ([calendar dt] (intraday/next-close-dt calendar n unit dt)))
 
-   :prior-close   (fn ([calendar] (intraday/prior-close-dt calendar n unit))
-                      ([calendar dt] (intraday/prior-close-dt calendar n unit dt)))
+   :prior-close    (fn ([calendar] (intraday/prior-close-dt calendar n unit))
+                       ([calendar dt] (intraday/prior-close-dt calendar n unit dt)))
 
-   :current-close (fn ([calendar] (intraday/current-close-dt calendar n unit))
-                      ([calendar dt] (intraday/current-close-dt calendar n unit dt)))
+   :current-close  (fn ([calendar] (intraday/current-close-dt calendar n unit))
+                       ([calendar dt] (intraday/current-close-dt calendar n unit dt)))
 
    ; open
-   :next-open    (fn ([calendar] (intraday/next-open-dt calendar n unit))
-                     ([calendar dt](intraday/next-open-dt calendar n unit dt)))
+   :next-open      (fn ([calendar] (intraday/next-open-dt calendar n unit))
+                       ([calendar dt] (intraday/next-open-dt calendar n unit dt)))
 
-   :prior-open   (fn ([calendar] (intraday/prior-open-dt calendar n unit))
-                     ([calendar dt] (intraday/prior-open-dt calendar n unit dt)))
+   :prior-open     (fn ([calendar] (intraday/prior-open-dt calendar n unit))
+                       ([calendar dt] (intraday/prior-open-dt calendar n unit dt)))
 
-   :current-open (fn ([calendar] (intraday/current-open-dt calendar n unit))
-                     ([calendar dt] (intraday/current-open-dt calendar n unit dt)))
+   :current-open   (fn ([calendar] (intraday/current-open-dt calendar n unit))
+                       ([calendar dt] (intraday/current-open-dt calendar n unit dt)))
 
    ; duration
-   :duration (t/divide (t/new-duration n unit) (t/new-duration 1 :seconds))
+   :duration       (t/divide (t/new-duration n unit) (t/new-duration 1 :seconds))
    })
 
 (def intervals
-  {:d   {:next-close    day/next-close
-         :prior-close   day/recent-close
-         :current-close (gen-current-close :minutes day/upcoming-close)}
+  {:d   {:next-close    day/next-close-dt
+         :prior-close   day/prior-close-dt
+         :current-close (gen-current-close :minutes day/current-close)}
    :h   (gen-intraday-step-fn 1 :hours)
    :m   (gen-intraday-step-fn 1 :minutes)
    :m15 (gen-intraday-step-fn 15 :minutes)

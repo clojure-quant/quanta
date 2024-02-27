@@ -32,6 +32,12 @@
   (-> (t/now)
       (t/in zone)))
 
+;; create
+
+(defn at-time [date time timezone]
+  (-> (t/at date time)
+      (t/in timezone)))
+
 ;; parsing
 
 (def date-fmt (of-pattern "yyyy-MM-dd"))
@@ -129,15 +135,31 @@
   "zeroes the subordinate time fields of the unit"
   (t/truncate dt unit))
 
-(defn round-down [dt unit n]
-  "modulo operation on a field"
-  (let [value (extract-field dt unit)
-        rounded (if value
-                  (- value (mod value n)))]
-    (if rounded
-      (if (and (= rounded 0) (date-unit? unit))
-        (adjust-field dt unit 1)  ; fallback for zero date field values
-        (adjust-field dt unit rounded)))))
+(defn round-down
+  "modulo operation on a field
+   offset sample:
+      dt 12:00h, 4 hours, offset 9 (open time) => round down to 9:00
+      value: 12
+      rest-o: 1 = (mod 9 4)
+      rest-n: 3 = (mod 12-1 4)
+      rounded (value - rest): 12 - 3 = 9"
+  ([dt unit n]
+   (let [value (extract-field dt unit)
+         rounded (if value
+                   (- value (mod value n)))]
+     (if rounded
+         (adjust-field dt unit rounded))))
+   ;(round-down dt unit n 0))
+  ([dt unit n offset]
+    (let [value (extract-field dt unit)
+          rest-o (mod offset n)
+          rest-n (mod (- value rest-o) n)
+          rounded (if value
+                    (- value rest-n))]
+      (if rounded
+        (if (and (= rounded 0) (date-unit? unit))
+          (adjust-field dt unit 1)  ; fallback for zero date field values
+          (adjust-field dt unit rounded))))))
 
 (comment 
   ;FEED [QQQ|1D]: Requesting data: [1960-10-20T00:00:00.000Z ... 1961-12-14T00:00:00.000Z, 300 bars]
