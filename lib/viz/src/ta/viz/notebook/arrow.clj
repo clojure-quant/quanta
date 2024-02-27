@@ -1,4 +1,4 @@
-(ns demo.playground.arrow
+(ns ta.viz.notebook.arrow
   (:require
    [tech.v3.dataset :as dataset]
    [ta.viz.arrow :as a]))

@@ -1,6 +1,15 @@
-{:sci-cljs-ns [ta.viz.ui
-               ta.viz.renderfn
+{:clj-services {:name "ta-viz-services"
+                :permission  #{}
+                :symbols [ta.viz.publish/topic-keys
+                          ta.viz.publish/get-topic
+                         ]}
+ :cljs-routes {"publish" ta.viz.page.publish/publish-page}
+ :sci-cljs-ns [ta.viz.renderfn
                ta.viz.renderfn.demo
                ta.viz.renderfn.rtable
                ta.viz.renderfn.highstock
-               ta.viz.renderfn.vega]}
+               ta.viz.renderfn.vega
+               ta.viz.lib.layout
+               ta.viz.lib.ui
+               ta.viz.lib.loader
+               ]}

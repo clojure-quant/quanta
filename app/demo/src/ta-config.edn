@@ -40,7 +40,8 @@
                        :datascience [:clj "notebook/datascience/"]
                        :playground [:clj "notebook/playground/"]
                        :ui-test [:cljs "demo/goldly/ui_test/"]
-                       :ta-viz [:cljs "ta/viz/notebook/"]
+                       :ta-viz-cljs [:cljs "ta/viz/notebook/"]
+                       :ta-viz-clj  [:clj "ta/viz/notebook/"]
                        ;:demo [:clj "demo/notebook/"]
                        ;:demo-cljs [:cljs "demo/notebook/"]
                        }}

@@ -1,4 +1,4 @@
-(ns notebook.playground.viz.scratchpad)
+(ns ta.viz.notebook.scratchpad)
 
 ;; open webbrowser on port 8080, then go to devtools->scratchpad
 ;; evaling one of the forms below will show the visualization
