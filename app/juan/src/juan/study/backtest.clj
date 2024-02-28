@@ -90,8 +90,9 @@
    :chart {:box :fl}
    :charts [{:close :candlestick ; :ohlc ; :line 
              ;:color "red"
+             ;:atr :flags
              }
-            {:atr :line}
+            {:atr {:type :line :color "red"}}
             {:volume :column}]})
 
 (p/publish-ds->highstock nil chart-spec @(:day combined))
@@ -182,12 +183,29 @@
 (def combined-chart-spec
   {:topic :juan-combined-chart
    :chart {:box :fl}
-   :charts [{:daily-close :candlestick ; :ohlc 
-             :close :line}
-            {:atr :line}
+   :charts [{:close :candlestick ; :ohlc 
+             :daily-close :line
+             :doji :flags
+             }
+            {:daily-atr :line}
             {:volume :line}]})
 
 (p/publish-ds->highstock nil combined-chart-spec @(:signal combined))
+
+
+(p/publish-ds->highstock nil combined-chart-spec 
+  (-> @(:signal combined)
+      (tc/select-rows (range 1000 1500))               
+  ))
+                         
+ (require '[ta.viz.ds.highchart :refer [highstock-render-spec]])
+
+(highstock-render-spec nil combined-chart-spec 
+           (-> @(:signal combined)
+               (tc/select-rows (range 1000 1100)))            
+                       )
+
+
 
 
 

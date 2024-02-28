@@ -4,7 +4,7 @@
    [tech.v3.dataset :as tds]
    [tablecloth.api :as tc]
    [ta.helper.date :as dt]
-   [ta.series.signal :refer [select-signal-is select-signal-has]]
+   [ta.series.signal :refer [select-signal-is select-signal-has select-signal-contains]]
    [ta.viz.ds.highchart.chart-spec :refer [series-input]]))
 
 (defn add-epoch
@@ -28,30 +28,32 @@
   (let [r (tds/mapseq-reader bar-study-epoch-ds)]
     (mapv (juxt :epoch :open :high :low :close :volume) r)))
 
+ (defn flag [col row]
+  {:x (:epoch row)
+   :y (:close row)
+   ;:z 1000
+   :title (col row)
+   :text (str col)})
+
 (defn series-flags
   "extracts one column from ds in format needed by highchart
    for signal plot"
   [bar-study-epoch-ds col]
   ;(println "Series flags col:" col)
-  (let [;ds-with-signal (select-signal-is ds-epoch col :buy)
-        ds-with-signal (select-signal-has bar-study-epoch-ds col)
+  (let [;ds-with-signal (select-signal-has bar-study-epoch-ds col)
+        ;ds-with-signal (select-signal-is bar-study-epoch-ds col :long)
+        ds-with-signal (select-signal-contains bar-study-epoch-ds col #{:long :short})
         r (tds/mapseq-reader ds-with-signal)]
     ;(println "rows with signal: " (tds/row-count ds-with-signal))
-    (into [] (map  (fn [row]
-               ;(println "row: " row)
-                     {:y (:close row)
-                      ;:z 1000
-                      :x (:epoch row)
-                      :title (col row)
-                      :text "desc"})) r)))
-
+    (->> (map #(flag col %) r)
+         (into []))))
 
 (defn convert-series [bar-study-epoch-ds [col type]]
   (cond 
     (or (= type :ohlc) (= type :candlestick) )
     (series-ohlc bar-study-epoch-ds)
 
-    (= type :flag)
+    (= type :flags)
     (series-flags bar-study-epoch-ds col)
 
     :else

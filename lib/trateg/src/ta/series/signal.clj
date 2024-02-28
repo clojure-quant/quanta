@@ -45,6 +45,11 @@
        (price idx)
        0.0))))
 
+(defn select-signal-contains [ds signal-col v]
+  (tc/select-rows ds
+                  (fn [row]
+                    (contains? v (signal-col row)))))
+
 (defn select-signal-is [ds signal-col v]
   (tc/select-rows ds
                   (fn [row]

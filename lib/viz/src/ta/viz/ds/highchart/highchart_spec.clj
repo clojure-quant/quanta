@@ -18,12 +18,17 @@
                    :or {color "blue"
                         title (name column)}}]
   (let [series {:type (type->str type)
+                :id (name column)
                 :name title
                 :yAxis axis
                 :dataGrouping {:enabled false}
                 :color color}
         series (if (= type :flags)
-                 (assoc series :shape "squarepin" :width 16 :onSeries "0")
+                 (assoc series 
+                        :shape "squarepin" ; "circlepin"
+                        :width 16 
+                        :selected true
+                        :onSeries "close")
                  series)]
     series))
 
@@ -113,11 +118,11 @@
 (comment
 
   (def chart-spec [{:trade :flags
-                    :bb-lower {:type :line
+                    :bb-lower {:type :flags
                                :linewidth 2
                                  ;:color (color :blue-900)
                                }
-                    :bb-upper {:type "line"
+                    :bb-upper {:type :line
                                :linewidth 4
                                  ;:color (color :red)
                                }}
