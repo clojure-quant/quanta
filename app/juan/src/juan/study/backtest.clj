@@ -132,6 +132,7 @@
 
 (tc/select-columns @(:signal combined) [:date :daily-close :daily-atr 
                                         :close :spike :doji :spike-doji
+                                        :doji-v :spike-v :spike-doji-v
                                         :long :short])
 ;; => :_unnamed [10008 9]:
 ;;    
@@ -185,10 +186,21 @@
    :chart {:box :fl}
    :charts [{:close :candlestick ; :ohlc 
              :daily-close :line
-             :doji :flags
+             ;:doji :flags
+             :spike-doji {:type :flags 
+                          ;:color "blue" 
+                          :color "rgba(100,0,50,1)"
+                          ;:className "bg-red-900"
+                          :fillColor "rgba(100,200,50,1)" ;"green"
+                          :dataLabels {:backgroundColor "rgba(100,200,50,1)" 
+                                       :borderColor "green"}
+                          }
              }
-            {:daily-atr :line}
-            {:volume :line}]})
+            ;{:daily-atr :line}
+            {:doji-v {:type :column :color "red"}
+             :spike-v {:type :column :color "blue"}
+             :spike-doji-v {:type :column :color "green"}} 
+            {:volume :column}]})
 
 (p/publish-ds->highstock nil combined-chart-spec @(:signal combined))
 

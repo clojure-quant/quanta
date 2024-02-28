@@ -4,7 +4,7 @@
    [tech.v3.dataset :as tds]
    [tablecloth.api :as tc]
    [ta.helper.date :as dt]
-   [ta.series.signal :refer [select-signal-is select-signal-has select-signal-contains]]
+   [ta.trade.signal2 :refer [select-signal-is select-signal-has select-signal-contains]]
    [ta.viz.ds.highchart.chart-spec :refer [series-input]]))
 
 (defn add-epoch

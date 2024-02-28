@@ -11,7 +11,7 @@
    ;[ta.trade.roundtrip-backtest :refer [run-backtest]]
    [ta.trade.metrics.roundtrip-stats :refer [roundtrip-metrics]]
    [ta.trade.metrics.nav :refer [nav-metrics nav]]
-   [ta.series.signal :refer [select-signal-has]]
+   [ta.trade.signal2 :refer [select-signal-has]]
    [ta.trade.trades :refer [get-trades]]
    ))
 

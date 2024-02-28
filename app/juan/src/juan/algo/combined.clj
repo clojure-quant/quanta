@@ -6,6 +6,7 @@
    [tech.v3.datatype :as dtype]
    [ta.calendar.link :refer [link-bars link-bars2]]
    [ta.algo.ds :refer [all-positions-agree-ds]]
+   [ta.trade.signal2 :refer [signal-keyword->signal-double]]
    [juan.algo.spike :refer [spike-signal]]
    [juan.algo.pivot-price-nearby :refer [nearby-pivots]]))
 
@@ -63,6 +64,9 @@
         ]
     (tc/add-columns combined-ds {:spike intraday-spike
                                  :spike-doji spike-doji
+                                 :spike-v (signal-keyword->signal-double intraday-spike)
+                                 :doji-v (signal-keyword->signal-double (:doji intraday-ds))
+                                 :spike-doji-v (signal-keyword->signal-double spike-doji)
                                  :long (long-pivots pivot-max-diff daily-pivots (:close intraday-ds))
                                  :short (short-pivots pivot-max-diff daily-pivots (:close intraday-ds))})))
 
