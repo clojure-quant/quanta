@@ -15,15 +15,16 @@
    plotted with a specified style/position, 
    created from the bar-algo-ds"
   [env spec bar-algo-ds]
-  (let [chart-spec (:charts spec)] ; search for :axes-spec
-    (assert (chart-pane-spec? chart-spec) "please comply with chart-pane-spec")
+  (let [chart-spec (:chart spec)
+        pane-spec (:charts spec)]
+    (assert (chart-pane-spec? pane-spec) "please comply with chart-pane-spec")
     {:render-fn 'ta.viz.renderfn.highcharts/highstock
      :data (-> bar-algo-ds
-               (tc/select-columns (chart-cols chart-spec))
-               (convert-data chart-spec))
-     :spec (highchart-spec chart-spec)}))
+               (tc/select-columns (chart-cols pane-spec))
+               (convert-data pane-spec))
+     :spec (highchart-spec chart-spec pane-spec)}))
 
-(defn add-data-to-spec 
+(defn add-data-to-spec
   "render-spec contains :spec and :data separately. 
    this function merges both. This really should be done in cljs, 
    but it is handy to have it here for testing."

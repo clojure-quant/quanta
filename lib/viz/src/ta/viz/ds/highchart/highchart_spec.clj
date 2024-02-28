@@ -9,10 +9,16 @@
 ;  :dataGrouping grouping
 ;  :id "0"}
 
+(defn type->str [t]
+  (if (keyword? t)
+    (name t)
+    t))
+
+
 (defn one-series [{:keys [column type axis color title]
                    :or {color "blue"
                         title (name column)}}]
-  (let [series {:type type
+  (let [series {:type (type->str type)
                 :name title
                 :yAxis axis
                 :dataGrouping {:enabled false}
@@ -22,55 +28,58 @@
                  series)]
     series))
 
-(defn series [chart]
-  (let [series-seq (chart->series chart)]
+(defn series [panes]
+  (let [series-seq (chart->series panes)]
     (->> (map one-series series-seq)
          (into []))))
 
 ;; AXES SPEC
 
-(def ohlc-height 600)
-(def other-height 10)
-
-(def default-axis
+(def axes-default
   {:resize {:enabled true}
-    :labels {:align "right" :x -3}
-    :title {:text "OHLC"}
-    :height ohlc-height ; "60%"
-    :lineWidth 2})
-
-(defn create-axis [axis-idx]
-  {:labels {:align "right"
-            :x -3}
-              ;:title {:text "Volume"}
-              ;:top "65%"
-   :top (+ ohlc-height (* axis-idx other-height)) ; first additional axes starts at no = 0
-   :height 200; "35%"
-              ;:offset 0
    :lineWidth 2
-   :resize {:enabled true}})
+   :labels {:align "right" :x -3}})
 
-(defn y-axis [chart]
-  (let [nr (axes-count chart)]
+(defn ohlc-axis [ohlc-height]
+  (assoc axes-default
+         :height ohlc-height ; "60%"      
+         :title {:text "OHLC"}))
+
+(defn other-axis [ohlc-height other-height axis-idx]
+  (assoc axes-default
+  ;:title {:text "Volume"}
+   ;:top "65%"
+         :top (+ ohlc-height (* axis-idx other-height)) ; first additional axes starts at no = 0
+         :height other-height ; "35%"
+   ;:offset 0
+         ))
+
+(defn y-axis [chart panes]
+  (let [nr (axes-count panes)
+        ohlc-height (:ohlc-height chart)
+        other-height (:other-height chart)]
     (into []
-          (-> (map create-axis (range nr))
-              (conj default-axis)))))
+          (-> (map #(other-axis ohlc-height other-height %) (range nr))
+              (conj (ohlc-axis ohlc-height))))))
 
 ;; HIGHCHART-SPEC
 
-(defn highchart-opts-default [axes-nr]
-  {;:title {:text title}
-   ;:xAxis {:categories (:labels data)}
-   :xAxis    {:crosshair {:snap true}}
+(def chart-default
+  {; our settings
+   :box :lg
+   :ohlc-height 600
+   :other-height 100
+   ; highchart
+   :xAxis    {:crosshair {:snap true}
+              ;:categories (:labels data)  
+              }
+   ;:title {:text title}
    :navigator     {:enabled true}
    :tooltip {:style {:width "200px"}
              :valueDecimals 4
              ;:valueSuffix " %"
              :shared true}
-   :chart {:height (+ ohlc-height
-                      (* other-height (dec axes-nr))
-                      100 ; size of time window selector
-                      )}
+   :chart {:height 1000} ; this gets overwritten by set-chart-height
    :rangeSelector {; timeframe selector on the top
                    :verticalAlign "top"
                                      ;:selected 1   
@@ -84,11 +93,23 @@
 
 ;  grouping {:units [["week" [1]] ; // unit name - allowed multiples
 ;                  ["month" [1, 2, 3, 4, 6]]]}
+(defn set-chart-height [chart panes]
+  (let [axes-nr (axes-count panes)
+        ohlc-height (:ohlc-height chart)
+        other-height (:other-height chart)]
+    (assoc-in chart [:chart :height]
+              (+ ohlc-height
+                 (* other-height (dec axes-nr))
+                 100 ; size of time window selector
+                 ))))
 
-(defn highchart-spec [chart]
-  (merge {:yAxis (y-axis chart)
-          :series (series chart)}
-         (highchart-opts-default (axes-count chart))))
+(defn highchart-spec [chart panes]
+  (let [chart (or chart {})
+        chart (merge chart-default chart)
+        chart (set-chart-height chart panes)]
+    (assoc chart 
+       :yAxis (y-axis chart panes)
+       :series (series panes))))
 
 (comment
 
@@ -106,11 +127,18 @@
                                ;:plottype (plot-type :columns)
                              }}])
 
-  (y-axis chart-spec)
+  (y-axis {:ohlc-height 600
+           :other-height 100} chart-spec)
 
   (series chart-spec)
 
-  (highchart-spec chart-spec)
+  (highchart-spec {:ohlc-height 600
+                   :other-height 100} chart-spec)
+
+  (highchart-spec {:box :sm
+                   :ohlc-height 600
+                   :other-height 100
+                   } chart-spec)
 
  ; 
   )

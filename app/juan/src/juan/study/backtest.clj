@@ -87,11 +87,14 @@
 
 (def chart-spec
   {:topic :juan-daily-chart
-   :charts [{:close "line"}
-            {:atr "line"}
-            {:volume "line"}]})
+   :chart {:box :fl}
+   :charts [{:close :line ;:color "red"
+             }
+            {:atr :line}
+            {:volume :line}]})
 
 (p/publish-ds->highstock nil chart-spec @(:day combined))
+ 
 
 
 
@@ -177,10 +180,11 @@
 
 (def combined-chart-spec
   {:topic :juan-combined-chart
-   :charts [{:daily-close "line"
-             :close "line"}
-            {:atr "line"}
-            {:volume "line"}]})
+   :chart {:box :fl}
+   :charts [{:daily-close :line
+             :close :line}
+            {:atr :line}
+            {:volume :line}]})
 
 (p/publish-ds->highstock nil combined-chart-spec @(:signal combined))
 
