@@ -11,7 +11,7 @@
                {:date :tomorrow :open 100.0 :high 100.0 :low 100.0 :close 103.0 :volume 100.0}]))
  
 (def table-spec
-  {:topic :test-ds
+  {:topic :demo-ds-table
    :class "table-head-fixed padding-sm table-red table-striped table-hover"
    :style {:width "50vw"
            :height "40vh"
