@@ -92,7 +92,7 @@
              ;:color "red"
              }
             {:atr :line}
-            {:volume :line}]})
+            {:volume :column}]})
 
 (p/publish-ds->highstock nil chart-spec @(:day combined))
  
