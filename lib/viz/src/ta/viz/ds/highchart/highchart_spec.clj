@@ -14,7 +14,6 @@
     (name t)
     t))
 
-
 (defn one-series [{:keys [column type axis color title]
                    :or {color "blue"
                         title (name column)}}]

@@ -88,7 +88,8 @@
 (def chart-spec
   {:topic :juan-daily-chart
    :chart {:box :fl}
-   :charts [{:close :line ;:color "red"
+   :charts [{:close :candlestick ; :ohlc ; :line 
+             ;:color "red"
              }
             {:atr :line}
             {:volume :line}]})
@@ -181,7 +182,7 @@
 (def combined-chart-spec
   {:topic :juan-combined-chart
    :chart {:box :fl}
-   :charts [{:daily-close :line
+   :charts [{:daily-close :candlestick ; :ohlc 
              :close :line}
             {:atr :line}
             {:volume :line}]})

@@ -48,7 +48,7 @@
 
 (defn convert-series [bar-study-epoch-ds [col type]]
   (cond 
-    (= col :bar)
+    (or (= type :ohlc) (= type :candlestick) )
     (series-ohlc bar-study-epoch-ds)
 
     (= type :flag)
