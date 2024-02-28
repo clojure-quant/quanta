@@ -1,12 +1,10 @@
 (ns ta.viz.ds.highchart
   (:require
    [tick.core :as t]
-   [tech.v3.dataset :as tds]
    [tablecloth.api :as tc]
    [ta.viz.ds.highchart.chart-spec :refer [chart-pane-spec? chart-cols]]
    [ta.viz.ds.highchart.data :refer [convert-data]]
    [ta.viz.ds.highchart.highchart-spec :refer [highchart-spec]]))
-
 
 (defn highstock-render-spec
   "returns a render specification {:render-fn :spec :data}. 
@@ -23,17 +21,6 @@
                (tc/select-columns (chart-cols pane-spec))
                (convert-data pane-spec))
      :spec (highchart-spec chart-spec pane-spec)}))
-
-(defn add-data-to-spec
-  "render-spec contains :spec and :data separately. 
-   this function merges both. This really should be done in cljs, 
-   but it is handy to have it here for testing."
-  [render-spec]
-  (let [{:keys [data spec]} render-spec
-        series (:series spec)
-        series (map (fn [series d]
-                      (assoc series :data d)) series data)]
-    (assoc spec :series series)))
 
 (comment
 
@@ -54,10 +41,6 @@
   (-> spec :charts chart-cols)
 
   (highstock-render-spec nil spec ds)
-
-  (-> (highstock-render-spec nil spec ds)
-      add-data-to-spec)
-
 
 ; 
   )

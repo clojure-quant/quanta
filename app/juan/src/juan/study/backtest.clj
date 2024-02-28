@@ -77,13 +77,13 @@
    :style {:width "50vw"
            :height "40vh"
            :border "3px solid green"}
-   :columns [{:path :date}
-             {:path :atr}
+   :columns [{:path :date :format 'ta.viz.lib.format/dt-yyyymmdd}
+             {:path :atr :header "ATR!" :format 'ta.viz.lib.format/fmt-nodigits}
              {:path :close}
              {:path :ppivotnr}]})
 
 
- (p/publish-table nil table-spec @(:day combined))
+ (p/publish-ds->table nil table-spec @(:day combined))
 
 (def chart-spec
   {:topic :juan-daily-chart
@@ -163,22 +163,22 @@
 
 (def combined-table-spec
   {:topic :juan-combined-table
-   :class "table-head-fixed padding-sm table-red table-striped table-hover"
-   :style {:width "50vw"
-           :height "40vh"
-           :border "3px solid green"}
+   :class "table-head-fixed padding-sm table-blue table-striped table-hover table-auto"
+   :style {:width "100%" ; "50vw"
+           :height "100%" ;"40vh"
+           :border "3px solid blue"}
    :columns [{:path :date}
-             {:path :daily-close}
+             {:path :daily-close :attrs 'ta.viz.lib.column/gray-column}
              {:path :daily-atr}
              {:path :close}
-             {:path :spike}
-             {:path :doji}
-             {:path :spike-doji}
+             {:path :spike :header "spike-signal" :attrs 'ta.viz.lib.column/trading-signal}
+             {:path :doji :attrs 'ta.viz.lib.column/trading-signal}
+             {:path :spike-doji :attrs 'ta.viz.lib.column/trading-signal}
              {:path :long}
              {:path :short}
              ]})
 
-(p/publish-table nil combined-table-spec @(:signal combined))
+(p/publish-ds->table nil combined-table-spec @(:signal combined))
 
 (def combined-chart-spec
   {:topic :juan-combined-chart

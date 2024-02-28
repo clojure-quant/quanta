@@ -28,11 +28,17 @@
   (let [r (tds/mapseq-reader bar-study-epoch-ds)]
     (mapv (juxt :epoch :open :high :low :close :volume) r)))
 
- (defn flag [col row]
+; Every flag consists of x, title and text. 
+; The attribute "x" must be set to the point where the flag should appear. 
+; The attribute "title" is the text which is displayed inside the flag on the chart. 
+; The attribute "text" contains the text which will appear when the mouse hover above the flag.
+
+
+(defn flag [col row]
   {:x (:epoch row)
    :y (:close row)
    ;:z 1000
-   :title (col row)
+   :title (str (col row))
    :text (str col)})
 
 (defn series-flags

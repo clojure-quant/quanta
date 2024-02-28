@@ -1,13 +1,10 @@
 (ns ta.viz.ds.highchart.chart-spec)
 
-
-
 (defn chart-pane-spec? [spec]
   true)
 
-
-(defn chart-count [spec]
-  (count spec))
+(defn chart-count [panes]
+  (count panes))
 
 (defn get-chart [spec idx]
   (get spec idx))
@@ -85,9 +82,6 @@
   [nil ; nothing to add in price pane
    {:volume "column"}]
 
-
-  (def spec [{:ohlc}
-             {:volume :type :volume}])
 
   [{:sma-st "line"
     :sma-lt "line"

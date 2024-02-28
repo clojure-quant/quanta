@@ -12,4 +12,7 @@
                ta.viz.lib.layout
                ta.viz.lib.ui
                ta.viz.lib.loader
+               ta.viz.lib.column
+               ta.viz.lib.format
+               ta.viz.lib.resolve
                ]}
