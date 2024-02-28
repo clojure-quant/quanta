@@ -2,7 +2,8 @@
   (:require
    [tick.core :as t]
    [tablecloth.api :as tc]
-   [ta.algo.backtest :refer [backtest-algo backtest-algo-date]]))
+   [ta.algo.backtest :refer [backtest-algo backtest-algo-date]]
+   [ta.viz.publish :as p]))
 
 (def algo-spec
   [:day {:type :trailing-bar
@@ -70,6 +71,30 @@
 ;;    | 2024-02-22T05:00:00Z | 0.006380 | 1.08226 |         6 |
 ;;    | 2024-02-23T05:00:00Z | 0.005715 | 1.08175 |         6 |
 
+(def table-spec
+  {:topic :juan-daily-table
+   :class "table-head-fixed padding-sm table-red table-striped table-hover"
+   :style {:width "50vw"
+           :height "40vh"
+           :border "3px solid green"}
+   :columns [{:path :date}
+             {:path :atr}
+             {:path :close}
+             {:path :ppivotnr}]})
+
+
+ (p/publish-table nil table-spec @(:day combined))
+
+(def chart-spec
+  {:topic :juan-daily-chart
+   :charts [{:close "line"}
+            {:atr "line"}
+            {:volume "line"}]})
+
+(p/publish-ds->highstock nil chart-spec @(:day combined))
+
+
+
 (tc/select-columns @(:minute combined) 
                    [:date :close :doji])
 ;; => :_unnamed [9620 3]:
@@ -129,6 +154,35 @@
 ;;    | 2024-02-22T21:57:00Z |      1.08189 |   0.005201 | 1.08220 | :short | :short |      :short |          | :p0-high |
 ;;    | 2024-02-22T21:58:00Z |      1.08189 |   0.005201 | 1.08229 | :short |  :flat |       :flat |          | :p0-high |
 ;;    | 2024-02-22T21:59:00Z |      1.08189 |   0.005201 | 1.08226 | :short | :short |      :short |          | :p0-high |
+
+
+(def combined-table-spec
+  {:topic :juan-combined-table
+   :class "table-head-fixed padding-sm table-red table-striped table-hover"
+   :style {:width "50vw"
+           :height "40vh"
+           :border "3px solid green"}
+   :columns [{:path :date}
+             {:path :daily-close}
+             {:path :daily-atr}
+             {:path :close}
+             {:path :spike}
+             {:path :doji}
+             {:path :spike-doji}
+             {:path :long}
+             {:path :short}
+             ]})
+
+(p/publish-table nil combined-table-spec @(:signal combined))
+
+(def combined-chart-spec
+  {:topic :juan-combined-chart
+   :charts [{:daily-close "line"
+             :close "line"}
+            {:atr "line"}
+            {:volume "line"}]})
+
+(p/publish-ds->highstock nil combined-chart-spec @(:signal combined))
 
 
 

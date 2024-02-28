@@ -16,7 +16,8 @@
 (defn ds->map [ds]
   ;(tc/rows :as-maps) ; this does not work, type of it is a reified dataset. 
   ; this works in repl, but when sending data to the browser it fails.
-  (into [] (tds/mapseq-reader ds)))
+  (into [] 
+        (tds/mapseq-reader ds)))
 
 
 (defn rtable-render-spec
@@ -27,9 +28,10 @@
   (assert (rtable-spec? spec) "rtable-spec needs to have :columns key")
   {:render-fn 'ta.viz.renderfn.rtable/rtable
    :data (-> bar-algo-ds
-             (tc/select-rows (rtable-cols spec))
+             (tc/select-columns (rtable-cols spec))
              ds->map)
    :spec spec})
+
 
 (comment
 

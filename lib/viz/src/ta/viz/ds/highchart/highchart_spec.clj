@@ -90,7 +90,6 @@
           :series (series chart)}
          (highchart-opts-default (axes-count chart))))
 
-
 (comment
 
   (def chart-spec [{:trade :flags

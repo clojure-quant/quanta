@@ -69,7 +69,7 @@
     ;(info "remote-ds sorted: " (is-ds-sorted? remote-ds))
     (map align (:date bar-ds))))
 
-(defn link-bars3 
+#_(defn link-bars3 
   "ALTERNATIVE IMPLEMETATION WITH LOOP.
    NOT YET READY.
    IS TECHNICALLY BETTER THAN LINK-BARS and LINK-BARS2"

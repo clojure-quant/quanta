@@ -12,7 +12,8 @@
 (defn get-topic [k]
   (info "get-topic: " k)
   (let [v (get @topics k)]
-    (info "topic: " v)
+    ; logging is bad when data of charts/tables is really big.
+    ;(info "topic: " v)
     v))
 
 (defn publish [env spec render-spec]
@@ -29,6 +30,7 @@
   (let [cols (:columns spec)]
     (assert cols "publish-dataset needs to have :columns spec")
     (publish env spec (rtable-render-spec env spec ds))))
+
 
 (defn publish-ds->highstock [env spec ds]
   (let [cols (:charts spec)]
