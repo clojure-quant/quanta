@@ -48,23 +48,8 @@
         prior-day (t/date prior-dt)]
     (at-time prior-day close timezone)))
 
-; current
 
-(defn current-close [calendar dt]
-  "current close (including the close interval boundary)"
-  (if (after-trading-hours? calendar dt true)
-    (trading-close-time calendar (t/date dt))
-    (prior-close calendar dt)))
-
-(defn current-open [calendar dt]
-  "current open (including the open interval boundary)"
-  (if (before-trading-hours? calendar dt true)
-    (trading-open-time calendar (t/date dt))
-    (->> (prior-close calendar dt)
-         (current-open calendar))))
-
-
-; recent (current / prior)
+; close
 
 (defn next-close-dt [calendar dt]
   "like next-close, but also can return the close time of the same day when dt is before close time.
@@ -80,6 +65,22 @@
     (trading-close-time calendar (t/date dt))
     (prior-close calendar dt)))
 
+(defn current-close [calendar dt]
+  "current close (including the close interval boundary)"
+  (if (after-trading-hours? calendar dt true)
+    (trading-close-time calendar (t/date dt))
+    (prior-close calendar dt)))
+
+; open
+
+(defn current-open [calendar dt]
+  "current open (including the open interval boundary)"
+  (if (before-trading-hours? calendar dt true)
+    (trading-open-time calendar (t/date dt))
+    (->> (prior-close calendar dt)
+         (current-open calendar))))
+
+; TODO: next open, prior open
 
 ; upcomming (current / next)
 
