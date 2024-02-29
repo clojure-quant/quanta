@@ -3,8 +3,8 @@
  {org.clojure/clojure    {:mvn/version "1.11.1"}
   aleph/aleph {:mvn/version "0.7.1"} ; websocket client steam bybit
   manifold/manifold {:mvn/version "0.4.2"} ; async channels
-  io.github.clojure-quant/fix-engine {:git/sha "d25efeefd2db73dee622e826ae86248f74f38273"}
   org.pinkgorilla/modular {:mvn/version "0.0.38"}
+  io.github.clojure-quant/fix-engine {:git/sha "d25efeefd2db73dee622e826ae86248f74f38273"}
   ta/calendar {:local/root "../calendar" :deps/manifest :deps}
   ta/engine {:local/root "../engine" :deps/manifest :deps}
   ta/db {:local/root "../db" :deps/manifest :deps}}

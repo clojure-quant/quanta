@@ -1,4 +1,4 @@
-(ns ta.env.live.bar-generator.save-bars
+(ns ta.live.bar-generator.save-bars
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [clojure.pprint :refer [print-table]]

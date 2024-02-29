@@ -1,4 +1,4 @@
-(ns ta.env.live.calendar-time
+(ns ta.live.calendar-time
   (:require
    [taoensso.timbre :as timbre :refer [info warn error]]
    [manifold.stream :as s]

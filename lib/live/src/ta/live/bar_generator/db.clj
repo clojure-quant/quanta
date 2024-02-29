@@ -1,6 +1,4 @@
-(ns ta.env.live.bar-generator.db)
-
-
+(ns ta.live.bar-generator.db)
 
 (defn create-db []
   (atom {:subscriptions {} ; feed+asset -> subscription

@@ -1,4 +1,4 @@
-(ns ta.env.live.quote-manager
+(ns ta.live.quote-manager
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [manifold.stream :as s]

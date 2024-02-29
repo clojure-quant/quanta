@@ -1,4 +1,4 @@
-(ns ta.env.live.bar-generator.bar)
+(ns ta.live.bar-generator.bar)
 
 (defn empty-bar? [{:keys [open] :as bar}]
   (not open))

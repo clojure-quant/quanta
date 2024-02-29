@@ -1,13 +1,13 @@
-(ns ta.env.live.bar-generator2
+(ns ta.live.bar-generator
   (:require
    [taoensso.timbre :as timbre :refer [info warn error]]
    [manifold.stream :as s]
    [tablecloth.api :as tc]
    [tick.core :as t]
    [ta.env.live.quote-manager :as qm]
-   [ta.env.live.bar-generator.bar :as bar]
-   [ta.env.live.bar-generator.db :as db]
-   [ta.env.live.bar-generator.save-bars :refer [save-finished-bars]]))
+   [ta.live.bar-generator.bar :as bar]
+   [ta.live.bar-generator.db :as db]
+   [ta.live.bar-generator.save-bars :refer [save-finished-bars]]))
 
 (defn process-quote [state {:keys [feed asset] :as quote}]
   ;(info "process tick...")
