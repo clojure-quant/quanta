@@ -87,12 +87,13 @@
                   :start (ta.live.quote-manager/create-quote-manager 
                            {:fx (clip/ref :feed-fx)
                             :crypto (clip/ref :feed-bybit)})}
-
-  :live-old {:start (ta.env.live-bargenerator/create-live-environment
-                 {:fx (clip/ref :feed-fx)
-                  :crypto (clip/ref :feed-bybit)}
-                 (clip/ref :duckdb))}
   
+  :live {:start (ta.algo.env/create-env-javelin (clip/ref :bardb-dynamic))}
+  
+  :tickerplant {:start (ta.live.tickerplant/start-tickerplant 
+                        {:algo-env(clip/ref :live)
+                         :quote-manager (clip/ref :quote-manager) })}
+
   ;; LIVE STRATEGIES
   ;:dummy-strategy {:start (ta.env.live-bargenerator/add (clip/ref :live) 
   ;                         (var-get notebook.algo-config.raw-dummy/raw-dummy-strategies))}
@@ -106,16 +107,5 @@
   ;:multicalendar-sma-strategy-forex {:start (ta.env.dsl.multi-calendar/add (clip/ref :live)
   ;                                           (var-get notebook.algo-config.multicalendar-sma/multi-calendar-algo-demo))}
   
-  ;; LIVE STRATEGY MONITORING
-
-  :label-monitor {:start (ta.env.tools.label-monitor/label-monitor-start (clip/ref :live-old))}
-
-  ;; result printer is here mainly for debugging.
-  :result-printer {:start (notebook.playground.live.result-printer/start-print-results (clip/ref :live-old))}
-
-  ;:quote-harvester {:start (juan.fix/start-harvesting (clip/ref :bargenerator))}
-  ;:quote-printer {:start (juan.fix/start-quote-printing (clip/ref :quote-harvester))}
-  
-
 ;
   }}

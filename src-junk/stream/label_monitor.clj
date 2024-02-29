@@ -3,7 +3,7 @@
    [taoensso.timbre :refer [trace debug info warnf error]]
    [manifold.stream :as s]
    [manifold.bus :as mbus]
-   [ta.env.tools.last-msg-summary :as sum]))
+   [ta.live.last-msg-summary :as sum]))
 
 (defn get-label-for-result [msg]
   (get-in msg [:algo-opts :label]))

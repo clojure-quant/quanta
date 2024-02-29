@@ -3,7 +3,7 @@
    [taoensso.timbre :refer [trace debug info warn error]]
    [manifold.stream :as s]
    [ta.quote.core :as quote]
-   [ta.env.tools.last-msg-summary :as summary]))
+   [ta.live.last-msg-summary :as summary]))
 
 (defn create-quote-manager [feeds]
   (let [output-quote-stream (s/stream)

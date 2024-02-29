@@ -8,9 +8,14 @@
    [ta.live.bar-generator.db :as db]
    [ta.live.bar-generator.save-bars :refer [save-finished-bars]]))
 
-(defn process-quote [state {:keys [feed asset] :as quote}]
-  (when-let [bar (db/get-bar (:db state) asset)]
-    (bar/aggregate-tick bar quote)))
+(defn add-quote-to-bar [bar-a quote]
+  (swap! bar-a bar/aggregate-tick quote))
+
+(defn process-quote [state quote]
+  (let [bar-a-seq (db/get-bar-atoms-for-quote (:db state) quote)]
+    (doall 
+       (map #(add-quote-to-bar % quote) bar-a-seq))
+    ))
 
 (defn create-bar-generator [quote-stream bar-db]
   (assert quote-stream "bar-generator needs quote-stream")
@@ -21,7 +26,8 @@
     state))
 
 (defn finish-bar [state {:keys [calendar time]}]
-  (let [bars (db/get-bars-calendar calendar)
+  (let [bar-atoms (db/get-bar-atoms-for-calendar (:db state) calendar)
+        bars (map deref bar-atoms)
         bars-with-data (remove bar/empty-bar? bars)
         time (t/instant time)
         bar-seq (->> bars-with-data
@@ -31,4 +37,7 @@
 
 
 (defn start-generating-bars-for [state bar-asset]
-  (db/create-bar! (:db state) bar-asset))
+  (db/add (:db state) bar-asset))
+
+(defn get-db [state]
+  (:db state))

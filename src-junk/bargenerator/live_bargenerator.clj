@@ -25,7 +25,7 @@
   ; [ta.db.bars.duckdb :as duck]
    [ta.env.live.bar-generator :as bg]
    [ta.quote.core :refer [subscribe quote-stream]]
-   [ta.env.tools.last-msg-summary :as summary]
+   [ta.live.last-msg-summary :as summary]
    [ta.env.tools.id-bus :refer [create-id-bus]]))
 
 (defn create-live-environment [feed bar-db]

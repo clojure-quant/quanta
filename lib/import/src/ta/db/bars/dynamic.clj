@@ -10,7 +10,9 @@
   (get-bars [this opts window]
     (info "dynamic get-bars " opts window)
     ;(info "this: " this)
-    (import-on-demand this opts window)
+    (if (:import opts)
+      (import-on-demand this opts window)
+      (warn "no import defined for: " opts))
     (b/get-bars (:bar-db this) opts window))
   (append-bars [this opts ds-bars]
     (info "dynamic append-bars " opts ds-bars)

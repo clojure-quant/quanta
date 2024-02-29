@@ -15,12 +15,15 @@
   (get-engine [this]
     (:engine this))
   (set-watcher [this w]
-    (swap! (:watcher this) w))
+    (warn "setting watcher!")
+    (reset! (:watcher this) w))
   (add-algo [this spec]
     (let [e (algo-env/get-engine this)
           ops (spec-ops/spec->ops this spec)] 
-      (when-let [w @(:watcher this)] 
-        (w spec))
+      (if-let [w @(:watcher this)] 
+        (w spec)
+        (warn "no watcher set - cannot trigger it!!")
+        )
       (info "adding engine ops: " ops)
       (ops/add-ops e ops)))
   (remove-algo [this spec]

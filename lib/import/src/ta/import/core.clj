@@ -33,12 +33,12 @@
 (defn get-bars
   "downloads timeseries from provider"
   [{:keys [asset import] :as asset-opts} range]
-  (let [get-series (get-provider-fn import asset)
-        _ (assert get-series (str "provider not found: [" import "]"))
-        series-ds (get-series asset-opts range)]
-    ;series-ds
-    (tc/add-columns series-ds {:asset asset :epoch 0 :ticks 0})
-    ))
+  (when import
+    (let [get-series (get-provider-fn import asset)
+          _ (assert get-series (str "provider not found: [" import "]"))
+          series-ds (get-series asset-opts range)]
+      (tc/add-columns series-ds {:asset asset :epoch 0 :ticks 0})
+    )))
 
 
 (comment
