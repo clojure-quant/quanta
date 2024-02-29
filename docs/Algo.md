@@ -23,3 +23,24 @@ Backtest views:
 
 same as realtime but calculated only once.
 additionally backtest statistics.
+
+Screener
+
+run algo on multiple assets.
+
+Multi-timeframe algo
+(algo-calc ds algo-opts) :daily bars
+(algo-calc ds algo-opts) :5 min bars
+
+Into :5 min bars series a column is added with row-id of the most-recent :daily bar. Therefore on each :5min row it is not only possible to access any :daily column of the most-recent :daily row but also any days prior to that.
+
+Backtest
+Env gets ds-1min ds-daily
+(let [d (algo-calc ds-daily algo-opts)
+1m (algo-calc ds-1min algo-opts)
+links (create-links ds-1min ds-daily)
+1m-d (add-cols 1m links d)]
+(algo-calc 1m-d algo-opts))
+
+Realtime
+Same as backtest but on-daily and on-1m and on-daily events trigger such calculations.

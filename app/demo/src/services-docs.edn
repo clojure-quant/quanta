@@ -82,7 +82,13 @@
                    ;(ta.quote.fix/create-quotefeed-fix :ctrader-tradeviewmarkets-quote)
           }
   
-  :live {:start (ta.env.live-bargenerator/create-live-environment
+  :quote-manager {; having the quote-manager public allows us to interact with it.
+                  ; so we can subscribe to a quote ad-hoc and use it.
+                  :start (ta.live.quote-manager/create-quote-manager 
+                           {:fx (clip/ref :feed-fx)
+                            :crypto (clip/ref :feed-bybit)})}
+
+  :live-old {:start (ta.env.live-bargenerator/create-live-environment
                  {:fx (clip/ref :feed-fx)
                   :crypto (clip/ref :feed-bybit)}
                  (clip/ref :duckdb))}
@@ -102,21 +108,10 @@
   
   ;; LIVE STRATEGY MONITORING
 
-  :label-monitor {:start (ta.env.tools.label-monitor/label-monitor-start (clip/ref :live))}
+  :label-monitor {:start (ta.env.tools.label-monitor/label-monitor-start (clip/ref :live-old))}
 
   ;; result printer is here mainly for debugging.
-  :result-printer {:start (notebook.playground.live.result-printer/start-print-results (clip/ref :live))}
-
-  
-  
-  ;:bargenerator {:start (ta.tickerplant.bar-generator/bargenerator-start
-  ;                       :us ; calendar
-  ;                       :m ; minute bars
-  ;                       ;ta.tickerplant.bar-generator/print-finished-bars
-  ;                       (partial ta.db.bars.duckdb/append-bars (clip/ref :duckdb))
-  ;                       )
-  ;               :stop (ta.tickerplant.bar-generator/bargenerator-stop this)
-  ;              } 
+  :result-printer {:start (notebook.playground.live.result-printer/start-print-results (clip/ref :live-old))}
 
   ;:quote-harvester {:start (juan.fix/start-harvesting (clip/ref :bargenerator))}
   ;:quote-printer {:start (juan.fix/start-quote-printing (clip/ref :quote-harvester))}
