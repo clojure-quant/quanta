@@ -4,7 +4,7 @@
    [manifold.stream :as s]
    [tablecloth.api :as tc]
    [tick.core :as t]
-   [ta.env.live.quote-manager :as qm]
+   [ta.live.quote-manager :as qm]
    [ta.live.bar-generator.bar :as bar]
    [ta.live.bar-generator.db :as db]
    [ta.live.bar-generator.save-bars :refer [save-finished-bars]]))
