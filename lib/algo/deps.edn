@@ -1,8 +1,9 @@
 {:paths ["src"]
  :deps
  {org.clojure/clojure    {:mvn/version "1.11.1"}
-  ta/engine {:local/root "../engine" :deps/manifest :deps}
-  ta/env {:local/root "../env" :deps/manifest :deps}
+  ta/db {:local/root "../db" :deps/manifest :deps} ; bar-db
+  ta/calendar {:local/root "../calendar" :deps/manifest :deps}
+  ta/engine {:local/root "../engine" :deps/manifest :deps} ; engine (javelin) used by algo-env
  }
  :aliases
  {:test {:extra-paths ["test"]
