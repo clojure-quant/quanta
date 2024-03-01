@@ -1,22 +1,28 @@
 (ns notebook.algo-config.tickerplant-monitor
   (:require
+   [taoensso.timbre :refer [info warn error]]
    [modular.system]
    [tablecloth.api :as tc]
    [ta.algo.env.protocol :as algo]
    [ta.live.tickerplant :refer [current-bars]]))
 
-(def t (modular.system/system :tickerplant))
-
 (defn get-bars-calendar [calendar]
-  (let [[exchange interval] calendar]
-    (->> (current-bars t calendar)
-         (map #(assoc % :exchange exchange :interval interval)))))
+  (let [t (modular.system/system :tickerplant)
+        [exchange interval] calendar]
+    (when t
+      (->> (current-bars t calendar)
+           (map #(assoc % :exchange exchange :interval interval))))))
 
 (defn get-tickerplant-status [_env _opts dt]
+  (try 
   (let [forex (get-bars-calendar [:forex :m])
-        crypto (get-bars-calendar [:crypto :m])
-        all (concat forex crypto)]
-    (tc/dataset all)))
+        crypto (get-bars-calendar [:crypto :m])]
+    (when (and forex crypto)
+          (tc/dataset (concat forex crypto))
+          ))
+    (catch Exception ex 
+      (error "excepting in get-tickerplant-status")
+      nil)))
 
 (def algo-spec
   {:type :time
@@ -39,7 +45,7 @@
    :algo ['notebook.algo-config.tickerplant-monitor/get-tickerplant-status
           'ta.viz.publish/publish-ds->table]})
  
-(defn create-tickerplant-monitor [env _]
+(defn create-tickerplant-monitor [env & args]
    (algo/add-algo env algo-spec))
     
 

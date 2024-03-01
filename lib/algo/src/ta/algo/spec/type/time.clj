@@ -11,5 +11,6 @@
         (algo-fn env spec time)
         (catch Exception ex
           (error "exception calculating time-strategy. " spec)
+          (error ex)
           nil)))))
 

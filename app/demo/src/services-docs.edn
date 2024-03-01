@@ -79,7 +79,7 @@
   :live {:start (ta.algo.env/create-env-javelin (clip/ref :bardb-dynamic))}
   
   :tickerplant {:start (ta.live.tickerplant/start-tickerplant 
-                        {:algo-env(clip/ref :live)
+                        {:algo-env (clip/ref :live)
                          :quote-manager (clip/ref :quote-manager) })}
 
   ;; LIVE STRATEGIES
@@ -91,23 +91,20 @@
   :juan-live {:start (juan.notebook.live.multiple/create-juan
                        (clip/ref :live)
                        (clip/ref :tickerplant)
-                       (clip/ref :quote-manager)
-                       (clip/ref :bardb-dynamic)
                        (clip/ref :timbre)
-
-
                          ; ref to :tickerplant is needed to start tickerplant FIRST.
                        )}
-  ;:tickerplant-monitor {:start ( notebook.algo-config.tickerplant-monitor/create-tickerplant-monitor
-  ;                    (clip/ref :live)
-  ;                    (clip/ref :tickerplant)
-  ;                    ; ref to :tickerplant is needed to start tickerplant FIRST.
-  ;                    )}
-;  :quote-monitor {:start (notebook.playground.live.quotemanager/create-quote-monitor
-;                                (clip/ref :live)
-;                                (clip/ref :tickerplant)
-;                             ; ref to :tickerplant is needed to start tickerplant FIRST.
-;                                )}
+  :tickerplant-monitor {:start (notebook.algo-config.tickerplant-monitor/create-tickerplant-monitor
+                                 (clip/ref :live)
+                                 (clip/ref :tickerplant)
+                                 (clip/ref :timbre)
+                      ; ref to :tickerplant is needed to start tickerplant FIRST.
+                      )}
+  :quote-monitor {:start (notebook.algo-config.quote-monitor/create-quote-monitor
+                            (clip/ref :live)
+                            (clip/ref :tickerplant)
+                            (clip/ref :timbre)
+                                )}
 
   ;:sma-strategy-forex {:start (ta.env.dsl.barstrategy/add-bar-strategies (clip/ref :live)
   ;                             (var-get notebook.algo-config.simple-sma-crossover/algos-fx))}

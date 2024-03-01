@@ -1,15 +1,20 @@
 (ns notebook.algo-config.quote-monitor
   (:require
+   [taoensso.timbre :refer [info warn error]]
    [modular.system]
    [tablecloth.api :as tc]
    [ta.algo.env.protocol :as algo]
    [ta.live.quote-manager :as qm]))
 
-(def q (modular.system/system :quote-manager))
-
 (defn get-quote-snapshot [_env _opts dt]
-  (-> (qm/quote-snapshot q)
-      (tc/dataset)))
+  (try
+    (when-let [q (modular.system/system :quote-manager)]
+      (when-let [quotes (qm/quote-snapshot q)]
+        (when-not (empty? quotes)
+          (tc/dataset quotes))))
+    (catch Exception ex
+      (error "exception get-quote-snapshot!")
+      nil)))
 
 (def algo-spec
   {:type :time
@@ -25,16 +30,23 @@
              {:path :size}]
    :algo ['notebook.algo-config.quote-monitor/get-quote-snapshot
           'ta.viz.publish/publish-ds->table]})
- 
-(defn create-quote-monitor [env _]
-   (algo/add-algo env algo-spec))
-    
+
+(defn create-quote-monitor [algo-env & args]
+  (try 
+  (algo/add-algo algo-env algo-spec)
+   (catch Exception ex
+     (error "exception in adding quote monitor: " ex)
+     
+     )  
+    )
+  )
+
 
 
 (comment
-  
+
   (get-quote-snapshot nil nil nil)
-  
+
   (require '[modular.system])
   (def env (modular.system/system :live))
 

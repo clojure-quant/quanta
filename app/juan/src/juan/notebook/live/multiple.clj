@@ -55,19 +55,24 @@
             ;:step 10.0
             ;:percentile 70
             }
-   :signal {:formula [:day :minute]
+   #_:signal #_{:formula [:day :minute]
+            :asset "EUR/USD"
             :spike-atr-prct-min 0.5
             :pivot-max-diff 0.001
-            :algo 'juan.notebook.live.multiple/daily-intraday-combined
+            :algo 'juan.algo.combined/daily-intraday-combined
+            ;'juan.notebook.live.multiple/daily-intraday-combined
             ; formula cells dont support this syntax yet:
             #_['juan.algo.combined/daily-intraday-combined
                'juan.notebook.live.multiple/publish-result]
-            }])
+            }
+   ])
 
 (defn set-asset [algo-spec asset]
   (-> algo-spec
       (update 1 assoc :asset asset)
-      (update 3 assoc :asset asset)))
+      (update 3 assoc :asset asset)
+      ;(update 5 assoc :asset asset)
+      ))
 
 (defn permutate-assets [algo]
   (map (fn [{:keys [fx] :as asset}]
