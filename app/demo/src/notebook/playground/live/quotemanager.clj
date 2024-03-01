@@ -1,7 +1,9 @@
 (ns notebook.playground.live.quotemanager
   (:require
    [modular.system]
-   [ta.live.quote-manager :as qm]))
+   [ta.live.quote-manager :as qm]
+   [clojure.pprint :refer [print-table]]
+   ))
 
 ;; create quote-manager from feeds
 
@@ -21,3 +23,8 @@
 (qm/subscribe q {:asset "ETHUSDT" :feed :crypto})
 
 (qm/quote-snapshot q)
+
+(-> (qm/quote-snapshot q)
+    print-table
+ )
+

@@ -70,24 +70,6 @@
   (def env (modular.system/system :live))
   
   (create-juan env nil)
-  
-; watcher is adding time-generator for:   [:us :d]
-; [ta.live.calendar-time:25] - creating chimes for calendar:  [:us :d]
-; Execution error (ArityException) at ta.calendar.core/current-close (core.clj:40).
-; Wrong number of args (1) passed to: ta.calendar.day/current-close
-
-(require '[ta.calendar.core :refer [current-close]])
-  (current-close :us :m)
-  (current-close :us :h)
-  (current-close :us :d)
-  ;; => Execution error (ArityException) at ta.calendar.core/current-close (core.clj:40).
-  ;;    Wrong number of args (1) passed to: ta.calendar.day/current-close
-
-  
-
-
-  
-
 
  ; 
   )

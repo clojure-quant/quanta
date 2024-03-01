@@ -36,7 +36,7 @@
   (try
     (i/get-bars opts task)
     (catch Exception ex
-      (error "dynamic-import.get-bars exception!")
+      (error "dynamic-import.get-bars exception! opts: " opts)
       nil)))
 
 (defn append-bars-safe [state opts task bar-ds]
@@ -46,7 +46,7 @@
       (bardb/append-bars (:bar-db state) opts bar-ds)
       (overview/update-range (:overview-db state) opts (:db task)))
     (catch Exception ex
-      (error "dynamic-import.append-bars exception!")
+      (error "dynamic-import.append-bars exception! asset: " (:asset opts) "calendar: " (:calendar opts))
       nil)))
 
 (defn run-import-task [state opts task]
@@ -67,6 +67,6 @@
 (defn import-on-demand [state {:keys [asset calendar] :as opts} req-window]
   (info "import-on-demand " opts req-window)
   (let [tasks (tasks-for-request state opts req-window)]
-    (info "import tasks: " tasks)
+    (info "tasks: " tasks)
     (when (import-needed? tasks)
       (run-import-tasks state opts tasks))))
