@@ -42,8 +42,8 @@
         :close (t/new-time 17 0 0)
         :week week-5
         :timezone "Europe/Berlin"}
-   
-   :jp {:open (t/new-time 9 0 0) 
+
+   :jp {:open (t/new-time 9 0 0)
         :close (t/new-time 17 0 0)
         :week week-5
         :timezone "Asia/Tokyo"}
@@ -56,15 +56,11 @@
    :test-equal {:open (t/new-time 0 0 0)
                 :close (t/new-time 0 0 0)
                 :week week-5
-                :timezone "Asia/Tokyo"}
+                :timezone "Asia/Tokyo"}})
 
 
-   })
-
-
-
-
-
+(defn calendar-exists? [calendar-kw]
+  (contains? calendars calendar-kw))
 
 
 (comment
@@ -72,5 +68,8 @@
   (contains? week-5 t/SUNDAY)
   (contains? week-7 t/SUNDAY)
 
+  (calendar-exists? :us)
+  (calendar-exists? :us555)
+
 ;
-)
+  )

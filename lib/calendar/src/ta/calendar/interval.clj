@@ -56,6 +56,11 @@
    :m30 (gen-intraday-step-fn 30 :minutes)
    })
 
+
+  (defn interval-exists? [interval-kw]
+    (contains? intervals interval-kw))
+
+
 (comment
   (now-in-zone "Europe/Paris")
   (now-in-zone "America/New_York")
