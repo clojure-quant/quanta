@@ -7,8 +7,7 @@
    [tech.v3.datatype :as dtype]
    [clojure.java.io :as java-io]
    [tmducken.duckdb :as duckdb]
-   [ta.db.bars.protocol :refer [bardb]]
-   ))
+   [ta.db.bars.protocol :refer [bardb]]))
 
 ;; https://github.com/techascent/tmducken
 
@@ -37,7 +36,7 @@
 (defn- date-type [ds]
   (-> ds :date meta :datatype))
 
-(defn- ensure-date-instant 
+(defn- ensure-date-instant
   "duckdb needs one fixed type for the :date column.
    we use instant, which techml calls packed-instant"
   [ds]
@@ -47,15 +46,14 @@
       ds
       (tc/add-column ds :date (map t/instant (:date ds))))))
 
-(defn- ensure-volume-float64
+(defn- ensure-col-float64
   "duckdb needs one fixed type for the :volume column.
    many data-sources return volume as int, so we might have to convert it."
-  [ds]
-  (let [t (-> ds :volume meta :datatype)
-        float64? (= t :float64)]
-    (if float64?
+  [ds col]
+  (let [t (-> ds col meta :datatype)]
+    (if (= t :float64)
       ds
-      (tc/add-column ds :volume (map double (:volume ds))))))
+      (tc/add-column ds col (map double (col ds))))))
 
 (defn- has-col [ds col]
   (->> ds
@@ -104,24 +102,28 @@
   (tc/dataset [(:open ds)
                (:epoch ds)
                (:date ds)
-               (:close ds)               
+               (:close ds)
                (:volume ds)
                (:high ds)
                (:low ds)
                (:ticks ds)
-               (:asset ds)
-               ]))
+               (:asset ds)]))
 
 (defn append-bars [session {:keys [calendar asset]} ds]
   (assert (has-dohlcv? ds) "ds needs to have columns [:date :open :high :low :close :volume]")
   (let [table-name (bar-category->table-name calendar)
-        ds (ensure-date-instant ds)
-        ds (ensure-volume-float64 ds)
-        ds (ensure-epoch ds)
-        ds (ensure-ticks ds)
-        ds (ensure-asset ds asset)
-        ds (order-columns-strange ds)
-        ds (tc/set-dataset-name ds table-name)]
+        ds (-> ds
+               (ensure-date-instant)
+               (ensure-col-float64 :volume)
+               (ensure-col-float64 :open)
+               (ensure-col-float64 :high)
+               (ensure-col-float64 :low)
+               (ensure-col-float64 :close)
+               (ensure-epoch)    
+               (ensure-ticks)
+               (ensure-asset asset)
+               (order-columns-strange)
+               (tc/set-dataset-name table-name))]
     (info "duckdb append-bars # " (tc/row-count ds))
     ;(info "duckdb append-bars ds-meta: " (tc/info ds))
     ;(info "session: " session)
@@ -144,29 +146,28 @@
 
 (defn sql-query-bars-for-asset [calendar asset]
   (let [table-name (bar-category->table-name calendar)]
-    (str "select * from " table-name " where asset = '" asset "' order by date")
-  ))
+    (str "select * from " table-name " where asset = '" asset "' order by date")))
 
 
 (defn get-bars-full [session calendar asset]
-    (debug "get-bars " asset)
-    (let [query (sql-query-bars-for-asset calendar asset)]
+  (debug "get-bars " asset)
+  (let [query (sql-query-bars-for-asset calendar asset)]
     (-> (duckdb/sql->dataset (:conn session) query)
         (keywordize-columns))))
 
 (defn sql-query-bars-for-asset-since [calendar asset since]
   (let [table-name (bar-category->table-name calendar)]
-    (str "select * from " table-name 
-         " where asset = '" asset "'" 
+    (str "select * from " table-name
+         " where asset = '" asset "'"
          " and date > '" since "'"
          " order by date")))
 
 (defn get-bars-since [session calendar asset since]
-    (debug "get-bars-since " asset since)
-    (let [query (sql-query-bars-for-asset-since calendar asset since)]
-      (-> (duckdb/sql->dataset (:conn session) query)
-          (keywordize-columns))))
-  
+  (debug "get-bars-since " asset since)
+  (let [query (sql-query-bars-for-asset-since calendar asset since)]
+    (-> (duckdb/sql->dataset (:conn session) query)
+        (keywordize-columns))))
+
 
 (defn sql-query-bars-for-asset-window [calendar asset dstart dend]
   (let [table-name (bar-category->table-name calendar)]
@@ -183,19 +184,18 @@
     (-> (duckdb/sql->dataset (:conn session) query)
         (keywordize-columns))))
 
-(defn get-bars 
+(defn get-bars
   "returns bars for asset/calendar + window"
   [session {:keys [asset calendar]} {:keys [start end] :as window}]
-  (cond  
+  (cond
     (and start end)
     (get-bars-window session calendar asset start end)
 
     start
-    (get-bars-since session calendar asset start)  
-    
-    :else 
-    (get-bars-full session calendar asset)
-    ))
+    (get-bars-since session calendar asset start)
+
+    :else
+    (get-bars-full session calendar asset)))
 
 (defn delete-bars [session]
   (duckdb/sql->dataset
@@ -235,8 +235,7 @@
                    [:forex :d]
                    [:forex :m]
                    [:crypto :d]
-                   [:crypto :m]
-                   ])))))
+                   [:crypto :m]])))))
 
 (defrecord bardb-duck [db conn new?]
   bardb
@@ -280,14 +279,14 @@
   (get-bars db [:us :m] "EUR/USD")
   (get-bars db [:us :m] "ETHUSDT")
 
-  (sql-query-bars-for-asset-since 
-   [:us :m] "EUR/USD" "2024-01-26T19:35:00Z") 
+  (sql-query-bars-for-asset-since
+   [:us :m] "EUR/USD" "2024-01-26T19:35:00Z")
 
   (require '[tick.core :as t])
   (def dt (t/instant "2024-01-26T19:35:00Z"))
   dt
-  
-  (get-bars-since db [:us :m] "EUR/USD" "2024-01-26T19:35:00Z" )
+
+  (get-bars-since db [:us :m] "EUR/USD" "2024-01-26T19:35:00Z")
   (get-bars-since db [:us :m] "EUR/USD" "2024-01-26 19:35:00")
   (get-bars-since db [:us :m] "EUR/USD" dt)
 
@@ -296,17 +295,17 @@
   (get-bars-since db [:us :m] "EUR/USD" dt2)
 
 
-  (get-bars-window db [:us :m] "EUR/USD" 
+  (get-bars-window db [:us :m] "EUR/USD"
                    "2024-01-26T19:35:00Z"
                    "2024-01-26T19:45:00Z")
 
-    (get-bars-window db [:us :m] "ETHUSDT"
+  (get-bars-window db [:us :m] "ETHUSDT"
                    "2024-01-29T18:56:00Z"
                    "2024-01-29T19:00:00Z")
-  
-   (get-bars-window db [:us :m] "ETHUSDT"
-                 (tick/instant "2024-01-29T18:56:00Z")
-                 (tick/instant "2024-01-29T19:00:00Z"))
+
+  (get-bars-window db [:us :m] "ETHUSDT"
+                   (tick/instant "2024-01-29T18:56:00Z")
+                   (tick/instant "2024-01-29T19:00:00Z"))
 
 
 
@@ -314,9 +313,9 @@
   (get-bars-since duckdb [:us :m] "EUR/USD" (str time))
   (t/inst time)
   (format-date time)
-  
+
   (str time)
-  
+
   (t/inst "2023-01-01 0:0:0")
 
   (now)

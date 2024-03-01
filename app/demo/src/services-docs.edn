@@ -86,7 +86,7 @@
                   ; so we can subscribe to a quote ad-hoc and use it.
                   :start (ta.live.quote-manager/create-quote-manager 
                            {:fx (clip/ref :feed-fx)
-                            :crypto (clip/ref :feed-bybit)})}
+                            :bybit (clip/ref :feed-bybit)})}
   
   :live {:start (ta.algo.env/create-env-javelin (clip/ref :bardb-dynamic))}
   
@@ -95,8 +95,11 @@
                          :quote-manager (clip/ref :quote-manager) })}
 
   ;; LIVE STRATEGIES
-  ;:dummy-strategy {:start (ta.env.live-bargenerator/add (clip/ref :live) 
-  ;                         (var-get notebook.algo-config.raw-dummy/raw-dummy-strategies))}
+  :crypto-raw {:start (notebook.algo-config.crypto-live/create-crypto 
+                       (clip/ref :live)
+                       (clip/ref :tickerplant)
+                       ; ref to :tickerplant is needed to start tickerplant FIRST.
+                       )}
 
   ;:sma-strategy-forex {:start (ta.env.dsl.barstrategy/add-bar-strategies (clip/ref :live)
   ;                             (var-get notebook.algo-config.simple-sma-crossover/algos-fx))}

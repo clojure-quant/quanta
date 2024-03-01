@@ -32,18 +32,33 @@
 (defn import-needed? [tasks]
   (not (empty? tasks)))
 
+(defn get-bars-safe [opts task]
+  (try
+    (i/get-bars opts task)
+    (catch Exception ex
+      (error "dynamic-import.get-bars exception!")
+      nil)))
+
+(defn append-bars-safe [state opts task bar-ds]
+  (try
+    (when bar-ds
+      (info "dynamically received ds-bars! appending to db...")
+      (bardb/append-bars (:bar-db state) opts bar-ds)
+      (overview/update-range (:overview-db state) opts (:db task)))
+    (catch Exception ex
+      (error "dynamic-import.append-bars exception!")
+      nil)))
+
 (defn run-import-task [state opts task]
-  (let [ds-bars (i/get-bars opts task)]
-    ;(info "appending bars: state: " state)
-    ;(info "appending bars: " ds-bars)
-    (bardb/append-bars (:bar-db state) opts ds-bars)
-    (overview/update-range (:overview-db state) opts (:db task))))
+  (let [bar-ds (get-bars-safe opts task)]
+    (append-bars-safe state opts task bar-ds)
+    ))
 
 (defn run-import-tasks [state opts tasks]
   (doall (map #(run-import-task state opts %) tasks)))
 
 (defn tasks-for-request [state {:keys [asset calendar import] :as opts} req-window]
-  (if import 
+  (if import
     (let [db-window (overview/available-range (:overview-db state) opts)
           tasks (import-tasks  req-window db-window)]
       tasks)

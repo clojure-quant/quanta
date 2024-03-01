@@ -6,26 +6,35 @@
    [cljc.java-time.instant :as inst]
    [cljc.java-time.local-date-time :as ldt]
    [cljc.java-time.zone-offset :refer [utc]]
-   [ta.import.helper :refer [str->float remove-last-bar-if-timestamp-equals]]))
+   [ta.import.helper :refer [str->float remove-last-bar-if-timestamp-equals]]
+   [tick.core :as t]))
 
 (defn epoch-millisecond->datetime [epoch-ms]
   (-> epoch-ms
       inst/of-epoch-milli
       (ldt/of-instant utc)))
 
+(def inst-class (class (t/instant)))
+
 (defn ->epoch-millisecond [dt]
-  (-> dt
-      (ldt/to-instant utc)
-      inst/to-epoch-milli))
+  (let [dt-instant (if (= inst-class (class dt))
+                     dt
+                     (ldt/to-instant dt utc))]
+    (inst/to-epoch-milli dt-instant)))
+
 
 (comment
+  inst-class
+  (= inst-class (class (t/instant)))
+  (= inst-class (class (t/date-time)))
   (epoch-millisecond->datetime 1669852800000)
   (Long/parseLong "1693180800000")
 
-   (require '[tick.core :as tick]) 
-  (-> (tick/date-time "2018-11-01T00:00:00")
+  (require '[tick.core :as t])
+  (-> (t/date-time "2018-11-01T00:00:00")
+      ;(t/instant)
       ->epoch-millisecond
-      epoch-millisecond->datetime
+      ;epoch-millisecond->datetime
       )
  ; 
   )
@@ -43,21 +52,19 @@
 (defn- convert-bar [bar]
   ;; => ["1693180800000" "26075" "26075.5" "25972.5" "25992" "6419373" "246.72884245"]
   (let [[open-time open high low close volume turnover] bar]
-  {:date (-> open-time Long/parseLong epoch-millisecond->datetime) ; we work with local-datetime
-   :open (str->float open)
-   :high (str->float high)
-   :low (str->float low)
-   :close (str->float close)
-   :volume (str->float volume)
-   :turnover (str->float turnover)
-   }))
+    {:date (-> open-time Long/parseLong epoch-millisecond->datetime) ; we work with local-datetime
+     :open (str->float open)
+     :high (str->float high)
+     :low (str->float low)
+     :close (str->float close)
+     :volume (str->float volume)
+     :turnover (str->float turnover)}))
 
 (defn- parse-history [result]
   (->> result
        (:result)
        (:list)
-       (map convert-bar)
-       ))
+       (map convert-bar)))
 
 (defn get-history-request
   "gets crypto price history
@@ -72,15 +79,15 @@
                               :query-params query-params})
                    (:body)
                    (cheshire/parse-string true))]
-     (if (= (:retCode result) 0)
-         (parse-history result)
-         (throw (ex-info (:retMsg result) result)))))
+    (if (= (:retCode result) 0)
+      (parse-history result)
+      (throw (ex-info (:retMsg result) result)))))
 
 
 (defn get-history-page
   [query-params]
-   (get-history-request 
-    (update query-params :start ->epoch-millisecond)))
+  (get-history-request
+   (update query-params :start ->epoch-millisecond)))
 
 (defn get-history
   "gets history since timestamp.
@@ -93,7 +100,7 @@
         total (atom '())
         last-page-date (atom nil)]
     (loop [page-start (:start query-params)]
-      (let [query-params (assoc query-params 
+      (let [query-params (assoc query-params
                                 :start page-start
                                 :limit page-size)
             page-series (get-history-page query-params)
@@ -111,49 +118,58 @@
 
 
 
-(comment 
-  
-  (require '[tick.core :as t]) 
+(comment
+
+  (require '[tick.core :as t])
   (def start-date-daily (t/date-time "2018-11-01T00:00:00"))
 
-   (-> (get-history-request
-          {:symbol "BTCUSD"
-           :start 1669852800000
-           :interval "D"
-           :limit 3})
-       (count))
-  
+  (-> (get-history-request
+       {:symbol "BTCUSD"
+        :start 1669852800000
+        :interval "D"
+        :limit 3})
+      (count))
+
 
   (-> (get-history-request
-         {:symbol "BTCUSD"
-          :start (-> "2024-02-01T00:00:00" tick/date-time ->epoch-millisecond)
-          :interval "D"
-          :limit 200})
+       {:symbol "BTCUSD"
+        :start (-> "2024-02-29T00:00:00" t/date-time ->epoch-millisecond)
+        :end (-> "2024-02-29T00:05:00" t/date-time ->epoch-millisecond)
+        :interval "1"
+        :limit 200})
       count)
-  
 
-   (-> (get-history-page
-        {:symbol "BTCUSD"
-         :start (tick/date-time "2018-11-01T00:00:00") ;start-date-daily
-         :interval "D"
-         :limit 200
-         :page 1
-         })
-       first
+
+  (-> (get-history-page
+       {:symbol "BTCUSD"
+        :start (tick/date-time "2018-11-01T00:00:00") ;start-date-daily
+        :interval "D"
+        :limit 200
+        :page 1})
+      first
        ;count
-       )
+      )
 
   (epoch-millisecond->datetime 1687046400000)
 
   (require '[clojure.pprint :refer [print-table]])
 
-   (-> 
-    (get-history {:symbol "BTCUSD"
-                  :start (tick/date-time "2018-11-01T00:00:00") 
-                  :interval "D"
-                  :limit 200
-                  })
-    print-table)
-   
+  (->
+   (get-history {:symbol "BTCUSD"
+                 :start (tick/date-time "2018-11-01T00:00:00")
+                 :interval "D"
+                 :limit 200})
+   print-table)
+
+  (-> (get-history
+       {:symbol "BTCUSD"
+        :start (-> "2024-02-29T00:00:00" t/date-time)
+        :end (-> "2024-02-29T00:05:00" t/date-time)
+        :interval "1"
+      ;:limit 200
+        })
+      count)
+
+
   ;
   )

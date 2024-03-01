@@ -24,6 +24,7 @@
         (get-trailing-bars env spec time)
         (catch Exception ex
           (error "exception in loading bars: spec: "  spec)
+          (error ex)
           nil)))))
 
 (defn create-trailing-barstrategy [{:keys [trailing-n asset algo] :as spec}]

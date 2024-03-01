@@ -88,8 +88,7 @@
     {:period range}
 
     :else
-    (start-end->kibot range) 
-    ))
+    (start-end->kibot range)))
 
 (defn get-bars [{:keys [asset calendar]} range]
   (info "get-bars kibot " asset " " calendar " " range " ..")
@@ -180,8 +179,8 @@
   (symbol->provider "IJH")
 
   (require '[ta.helper.date :refer [parse-date]])
-  (def dt (parse-date "2024-02-01"))
-  (class dt)dt
+  (def dt (parse-date "2024-02-26"))
+  (class dt) dt
 
   (fmt-yyyymmdd dt)
   (def dt-inst (t/inst))
@@ -192,28 +191,32 @@
   (t/year dt-inst)
   (t/month (t/date-time dt-inst))
   (t/month dt)
-  
+
   (start-end->kibot {:start (t/inst)})
   (start-end->kibot {:end (t/inst)})
   (start-end->kibot {:start (t/inst) :end (t/inst)})
 
   (get-bars {:asset "MSFT" ; stock
-               :calendar [:us :d]}
-              {:start dt})
+             :calendar [:us :d]}
+            {:start dt})
 
-  (get-bars {:asset "NG0" ; future
-               :calendar [:us :d]}
-              {:start dt})
+  (-> (get-bars {:asset "NG0" ; future
+                 :calendar [:us :d]}
+                {:start dt})
+      (tc/info)
+   
+   )
+  
 
 
   (get-bars {:asset "EURUSD" ; forex
-               :calendar [:forex :d]}
-              {:start (parse-date "2023-09-01")})
+             :calendar [:forex :d]}
+            {:start (parse-date "2023-09-01")})
 
 
   (get-bars  {:asset "IJH" ; ETF
-                :calendar [:etf :d]}
-               {:start (parse-date "2023-09-01")})
+              :calendar [:etf :d]}
+             {:start (parse-date "2023-09-01")})
 
 ;
   )

@@ -35,7 +35,7 @@
   [{:keys [asset import] :as asset-opts} range]
   (when import
     (let [get-series (get-provider-fn import asset)
-          _ (assert get-series (str "provider not found: [" import "]"))
+          _ (assert get-series (str "import-provider not found: [" import "]"))
           series-ds (get-series asset-opts range)]
       (tc/add-columns series-ds {:asset asset :epoch 0 :ticks 0})
     )))
