@@ -27,8 +27,8 @@
           time-stream (get-time-stream state)
           closeable (chime/chime-at date-seq
                                     (fn [time]
-                                      (s/put! time-stream {:calendar calendar
-                                                           :time time}))
+                                      @(s/put! time-stream {:calendar calendar
+                                                            :time time}))
                                     {:on-finished log-finished :error-handler log-error})]
       (swap! (:calendars state) assoc calendar closeable))))
 
@@ -44,3 +44,29 @@
   (-> @(:calendars state)
       keys))
 
+(comment
+
+  (calendar-seq-instant [:us :d])
+  (calendar-seq-instant [:crypto :d])
+
+  (require '[tick.core :as t])
+
+  (defn next-est [calendar]
+  (let [dt (->> (calendar-seq-instant calendar )
+                (take 1)
+                first)
+             ;; => #inst "2024-02-29T21:30:00.000000000-00:00"
+        ]
+         ;(t/in dt "UTC")
+    (t/in dt "America/New_York"))  
+    )
+
+  (next-est [:crypto :d])
+  (next-est [:forex :d])
+
+  (next-est [:us :m])
+  (next-est [:crypto :m])
+  (next-est [:forex :m])
+
+  ;
+  )

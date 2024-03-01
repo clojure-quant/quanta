@@ -8,7 +8,7 @@
       (dissoc :open :high :low :close :volume :ticks)
       (update :epoch inc)))
 
-(defn aggregate-tick [{:keys [open high low _close volume ticks epoch] :as bar} {:keys [price size]}]
+(defn aggregate-tick [{:keys [open high low volume ticks] :as bar} {:keys [price size]}]
   (merge bar
          (if (empty-bar? bar)
            {:open price

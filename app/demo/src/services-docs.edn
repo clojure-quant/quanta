@@ -83,17 +83,31 @@
                          :quote-manager (clip/ref :quote-manager) })}
 
   ;; LIVE STRATEGIES
-  :crypto-raw {:start (notebook.algo-config.crypto-live/create-crypto 
-                       (clip/ref :live)
-                       (clip/ref :tickerplant)
-                       ; ref to :tickerplant is needed to start tickerplant FIRST.
-                       )}
+  ;:crypto-raw {:start (notebook.algo-config.crypto-live/create-crypto 
+  ;                     (clip/ref :live)
+  ;                     ; ref to :tickerplant is needed to start tickerplant FIRST.
+  ;                     (clip/ref :tickerplant) (clip/ref :timbre))}
   
   :juan-live {:start (juan.notebook.live.multiple/create-juan
                        (clip/ref :live)
                        (clip/ref :tickerplant)
+                       (clip/ref :quote-manager)
+                       (clip/ref :bardb-dynamic)
+                       (clip/ref :timbre)
+
+
                          ; ref to :tickerplant is needed to start tickerplant FIRST.
                        )}
+  ;:tickerplant-monitor {:start ( notebook.algo-config.tickerplant-monitor/create-tickerplant-monitor
+  ;                    (clip/ref :live)
+  ;                    (clip/ref :tickerplant)
+  ;                    ; ref to :tickerplant is needed to start tickerplant FIRST.
+  ;                    )}
+;  :quote-monitor {:start (notebook.playground.live.quotemanager/create-quote-monitor
+;                                (clip/ref :live)
+;                                (clip/ref :tickerplant)
+;                             ; ref to :tickerplant is needed to start tickerplant FIRST.
+;                                )}
 
   ;:sma-strategy-forex {:start (ta.env.dsl.barstrategy/add-bar-strategies (clip/ref :live)
   ;                             (var-get notebook.algo-config.simple-sma-crossover/algos-fx))}

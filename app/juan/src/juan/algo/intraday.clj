@@ -4,4 +4,5 @@
 
 
 (defn ensure-date-unique [_env _spec bar-ds]
-  (tc/unique-by bar-ds :date))
+  (when bar-ds 
+    (tc/unique-by bar-ds :date)))

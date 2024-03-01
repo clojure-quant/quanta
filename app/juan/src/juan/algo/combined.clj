@@ -36,7 +36,7 @@
       nil)))
 
 
-(defn daily-intraday-combined [env spec daily-ds intraday-ds]
+(defn daily-intraday-combined-impl [env spec daily-ds intraday-ds]
   (info "intraday-combined: daily# " (tc/row-count daily-ds) "intraday# " (tc/row-count intraday-ds))
   (let [pivot-max-diff (:pivot-max-diff spec)
         _ (assert pivot-max-diff "intraday-combined needs :max-diff for pivot calculation")
@@ -71,6 +71,16 @@
                                  :short (short-pivots pivot-max-diff daily-pivots (:close intraday-ds))})))
 
 
-
+(defn daily-intraday-combined [env spec daily-ds intraday-ds]
+  (try 
+    (if (and daily-ds intraday-ds)
+       (daily-intraday-combined-impl env spec daily-ds intraday-ds)    
+       (do (when-not daily-ds (error "juan-fx formula has no daily-ds input."))
+           (when-not intraday-ds (error "juan-fx formula has no intraday-ds input."))
+           nil))
+    (catch Exception ex
+      (error "exception in juan/combined spec: " spec ex)
+      nil)))
+  
 
  

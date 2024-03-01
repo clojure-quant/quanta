@@ -34,7 +34,11 @@
   (subscribe [this asset]
     (let [{:keys [client]} @(:state this)]
       (info "fix subscribe: " asset "fix-client: " client)
-      (fix-api/subscribe client {:symbol asset})))
+      (try 
+         (fix-api/subscribe client {:symbol asset})  
+        (catch Exception ex
+          (error "fix subscribe " asset " " client "exception : " ex)))
+      ))
   (unsubscribe [this asset]
     (info "fix unsubscribe [NOT IMPLEMENTED]: " asset))
   (quote-stream [this]

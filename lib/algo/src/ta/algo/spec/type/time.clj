@@ -10,6 +10,6 @@
       (try
         (algo-fn env spec time)
         (catch Exception ex
-          (warn "exception calculating time-strategy.")
+          (error "exception calculating time-strategy. " spec)
           nil)))))
 

@@ -129,10 +129,11 @@
   (take 5 (calendar-seq-instant :us :d))
 
   (take 5 (calendar-seq :eu :d))
+  (take 5 (calendar-seq :forex :m))
+
   (take 30 (calendar-seq :us :d))
   (take 100 (calendar-seq :eu :h))
   (take 100 (calendar-seq-prior :eu :h))
-
 
   (take 5 (calendar-seq :eu :h))
 

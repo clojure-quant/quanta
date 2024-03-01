@@ -47,11 +47,7 @@
    :algo ['notebook.algo-config.crypto-live/nil-algo
           'notebook.algo-config.crypto-live/publish-result]})
 
-
-
-
-
-(defn create-crypto [env _]
+(defn create-crypto [env & _args]
   (let [specs (permutate/->assets algo-spec ["BTCUSDT" "ETHUSDT"])
         result-a-seq (doall (map #(algo/add-algo env %) specs))]
     result-a-seq))

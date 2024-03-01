@@ -27,8 +27,8 @@
 (defn switch-bar [bar-a]
   (swap! bar-a bar/switch))
 
-(defn switch-bars [bar-a-seq]
-  (warn "switching " (count bar-a-seq) " bars ..")
+(defn switch-bars [calendar time bar-a-seq]
+  (warn "switching calendar " calendar "# bars: "(count bar-a-seq) " time: " time)
   (doall (map switch-bar bar-a-seq)))
 
 (defn finish-bar [state {:keys [calendar time]}]
@@ -39,7 +39,7 @@
         bar-seq (->> bars-with-data
                      (map #(assoc % :date time)))
         bar-ds (tc/dataset bar-seq)]
-    (switch-bars bar-atoms)
+    (switch-bars calendar time bar-atoms)
     (save-finished-bars (:bar-db state) calendar bar-ds)))
 
 (defn start-generating-bars-for [state bar-asset]

@@ -12,7 +12,7 @@
     ;(info "this: " this)
     (if (:import opts)
       (import-on-demand this opts window)
-      (warn "no import defined for: " opts))
+      (debug "no import defined for: " opts))
     (b/get-bars (:bar-db this) opts window))
   (append-bars [this opts ds-bars]
     (info "dynamic append-bars " opts ds-bars)

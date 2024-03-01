@@ -2,7 +2,7 @@
   (:require
    [taoensso.timbre :as timbre :refer [info warn error]]
    [ta.algo.env.protocol :as algo-env]
-   [ta.algo.spec.inspect :refer [subscriptions calendar-subscriptions]]
+   [ta.algo.spec.inspect :refer [subscriptions calendar-subscriptions time-subscriptions]]
    [ta.live.quote-manager :as quotes]
    [ta.live.bar-generator :as bargen]
    [ta.live.calendar-time :as ct]))
@@ -33,7 +33,8 @@
 (defn process-added-algo [state spec]
   (let [qs (subscriptions spec)
         cs (calendar-subscriptions spec)
-        times (map :calendar cs)]
+        ts (time-subscriptions spec)
+        times (map :calendar ts)]
     (doall (map #(process-subscription state %) qs))
     (doall (map #(process-calendar-subscription state %) cs))
     (doall (map #(process-calendar state %) times))

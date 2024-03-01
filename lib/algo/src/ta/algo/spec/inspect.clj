@@ -8,6 +8,8 @@
               (partition 2 spec))
          (into []))))
 
+;; QUOTE SUBSCRIPTION
+
 (defn- subscription? [{:keys [asset feed] :as spec}]
   (and asset feed))
 
@@ -16,6 +18,8 @@
     (->> (filter subscription? spec-vec)
          (map #(select-keys % [:asset :feed])))))
 
+;; BARGENERATOR SUBSCRIPTION
+
 (defn- calendar-subscription? [{:keys [asset feed calendar] :as spec}]
   (and asset feed calendar))
 
@@ -23,6 +27,17 @@
   (let [spec-vec (specs spec)]
     (->> (filter calendar-subscription? spec-vec)
          (map #(select-keys % [:asset :feed :calendar])))))
+
+;; TIME
+
+(defn- time? [{:keys [calendar] :as spec}]
+  calendar)
+
+(defn time-subscriptions [spec]
+  (let [spec-vec (specs spec)]
+    (->> (filter time? spec-vec)
+         (map #(select-keys % [:calendar])))))
+
 
 (comment
   (def algo-spec

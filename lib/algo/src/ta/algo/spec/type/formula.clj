@@ -14,5 +14,5 @@
       (try
         (apply algo-fn env spec args)
         (catch Exception ex
-          (warn "exception calculating formula-strategy.")
+          (error "exception calculating formula-strategy spec: " spec)
           nil)))))
