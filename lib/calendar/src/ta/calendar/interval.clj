@@ -12,9 +12,13 @@
 
 (defn get-calendar-day-duration [calendar-kw]
   (let [{:keys [open close] :as calendar} (calendar-kw calendars)]
-    (if (intraday? calendar)
-      (t/divide (t/between open close) (t/new-duration 1 :seconds))
-      (t/divide (t/between close open) (t/new-duration 1 :seconds)))))
+    (cond
+      (t/< open close) (t/divide (t/between open close)
+                                 (t/new-duration 1 :seconds))
+      (t/> open close) (t/divide (t/- (t/new-duration 1 :days) (t/between close open))
+                                 (t/new-duration 1 :seconds))
+      (t/= open close) (t/divide (t/new-duration 1 :days)
+                                 (t/new-duration 1 :seconds)))))
 
 (defn gen-intraday-step-fn [n unit]
   ; close

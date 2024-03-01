@@ -80,6 +80,8 @@
 
   ; TODO more tests
 
+  ;; INTRADAY
+
   (deftest current-close-intraday
     (testing "dt inside interval"
       (is (t/= dt-thursday-17-00 (current-close us-cal dt-friday-12-34-56)))
@@ -143,7 +145,6 @@
       (is (t/= dt-friday-17-00 (prior-close-dt us-cal dt-saturday-12-00)))
       (is (not (t/= dt-saturday-17-00 (prior-close-dt us-cal dt-saturday-12-00))))))
 
-  ; TODO: next-open vs next-day-open
   (deftest next-open-day
     (testing "dt inside interval"
       (is (t/= dt-friday-09-00 (next-open us-cal dt-thursday-16-45)))
@@ -156,10 +157,43 @@
     ;  (is (not (t/= dt-friday-09-00 (next-open us-cal dt-thursday-06-00)))))
     )
 
+  ;; FOREX
+  
   (deftest overnight
     (testing "dt inside interval"
       (is (t/= (t/date "2024-02-06") (t/date (next-open (:forex cal/calendars) dt-monday6))))
       (is (not (t/= (t/date dt-saturday06) (t/date (next-open (:forex cal/calendars) dt-friday18)))))
       (is (t/= (t/date dt-sunday06) (t/date (next-open (:forex cal/calendars) dt-friday18))))
       (is (t/= (t/date dt-sunday06) (t/date (next-open (:forex cal/calendars) dt-saturday06))))
-      (is (t/= (t/date "2024-02-12") (t/date (next-open (:forex cal/calendars) dt-sunday12)))))))
+      (is (t/= (t/date "2024-02-12") (t/date (next-open (:forex cal/calendars) dt-sunday12))))))
+
+  ;(deftest prior-close-overnight
+  ;  (testing "dt inside interval"
+  ;    (is (t/= dt-thursday-17-00 (prior-close-dt forex-cal dt-friday-12-34-56)))
+  ;    (is (not (t/= dt-friday-17-00 (prior-close-dt forex-cal dt-friday-12-34-56)))))
+  ;  (testing "dt on interval boundary"
+  ;    (is (t/= dt-wednesday-17-00 (prior-close-dt forex-cal dt-thursday-17-00)))
+  ;    (is (not (t/= dt-thursday-17-00 (prior-close-dt forex-cal dt-thursday-17-00)))))
+  ;  (testing "dt before trading hours"
+  ;    (is (t/= dt-thursday-17-00 (prior-close-dt forex-cal dt-friday-06-00)))
+  ;    (is (not (t/= dt-friday-17-00 (prior-close-dt forex-cal dt-friday-06-00)))))
+  ;  (testing "dt after trading hours"
+  ;    (is (t/= dt-thursday-17-00 (prior-close-dt forex-cal dt-thursday-23-00)))
+  ;    (is (not (t/= dt-friday-17-00 (prior-close-dt forex-cal dt-thursday-23-00)))))
+  ;  (testing "dt before trading hours (from next week)"
+  ;    (is (t/= dt-friday-17-00 (prior-close-dt forex-cal dt-monday-next-06-00)))
+  ;    (is (not (t/= dt-monday-next-09-00 (prior-close-dt forex-cal dt-monday-next-06-00)))))
+  ;  (testing "dt after trading hours (weekend)"
+  ;    (is (t/= dt-friday-17-00 (prior-close-dt forex-cal dt-friday-18-00)))
+  ;    (is (not (t/= dt-saturday-17-00 (prior-close-dt forex-cal dt-friday-17-15)))))
+  ;  (testing "dt on trading week start"
+  ;    (is (t/= dt-friday-17-00 (prior-close-dt forex-cal dt-monday-next-09-00)))
+  ;    (is (not (t/= dt-monday-next-09-00 (prior-close-dt forex-cal dt-monday-next-09-00)))))
+  ;  (testing "dt on trading week close"
+  ;    (is (t/= dt-thursday-17-00 (prior-close-dt forex-cal dt-friday-17-00)))
+  ;    (is (not (t/= dt-friday-17-00 (prior-close-dt forex-cal dt-friday-17-00)))))
+  ;  (testing "dt not on trading day"
+  ;    (is (t/= dt-friday-17-00 (prior-close-dt forex-cal dt-saturday-12-00)))
+  ;    (is (not (t/= dt-saturday-17-00 (prior-close-dt forex-cal dt-saturday-12-00))))))
+  
+  )

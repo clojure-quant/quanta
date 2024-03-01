@@ -32,6 +32,24 @@
 (defn time-closed? [calendar dt]
   (not (time-open? calendar dt)))
 
+(defn day-with-close? [calendar dt]
+  "checks if the given day closes"
+  (if (intraday? calendar)
+    (day-open? calendar dt)
+    ; overnight
+    (let [day-before (t/<< dt (t/new-duration 1 :days))]
+      (and (day-open? calendar dt)
+           (day-open? calendar day-before)))))
+
+(defn day-with-open? [calendar dt]
+  "checks if the given day opens"
+  (if (intraday? calendar)
+    (day-open? calendar dt)
+    ; overnight
+    (let [day-after (t/>> dt (t/new-duration 1 :days))]
+      (and (day-open? calendar dt)
+           (day-open? calendar day-after)))))
+
 (defn before-trading-hours?
   "default behavoir: checks if dt < calendar open time inside the current trading day
    customization:
@@ -56,12 +74,9 @@
         (intraday? calendar)  (lt time open)
         ;; |... old day ...]...[... new day ...|    ; with previous and next trading day part
         ;; |...................[... new day ...|    ; no previous trading day part
-        (overnight? calendar) (let [day-before (t/<< dt (t/new-duration 1 :days))
-                                    day-after (t/>> dt (t/new-duration 1 :days))]
+        (overnight? calendar) (let [day-after (t/>> dt (t/new-duration 1 :days))]
                                 (and (lt time open)
-                                     (day-open? calendar day-after)
-                                     (or (day-closed? calendar day-before)
-                                         (t/> time close))))))))
+                                     (day-open? calendar day-after)))))))
 
 (defn after-trading-hours?
   "default behavoir: checks if dt > calendar close time inside the current trading day
@@ -87,12 +102,68 @@
         (intraday? calendar) (gt time close)
         ;; |... old day ...]...[... new day ...|    ; with previous and next trading day part
         ;; |... old day ...]...................|    ; no next trading day part
-        (overnight? calendar) (let [day-before (t/<< dt (t/new-duration 1 :days))
-                                    day-after (t/>> dt (t/new-duration 1 :days))]
+        (overnight? calendar) (let [day-before (t/<< dt (t/new-duration 1 :days))]
                                 (and (gt time close)
-                                     (day-open? calendar day-before)
-                                     (or (day-closed? calendar day-after)
-                                         (t/< time open))))))))
+                                     (day-open? calendar day-before)))))))
+
+(defn day-has-prior-close? [calendar dt first-close]
+  "overnight: if day-before is open then the day has a close on 00:00 (earliest time at a day) and should return always true"
+  (let [time (t/time dt)]
+    (cond
+      (day-closed? calendar dt) false
+      (intraday? calendar) (t/>= time first-close)
+      (overnight? calendar) (let [day-before (t/<< dt (t/new-duration 1 :days))
+                                  day-after (t/>> dt (t/new-duration 1 :days))]
+                              (or (day-open? calendar day-before)
+                                  (and (t/>= time first-close)
+                                       (day-open? calendar day-after)))))))
+
+(defn day-has-next-close? [calendar dt first-close close]
+  "NOTE: dt has to be valid (aligned to interval)"
+  (let [time (t/time dt)]
+    (cond
+      (day-closed? calendar dt) false
+      (intraday? calendar) (t/<= time close)
+      (overnight? calendar) (let [day-before (t/<< dt (t/new-duration 1 :days))
+                                  day-after (t/>> dt (t/new-duration 1 :days))]
+                              (or (and (t/<= time first-close)
+                                       (day-open? calendar day-after))
+                                  (and (t/<= time close)
+                                       (day-open? calendar day-before)))))))
+;
+(defn inside-overnight-gap? [calendar dt first-close close]
+  "only true if the day has an open and close part and dt is between"
+  (if (overnight? calendar)
+    (let [time (t/time dt)
+          day-before (t/<< dt (t/new-duration 1 :days))
+          day-after (t/>> dt (t/new-duration 1 :days))]
+      (and (t/> time close)
+           (day-open? calendar day-before)
+           (t/< time first-close)
+           (day-open? calendar day-after)))
+    false))
+
+(defn overnight-weekend? [{:keys [close] :as calendar} dt]
+  (let [time (t/time dt)
+        day-after (t/>> dt (t/new-duration 1 :days))]
+    (and (overnight? calendar)
+         (t/> time close)
+         (day-closed? calendar day-after))))
+
+(defn overnight-gap-or-weekend? [{:keys [close] :as calendar} dt first-close]
+  (if (overnight? calendar)
+    (let [time (t/time dt)
+          day-before (t/<< dt (t/new-duration 1 :days))
+          day-after (t/>> dt (t/new-duration 1 :days))
+          after-close? (and (t/> time close)
+                            (day-open? calendar day-before))
+          inside-gap? (and after-close?
+                           (t/< time first-close)
+                           (day-open? calendar day-after))
+          weekend? (and after-close?
+                        (day-closed? calendar day-after))]
+      (or inside-gap? weekend?))
+    false))
 
 (defn trading-open-time [{:keys [open timezone] :as calendar} date]
   (at-time date open timezone))
