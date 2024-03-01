@@ -1,5 +1,9 @@
 (ns ta.gann.svg-view
   (:require
+   [tick.core :as tick :refer [>>]]
+   [tick.alpha.interval :as t.i]
+   [cljc.java-time.duration :as duration]
+   [ta.helper.date :refer [parse-date]]
    [svg-clj.utils :as utils]
    [svg-clj.elements :as el]
    [svg-clj.transforms :as tf]
@@ -8,10 +12,6 @@
    [svg-clj.parametric :as p]
    [svg-clj.layout :as lo]
    [svg-clj.tools :as tools]
-   [ta.helper.date :refer [parse-date]]
-   [cljc.java-time.duration :as duration]
-   [tick.core :as tick :refer [>>]]
-   [tick.alpha.interval :as t.i]
    [wadogo.scale :refer [scale]]))
 
 ;; SVG is XML based, which means that every element is available within the SVG DOM. 

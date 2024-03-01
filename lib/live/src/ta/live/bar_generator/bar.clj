@@ -4,7 +4,9 @@
   (not open))
 
 (defn switch [bar]
-  (dissoc bar :open :high :low :close :volume :ticks))
+  (-> bar 
+      (dissoc :open :high :low :close :volume :ticks)
+      (update :epoch inc)))
 
 (defn aggregate-tick [{:keys [open high low _close volume ticks epoch] :as bar} {:keys [price size]}]
   (merge bar
