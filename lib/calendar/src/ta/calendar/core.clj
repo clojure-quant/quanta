@@ -37,7 +37,7 @@
         current-close-dt (:current-close interval)]
     (if dt
       (current-close-dt calendar dt)
-      (current-close-dt calendar))))
+      (current-close-dt calendar (t/now)))))
 
 (defn calendar-seq
   ([calendar-kw interval-kw]
