@@ -1,5 +1,5 @@
 (ns ta.live.env-watcher
-  (:require 
+  (:require
    [taoensso.timbre :as timbre :refer [info warn error]]
    [ta.algo.env.protocol :as algo-env]
    [ta.algo.spec.inspect :refer [subscriptions calendar-subscriptions]]
@@ -30,7 +30,6 @@
       (info "watcher is adding time-generator for:  " calendar)
       (ct/add-calendar (:time-generator state) calendar))))
 
-
 (defn process-added-algo [state spec]
   (let [qs (subscriptions spec)
         cs (calendar-subscriptions spec)
@@ -50,7 +49,7 @@
         w (fn [spec]
             (info "watcher received:  spec")
             (process-added-algo state spec))]
-    (algo-env/set-watcher env w)  
+    (algo-env/set-watcher env w)
     state))
 
 

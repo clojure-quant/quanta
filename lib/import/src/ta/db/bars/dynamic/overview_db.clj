@@ -29,7 +29,7 @@
    :schema-flexibility :write  ;default - strict value types need to be defined in advance. 
    ;:schema-flexibility :read ; transact any  kind of data into the database you can set :schema-flexibility to read
    :initial-tx overview-schema ; commit a schema
-  })
+   })
 
 (defn- create! [cfg]
   (warn "creating datahike db..")
@@ -37,7 +37,7 @@
   (d/create-database cfg)
   (d/connect cfg))
 
-(defn start-overview-db [path] 
+(defn start-overview-db [path]
   (let [cfg (cfg path)
         db-filename (get-in cfg [:store :path])]
     (info "starting datahike-overview-db at path: " db-filename)
@@ -45,21 +45,21 @@
       (d/connect cfg)
       (create! cfg))))
 
-(defn stop-overview-db [conn] 
+(defn stop-overview-db [conn]
   (when conn
     (info "disconnecting from datahike..")
     (d/release conn)))
 
-(defn available-range 
+(defn available-range
   "returns a map {:start :end} or nil."
   [conn {:keys [asset calendar]}]
   (let [[market interval] calendar]
-  (d/q '[:find (pull ?i [:start :end]) .
-         :in $ asset market interval
-         :where [?i :asset asset]
-                [?i :market market]
-                [?i :interval interval]]
-        @conn asset market interval)))
+    (d/q '[:find (pull ?i [:start :end]) .
+           :in $ asset market interval
+           :where [?i :asset asset]
+           [?i :market market]
+           [?i :interval interval]]
+         @conn asset market interval)))
 
 (defn- find-id
   "returns the id of an existing entry or nil."
@@ -68,12 +68,12 @@
     (d/q '[:find  ?i .
            :in $ asset market interval
            :where [?i :asset asset]
-                  [?i :market market]
-                  [?i :interval interval]]
+           [?i :market market]
+           [?i :interval interval]]
          @conn asset market interval)))
 
 (defn- key-as-inst [m key]
-  (if-let [d (key m)] 
+  (if-let [d (key m)]
     (assoc m key (t/inst d))
     m))
 
@@ -82,21 +82,19 @@
       (key-as-inst :start)
       (key-as-inst :end)))
 
-
 (defn update-range [conn {:keys [asset calendar] :as opts} range]
   (let [id (find-id conn opts)
         range (ensure-inst range)
-        tx (if id 
+        tx (if id
              (assoc range :db/id id)
              (let [[market interval] calendar]
                (merge range {:asset asset
-                             :market market 
+                             :market market
                              :interval interval})))]
     (info "overview tx: " tx)
     (d/transact conn [tx])))
-  
-  
-(comment 
+
+(comment
   (def conn (start-overview-db "/tmp/datahike-overview"))
   conn
 
@@ -106,8 +104,7 @@
                      :market :us
                      :interval :d
                      :start (t/inst)
-                     :end (t/inst)
-                    }])
+                     :end (t/inst)}])
 
   (available-range conn {:asset "QQQ"
                          :calendar [:us :d]})
@@ -116,23 +113,20 @@
 
   (find-id conn {:asset "QQQ"
                  :calendar [:us :d]})
-   
-   (find-id conn {:asset "ORCL"
-                  :calendar [:us :d]})
-   
+
+  (find-id conn {:asset "ORCL"
+                 :calendar [:us :d]})
 
   (ensure-inst {})
   (ensure-inst {:start (t/date-time)})
   (ensure-inst {:start (t/date-time)
                 :end (t/instant)})
-  
 
-   (update-range conn {:asset "ORCL"
-                       :calendar [:us :d]} {:start (t/inst)})
-  
-   (update-range conn {:asset "ORCL"
+  (update-range conn {:asset "ORCL"
+                      :calendar [:us :d]} {:start (t/inst)})
+
+  (update-range conn {:asset "ORCL"
                       :calendar [:us :d]} {:end (t/inst)})
 
-  
- ; 
+; 
   )

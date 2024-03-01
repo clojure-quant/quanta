@@ -43,7 +43,7 @@
   (let [symbols (:symbols @state)
         quote-messages (map symbol->quote symbols)
         publish-msg! (partial publish! this)]
-    (doall 
+    (doall
      (map publish-msg! quote-messages))))
 
 (defn add-asset [state asset]
@@ -51,7 +51,6 @@
 
 (defn update-price-asset [state asset]
   (swap! state update-in [:symbols asset] next-price))
-
 
 (defn gen-change-prices [{:keys [state] :as this}]
   (fn []
@@ -64,8 +63,6 @@
     (feed-publish-quotes! this)
     ;(info "publishing quotes.. done!")
     ))
-
-
 (defrecord quotefeed-random [opts state]
   quotefeed
   (connect [this]
@@ -90,8 +87,7 @@
 (defn create-quotefeed-random [opts]
   (let [feed (quotefeed-random. opts (atom {:symbols {}}))]
     (create-stream! feed)
-    feed
-    ))
+    feed))
 
 ;; in demo see: notebook.live.random-quotes
 

@@ -31,4 +31,4 @@
            {:render-fn 'ta.viz.renderfn.vega/vega-lite
             :data data
             :spec spec})
- 
+

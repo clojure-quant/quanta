@@ -1,8 +1,7 @@
 (ns ta.warehouse.load
   (:require
    [ta.warehouse :as wh]
-   [ta.helper.ds :refer [ds->map]]
-   ))
+   [ta.helper.ds :refer [ds->map]]))
 
 (defn load-series
   "algo has to create :position column

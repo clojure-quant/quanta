@@ -22,7 +22,6 @@
                      (ldt/to-instant dt utc))]
     (inst/to-epoch-milli dt-instant)))
 
-
 (comment
   inst-class
   (= inst-class (class (t/instant)))
@@ -47,7 +46,6 @@
 ;; https://bybit-exchange.github.io/bybit-official-api-docs/en/index.html#operation/query_symbol
 ;; Intervals:  1 3 5 15 30 60 120 240 360 720 "D" "M" "W" "Y"
 ;; limit:      less than or equal 200
-
 
 (defn- convert-bar [bar]
   ;; => ["1693180800000" "26075" "26075.5" "25972.5" "25992" "6419373" "246.72884245"]
@@ -83,7 +81,6 @@
       (parse-history result)
       (throw (ex-info (:retMsg result) result)))))
 
-
 (defn get-history-page
   [query-params]
   (get-history-request
@@ -116,8 +113,6 @@
           (recur page-last-date))))
     @total))
 
-
-
 (comment
 
   (require '[tick.core :as t])
@@ -130,7 +125,6 @@
         :limit 3})
       (count))
 
-
   (-> (get-history-request
        {:symbol "BTCUSD"
         :start (-> "2024-02-29T00:00:00" t/date-time ->epoch-millisecond)
@@ -138,7 +132,6 @@
         :interval "1"
         :limit 200})
       count)
-
 
   (-> (get-history-page
        {:symbol "BTCUSD"
@@ -170,6 +163,5 @@
         })
       count)
 
-
-  ;
+;
   )

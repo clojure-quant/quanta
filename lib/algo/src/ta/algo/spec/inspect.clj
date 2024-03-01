@@ -16,16 +16,13 @@
     (->> (filter subscription? spec-vec)
          (map #(select-keys % [:asset :feed])))))
 
-
 (defn- calendar-subscription? [{:keys [asset feed calendar] :as spec}]
   (and asset feed calendar))
 
 (defn calendar-subscriptions [spec]
   (let [spec-vec (specs spec)]
     (->> (filter calendar-subscription? spec-vec)
-         (map #(select-keys % [:asset :feed :calendar]))
-         )))
-
+         (map #(select-keys % [:asset :feed :calendar])))))
 
 (comment
   (def algo-spec
@@ -59,7 +56,6 @@
               :spike-atr-prct-min 0.5
               :pivot-max-diff 0.001
               :algo 'juan.algo.combined/daily-intraday-combined}])
-
 
   (subscriptions algo-spec)
   (calendar-subscriptions algo-spec)

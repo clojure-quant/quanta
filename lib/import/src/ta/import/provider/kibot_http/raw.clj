@@ -18,7 +18,7 @@
 
 (defn download-link [url]
   (info "downloading link: " url)
-  (let [request @(http/get url {:socket-timeout 90000 
+  (let [request @(http/get url {:socket-timeout 90000
                                 :connection-timeout 90000})
         asset (get-asset request)]
     {:asset asset
@@ -35,7 +35,6 @@
 
 (defn load-csv-data [asset]
   (slurp (str "../../output/kibot-http/" asset ".txt")))
-
 
 (defn download-import [url]
   (println "downloading url: " url)
@@ -62,13 +61,12 @@
   (-> @(http/get url)
       :body
       (bs/to-string)
-     prn)
+      prn)
 
-
- ; 
+; 
   )
 
 
 
-  
-  
+
+

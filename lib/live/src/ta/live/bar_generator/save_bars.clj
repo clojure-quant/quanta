@@ -28,10 +28,9 @@
         (do (info "bar-generator finish: calendar: " calendar   "# bars: " (tc/row-count bar-ds))
             (b/append-bars bardb {:calendar calendar} bar-ds))
         (warn "not saving finished bars - ds-bars is not valid!")))
-      (catch Exception ex
-        (error "generated bars save exception!")
-        (print-finished-bars calendar bar-ds))))
-
+    (catch Exception ex
+      (error "generated bars save exception!")
+      (print-finished-bars calendar bar-ds))))
 
 (comment
   (def ds

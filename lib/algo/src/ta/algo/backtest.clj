@@ -42,17 +42,14 @@
         engine (algo-env/get-engine env)
         calendars (eng/active-calendars engine)
         prior-dates (map (fn [[calendar-kw interval-kw]]
-                      (cal/prior-close calendar-kw interval-kw dt))
-                       calendars)
+                           (cal/prior-close calendar-kw interval-kw dt))
+                         calendars)
         ;prior-dates-sorted (sort prior-dates)
         event-seq (map (fn [cal dt]
-                        {:calendar cal :time dt}
-                       ) calendars prior-dates)
-        ]
+                         {:calendar cal :time dt}) calendars prior-dates)]
     (info "event-seq: " event-seq)
     (doall (map #(eng/set-calendar! engine %) event-seq))
     strategy))
-
 
 (comment
 
@@ -62,7 +59,6 @@
 
   (require '[modular.system])
   (def duckdb (:duckdb modular.system/system))
-
 
   (defn demo-backtest []
     (let [env (e/create-env duckdb)

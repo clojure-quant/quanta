@@ -4,20 +4,20 @@
    [tablecloth.api :as tc]
    [ta.viz.publish :as p]))
 
-  (def ds
+(def ds
   (tc/dataset [{:date (t/date-time) :open 1 :high 2 :low 3 :close 4 :volume 5}
                {:date (t/date-time) :open 1 :high 2 :low 3 :close 4 :volume 5}
                {:date (t/date-time) :open 1 :high 2 :low 3 :close 4 :volume 5}
                {:date (t/date-time) :open 1 :high 2 :low 3 :close 4 :volume 5}]))
-    
-  ds
-  
-  (def spec {:topic :demo-highstock
-             :charts  [{:open "line"
-                        :low "line"
+
+ds
+
+(def spec {:topic :demo-highstock
+           :charts  [{:open "line"
+                      :low "line"
                           ;:close :flags
-                        }
-                       {:volume "column"}]})
+                      }
+                     {:volume "column"}]})
 
 ds
 

@@ -1,11 +1,11 @@
 (ns ta.quote.fix
-  (:require 
-    [taoensso.timbre :as timbre :refer [info warn error]]
-    [fix-engine.api.core :as fix-api]
-    [fix-engine.core :as fix]
-    [ta.quote.core :refer [quotefeed create-stream! publish! get-stream connect]]))
+  (:require
+   [taoensso.timbre :as timbre :refer [info warn error]]
+   [fix-engine.api.core :as fix-api]
+   [fix-engine.core :as fix]
+   [ta.quote.core :refer [quotefeed create-stream! publish! get-stream connect]]))
 
-(defn fix-quote->quote 
+(defn fix-quote->quote
   "converts a fix-quote message to quote-format"
   [msg]
   ; {:msg-type :quote-data-full, 
@@ -15,20 +15,20 @@
    :price (:md-entry-price msg)
    :size 100.0 ; double so that we are compatible with crypto volumes that are double
    })
-          
+
 (defrecord quotefeed-fix [opts state]
   quotefeed
   (connect [this]
     (info "fix connect: " (:opts this))
-     (let [client (fix-api/connect (:opts this))
-           publish-quote! (fn [fix-msg]
-                            (let [quote (fix-quote->quote fix-msg)]
-                              (publish! this quote)))]
-       (swap! (:state this) assoc :client client)
-       (fix-api/on-quote client publish-quote!)))
+    (let [client (fix-api/connect (:opts this))
+          publish-quote! (fn [fix-msg]
+                           (let [quote (fix-quote->quote fix-msg)]
+                             (publish! this quote)))]
+      (swap! (:state this) assoc :client client)
+      (fix-api/on-quote client publish-quote!)))
   (disconnect [this]
     (let [{:keys [client] :as state} @(:state @this)]
-      (info "fix disconnect: " (:opts this))  
+      (info "fix disconnect: " (:opts this))
       (fix/end-session client)
       (swap! (:state this) dissoc :client)))
   (subscribe [this asset]
@@ -51,13 +51,12 @@
     (connect feed)
     feed))
 
-
 (comment
-  
+
   ;; in demo see: notebook.live.fix-quotes
 
   (require '[ta.quote.core :refer [connect disconnect subscribe quote-stream publish!]])
-  
+
   ; fix-engine test
   (def fix-client (fix-api/connect :ctrader-tradeviewmarkets-quote))
   fix-client

@@ -40,7 +40,6 @@
         (.close c))
     (error "cannot remove calendar: not subscribed: " calendar)))
 
-
 (defn show-calendars [state]
   (-> @(:calendars state)
       keys))

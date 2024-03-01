@@ -8,7 +8,6 @@
    [cheshire.core :as cheshire] ; JSON Encoding
    [throttler.core]))
 
-
 ;; KIBOT FTP:
 ;; ftp.kibot.com   (same user+password as for api)
 ;; guix install filezilla  (ftp client)
@@ -31,8 +30,6 @@
 ; 5/18/2010 MSFT Microsoft Corp. 0.1300 Dividend
 
 ; ftp://hoertlehner%40gmail.com:PWD@ftp.kibot.com/
-
-
 
 ;; ApiKey Management
 
@@ -63,11 +60,8 @@ api-key
   (extract-error "asdfasdfasdf")
   (extract-error "405 Data Not Found.\r\nNo data found for the specified period for EURUSD.")
 
-
- ; 
+; 
   )
-
-
 (defn make-request [url query-params]
   (let [result (http/get url
                          {:accept :json
@@ -101,17 +95,11 @@ api-key
   (make-request base-url
                 {:action "status"}))
 
-
-
-
-
 (comment
   (login)
   (status)
 
-
-
-  ;
+;
   )
 
 (defn history [opts]
@@ -124,7 +112,6 @@ api-key
                     :user user
                     :password password}
                    opts))))
-
 
 (defn snapshot [opts]
   (let [{:keys [user password]} @api-key]
@@ -151,7 +138,6 @@ api-key
   (snapshot {:type "future"
              :symbol "JYZ23"})
 
-
   (snapshot {:symbol ["$NDX"
                       "AAPL"
                       "FCEL"
@@ -162,20 +148,15 @@ api-key
 
   ;
   )
-
-
-
-
 (comment
 
   (history {:symbol "AAPL"
             :interval "daily"
             :period 10})
 
-   (history {:symbol "AAPL"
+  (history {:symbol "AAPL"
             :interval 60
             :period 1})
-
 
   (history {:symbol "SIL" ; SIL - ETF
             :interval "daily"
@@ -201,7 +182,6 @@ api-key
             :timezone "UTC"
             :splitadjusted 1})
 
-
   (history {:symbol "SIL" ; SIL - FUTURE
             :type "futures" ; Can be stocks, ETFs forex, futures.
             :interval "daily"
@@ -216,7 +196,7 @@ api-key
             :interval "daily"
             :timezone "UTC"})
 
-   (history {:type "forex",
+  (history {:type "forex",
             :symbol "EURUSD",
                ;:startdate "2023-09-01",
             :period 1
@@ -232,8 +212,6 @@ api-key
   ;; => {:error {:code "405", :title "Data Not Found.", :message "No data found for the specified period for JY."}}
   ;; => "11/20/2023,0.0067125,0.006782,0.0066965,0.006772,245135\r\n11/21/2023,0.0067695,0.0068235,0.006757,0.0067695,234151\r\n11/22/2023,0.006769,0.0067805,0.0067015,0.006709,219589\r\n"
 
-  
-
   (history {:symbol "JY"
             :type "futures" ; Can be stocks, ETFs forex, futures.
             :interval "1" ; 1 ; 5 ; 5 minute bars
@@ -244,9 +222,6 @@ api-key
       (edn/read-string)
       count)
    ;; => 83
-
-
-
 
 ;  
   )
@@ -265,7 +240,7 @@ api-key
       body)
     ;  (throw (ex-info (:retMsg result) result))
     )
-  
+
 ;  
   )
 

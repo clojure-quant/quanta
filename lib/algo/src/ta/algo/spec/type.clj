@@ -1,5 +1,5 @@
 (ns ta.algo.spec.type
-  (:require 
+  (:require
    [ta.algo.spec.type.bar-strategy :as bs]
    [ta.algo.spec.type.time :as ts]))
 

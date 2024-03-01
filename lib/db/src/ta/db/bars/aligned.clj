@@ -1,6 +1,6 @@
 (ns ta.db.bars.aligned
-  (:require 
-    [tick.core :as t]
+  (:require
+   [tick.core :as t]
    [tablecloth.api :as tc]
    [ta.calendar.core :as cal]
    [ta.calendar.align :as align]

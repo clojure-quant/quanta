@@ -1,14 +1,14 @@
 (ns ta.import.core
-  (:require 
-    [tablecloth.api :as tc]
+  (:require
+   [tablecloth.api :as tc]
     ; import providers
-    [ta.import.provider.kibot.ds :as kibot]
-    [ta.import.provider.kibot-http.ds :as kibot-http]
-    [ta.import.provider.alphavantage.ds :as av]
-    [ta.import.provider.bybit.ds :as bybit]))
+   [ta.import.provider.kibot.ds :as kibot]
+   [ta.import.provider.kibot-http.ds :as kibot-http]
+   [ta.import.provider.alphavantage.ds :as av]
+   [ta.import.provider.bybit.ds :as bybit]))
 
 (def dict-provider
-  {:kibot kibot/get-bars 
+  {:kibot kibot/get-bars
    :kibot-http kibot-http/get-bars
    :alphavantage av/get-bars
    :bybit bybit/get-bars})
@@ -37,19 +37,16 @@
     (let [get-series (get-provider-fn import asset)
           _ (assert get-series (str "import-provider not found: [" import "]"))
           series-ds (get-series asset-opts range)]
-      (tc/add-columns series-ds {:asset asset :epoch 0 :ticks 0})
-    )))
-
+      (tc/add-columns series-ds {:asset asset :epoch 0 :ticks 0}))))
 
 (comment
-  
+
   (get-provider-fn :kibot "")
 
   ; see notebook.playground.import.bars for how to use get-series
- 
+
 ;  
-)
+  )
 
 
 
-  

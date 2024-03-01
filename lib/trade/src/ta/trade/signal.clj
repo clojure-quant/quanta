@@ -94,11 +94,10 @@
 (defn filter-signal [{:keys [signal of]
                       :or {of :signal}}
                      ds]
-(tc/select-rows ds
-                (fn [cols]
-                  (let [cur-signal (of cols)]
-                     (= cur-signal signal)))))
-
+  (tc/select-rows ds
+                  (fn [cols]
+                    (let [cur-signal (of cols)]
+                      (= cur-signal signal)))))
 
 (comment
 

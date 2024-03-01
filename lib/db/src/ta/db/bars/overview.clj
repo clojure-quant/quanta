@@ -64,7 +64,6 @@
 ;    ;(println "overview-map: " m)
 ;    m))
 
-
 (comment
 
   (wh/symbols-available :stocks "D")
@@ -72,7 +71,6 @@
 
   (load-datasets :crypto "D" (wh/symbols-available :crypto "D"))
   (load-datasets :stocks "D" (wh/symbols-available :stocks "D"))
-
 
   (warehouse-overview :stocks "D")
   (warehouse-overview :crypto "D")

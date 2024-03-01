@@ -33,7 +33,6 @@
 ; The attribute "title" is the text which is displayed inside the flag on the chart. 
 ; The attribute "text" contains the text which will appear when the mouse hover above the flag.
 
-
 (defn flag [col row]
   {:x (:epoch row)
    :y (:close row)
@@ -55,8 +54,8 @@
          (into []))))
 
 (defn convert-series [bar-study-epoch-ds [col type]]
-  (cond 
-    (or (= type :ohlc) (= type :candlestick) )
+  (cond
+    (or (= type :ohlc) (= type :candlestick))
     (series-ohlc bar-study-epoch-ds)
 
     (= type :flags)
@@ -64,7 +63,6 @@
 
     :else
     (series bar-study-epoch-ds col)))
-
 
 (defn convert-data [bar-study-ds chart-spec]
   (let [bar-study-epoch-ds (add-epoch bar-study-ds)

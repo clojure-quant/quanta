@@ -119,7 +119,7 @@
                (ensure-col-float64 :high)
                (ensure-col-float64 :low)
                (ensure-col-float64 :close)
-               (ensure-epoch)    
+               (ensure-epoch)
                (ensure-ticks)
                (ensure-asset asset)
                (order-columns-strange)
@@ -148,7 +148,6 @@
   (let [table-name (bar-category->table-name calendar)]
     (str "select * from " table-name " where asset = '" asset "' order by date")))
 
-
 (defn get-bars-full [session calendar asset]
   (debug "get-bars " asset)
   (let [query (sql-query-bars-for-asset calendar asset)]
@@ -167,7 +166,6 @@
   (let [query (sql-query-bars-for-asset-since calendar asset since)]
     (-> (duckdb/sql->dataset (:conn session) query)
         (keywordize-columns))))
-
 
 (defn sql-query-bars-for-asset-window [calendar asset dstart dend]
   (let [table-name (bar-category->table-name calendar)]
@@ -204,7 +202,6 @@
 
  ;; CREATE INDEX s_idx ON films (revenue);
 
-
 (defn- now []
   (-> (t/now)
       ;(tick/date-time)
@@ -218,7 +215,6 @@
                       :date (now)
                       :epoch 0 :ticks 0}])
         (tc/set-dataset-name table-name))))
-
 
 (defn create-table [session calendar]
   (let [ds (empty-ds calendar)]
@@ -246,14 +242,12 @@
     ;(info "this: " this)
     (append-bars  this opts ds-bars)))
 
-
 (defn start-bardb-duck [opts]
   (let [{:keys [db conn new?]} (duckdb-start-impl opts)]
     (bardb-duck. db conn new?)))
 
 (defn stop-bardb-duck [state]
   (duckdb-stop-impl state))
-
 
 (comment
   (require '[modular.system])
@@ -265,8 +259,6 @@
   (create-table db [:us :m])
   (create-table db [:us :h])
 
-
-
   (require '[tech.v3.dataset :as ds])
   (def stocks
     (ds/->dataset "https://github.com/techascent/tech.ml.dataset/raw/master/test/data/stocks.csv"
@@ -274,7 +266,6 @@
                    :dataset-name :stocks}))
   stocks
   (tc/info stocks)
-
 
   (get-bars db [:us :m] "EUR/USD")
   (get-bars db [:us :m] "ETHUSDT")
@@ -290,10 +281,8 @@
   (get-bars-since db [:us :m] "EUR/USD" "2024-01-26 19:35:00")
   (get-bars-since db [:us :m] "EUR/USD" dt)
 
-
   (def dt2 (t/instant "2024-01-26T16:35:00Z"))
   (get-bars-since db [:us :m] "EUR/USD" dt2)
-
 
   (get-bars-window db [:us :m] "EUR/USD"
                    "2024-01-26T19:35:00Z"
@@ -306,8 +295,6 @@
   (get-bars-window db [:us :m] "ETHUSDT"
                    (tick/instant "2024-01-29T18:56:00Z")
                    (tick/instant "2024-01-29T19:00:00Z"))
-
-
 
   (get-bars-since duckdb [:us :m] "EUR/USD" time)
   (get-bars-since duckdb [:us :m] "EUR/USD" (str time))
@@ -331,9 +318,7 @@
   (get-bars db "EUR/USD")
   (get-bars db "USD/JPY")
 
-
   (exists-db?  "../../output/duckdb/bars")
-
 
   (duckdb/insert-dataset! db stocks)
   (ds/head (duckdb/sql->dataset db "select * from stocks"))
@@ -344,7 +329,6 @@
 
   r
 
-
-  ;
+;
   )
 

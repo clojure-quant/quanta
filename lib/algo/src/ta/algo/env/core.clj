@@ -30,7 +30,6 @@
     (assert calendar-seq "cannot get-bars-aligned for unknown window!")
     (aligned/get-bars-aligned-filled bar-db opts calendar-seq)))
 
-
 (defn add-bars
   "returns bars for asset/calendar/window"
   [env {:keys [calendar] :as opts} ds-bars]
@@ -40,12 +39,10 @@
     (assert ds-bars "can not execute add-bars - needs ds-bars parameter.")
     (bardb/append-bars env opts ds-bars)))
 
-
 (defn get-calendar-time [env calendar]
   (let [calendar-time (:calendar-time env)]
     (assert calendar-time "environment does not provide calendar-time!")
     (get @calendar-time calendar)))
-
 
 (defn calendar-seq->window [calendar-seq]
   (let [dend  (first calendar-seq)

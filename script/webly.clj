@@ -6,8 +6,6 @@
    ;[fipp.clojure]
    ))
 
-
-
 (defn clean-project [dir]
   (println "cleaning dir: " dir)
   (fs/delete-if-exists (str dir "/package.json"))

@@ -8,7 +8,6 @@
    [ta.trade.signal :refer [trade-signal]]
    [ta.trade.position-pl :refer [position-pl]]))
 
-
 (defn- bar->roundtrip-partial [ds]
   (let [close (:close ds)
         close-f1  (into [] xf-future close)
@@ -32,8 +31,7 @@
     false))
 
 (defn isNaN [x]
- (== ##NaN x))
-
+  (== ##NaN x))
 
 (defn get-last-not-nil [ds kw]
   (let [vec (get ds kw)
@@ -104,7 +102,6 @@
 (defn calc-rountrips-simple [signal-ds]
   (calc-roundtrips signal-ds {}))
 
-
 (comment
   (-> (tc/dataset {:l [:x :x :y :y :y]
                    :a [1 2 3 4 5]
@@ -121,27 +118,23 @@
   "algo has to create :position column
    creates roundtrips based on this column"
   [ds-signal]
-    (let [signal (:signal ds-signal)
-          options {}]
-      (assert signal "to crate positions :signal column needs to be present!")
-      (-> (trade-signal ds-signal)
-          (calc-roundtrips options))))
-      
-
-
-
+  (let [signal (:signal ds-signal)
+        options {}]
+    (assert signal "to crate positions :signal column needs to be present!")
+    (-> (trade-signal ds-signal)
+        (calc-roundtrips options))))
 
 #_(defn run-backtest-parameter-range
-  [algo base-options
-   prop-to-change prop-range]
-  (let [{:keys [backtest-runner]
-         :or {backtest-runner run-backtest}}
-        base-options]
-    (for [m prop-range]
-      (let [options (assoc base-options prop-to-change m)
-            r (backtest-runner algo options)
-            r (-> r
-                  (assoc :ds-roundtrips (tc/set-dataset-name (:ds-roundtrips r) m)))]
-        r))))
+    [algo base-options
+     prop-to-change prop-range]
+    (let [{:keys [backtest-runner]
+           :or {backtest-runner run-backtest}}
+          base-options]
+      (for [m prop-range]
+        (let [options (assoc base-options prop-to-change m)
+              r (backtest-runner algo options)
+              r (-> r
+                    (assoc :ds-roundtrips (tc/set-dataset-name (:ds-roundtrips r) m)))]
+          r))))
 
 

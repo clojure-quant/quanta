@@ -60,20 +60,17 @@
                   (fn [row]
                     (signal-col row))))
 
-
 (defn signal-keyword->signal-double [signal]
   (let [n (count signal)]
     (dtype/make-reader
      :float64 n
-       (let [s (signal idx)]
-        (cond 
-          (= :buy s) 1.0
-          (= :long s) 1.0
-          (= :sell s) -1.0
-          (= :short s) -1.0
-          :else 0.0)
-       ))))
-
+     (let [s (signal idx)]
+       (cond
+         (= :buy s) 1.0
+         (= :long s) 1.0
+         (= :sell s) -1.0
+         (= :short s) -1.0
+         :else 0.0)))))
 
 (comment
 
@@ -102,20 +99,16 @@
   (->> (cross-down px-d ind)
        (price-when px-d))
 
-  (def ds 
+  (def ds
     (tc/dataset [{:idx 1 :signal false :doji :buy}
                  {:idx 2 :signal false :doji :flat}
                  {:idx 3 :signal true :doji :sell}
-                 {:idx 4 :signal false :doji :long}])
-    )
-  
+                 {:idx 4 :signal false :doji :long}]))
+
   (select-signal-is ds :signal true)
 
   (:doji ds)
   (signal-keyword->signal-double (:doji ds))
-
-
-
 
 ; 
   )

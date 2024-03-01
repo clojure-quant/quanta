@@ -51,8 +51,7 @@
 
 (defn run-import-task [state opts task]
   (let [bar-ds (get-bars-safe opts task)]
-    (append-bars-safe state opts task bar-ds)
-    ))
+    (append-bars-safe state opts task bar-ds)))
 
 (defn run-import-tasks [state opts tasks]
   (doall (map #(run-import-task state opts %) tasks)))
@@ -64,7 +63,6 @@
       tasks)
     (do (warn "no import defined for asset: " asset " calendar: " calendar)
         '())))
-
 
 (defn import-on-demand [state {:keys [asset calendar] :as opts} req-window]
   (info "import-on-demand " opts req-window)

@@ -41,7 +41,6 @@
       date-time-adjust
       (tc/drop-columns [:time])))
 
-
 (defn get-csv [{:keys [asset calendar]} range]
   (info "get-bars kibot-http " asset " " calendar " " range " ..")
   (let [{:keys [kibot-http]} (db/instrument-details asset)]
@@ -51,10 +50,10 @@
 
 (defn get-bars [opts range]
   (let [csv (get-csv opts range)]
-   (info "parsing csv...")
-   (kibot-result->dataset csv)))
+    (info "parsing csv...")
+    (kibot-result->dataset csv)))
 
-(comment 
+(comment
   ; test importing previously imported csv files.
   (def csv (raw/load-csv-data "AUDCAD"))
   csv
@@ -63,18 +62,14 @@
   ; test if EURUSD has kibot-http
   (db/instrument-details "EURUSD")
 
-   (def csv (get-csv {:asset "EURUSD"
-                      :calendar [:us :m]}
-                      :full))
+  (def csv (get-csv {:asset "EURUSD"
+                     :calendar [:us :m]}
+                    :full))
   (kibot-result->dataset csv)
   csv
 
-  (def eurusd (get-bars {:asset "EURUSD" 
+  (def eurusd (get-bars {:asset "EURUSD"
                          :calendar [:us :m]}
-                        :full
-                        ))
-
-  
-  )
+                        :full)))
 
 

@@ -1,5 +1,5 @@
 (ns highchart-metrics
-  (:require 
+  (:require
    [clojure.walk :refer [prewalk]]
    ;[cheshire.core :as json]
    ;[cheshire.generate :as json-gen]

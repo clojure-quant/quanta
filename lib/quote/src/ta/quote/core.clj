@@ -11,20 +11,18 @@
   (unsubscribe [this asset])
   (quote-stream [this]))
 
-
 (defn create-stream! [this]
   (let [quote-stream (s/stream)]
     (swap! (:state this) assoc :quote-stream quote-stream)))
 
 (defn get-stream [this]
-   (-> this :state deref :quote-stream))
+  (-> this :state deref :quote-stream))
 
 (defn publish! [this quote]
   (let [quote-stream (get-stream this)]
     (s/put! quote-stream quote)))
 
-
-(comment 
+(comment
   (def this {:state (atom {})})
   (create-stream! this)
 
@@ -33,9 +31,8 @@
   (publish! this {:price 100.0 :qty 1})
 
   (s/take! (get-stream this))
-   
-  
- ; 
+
+; 
   )
 
 

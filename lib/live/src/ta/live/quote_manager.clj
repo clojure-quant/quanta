@@ -13,11 +13,11 @@
     (doall
      ;(map #(s/connect % output-quote-stream) feed-streams))
      (map (fn [[id feed]]
-            (s/consume  
-              (fn [quote]
-                 (s/put! output-quote-stream
-                         (assoc quote :feed id)))
-               (quote/quote-stream feed))) feeds))
+            (s/consume
+             (fn [quote]
+               (s/put! output-quote-stream
+                       (assoc quote :feed id)))
+             (quote/quote-stream feed))) feeds))
     {:feeds feeds
      :quote-stream output-quote-stream
      :summary (summary/create-last-summary output-quote-stream :asset)}))

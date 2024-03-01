@@ -10,7 +10,6 @@
        (filter #(= col-kw (:name %)))
        first))
 
-
 (defn last-result-row [ds-algo]
   (tc/select-rows ds-algo [(dec (tc/row-count ds-algo))]))
 
@@ -28,7 +27,7 @@
    returns the last :position column value.
    Has a variation that can be used in a chain."
   ([ds-position]
-   (if ds-position 
+   (if ds-position
      (tc/get-entry ds-position :position (dec (tc/row-count ds-position)))
      :flat))
   ([_env _opts ds-position]
@@ -42,21 +41,20 @@
 
 (defn all-positions-agree-one
   [& positions]
-   (if (apply = positions)
-     (first positions)
-     :flat))
+  (if (apply = positions)
+    (first positions)
+    :flat))
 
 (defn all-positions-agree
   ([positions]
    (if (apply = positions)
-       (first positions)
-       :flat))
+     (first positions)
+     :flat))
   ([_env _opts positions]
    (all-positions-agree positions)))
 
 (defn all-positions-agree-ds [position-vecs]
-  (apply dtype/emap all-positions-agree-one :keyword position-vecs)
-  )
+  (apply dtype/emap all-positions-agree-one :keyword position-vecs))
 
 (comment
   (def ds-position-a
@@ -86,14 +84,12 @@
   (->> [ds-position-a ds-position-a]
        (get-current-positions)
        (all-positions-agree))
-   
-  
-  (all-positions-agree-ds 
-   [(:position ds-position-a) 
-    (:position ds-position-b) ]) 
-   
-  
-  ;; => :short
+
+  (all-positions-agree-ds
+   [(:position ds-position-a)
+    (:position ds-position-b)])
+
+;; => :short
 
   (->> [ds-position-b ds-position-b]
        (get-current-positions)
@@ -104,17 +100,15 @@
        (get-current-positions)
        (all-positions-agree))
     ;; => :long
-  
-   (->> [ds-position-b ds-position-b ds-position-a]
+
+  (->> [ds-position-b ds-position-b ds-position-a]
        (get-current-positions)
        (all-positions-agree))
    ;; => :flat
 
-
   (get-current-positions [ds-position-a nil])
 
-
- ; 
+; 
   )
 
 

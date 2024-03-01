@@ -65,14 +65,14 @@
   (contains? response :Information))
 
 (defn- success-if [response process-success]
-  (cond 
+  (cond
     (throtteled? response)
-     :throttled ;awb99: perhaps better return :throttled ???
-    
+    :throttled ;awb99: perhaps better return :throttled ???
+
     (error? response)
     (do (error "Alphavantage error : " (:Information response))
         nil)
-    
+
     :else
     (process-success response)))
 
@@ -243,15 +243,13 @@
            :datatype "json"}
           (fn [response]
             ;(println "response: " response)
-             (let [{:keys [meta series] :as result} (convert-bars- symbol :adjusted response)]
+            (let [{:keys [meta series] :as result} (convert-bars- symbol :adjusted response)]
               (when (= 0 (count series))
                 (warn "no data returned for: " symbol)
                 (warn "response: " response))
               result)
             ;(println "data adjusted: " (pr-str response))
             )))
-
-
 (defn get-daily-fx
   "size: compact=last 100 days. full=entire history"
   [size symbol]
@@ -267,7 +265,7 @@
   "size: compact=last 100 days. full=entire history"
   [size symbol]
   (get-av {:function "DIGITAL_CURRENCY_DAILY"
-           :symbol (subs symbol 0 3) 
+           :symbol (subs symbol 0 3)
            :market (subs symbol 3)
            :outputsize (name size)
            :datatype "json"}
@@ -296,12 +294,10 @@
       (clojure.pprint/print-table))
 
   (-> (try (get-daily "compact" "MO")
-         (catch Exception ex
-           (println "ex: " (ex-data ex))
-           (println "status: " (:status ex) "reason: " (:reason-phrase ex))
-           )  
-           )
-      
+           (catch Exception ex
+             (println "ex: " (ex-data ex))
+             (println "status: " (:status ex) "reason: " (:reason-phrase ex))))
+
       :series
       first
       :date

@@ -36,20 +36,20 @@
       (tc/set-dataset-name (tc/dataset-name roundtrips-ds))))
 
 (defn position-stats [roundtrips-ds]
-    (as-> roundtrips-ds x
-      (calc-roundtrip-stats x [:position])
-      (tds/mapseq-reader x)
-      (map (juxt :position identity) x)
-      (into {} x)))
+  (as-> roundtrips-ds x
+    (calc-roundtrip-stats x [:position])
+    (tds/mapseq-reader x)
+    (map (juxt :position identity) x)
+    (into {} x)))
 
 (defn win-loss-stats [roundtrips-ds]
-    (as-> roundtrips-ds x
-      (calc-roundtrip-stats x [:win])
-      (tds/mapseq-reader x)
-      (map (juxt :win identity) x)
-      (into {} x)
-      (clojure.set/rename-keys x {true :win
-                                  false :loss})))
+  (as-> roundtrips-ds x
+    (calc-roundtrip-stats x [:win])
+    (tds/mapseq-reader x)
+    (map (juxt :win identity) x)
+    (into {} x)
+    (clojure.set/rename-keys x {true :win
+                                false :loss})))
 
 (defn win-loss-performance-metrics [win-loss-stats]
   (let [win (:win win-loss-stats)
@@ -71,9 +71,8 @@
                       (* 1.0 (/ (:bars win) (:trades win)))
                       0.0)
      :avg-bars-loss (if (> (:trades loss) 0.0)
-                      (* 1.0 (/ (:bars loss) (:trades loss))) 
-                      0.0
-                      )}))
+                      (* 1.0 (/ (:bars loss) (:trades loss)))
+                      0.0)}))
 
 (defn roundtrip-metrics [roundtrips-ds]
   (let [wl-stats (win-loss-stats roundtrips-ds)

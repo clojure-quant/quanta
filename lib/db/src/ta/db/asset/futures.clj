@@ -1,6 +1,5 @@
 (ns ta.db.asset.futures)
 
-
 ;; Why is this here?
 
 ;; In our instrument db we dont store all available futures with their expiry dates.
@@ -10,7 +9,6 @@
 ;; Continuous future
 ;; NG0 = Natural Gas
 
-
 (defn is-future? [s]
   (when-let [m (re-matches #"(.*)(\d\d)(\d\d.*)" s)]
     (let [[_ symbol month year] m]
@@ -19,7 +17,6 @@
        :year (parse-long year)
        :symbol-root (str symbol "0")})))
 
-
 (defn future-extension [year month]
   (str (case month
          1 "F"  2 "G"  3 "H"
@@ -27,8 +24,6 @@
          7 "N"  8 "Q"  9 "U"
          10 "V" 11 "X" 12 "Z")
        year))
-
-
 
 (defn future-symbol [{:keys [month year symbol]} ; output of is-future?
                      {:keys [kibot] :as db-data} ; from symbol db
@@ -54,11 +49,9 @@
                  {:symbol "NG0", :kibot "NG", :name "CONTINUOUS NATURAL GAS CONTRACT",
                   :category :future, :exchange "SG"})
 
-
- ; 
+; 
   )
 
 
 
 
- 

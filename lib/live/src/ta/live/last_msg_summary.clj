@@ -20,17 +20,16 @@
   (let [last @(:last state)]
     (vals last)))
 
-(comment 
-  
+(comment
+
   (def stream (s/stream))
   (def state (create-last-summary stream :asset))
-  
+
   (s/put! stream {:asset "EUR/USD" :price 1.10})
   (s/put! stream {:asset "USD/JPY" :price 130.66})
   (s/put! stream {:asset "EUR/USD" :price 1.11})
 
   (current-summary state)
 
-
- ; 
+; 
   )

@@ -18,7 +18,6 @@
 ; continuous futures
 ; https://static.quandl.com/Ticker+CSV%27s/Futures/continuous.csv
 
-
 ; university of michigan - consumer sentiment
 ;https://data.nasdaq.com/data/UMICH/SOC35-university-of-michigan-consumer-surveybuying-conditions-for-large-household-goods
 
@@ -32,27 +31,26 @@
 ; https://data.nasdaq.com/data/LBMA-london-bullion-market-association
 
 (defn- space->dash [s]
-   (str/replace s #" " "-"))
+  (str/replace s #" " "-"))
 
 (defn load-cfutures-csv [filename]
-(let [[header & data] 
-      (charred/read-csv (java.io.File. filename))
-      header (map (comp keyword space->dash) header)
-      ->map (fn [cols]  
-              (->> (interleave header cols) 
-                   (partition 2)
-                   (map #(into [] %))
-                   (into [])
-                   (into {})))]
-  (map ->map data)))
+  (let [[header & data]
+        (charred/read-csv (java.io.File. filename))
+        header (map (comp keyword space->dash) header)
+        ->map (fn [cols]
+                (->> (interleave header cols)
+                     (partition 2)
+                     (map #(into [] %))
+                     (into [])
+                     (into {})))]
+    (map ->map data)))
 
 (defn convert-instrument-spec [quandl-format]
-  (-> 
-    (clojure.set/rename-keys quandl-format 
-                             {:Name :name
-                              :Ticker :symbol})
-    (assoc :category :cfuture)                         
-  ))
+  (->
+   (clojure.set/rename-keys quandl-format
+                            {:Name :name
+                             :Ticker :symbol})
+   (assoc :category :cfuture)))
 
 (defn write-symbollist []
   (let [data (->> (load-cfutures-csv "../resources/cfutures.csv")
@@ -82,17 +80,14 @@
                              {:accept :json
                               :query-params query-params})
                    (:body)
-                   (cheshire/parse-string true)
-                   )]
+                   (cheshire/parse-string true))]
     result
     ;  (throw (ex-info (:retMsg result) result))
     ))
 
 ; 4.6 million datasets
-#_(make-request "https://www.quandl.com/api/v3/datasets/" 
-              {:per_page 5000})
-
-
+#_(make-request "https://www.quandl.com/api/v3/datasets/"
+                {:per_page 5000})
 
 ; CHRIS/CME_HG13.xml?api_key=JFT3-kxtkx-SS-o5wSee
 ; :Quandl-Code "CHRIS/CME_B3"
@@ -107,8 +102,7 @@
     ; {:dataset
     ;   {:description {:column_names ["Date" "Previous Settlement"],}
     ;    :data [["2021-06-29" 302.0] ...]
-    result
-    ))
+    result))
 
 (defn quandl-request [quandl-symbol opts]
   (let [result (quandl-request-raw quandl-symbol opts)]
@@ -116,9 +110,9 @@
      :columns (get-in result [:dataset :column_names])}))
 
 (defn quandl-metadata [quandl-symbol opts]
-   (let [result (quandl-request-raw quandl-symbol opts)]
-     (-> (get-in result [:dataset])
-         (dissoc :data))))
+  (let [result (quandl-request-raw quandl-symbol opts)]
+    (-> (get-in result [:dataset])
+        (dissoc :data))))
 
 ; single date: end_date=2021-06-29
 ; date range: start_date=2021-06-25 end_date=2021-06-29
@@ -134,15 +128,14 @@
 ; This dataset includes things such as 
 ; growth, employment, inflation, labor, manufacturing and many more US economic data.
 
+(comment
+  (quandl-request "CHRIS/CME_BB_1" {})
 
-(comment 
-   (quandl-request "CHRIS/CME_BB_1" {})
-  
   ; https://data.nasdaq.com/api/v3/datasets/CHRIS/ASX_WM1.xml 
   (quandl-request "CHRIS/ASX_WM1" {})
-  
+
   (quandl-request "CHRIS/EUREX_FDAX1" {})
-  
+
   ; bad request - invalid symbol
   (quandl-request "CHRIS/AS" {})
 
@@ -155,26 +148,22 @@
 
 (defn load-db []
   (->> (slurp "../resources/symbollist/futures-quandl.edn")
-      (edn/read-string)
-      (map (fn [row]
-             [(:symbol row) (:Quandl-Code row)]))
+       (edn/read-string)
+       (map (fn [row]
+              [(:symbol row) (:Quandl-Code row)]))
        (into {})
-       (reset! quandl-symbol-dict)
-      ))
+       (reset! quandl-symbol-dict)))
 
 (load-db)
 
 (defn symbol->quandl [s]
   (get @quandl-symbol-dict s))
 
-
 (defn cfuture-request [symbol opts]
   (let [quandl-symbol (symbol->quandl symbol)
         cfut-symbol (str quandl-symbol "1")]
-     (quandl-request cfut-symbol opts)))
+    (quandl-request cfut-symbol opts)))
 
-(comment 
-   (cfuture-request "FDAX" {})  
-  
-  )
+(comment
+  (cfuture-request "FDAX" {}))
 

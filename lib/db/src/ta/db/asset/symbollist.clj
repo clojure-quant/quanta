@@ -48,7 +48,5 @@
 
   (load-list-full "../resources/symbollist/fidelity-select.edn")
 
-
-
 ; 
   )

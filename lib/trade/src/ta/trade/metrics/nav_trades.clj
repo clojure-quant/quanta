@@ -40,7 +40,6 @@
                     {:position/trades-open
                      #(map inc (% :position/trades-open))})))
 
-
 (defn set-col-win [ds win col val]
   ;(println "set-col val: " val)
   (dtt/mset! (dtt/select (col ds) win) val))
@@ -152,7 +151,6 @@
                :warnings []}]
     (reduce effects+ empty effects)))
 
-
 (defn empty-series [calendar]
   (:calendar calendar))
 
@@ -163,7 +161,6 @@
         ds-bars (or ds-bars (empty-series calendar))
         effects (map #(trade-effect ds-bars has-series? %) trades)]
     (effects-sum effects)))
-
 
 (defn portfolio [trades {:keys [warehouse]}]
   (let [start-dt (apply t/min (map :entry-date trades))
@@ -193,7 +190,6 @@
            {:date (-> calendar :calendar :date)
             :pl-r-cum pl-r-cum
             :pl-cum (dfn/+ (:pl-u eff) pl-r-cum)})}))
-
 
 (comment
 
@@ -248,8 +244,6 @@
   (in-range? entry-date exit-date (parse-date "2022-03-08"))
   (in-range? entry-date exit-date (parse-date "2022-03-07"))
 
-
-
   (load-aligned-filled
    "GOOGL"
    nil
@@ -276,8 +270,6 @@
        trades-googl)
       :eff
       (print-range :all))
-
-
 
   (def trades-test
     [{:symbol "GOOGL"
@@ -320,14 +312,11 @@
   (portfolio (take 400 trades))
   (portfolio trades)
 
-
   (->>
    (portfolio trades)
    :warnings
    ;(print-table [:warning :symbol :side :exit-date])
    )
-
-
   (require '[ta.multi.aligned :refer [load-symbol-window]])
 
   (->
@@ -342,7 +331,6 @@
 ; |   :realized |     BZ0 |     :short | 2023-07-16T00:00 |
 ; | :unrealized |     NG0 |     :short | 2022-08-08T00:00 |
 
-
- ; 
+; 
   )
-  
+

@@ -29,7 +29,6 @@
                           "column-5" :volume})
       (tc/convert-types :date [[:local-date-time date->localdate]])))
 
-
 (comment
   (def csv "09/01/2023,26.73,26.95,26.02,26.1,337713\r\n")
   (def csv
@@ -63,7 +62,6 @@
 (def interval-mapping
   {:d "daily"})
 
-
 (defn fmt-yyyymmdd [dt]
   (t/format (t/formatter "YYYY-MM-dd") (t/date-time dt)))
 
@@ -71,8 +69,6 @@
   (if-let [dt (key range)]
     (into {} [[kibot-name (fmt-yyyymmdd dt)]])
     {}))
-
-
 
 (defn start-end->kibot [{:keys [start] :as range}]
   ; {:startdate "2023-09-01" :enddate "2024-01-01"}
@@ -129,7 +125,6 @@
   (symbols->str ["MSFT" "ORCL"])
   (symbols->str ["ES"]))
 
-
 ; 
 
 (defn symbol-conversion [col-symbol]
@@ -157,8 +152,6 @@
           nil)
       (kibot-snapshot-result->dataset result))))
 
-
-
 (comment
 
   (get-snapshot ["AAPL"])
@@ -167,12 +160,10 @@
   (get-snapshot ["MES0"])
   (get-snapshot ["RIVN" "AAPL" "MYM0"])
 
-
   "RIVN" "MYM0" "RB0" "GOOGL" "FCEL"
   "NKLA" "M2K0" "INTC" "MES0" "RIG"
   "ZC0" "FRC" "AMZN" "HDRO" "MNQ0"
   "BZ0" "WFC" "DAX0" "PLTR" "NG0"
-
 
   (symbol->provider "MSFT")
   (symbol->provider "EURUSD")
@@ -203,16 +194,11 @@
   (-> (get-bars {:asset "NG0" ; future
                  :calendar [:us :d]}
                 {:start dt})
-      (tc/info)
-   
-   )
-  
-
+      (tc/info))
 
   (get-bars {:asset "EURUSD" ; forex
              :calendar [:forex :d]}
             {:start (parse-date "2023-09-01")})
-
 
   (get-bars  {:asset "IJH" ; ETF
               :calendar [:etf :d]}
@@ -220,8 +206,6 @@
 
 ;
   )
-
-
 ;; symbollist 
 
 (defn kibot-symbollist->dataset [tsv skip col-mapping]
@@ -232,8 +216,6 @@
                    :n-initial-skip-rows skip
                    :dataset-name "kibot-symbollist"})
    (tc/rename-columns col-mapping)))
-
-
 
 (def list-mapping
   {:stocks {:url "http://www.kibot.com/Files/2/All_Stocks_Intraday.txt"
@@ -276,11 +258,9 @@
 (defn download-symbollist [category]
   (kibot/make-request-url (-> list-mapping category :url)))
 
-
 (defn row-delisted [ds-data]
   (-> (argops/argfilter #(= "Delisted:" %) (:# ds-data))
       first))
-
 
 (defn filter-delisted-rows [ds-data]
   (let [idx-delisted (row-delisted ds-data)]
@@ -288,11 +268,8 @@
       (tc/select-rows ds-data (range idx-delisted))
       ds-data)))
 
-
 (defn filter-empty-rows [ds-data]
   (tc/select-rows ds-data (comp #(not (nil? %)) :#)))
-
-
 
 (defn parse-list [t tsv]
   (let [{:keys [skip cols]} (t list-mapping)
@@ -301,12 +278,9 @@
         filter-delisted-rows
         filter-empty-rows)))
 
-
 (defn symbol-list [t]
   (let [tsv (download-symbollist t)]
     (parse-list t tsv)))
-
-
 
 (comment
 

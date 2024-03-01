@@ -13,8 +13,6 @@
       (tds/->dataset)
       (sort-ds) ; bybit returns last date in first row.
       ))
-
-
 (defn symbol->provider [symbol]
   ; {:keys [category] :as instrument} (db/instrument-details symbol)
   symbol)
@@ -53,20 +51,19 @@
                             range-bybit))
         (bybit-result->dataset)
         (ensure-date-instant)
-         (tc/select-columns [:date :open :high :low :close :volume])
-        )))
+        (tc/select-columns [:date :open :high :low :close :volume]))))
 
 (comment
   (bybit-frequency :d)
   (bybit-frequency :h)
   (bybit-frequency :m)
   (bybit-frequency :s)
-  
+
   (def ds (tc/dataset [{:date (t/date-time)}
                        {:date (t/date-time)}]))
 
   (ensure-date-instant ds)
-  
+
   (get-bars {:asset "BTCUSDT"
              :calendar [:crypto :d]}
             {:start (t/date-time "2024-02-26T00:00:00")})
@@ -77,11 +74,9 @@
        {:start (-> "2024-02-29T00:00:00" t/date-time)
         :end (-> "2024-02-29T00:05:00" t/date-time)})
       ;(ensure-date-instant)
-     
-     (tc/info)
+
+      (tc/info)
       ;count
       )
-  
-
- ; 
+; 
   )

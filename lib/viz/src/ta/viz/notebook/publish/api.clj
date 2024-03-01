@@ -14,4 +14,3 @@
 
 (p/get-topic [:juan :daily-history])
 
- 

@@ -51,9 +51,6 @@
     ;;    ({:bar-category [:us :d], :algo #function[ta.env.chain/make-chain-impl/fn--118841]}create-meta-algo-part ..
     ;;     {:bar-category [:us :h], :algo #function[ta.env.chain/make-chain-impl/fn--118841]})}
 
-
-
-
- ; 
+; 
   )
 

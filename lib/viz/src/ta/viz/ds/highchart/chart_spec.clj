@@ -17,8 +17,7 @@
 
 (defn chart->series [chart]
   (->> (map-indexed pane->series chart)
-       (reduce concat)
-       ))
+       (reduce concat)))
 
 (defn required-columns [chart]
   (let [series (chart->series chart)]
@@ -31,10 +30,9 @@
 (defn axes-count [chart]
   (count chart))
 
-
 (defn chart-cols [chart]
   (->> (concat [:date :open :high :low :close]
-          (required-columns chart))
+               (required-columns chart))
        (into [])))
 
 (comment
@@ -42,8 +40,8 @@
   (pane->series 2 {:volume "column"})
 
   (pane->series 3 {:sma-st "line"
-                 :sma-lt "line"
-                 :sma-diff {:type "line" :color "red"}})
+                   :sma-lt "line"
+                   :sma-diff {:type "line" :color "red"}})
 
   (chart->series
    [{;:trade "flags"
@@ -60,33 +58,30 @@
            ;:plottype (plot-type :columns)
               }}])
 
-(required-columns
-    [{:sma-lt "line"
-    :sma-st "line"
-    :trade "flags"}
-   {:volume "column"}])
-  
-(chart-cols
- [{:sma-lt "line"
-   :sma-st "line"
-   :trade "flags"}
-  {:volume "column"}])
+  (required-columns
+   [{:sma-lt "line"
+     :sma-st "line"
+     :trade "flags"}
+    {:volume "column"}])
 
+  (chart-cols
+   [{:sma-lt "line"
+     :sma-st "line"
+     :trade "flags"}
+    {:volume "column"}])
 
-(series-input
- [{:sma-lt "line"
-   :sma-st "line"
-   :trade "flags"}
-  {:volume "column"}])
+  (series-input
+   [{:sma-lt "line"
+     :sma-st "line"
+     :trade "flags"}
+    {:volume "column"}])
 
   [nil ; nothing to add in price pane
    {:volume "column"}]
 
-
   [{:sma-st "line"
     :sma-lt "line"
     :sma-diff {:type "line" :color "red"}}]
-
 
   [{:trade "flags"}
    {:volume "column"}]
@@ -94,7 +89,6 @@
   [;{:trades "line"}
    #_{:volume {:type "line"
                :plottype (plot-type :columns)}}]
-
 
   [;nil ; {:trade "flags"}
            ;{:trade "chars" #_"arrows"}
@@ -125,9 +119,6 @@
                        ;{:index "column"}
                        ; {:qt-jump-close "column"}
    ]
-
-
-
   {:type "candlestick"}
 
  ;

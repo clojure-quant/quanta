@@ -23,14 +23,13 @@
     (swap! topics assoc topic render-spec)
     render-spec))
 
-(defn publish-ds->table 
+(defn publish-ds->table
   "publishes a dataset, the columns that will be displayed, 
    and its formatting depend on the spec."
   [env spec ds]
   (let [cols (:columns spec)]
     (assert cols "publish-dataset needs to have :columns spec")
     (publish env spec (rtable-render-spec env spec ds))))
-
 
 (defn publish-ds->highstock [env spec ds]
   (let [cols (:charts spec)]

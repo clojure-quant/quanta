@@ -16,7 +16,7 @@
     (str p symbol ".nippy.gz")))
 
 (defn save-ts [wkw ds name]
-  (let [dir (get-in-config [:ta :warehouse :series wkw]) 
+  (let [dir (get-in-config [:ta :warehouse :series wkw])
         _ (do (debug "creating dir: " dir)
               (create-dirs dir))
         s (io/gzip-output-stream! (filename-ts wkw name))]
@@ -81,17 +81,13 @@
          (filter #(= frequency (:frequency %)))
          (map :symbol))))
 
-
-
 (def  ^:dynamic *default-warehouse* nil)
-
 
 (defn wh [w symbol]
   (let [w (or w *default-warehouse*)]
     (if (fn? w)
       (w symbol)
       w)))
-
 
 (defn load-series
   "warehouse can either be specified, 
@@ -117,7 +113,6 @@
   (let [w (wh warehouse symbol)]
     (exists-symbol? w frequency symbol)))
 
-
 (comment
 
   (get-in-config [:ta])
@@ -134,14 +129,11 @@
   (symbols-available :crypto "D")
   (load-symbol :crypto "D" "ETHUSD")
 
-
   (load-series {:symbol "MSFT" :frequency "D"})
   (exists-series? {:symbol "MSFT" :frequency "D"})
 
   (let [ds (load-series {:symbol "MSFT" :frequency "D"})]
-    (save-series {:symbol "MSFT2" :frequency "D"} ds)
-    )
+    (save-series {:symbol "MSFT2" :frequency "D"} ds))
 
-
- ;
+;
   )

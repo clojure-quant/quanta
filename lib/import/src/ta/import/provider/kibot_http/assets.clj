@@ -27,7 +27,6 @@
        (map first)
        (into [])))
 
-
 (defn remove-unicode [s]
   (str/replace s "\u00A0" ""))
 
@@ -49,9 +48,6 @@
        extract-table
        ;(remove nil?)
        ))
-
-
-
 (defn assets-for [category]
   (let [assets (-> (str "../resources/kibot-http/" category ".html")
                    slurp
@@ -66,12 +62,9 @@
              {:asset asset :link link}) assets links)
       {:asset (count assets) :link (count links)})))
 
-
-
 (defn update-kibot-asset-impl [asset link]
   (db/modify {:symbol asset
               :kibot-http link}))
-  
 
 (defn update-kibot-asset [{:keys [asset link]}]
   (if-let [old (db/get-instrument-by-provider :kibot asset)]
@@ -79,27 +72,25 @@
     (when-let [old (db/instrument-details asset)]
       (update-kibot-asset-impl (:symbol old) link))))
 
-
 (defn import-kibot-links [category]
   (let [assets (assets-for category)]
     (doall (map update-kibot-asset assets))
-    :kibot-link-import-finished
-    ))
+    :kibot-link-import-finished))
 
-(comment 
+(comment
   (assets-for "forex")
-  
+
   (assets-for "futures")
-  
+
   (assets-for "etf")
-  
+
   ; stocks does not work yet.
   ;(assets-for "stocks")
-  
+
   (import-kibot-links "forex")
-  
+
   (db/instrument-details "EURUSD")
- 
+
  ; 
   )
 

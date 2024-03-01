@@ -13,4 +13,3 @@
           (warn "exception calculating time-strategy.")
           nil)))))
 
- 

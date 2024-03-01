@@ -1,8 +1,6 @@
 (ns ta.data.settings
   (:require
-    [ta.db.asset.db :as db]
-   )
-  )
+   [ta.db.asset.db :as db]))
 
 (defn determine-wh [s]
   (let [{:keys [symbol name category]} (db/instrument-details s)]
@@ -17,15 +15,13 @@
 ;{:value "Index" :name "Indices"}
 ;{:value "Curncy" :name "Currencies"}
 
-(def category-names 
+(def category-names
   {:crypto "Crypto"
    :etf "ETF"
    :equity "Equity"
    :fx "FX"
    :future "Future"
-   :mutualfund "MutualFund"
-   })
-
+   :mutualfund "MutualFund"})
 
 (comment
   (db/instrument-details "NG0")

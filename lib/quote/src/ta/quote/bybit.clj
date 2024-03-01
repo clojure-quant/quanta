@@ -1,11 +1,11 @@
 (ns ta.quote.bybit
   "bybit quote feed"
-  (:require 
-    [taoensso.timbre :as timbre :refer [debug info warn error]]
-    [ta.quote.core :refer [quotefeed create-stream! publish! get-stream connect]]
-    [aleph.http :as http]
-    [manifold.stream :as s]
-    [cheshire.core :refer [parse-string generate-string]]))
+  (:require
+   [taoensso.timbre :as timbre :refer [debug info warn error]]
+   [ta.quote.core :refer [quotefeed create-stream! publish! get-stream connect]]
+   [aleph.http :as http]
+   [manifold.stream :as s]
+   [cheshire.core :refer [parse-string generate-string]]))
 
 ;; https://bybit-exchange.github.io/docs/v5/ws/connect
 
@@ -75,7 +75,6 @@
   (quote-stream [this]
     (get-stream this)))
 
-
 (defn create-quotefeed-bybit [opts]
   (let [feed (quotefeed-websocket-bybit. opts (atom {:symbols {}}))]
     feed))
@@ -85,10 +84,8 @@
     (connect feed)
     feed))
 
+(comment
 
-
-(comment 
-  
   ;raw websocket testing:
   (def client
     @(http/websocket-client (:live ws-url)))
@@ -100,19 +97,17 @@
   (send-ping! client)
   (send-subscribe! client "ETHUSDT")
 
+; quotefeed protocol
+  (def feed (start-quotefeed-bybit-autoconnect {}))
 
-   ; quotefeed protocol
-   (def feed (start-quotefeed-bybit-autoconnect {}))
-  
-   (require '[ta.quote.core :refer [quote-stream subscribe]])
-   (s/consume (fn [tick]
-                (info "bybit tick received: " tick))
-              (quote-stream feed))
+  (require '[ta.quote.core :refer [quote-stream subscribe]])
+  (s/consume (fn [tick]
+               (info "bybit tick received: " tick))
+             (quote-stream feed))
 
   (subscribe feed "ETHUSDT")
   (subscribe feed "BTCUSDT")
-  
-  
- ; 
+
+; 
   )
 

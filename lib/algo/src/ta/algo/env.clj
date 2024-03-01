@@ -19,11 +19,10 @@
     (reset! (:watcher this) w))
   (add-algo [this spec]
     (let [e (algo-env/get-engine this)
-          ops (spec-ops/spec->ops this spec)] 
-      (if-let [w @(:watcher this)] 
+          ops (spec-ops/spec->ops this spec)]
+      (if-let [w @(:watcher this)]
         (w spec)
-        (warn "no watcher set - cannot trigger it!!")
-        )
+        (warn "no watcher set - cannot trigger it!!"))
       (info "adding engine ops: " ops)
       (ops/add-ops e ops)))
   (remove-algo [this spec]

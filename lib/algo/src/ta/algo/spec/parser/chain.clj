@@ -14,10 +14,8 @@
    TODO:
    - It would be good to give all fns a subset of the opts; a opts-getter.
    "
-   (:require
-   [taoensso.timbre :refer [trace debug info warn error]])
-  )
-   
+  (:require
+   [taoensso.timbre :refer [trace debug info warn error]]))
 
 (defn- execute-next [env opts result f]
   (f env opts result))
@@ -72,15 +70,13 @@
   (time-fun nil {:asset "EUR/USD"} :now)
   ;; => {:time :now, :big-question 42, :opts {:asset "EUR/USD", :secret 42, :sma 30}}
 
-  (def chain-simple 
+  (def chain-simple
     'ta.algo.spec.parser.chain/store-time)
-  
+
   (def simple-fun
-     (make-chain chain-simple))
+    (make-chain chain-simple))
 
   (simple-fun nil {:asset "EUR/USD"} :future)
-
-
 
 ;  
   )

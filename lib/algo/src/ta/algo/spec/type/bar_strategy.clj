@@ -1,9 +1,9 @@
 (ns ta.algo.spec.type.bar-strategy
-   (:require
-    [tablecloth.api :as tc]
-    [taoensso.timbre :refer [trace debug info warn error]]
-    [ta.algo.spec.parser.chain :as chain]
-    [ta.algo.env.core :refer [get-trailing-bars]]))
+  (:require
+   [tablecloth.api :as tc]
+   [taoensso.timbre :refer [trace debug info warn error]]
+   [ta.algo.spec.parser.chain :as chain]
+   [ta.algo.env.core :refer [get-trailing-bars]]))
 
 (defn run-algo-safe [algo-fn env spec ds-bars]
   (try

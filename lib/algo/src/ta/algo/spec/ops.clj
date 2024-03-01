@@ -16,7 +16,6 @@
       value
       {:value value})))
 
-
 (defn spec->ops [env spec]
   (if (map? spec)
     [[1 (spec->op env spec)]]
@@ -24,7 +23,6 @@
                 [id (spec->op env spec)])
               (partition 2 spec))
          (into []))))
-
 
 (comment
   (require '[algo.env :as algo-env])

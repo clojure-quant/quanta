@@ -13,9 +13,8 @@
 
 (defn process-quote [state quote]
   (let [bar-a-seq (db/get-bar-atoms-for-quote (:db state) quote)]
-    (doall 
-       (map #(add-quote-to-bar % quote) bar-a-seq))
-    ))
+    (doall
+     (map #(add-quote-to-bar % quote) bar-a-seq))))
 
 (defn create-bar-generator [quote-stream bar-db]
   (assert quote-stream "bar-generator needs quote-stream")
@@ -34,7 +33,6 @@
                      (map #(assoc % :date time)))
         bar-ds (tc/dataset bar-seq)]
     (save-finished-bars (:bar-db state) calendar bar-ds)))
-
 
 (defn start-generating-bars-for [state bar-asset]
   (db/add (:db state) bar-asset))
