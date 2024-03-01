@@ -6,47 +6,45 @@
                                trading-open-time trading-close-time
                                time-open? time-closed?
                                day-open? day-closed?
+                               day-with-open? day-with-close?
                                day1]]))
 
 ; next
 
-(defn next-day [{:keys [open timezone] :as calendar} dt]
-  (let [dt-next (t/>> dt day1)
-        day-next (t/date dt-next)]
-    (if (day-closed? calendar day-next)
-      (next-day calendar dt-next)
-      (at-time day-next open timezone)
-      )))
-
 (defn next-open [{:keys [open timezone] :as calendar} dt]
-  (let [next-dt (next-day calendar dt)
+  "returns the next open day at open time"
+  (let [next-dt (t/>> dt day1)
         next-day (t/date next-dt)]
-    (at-time next-day open timezone)))
+    (if (day-with-open? calendar next-dt)
+      (at-time next-day open timezone)
+      (next-open calendar next-dt))))
 
 (defn next-close [{:keys [close timezone] :as calendar} dt]
-  (let [next-dt (next-day calendar dt)
+  "returns the next open day at close time"
+  (let [next-dt (t/>> dt day1)
         next-day (t/date next-dt)]
-    (at-time next-day close timezone)))
+    (if (day-with-close? calendar next-dt)
+      (at-time next-day close timezone)
+      (next-close calendar next-dt))))
 
 
 ; prior
 
-(defn prior-day [{:keys [open timezone] :as calendar} dt]
-  (let [dt-prior (t/<< dt day1)
-        day-prior (t/date dt-prior)]
-    (if (day-closed? calendar day-prior)
-      (prior-day calendar dt-prior)
-      (at-time day-prior open timezone))))
-
 (defn prior-open [{:keys [open timezone] :as calendar} dt]
-  (let [prior-dt (prior-day calendar dt)
+  "returns the prior open day at open time"
+  (let [prior-dt (t/<< dt day1)
         prior-day (t/date prior-dt)]
-    (at-time prior-day open timezone)))
+    (if (day-with-open? calendar prior-dt)
+      (at-time prior-day open timezone)
+      (prior-open calendar prior-dt))))
 
 (defn prior-close [{:keys [close timezone] :as calendar} dt]
-  (let [prior-dt (prior-day calendar dt)
+  "returns the prior open day at close time"
+  (let [prior-dt (t/<< dt day1)
         prior-day (t/date prior-dt)]
-    (at-time prior-day close timezone)))
+    (if (day-with-close? calendar prior-dt)
+      (at-time prior-day close timezone)
+      (prior-close calendar prior-dt))))
 
 
 ; close
@@ -105,13 +103,15 @@
   (require '[ta.calendar.interval :refer [now-calendar]])
   (now-calendar us)
 
-  (next-day us (now-calendar us))
+  ;(next-day us (now-calendar us))
   (next-open us (now-calendar us))
   (next-close us (now-calendar us))
 
-  (prior-day us (now-calendar us))
+  ;(prior-day us (now-calendar us))
   (prior-open us (now-calendar us))
   (prior-close us (now-calendar us))
+
+  (next-open us (t/in (t/date-time "2024-02-09T16:00:00") "America/New_York")) ; overnight: friday => sunday
 
   (current-close (:us calendars) (t/in (t/date-time "2024-02-26T16:00:00") "America/New_York"))
   (current-close (:us calendars) (t/in (t/date-time "2024-02-26T17:00:00") "America/New_York"))
@@ -119,6 +119,9 @@
 
   (current-close (:us calendars) (t/in (t/date-time "2024-02-25T12:00:00") "America/New_York"))
   (current-close (:forex calendars) (t/in (t/date-time "2024-02-25T12:00:00") "America/New_York"))
+
+  (prior-close-dt (:forex calendars) (t/in (t/date-time "2024-02-05T12:34:56") "America/New_York"))
+  (prior-close-dt (:forex calendars) (t/in (t/date-time "2024-02-08T23:00:00") "America/New_York"))
 
   ;
   )

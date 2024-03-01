@@ -8,8 +8,10 @@
                                trading-open-time trading-close-time
                                time-open? time-closed?
                                day-open? day-closed?
-                               intraday? overnight?]]
-  ))
+                               intraday? overnight?
+                               day-has-prior-close?
+                               inside-overnight-gap?
+                               overnight-weekend? overnight-gap-or-weekend?]]))
 
 ;
 ; base
@@ -63,10 +65,12 @@
          dt-prev (dt-base calendar n unit dt conf)
          day-prev (t/date dt-prev)
          first-close (t/>> open (t/new-duration n unit))]
-     (if (or (day-closed? calendar day-prev)
-             (before-trading-hours? calendar dt-prev first-close close))
+     (if (not (day-has-prior-close? calendar dt-prev first-close))
        (day/prior-close calendar dt-prev)
-       (if (after-trading-hours? calendar dt-prev)
+       (if (and (after-trading-hours? calendar dt-prev)
+                (or (intraday? calendar)
+                    (inside-overnight-gap? calendar dt-prev first-close close)
+                    (overnight-weekend? calendar dt-prev)))
          (trading-close-time calendar day-prev)
          dt-prev)))))
 
@@ -175,7 +179,9 @@
 
   ;(prev-close-dt (:us calendars) 15 :minutes (t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]"))
   ;(prev-close-dt (:forex calendars) 15 :minutes (t/in (t/date-time "2024-02-08T23:00:00") "America/New_York"))
-  (prev-close-dt (:forex calendars) 15 :minutes (t/in (t/date-time "2024-02-08T23:00:00") "America/New_York"))
+  (prior-close-dt (:forex calendars) 15 :minutes (t/in (t/date-time "2024-02-08T23:00:00") "America/New_York"))
+  (prior-close-dt (:forex calendars) 1 :minutes (t/in (t/date-time "2024-02-08T12:59:30") "America/New_York"))
+  (prior-close-dt (:forex calendars) (t/in (t/date-time "2024-02-08T23:00:00") "America/New_York"))
   (->> (iterate (partial prior-close-dt (:us calendars) 15 :minutes)
                 (current-close-dt (:us calendars) 15 :minutes
                                ;(t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]")

@@ -53,6 +53,11 @@
                 :week week-5
                 :timezone "Asia/Tokyo"}
 
+   :test-equal {:open (t/new-time 0 0 0)
+                :close (t/new-time 0 0 0)
+                :week week-5
+                :timezone "Asia/Tokyo"}
+
 
    })
 
