@@ -1,9 +1,10 @@
-(ns juan.study.backtest
+(ns juan.notebook.study.backtest
   (:require
    [tick.core :as t]
    [tablecloth.api :as tc]
    [ta.algo.backtest :refer [backtest-algo backtest-algo-date]]
-   [ta.viz.publish :as p]))
+   [ta.viz.publish :as p]
+   [juan.notebook.viz :refer [chart-spec table-spec combined-table-spec combined-chart-spec]]))
 
 (def algo-spec
   [:day {:type :trailing-bar
@@ -71,34 +72,10 @@
 ;;    | 2024-02-22T05:00:00Z | 0.006380 | 1.08226 |         6 |
 ;;    | 2024-02-23T05:00:00Z | 0.005715 | 1.08175 |         6 |
 
-(def table-spec
-  {:topic :juan-daily-table
-   :class "table-head-fixed padding-sm table-red table-striped table-hover"
-   :style {:width "50vw"
-           :height "40vh"
-           :border "3px solid green"}
-   :columns [{:path :date :format 'ta.viz.lib.format/dt-yyyymmdd}
-             {:path :atr :header "ATR!" :format 'ta.viz.lib.format/fmt-nodigits}
-             {:path :close}
-             {:path :ppivotnr}]})
 
-
- (p/publish-ds->table nil table-spec @(:day combined))
-
-(def chart-spec
-  {:topic :juan-daily-chart
-   :chart {:box :fl}
-   :charts [{:close :candlestick ; :ohlc ; :line 
-             ;:color "red"
-             ;:atr :flags
-             }
-            {:atr {:type :line :color "red"}}
-            {:volume :column}]})
+(p/publish-ds->table nil table-spec @(:day combined))
 
 (p/publish-ds->highstock nil chart-spec @(:day combined))
- 
-
-
 
 (tc/select-columns @(:minute combined) 
                    [:date :close :doji])
@@ -162,45 +139,11 @@
 ;;    | 2024-02-22T21:59:00Z |      1.08189 |   0.005201 | 1.08226 | :short | :short |      :short |          | :p0-high |
 
 
-(def combined-table-spec
-  {:topic :juan-combined-table
-   :class "table-head-fixed padding-sm table-blue table-striped table-hover table-auto"
-   :style {:width "100%" ; "50vw"
-           :height "100%" ;"40vh"
-           :border "3px solid blue"}
-   :columns [{:path :date}
-             {:path :daily-close :attrs 'ta.viz.lib.column/gray-column}
-             {:path :daily-atr}
-             {:path :close}
-             {:path :spike :header "spike-signal" :attrs 'ta.viz.lib.column/trading-signal}
-             {:path :doji :attrs 'ta.viz.lib.column/trading-signal}
-             {:path :spike-doji :attrs 'ta.viz.lib.column/trading-signal}
-             {:path :long}
-             {:path :short}
-             ]})
+
 
 (p/publish-ds->table nil combined-table-spec @(:signal combined))
 
-(def combined-chart-spec
-  {:topic :juan-combined-chart
-   :chart {:box :fl}
-   :charts [{:close :candlestick ; :ohlc 
-             :daily-close :line
-             ;:doji :flags
-             :spike-doji {:type :flags 
-                          ;:color "blue" 
-                          :color "rgba(100,0,50,1)"
-                          ;:className "bg-red-900"
-                          :fillColor "rgba(100,200,50,1)" ;"green"
-                          :dataLabels {:backgroundColor "rgba(100,200,50,1)" 
-                                       :borderColor "green"}
-                          }
-             }
-            ;{:daily-atr :line}
-            {:doji-v {:type :column :color "red"}
-             :spike-v {:type :column :color "blue"}
-             :spike-doji-v {:type :column :color "green"}} 
-            {:volume :column}]})
+
 
 (p/publish-ds->highstock nil combined-chart-spec @(:signal combined))
 

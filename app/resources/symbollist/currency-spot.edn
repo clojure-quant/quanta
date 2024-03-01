@@ -1,29 +1,27 @@
 [; USD pairs
- {:name "EURUSD" :symbol "EURUSD" :category :fx}
- {:name "USDCHF" :symbol "USDCHF" :category :fx}
- {:name "GBPUSD" :symbol "GBPUSD" :category :fx}
- {:name "USDNOK" :symbol "USDNOK" :category :fx}
- {:name "USDSEK" :symbol "USDSEK" :category :fx}
- {:name "USDCAD" :symbol "USDCAD" :category :fx}
- {:name "USDJPY" :symbol "USDJPY" :category :fx}
- {:name "AUDUSD" :symbol "AUDUSD" :category :fx}
- {:name "NZDUSD" :symbol "NZDUSD" :category :fx}
+ {:name "EURUSD" :symbol "EUR/USD" :kibot "EURUSD" :category :fx}
+ {:name "USDCHF" :symbol "USD/CHF" :kibot "USDCHF" :category :fx}
+ {:name "GBPUSD" :symbol "GBP/USD" :kibot "GBPUSD" :category :fx}
+ {:name "USDNOK" :symbol "USD/NOK" :kibot "USDNOK" :category :fx}
+ {:name "USDSEK" :symbol "USD/SEK" :kibot "USDSEK" :category :fx}
+ {:name "USDCAD" :symbol "USD/CAD" :kibot "USDCAD" :category :fx}
+ {:name "USDJPY" :symbol "USD/JPY" :kibot "USDJPY" :category :fx}
+ {:name "AUDUSD" :symbol "AUD/USD" :kibot "AUDUSD" :category :fx}
+ {:name "NZDUSD" :symbol "NZD/USD" :kibot "NZDUSD" :category :fx}
  ; USD pairs emerging
-  {:name "BRLUSD" :symbol "BRLUSD" :category :fx}
-  {:name "ZARUSD" :symbol "ZARUSD" :category :fx}
-  {:name "USDMXN" :symbol "USDMXN" :category :fx}
-  {:name "USDRUB" :symbol "USDRUB" :category :fx}
-  {:name "USDZAR" :symbol "USDZAR" :category :fx}
-  {:name "NZDUSD" :symbol "NZDUSD" :category :fx}
+ {:name "BRLUSD" :symbol "BRL/USD" :kibot "BRLUSD" :category :fx}
+ {:name "ZARUSD" :symbol "ZAR/USD" :kibot "ZARUSD" :category :fx}
+ {:name "USDMXN" :symbol "USD/MXN" :kibot "USDMXN" :category :fx}
+ {:name "USDRUB" :symbol "USD/RUB" :kibot "USDRUB" :category :fx}
+ {:name "USDZAR" :symbol "USD/ZAR" :kibot "USDZAR" :category :fx}
+ {:name "NZDUSD" :symbol "NZD/USD" :kibot "NZDUSD" :category :fx}
 ; EUR pairs
- {:name "EURJPY" :symbol "EURJPY" :category :fx}
- {:name "EURAUD" :symbol "EURAUD" :category :fx}
- {:name "EURCAD" :symbol "EURCAD" :category :fx}
- {:name "EURCHF" :symbol "EURCHF" :category :fx}
- {:name "EURGBP" :symbol "EURGBP" :category :fx}
+ {:name "EURJPY" :symbol "EUR/JPY" :kibot "EURJPY" :category :fx}
+ {:name "EURAUD" :symbol "EUR/AUD" :kibot "EURAUD" :category :fx}
+ {:name "EURCAD" :symbol "EUR/CAD" :kibot "EURCAD" :category :fx}
+ {:name "EURCHF" :symbol "EUR/CHF" :kibot "EURCHF" :category :fx}
+ {:name "EURGBP" :symbol "EUR/GBP" :kibot "EURGBP" :category :fx}
  ; GBP pairs
- {:name "GBPJPY" :symbol "GBPJPY" :category :fx}
-  
-]
+ {:name "GBPJPY" :symbol "GBP/JPY" :kibot "GBPJPY" :category :fx}]
 
 

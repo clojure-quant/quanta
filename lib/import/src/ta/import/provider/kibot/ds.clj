@@ -52,12 +52,12 @@
    :future "futures"
    :fx "forex"})
 
-(defn symbol->provider [symbol]
-  (let [{:keys [category kibot] :as instrument} (db/instrument-details symbol)
+(defn symbol->provider [asset]
+  (let [{:keys [category kibot] :as instrument} (db/instrument-details asset)
         type (get category-mapping category)
-        symbol (if kibot kibot symbol)]
+        asset (if kibot kibot asset)]
     {:type type
-     :symbol symbol}))
+     :symbol asset}))
 
 (def interval-mapping
   {:d "daily"})
@@ -118,9 +118,13 @@
     provider-symbol))
 
 (comment
+  (db/instrument-details "EUR/USD")
+
   (symbol->provider "MES0")
+  (symbol->provider "EUR/USD")
   ;; => {:type "futures", :symbol "ES"}
   (provider->symbol "ES")
+
 
   (symbols->str ["MSFT" "ORCL"])
   (symbols->str ["ES"]))

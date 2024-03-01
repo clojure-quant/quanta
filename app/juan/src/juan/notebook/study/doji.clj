@@ -1,4 +1,4 @@
-(ns juan.study.doji
+(ns juan.notebook.study.doji
   (:require
    [tablecloth.api :as tc]
    [ta.trade.signal :refer [filter-signal]]

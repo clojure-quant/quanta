@@ -1,4 +1,4 @@
-(ns juan.study.pivot-price
+(ns juan.notebook.study.pivot-price
   (:require
    [tablecloth.api :as tc]
    [ta.env.backtest :refer [backtest-algo]]))

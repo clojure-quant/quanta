@@ -1,4 +1,4 @@
-(ns juan.study.download-data
+(ns juan.notebook.study.download-data
   (:require
    [taoensso.timbre :refer [info warn error]]
    [tick.core :as t]

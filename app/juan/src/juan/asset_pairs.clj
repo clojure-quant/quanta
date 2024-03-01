@@ -2,26 +2,26 @@
 
 (def asset-pairs
   [; usd pairs
-   {:fx "EURUSD" :future "EU" :pip 0.001}
-   {:fx "USDCHF" :future "SF" :pip 0.001}
-   {:fx "GBPUSD" :future "BP" :pip 0.001}
-   {:fx "USDSEK" :future "SEK" :pip 0.01}
-   {:fx "USDNOK" :future "NOK" :pip 0.01} 
-   {:fx "USDCAD" :future "CD" :pip 0.001}
-   {:fx "USDJPY" :future "JY" :pip 0.1}
-   {:fx "AUDUSD" :future "AD" :pip 0.001}
-   {:fx "NZDUSD" :future "NE" :pip 0.001}
+   {:fx "EUR/USD" :future "EU" :pip 0.001}
+   {:fx "USD/CHF" :future "SF" :pip 0.001}
+   {:fx "GBP/USD" :future "BP" :pip 0.001}
+   {:fx "USD/SEK" :future "SEK" :pip 0.01}
+   {:fx "USD/NOK" :future "NOK" :pip 0.01} 
+   {:fx "USD/CAD" :future "CD" :pip 0.001}
+   {:fx "USD/JPY" :future "JY" :pip 0.1}
+   {:fx "AUD/USD" :future "AD" :pip 0.001}
+   {:fx "NZD/USD" :future "NE" :pip 0.001}
    ; usd pairs emerging   
-   ;{:fx "BRLUSD" :future "BR"} ; no sentiment numbers
-   {:fx "USDMXN" :future "PX" :pip 0.01} 
-   ;{:fx "USDRUB" :future "RU" :pip 0.1} ; no fxcm data
-   {:fx "USDZAR" :future "RA" :pip 0.01} 
+   ;{:fx "BRL/USD" :future "BR"} ; no sentiment numbers
+   {:fx "USD/MXN" :future "PX" :pip 0.01} 
+   ;{:fx "USD/RUB" :future "RU" :pip 0.1} ; no fxcm data
+   {:fx "USD/ZAR" :future "RA" :pip 0.01} 
    ; eur pairs
-   {:fx "EURAUD" :future "EAD" :pip 0.001}
-   {:fx "EURCAD" :future "ECD" :pip 0.001}
-   {:fx "EURJPY" :future "RY" :pip 0.1}
-   {:fx "EURCHF" :future "RF" :pip 0.001}
-   {:fx "EURGBP" :future "RP" :pip 0.001}
+   {:fx "EUR/AUD" :future "EAD" :pip 0.001}
+   {:fx "EUR/CAD" :future "ECD" :pip 0.001}
+   {:fx "EUR/JPY" :future "RY" :pip 0.1}
+   {:fx "EUR/CHF" :future "RF" :pip 0.001}
+   {:fx "EUR/GBP" :future "RP" :pip 0.001}
    ; gbp pairs
-   {:fx "GBPJPY" :future "PJY" :pip 0.1}
+   {:fx "GBP/JPY" :future "PJY" :pip 0.1}
    ])

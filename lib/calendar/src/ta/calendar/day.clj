@@ -106,6 +106,7 @@
   ;(next-day us (now-calendar us))
   (next-open us (now-calendar us))
   (next-close us (now-calendar us))
+  (next-close-dt us (now-calendar us))
 
   ;(prior-day us (now-calendar us))
   (prior-open us (now-calendar us))

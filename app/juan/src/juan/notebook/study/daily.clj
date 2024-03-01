@@ -1,4 +1,4 @@
-(ns juan.study.daily
+(ns juan.notebook.study.daily
   (:require
    [tablecloth.api :as tc]
    [ta.algo.backtest :refer [backtest-algo]]))

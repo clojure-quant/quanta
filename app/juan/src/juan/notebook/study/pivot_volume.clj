@@ -1,4 +1,4 @@
-(ns juan.study.pivot-volume
+(ns juan.notebook.study.pivot-volume
   (:require
    [ta.env.backtest :refer [backtest-algo]]))
 
