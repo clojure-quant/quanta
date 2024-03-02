@@ -62,6 +62,11 @@
 (defn calendar-exists? [calendar-kw]
   (contains? calendars calendar-kw))
 
+(defn get-calendar [calendar-kw]
+  (get calendars calendar-kw))
+
+
+
 
 (comment
   (contains? week-5 t/MONDAY)

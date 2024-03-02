@@ -6,18 +6,9 @@
    [clojure.edn :as edn]
    [clj-http.client :as http]
    [cheshire.core :as cheshire] ; JSON Encoding
+   [de.otto.nom.core :as nom]
+   [ta.import.helper :refer [str->float http-get]]
    [throttler.core]))
-
-;; KIBOT FTP:
-;; ftp.kibot.com   (same user+password as for api)
-;; guix install filezilla  (ftp client)
-;; .exe files are rar files.
-;; unrar e  /home/florian/20231120.rar
-;; op<path>      Set the output path for extracted files
-;;  unrar e -op./csv/stock ./stock/20230711.exe
-
-;; guix install unrar
-;; rar file contains a lot of txt files
 
 ; dividends/splits:
 ; Request URL
@@ -28,8 +19,6 @@
 ; Date Symbol Company Action Description
 ; 2/16/2010 MSFT Microsoft Corp. 0.1300 Dividend
 ; 5/18/2010 MSFT Microsoft Corp. 0.1300 Dividend
-
-; ftp://hoertlehner%40gmail.com:PWD@ftp.kibot.com/
 
 ;; ApiKey Management
 
@@ -43,72 +32,56 @@
   nil ; Important not to return by chance the key, as this would be shown in the repl.
   )
 
-api-key
-
-; 
-
 (defn extract-error [body]
-  (if-let [match (re-matches #"^(\d\d\d)\s(.*)\r\n(.*)" body)]
-    (let [[full error-code error-title error-message] match]
-      {:code error-code
-       :title error-title
-       :message error-message})
+  (if-let [match (re-matches #"^(\d\d\d)\s([\w\s]+)\.([\w\s\.\'/,:]+)" body)]
+    (let [[_ error-code error-type error-message] match]
+      (nom/fail ::kibot-request
+                {:code error-code
+                 :type error-type
+                 :message error-message}))
     nil))
 
-(comment
+(def base-url "http://api.kibot.com")
 
-  (extract-error "asdfasdfasdf")
-  (extract-error "405 Data Not Found.\r\nNo data found for the specified period for EURUSD.")
-
-; 
-  )
-(defn make-request [url query-params]
-  (let [result (http/get url
-                         {:accept :json
-                          :query-params query-params
-                          :socket-timeout 30000
-                          :connection-timeout 30000})
-        body (:body result)
-        error (extract-error body)]
-    ;(info "status:" (:status result))  
-    ;(info "headers: " (:headers result))
-    (if error
-      {:error error}
-      body)
-    ;  (throw (ex-info (:retMsg result) result))
-    ))
+(defn make-request [query-params]
+  (nom/let-nom> [result (http-get base-url query-params)
+                 body (:body result)
+                 kibot-error (extract-error body)]
+     ;(info "kibot response status: " (:status result))           
+      body))
+  
 
 ; http://api.kibot.com?action=login&user=guest&password=guest
-(set-key! {:user "guest" :password "guest"})
 
-(def base-url "http://api.kibot.com")
+
 
 (defn login []
   (let [{:keys [user password]} @api-key]
     (info "login user: " user)
-    (make-request base-url
-                  {:action "login"
+    (make-request  {:action "login"
                    :user user
                    :password password})))
 
 (defn status []
-  (make-request base-url
-                {:action "status"}))
-
-(comment
-  (login)
-  (status)
-
-;
-  )
+  (make-request {:action "status"}))
 
 (defn history [opts]
   (let [{:keys [user password]} @api-key]
     ;(info "login user: " user "pwd: " password)
     (info "kibot history: " opts)
-    (make-request base-url
-                  (merge
+    (make-request (merge
                    {:action "history"
+                    :user user
+                    :password password}
+                   opts))))
+
+(defn splits 
+  [opts]
+  (let [{:keys [user password]} @api-key]
+    ;(info "login user: " user "pwd: " password)
+    (info "kibot history: " opts)
+    (make-request (merge
+                   {:action "adjustments"
                     :user user
                     :password password}
                    opts))))
@@ -117,8 +90,7 @@ api-key
   (let [{:keys [user password]} @api-key]
     ;(info "login user: " user "pwd: " password)
     (info "kibot snapshot: " opts)
-    (make-request base-url
-                  (merge
+    (make-request (merge
                    {:action "snapshot"
                     :user user
                     :password password}
@@ -130,8 +102,29 @@ api-key
 
 (comment
 
-  (snapshot {:symbol ["$NDX" "AAPL"]})
+  api-key
+  (set-key! {:user "guest" :password "guest"})
+  (extract-error "asdfasdfasdf")
+  (extract-error "405 Data Not Found.\r\nNo data found for the specified period for EURUSD.")
 
+  (extract-error (str "497 Not Allowed.\r\n"
+                      "Your account does not have full access to the API.\r\n\r\n"
+                      "You can use the 'guest' account for testing and to download "
+                      "daily data for stocks and ETFs.\r\n"
+                      "For more information, please visit "
+                      "http://"
+                      "www.kibot.com/api/\r\n\r\n"
+                      "Please visit http://www.kibot.com/updates.aspx to see how to subscribe."
+                      ))
+
+  (extract-error "497 Not Allowed.\r\nYour account does not have full access to the API.\r\n")
+
+  (extract-error "400 Bad Request. Invalid Interval.") 
+
+  (login)
+  (status)
+
+  (snapshot {:symbol ["$NDX" "AAPL"]})
   (snapshot {:type "future"
              :symbol "ESZ23"})
 
@@ -145,10 +138,6 @@ api-key
                       #_"BZ0"]})
 
   (snapshot {:symbol ["AAPL" "DAX0" "MSFT"]})
-
-  ;
-  )
-(comment
 
   (history {:symbol "AAPL"
             :interval "daily"
@@ -222,6 +211,8 @@ api-key
       (edn/read-string)
       count)
    ;; => 83
+
+   (splits {:symbol "MSFT"})
 
 ;  
   )

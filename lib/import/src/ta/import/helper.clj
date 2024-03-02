@@ -16,6 +16,14 @@
                             :url url
                             :query-params query-params}))))
 
+(defn p-or-fail [p opts range err-message]
+  (if p
+   p
+    (nom/fail ::get-bars-req {:message err-message
+                              :opts opts
+                              :range range})))
+
+
 
 (defn str->float [str]
   (if (nil? str)

@@ -60,8 +60,10 @@
 
 (defn run-import-task [state opts task]
   (let [bar-ds (get-bars-safe opts task)]
-    (when (and bar-ds (not (nom/anomaly? bar-ds)))
-      (append-bars-safe state opts task bar-ds))))
+    (if (and bar-ds (not (nom/anomaly? bar-ds)))
+      (append-bars-safe state opts task bar-ds)
+      (error "bar-import " opts "error: " bar-ds)
+      )))
 
 (defn run-import-tasks [state opts tasks]
   (doall (map #(run-import-task state opts %) tasks)))

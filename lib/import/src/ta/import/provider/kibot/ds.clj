@@ -7,16 +7,17 @@
    [tech.v3.dataset :as tds]
    [tech.v3.datatype.argops :as argops]
    [tablecloth.api :as tc]
+   [de.otto.nom.core :as nom]
+   [ta.calendar.validate :as cal-type]
    [ta.db.asset.db :as db]
+   [ta.import.helper :refer [p-or-fail]]
+   [ta.import.helper.daily :refer [date-col-to-exchange-close]]
    [ta.import.provider.kibot.raw :as kibot]))
 
 (defn string->stream [s]
   (io/input-stream (.getBytes s "UTF-8")))
 
-(defn date->localdate [d]
-  (t/at d (t/time "00:00:00")))
-
-(defn kibot-result->dataset [csv]
+(defn kibot-result->dataset [exchange-kw csv]
   (-> (tds/->dataset (string->stream csv)
                      {:file-type :csv
                       :header-row? false
@@ -27,7 +28,8 @@
                           "column-3" :low
                           "column-4" :close
                           "column-5" :volume})
-      (tc/convert-types :date [[:local-date-time date->localdate]])))
+      (date-col-to-exchange-close exchange-kw)
+      ))
 
 (comment
   (def csv "09/01/2023,26.73,26.95,26.02,26.1,337713\r\n")
@@ -40,7 +42,7 @@
                     :splitadjusted 1}))
   csv
 
-  (-> (kibot-result->dataset csv)
+  (-> (kibot-result->dataset :us csv)
       (tc/info :columns))
 
  ;
@@ -86,11 +88,15 @@
     :else
     (start-end->kibot range)))
 
-(defn get-bars [{:keys [asset calendar]} range]
-  (info "get-bars kibot " asset " " calendar " " range " ..")
-  (let [symbol-map (symbol->provider asset)
-        f (second calendar)
-        period-kibot (get interval-mapping f)
+(defn get-bars [{:keys [asset calendar] :as opts} range]
+  (nom/let-nom> [range (select-keys range [:start :end])
+        _ (info "get-bars kibot " asset " " calendar " " range " ..")
+        symbol-map (symbol->provider asset)
+        f (p-or-fail (cal-type/interval calendar) 
+                     opts range "kibot get-bars needs :calendar")
+        exchange (cal-type/exchange calendar)
+        period-kibot (p-or-fail (get interval-mapping f)
+                                opts range (str "kibot frequency not found: " f))
         range-kibot (range->parameter range)
         _ (assert symbol-map (str "kibot symbol not found: " asset))
         _ (assert period-kibot (str "kibot does not support frequency: " f))
@@ -99,14 +105,13 @@
                                      range-kibot
                                      {:interval period-kibot
                                       :timezone "UTC"
-                                      :splitadjusted 1}))]
+                                      :splitadjusted 1}))
+        ds (kibot-result->dataset exchange result)]
+                (info "kibot csv: " csv)
     (info "kibot request finished!")
-    (if-let [error? (:error result)]
-      (do (error "kibot request error: " error?)
-          nil)
-      (kibot-result->dataset result))))
-
-; 400 Bad Request. Invalid Interval.
+                
+    ds
+    ))
 
 (defn symbols->str [symbols]
   (->> (interpose "," symbols)
@@ -175,7 +180,8 @@
 
   (require '[ta.helper.date :refer [parse-date]])
   (def dt (parse-date "2024-02-26"))
-  (class dt) dt
+  (class dt) 
+  dt
 
   (fmt-yyyymmdd dt)
   (def dt-inst (t/inst))

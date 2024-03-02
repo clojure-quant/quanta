@@ -54,7 +54,6 @@
 (defn get-bars-req [{:keys [asset calendar] :as opts} range]
   (info "get-bars-req" opts range)
   (assert asset "bybit get-bars needs :asset")
-  (assert asset "bybit get-bars needs :calendar")
   (assert asset "bybit get-bars needs range")
   (nom/let-nom>
    [f (if calendar

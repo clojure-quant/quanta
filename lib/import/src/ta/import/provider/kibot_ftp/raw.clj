@@ -6,6 +6,18 @@
    [babashka.process :refer [shell process exec]]
    [ta.import.provider.kibot.raw :refer [api-key]]))
 
+;; KIBOT FTP:
+;; ftp.kibot.com   (same user+password as for api)
+;; guix install filezilla  (ftp client)
+;; .exe files are rar files.
+;; unrar e  /home/florian/20231120.rar
+;; op<path>      Set the output path for extracted files
+;;  unrar e -op./csv/stock ./stock/20230711.exe
+
+;; guix install unrar
+;; rar file contains a lot of txt files
+
+
 (def config
   {:local-dir "/home/florian/repo/clojure-quant/trateg/output/kibot-incremental/"})
 
