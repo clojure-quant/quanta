@@ -39,7 +39,7 @@
 
 (def algo-spec
   {:type :trailing-bar
-   :trailing-n 100
+   :trailing-n 3000
    :calendar [:crypto :m]
    :asset "BTCUSDT"
    :feed :bybit

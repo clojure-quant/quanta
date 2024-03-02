@@ -9,7 +9,6 @@
   bardb
   (get-bars [this opts window]
     (info "dynamic get-bars " opts window)
-    ;(info "this: " this)
     (if (:import opts)
       (import-on-demand this opts window)
       (debug "no import defined for: " opts))

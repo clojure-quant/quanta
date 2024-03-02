@@ -1,43 +1,11 @@
 (ns ta.import.provider.bybit.raw
   (:require
    [taoensso.timbre :refer [info]]
-   [clj-http.client :as http]
-   [cheshire.core :as cheshire] ; JSON Encoding
+   [tick.core :as t]
    [cljc.java-time.instant :as inst]
-   [cljc.java-time.local-date-time :as ldt]
-   [cljc.java-time.zone-offset :refer [utc]]
-   [ta.import.helper :refer [str->float remove-last-bar-if-timestamp-equals]]
-   [tick.core :as t]))
-
-(defn epoch-millisecond->instant [epoch-ms]
-  (-> epoch-ms
-      inst/of-epoch-milli
-      ;(ldt/of-instant utc)
-      ))
-
-(def inst-class (class (t/instant)))
-
-(defn ->epoch-millisecond [dt]
-  (let [dt-instant (if (= inst-class (class dt))
-                     dt
-                     (ldt/to-instant dt utc))]
-    (inst/to-epoch-milli dt-instant)))
-
-(comment
-  inst-class
-  (= inst-class (class (t/instant)))
-  (= inst-class (class (t/date-time)))
-  (epoch-millisecond->instant 1669852800000)
-  (Long/parseLong "1693180800000")
-
-  (require '[tick.core :as t])
-  (-> (t/date-time "2018-11-01T00:00:00")
-      ;(t/instant)
-      ->epoch-millisecond
-      ;epoch-millisecond->datetime
-      )
- ; 
-  )
+   [de.otto.nom.core :as nom]
+   [cheshire.core :as cheshire] ; JSON Encoding
+   [ta.import.helper :refer [str->float http-get]]))
 
 ;; # Bybit api
 ;; The query api does NOT need credentials. The trading api does.
@@ -47,6 +15,10 @@
 ;; https://bybit-exchange.github.io/bybit-official-api-docs/en/index.html#operation/query_symbol
 ;; Intervals:  1 3 5 15 30 60 120 240 360 720 "D" "M" "W" "Y"
 ;; limit:      less than or equal 200
+
+(defn epoch-millisecond->instant [epoch-ms]
+  (-> epoch-ms
+      inst/of-epoch-milli))
 
 (defn- convert-bar [bar]
   ;; => ["1693180800000" "26075" "26075.5" "25972.5" "25992" "6419373" "246.72884245"]
@@ -65,29 +37,45 @@
        (:list)
        (map convert-bar)))
 
+(defn http-get-json [url query-params]
+  (nom/let-nom> [res (http-get url query-params)
+                 {:keys [status headers body]} res]
+                (info "status:" status "headers: " headers)
+                (cheshire/parse-string body true)))
+
+
 (defn get-history-request
-  "gets crypto price history
+  "makes rest-call to binance to return bar-seq or nom-anomaly
+   on error. 
+   query-params keys:
    symbol: BTC, ....
    interval: #{ 1 3 5 15 30 60 120 240 360 720 \"D\" \"M\" \"W\" \"Y\"}  
+   start: epoch-millisecond
    start: epoch-millisecond
    limit: between 1 and 200 (maximum)"
   [query-params]
   (info "get-history: " query-params)
-  (let [result (-> (http/get "https://api.bybit.com/v5/market/kline"
-                             {:accept :json
-                              :query-params query-params})
-                   (:body)
-                   (cheshire/parse-string true))]
-    (if (= (:retCode result) 0)
-      (parse-history result)
-      (throw (ex-info (:retMsg result) result)))))
-
-
+  (nom/let-nom>
+   [res (http-get "https://api.bybit.com/v5/market/kline" query-params)
+    {:keys [status headers body]} res
+    result (cheshire/parse-string body true)]
+   (info "status: " status "headers: " headers)
+   (if (= (:retCode result) 0)
+     (let [bar-seq (parse-history result)]
+       (if (> (count bar-seq) 0)
+         bar-seq
+         (nom/fail ::bybit-get-history {:message "bar-seq has count 0"
+                                        :query-params query-params})))
+     (nom/fail ::bybit-get-history {:message "returnCode is not 0"
+                                    :ret-code (:retCode result)
+                                    :query-params query-params}))))
 
 (comment
 
   (require '[tick.core :as t])
   (def start-date-daily (t/instant "2018-11-01T00:00:00Z"))
+
+  (epoch-millisecond->instant 1669852800000)
 
   (-> (get-history-request
        {:symbol "BTCUSD"
@@ -107,10 +95,24 @@
   ; last row is the FIRST date
   ; if result is more than limit, then it will return LAST values first.
 
-   
+
   (epoch-millisecond->instant 1687046400000)
 
 
 
 ;
   )
+
+{"X-Cache" "Miss from cloudfront",
+ "Server" "Openresty",
+ "Via" "1.1 b920186f8b4bb4541e72f9e499a32dd0.cloudfront.net (CloudFront)",
+ "Content-Type" "application/json",
+ "Content-Length" "275",
+ "Connection" "close",
+ "X-Amz-Cf-Pop" "MIA3-C5",
+ "Timenow" "1709397001926",
+ "Ret_code" "0",
+ "x-cld-src" "Loc-A",
+ "Date" "Sat, 02 Mar 2024 16:30:01 GMT",
+ "Traceid" "2b76140e45e0b2211bd94bf1b63c2a45",
+ "X-Amz-Cf-Id" "MBgy-7sAwuLvoC4bcuIeYOSYg4z6tUC3SNkkmlQRr8GncTg5fatMow=="}

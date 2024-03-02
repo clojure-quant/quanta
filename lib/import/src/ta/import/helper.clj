@@ -1,6 +1,21 @@
 (ns ta.import.helper
   (:require
-   [taoensso.timbre :refer [debug]]))
+   [taoensso.timbre :refer [debug]]
+   [clj-http.client :as http]
+   [de.otto.nom.core :as nom]))
+
+(defn http-get [url query-params]
+  (try
+    (http/get url
+              {:accept :json
+               :socket-timeout 5000
+               :connection-timeout 5000
+               :query-params query-params})
+    (catch Exception ex
+      (nom/fail ::http-get {:ex (ex-data ex)
+                            :url url
+                            :query-params query-params}))))
+
 
 (defn str->float [str]
   (if (nil? str)
