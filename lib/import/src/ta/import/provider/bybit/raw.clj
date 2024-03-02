@@ -9,10 +9,11 @@
    [ta.import.helper :refer [str->float remove-last-bar-if-timestamp-equals]]
    [tick.core :as t]))
 
-(defn epoch-millisecond->datetime [epoch-ms]
+(defn epoch-millisecond->instant [epoch-ms]
   (-> epoch-ms
       inst/of-epoch-milli
-      (ldt/of-instant utc)))
+      ;(ldt/of-instant utc)
+      ))
 
 (def inst-class (class (t/instant)))
 
@@ -26,7 +27,7 @@
   inst-class
   (= inst-class (class (t/instant)))
   (= inst-class (class (t/date-time)))
-  (epoch-millisecond->datetime 1669852800000)
+  (epoch-millisecond->instant 1669852800000)
   (Long/parseLong "1693180800000")
 
   (require '[tick.core :as t])
@@ -50,7 +51,7 @@
 (defn- convert-bar [bar]
   ;; => ["1693180800000" "26075" "26075.5" "25972.5" "25992" "6419373" "246.72884245"]
   (let [[open-time open high low close volume turnover] bar]
-    {:date (-> open-time Long/parseLong epoch-millisecond->datetime) ; we work with local-datetime
+    {:date (-> open-time Long/parseLong epoch-millisecond->instant)
      :open (str->float open)
      :high (str->float high)
      :low (str->float low)
@@ -81,42 +82,12 @@
       (parse-history result)
       (throw (ex-info (:retMsg result) result)))))
 
-(defn get-history-page
-  [query-params]
-  (get-history-request
-   (update query-params :start ->epoch-millisecond)))
 
-(defn get-history
-  "gets history since timestamp.
-   joins multiple pages
-   works nicely to request new bars to add to existing series."
-  [query-params]
-  (let [page-no-limit 1000
-        page-no (atom 0)
-        page-size 1000 ; for testing this might be reduced
-        total (atom '())
-        last-page-date (atom nil)]
-    (loop [page-start (:start query-params)]
-      (let [query-params (assoc query-params
-                                :start page-start
-                                :limit page-size)
-            page-series (get-history-page query-params)
-            current-page-size  (count page-series)
-            page-last-date (-> page-series first :date)
-            page-series (remove-last-bar-if-timestamp-equals page-series @last-page-date)]
-        (reset! last-page-date page-last-date)
-        (swap! page-no inc)
-        (swap! total (fn [t p]
-                       (concat p t)) page-series)
-        (when (and (= page-size current-page-size)
-                   (< @page-no page-no-limit))
-          (recur page-last-date))))
-    @total))
 
 (comment
 
   (require '[tick.core :as t])
-  (def start-date-daily (t/date-time "2018-11-01T00:00:00"))
+  (def start-date-daily (t/instant "2018-11-01T00:00:00Z"))
 
   (-> (get-history-request
        {:symbol "BTCUSD"
@@ -127,41 +98,19 @@
 
   (-> (get-history-request
        {:symbol "BTCUSD"
-        :start (-> "2024-02-29T00:00:00" t/date-time ->epoch-millisecond)
-        :end (-> "2024-02-29T00:05:00" t/date-time ->epoch-millisecond)
+        :start (-> "2024-01-29T00:00:00Z" t/instant t/long (* 1000))
+        :end (-> "2024-01-29T00:05:00Z" t/instant t/long (* 1000))
         :interval "1"
-        :limit 200})
+        :limit 3})
       count)
+  ; first row is the LAST date.
+  ; last row is the FIRST date
+  ; if result is more than limit, then it will return LAST values first.
 
-  (-> (get-history-page
-       {:symbol "BTCUSD"
-        :start (tick/date-time "2018-11-01T00:00:00") ;start-date-daily
-        :interval "D"
-        :limit 200
-        :page 1})
-      first
-       ;count
-      )
+   
+  (epoch-millisecond->instant 1687046400000)
 
-  (epoch-millisecond->datetime 1687046400000)
 
-  (require '[clojure.pprint :refer [print-table]])
-
-  (->
-   (get-history {:symbol "BTCUSD"
-                 :start (tick/date-time "2018-11-01T00:00:00")
-                 :interval "D"
-                 :limit 200})
-   print-table)
-
-  (-> (get-history
-       {:symbol "BTCUSD"
-        :start (-> "2024-02-29T00:00:00" t/date-time)
-        :end (-> "2024-02-29T00:05:00" t/date-time)
-        :interval "1"
-      ;:limit 200
-        })
-      count)
 
 ;
   )
