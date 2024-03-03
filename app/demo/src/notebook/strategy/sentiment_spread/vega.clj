@@ -10,16 +10,17 @@
    ;:width "500" ;"100%"
    :height "400" ;"100%"
    :description "Market-Sentiment"
-   :mark "line"
-   :encoding  {:x {:field :date
-                   :type "temporal"}
-               :y {:field "sentiment", :type "quantitative"
-                   :color "blue"}
-               }})
+   :layer [{:mark "line"
+            :encoding {:x {:field :date :type "temporal"}
+                       :y {:field "market", :type "quantitative" :color "blue"}}}
+           {:mark "line"
+            :encoding {:x {:field :date :type "temporal"}
+                       :y {:field "sentiment", :type "quantitative" :color "blue"}}}]})
 
 (defn convert-row [row]
   {:date (:date row)
    :sentiment (:sentiment row)
+   :market (:market row)
    ;:z 1000
 })
 

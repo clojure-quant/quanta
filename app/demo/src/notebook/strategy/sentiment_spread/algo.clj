@@ -61,6 +61,7 @@
   [env {:keys [calendar trailing-n spreads] :as spec} time]
   (info "calculating sentiment-spreads ending: " time)
   (let [cal-seq (cal/trailing-window calendar trailing-n time)
+        bars (get-bars-aligned-filled env (assoc spec :asset (:market spec)) cal-seq)
         date-col (reverse (map t/instant cal-seq))
         assets (assets spreads) ; for live env, we somehow have to add realtime-data to bar-generator for all assets
         ok? (fn [[_spread-name diff]]
@@ -76,4 +77,5 @@
     (-> spreads-ds
         (tc/add-column :date date-col)
         (add-counts spread-names-ok)
+        (tc/add-column :market (:close bars))
         (tc/select-rows (range 5 (tc/row-count spreads-ds))))))

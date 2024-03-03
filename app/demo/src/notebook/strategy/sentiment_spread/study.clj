@@ -13,6 +13,7 @@
                 :calendar [:us :d]
                 :import :kibot
                 :trailing-n 100
+                :market "SPY"
                 :spreads [[:consumer-sentiment "XLY" "XLP"]
                           [:smallcap-speculative-demand "IWM" "SPY"]
                           [:em-speculative-demand "EEM" "EFA"]
