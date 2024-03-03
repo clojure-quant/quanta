@@ -6,13 +6,15 @@
   or the greater the sum of the spreads, the more likely the market will go up and vice versa"
   (:require
    [tablecloth.api :as tc]
-   [ta.algo.backtest :refer [backtest-algo]]))
+   [ta.algo.backtest :refer [backtest-algo]]
+   [notebook.strategy.sentiment-spread.vega :as v]
+   ))
 
 (def algo-spec {:type :time
                 :algo 'notebook.strategy.sentiment-spread.algo/sentiment-spread
                 :calendar [:us :d]
                 :import :kibot
-                :trailing-n 100
+                :trailing-n 1000
                 :market "SPY"
                 :spreads [[:consumer-sentiment "XLY" "XLP"]
                           [:smallcap-speculative-demand "IWM" "SPY"]
@@ -30,14 +32,7 @@
 
 @sentiment-ds
 
-(require '[notebook.strategy.sentiment-spread.vega :as v])
-
-(v/convert-sentiment-ds-data @sentiment-ds)
-
 (v/publish-vega @sentiment-ds :sentiment)
-
-
-
 
 
 ; correlation between factors and spx

@@ -7,19 +7,20 @@
 (def spec
   {;:width "1000"
    :box :fl
-   :width "500" ;"100%"
+   :width 1200 ;"100%"
    :height "400" ;"100%"
    :description "Market-Sentiment"
    :vconcat [{:title "Market"
               :mark "line"
-              :height 300
-              :width 300
+              :height 500
+              :width 1200
               :encoding {:x {:field :date :type "temporal"}
-                         :y {:field "market", :type "quantitative" :color "blue"}}}
+                         :y {:field "market", :type "quantitative" :color "blue"
+                             :scale {:type "linear" :zero false}}}}
              {:title "Sentiment"
               :height 100
-              :width 300
-              :mark "line"
+              :width 1200
+              :mark "bar"
               :encoding {:x {:field :date :type "temporal"}
                          :y {:field "sentiment", :type "quantitative" :color "blue"}}}]})
 
