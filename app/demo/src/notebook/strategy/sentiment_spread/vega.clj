@@ -4,27 +4,41 @@
    [tech.v3.dataset :as tds]
    [ta.viz.publish :as p]))
 
+(def w 1600)
+
 (def spec
   {;:width "1000"
    :box :fl
-   :width 1200 ;"100%"
+   :width w ;"100%"
    :height "400" ;"100%"
    :description "Market-Sentiment"
-   :vconcat [{:title "Market"
-              :mark "line"
-              :height 500
-              :width 1200
-              :encoding {:x {:field :date :type "temporal"}
-                         :y {:field "market", :type "quantitative" :color "blue"
-                             :scale {:type "linear" :zero false}}}}
+   :vconcat [{:height 500
+              :width w
+              :title "Market"
+              :layer [{:mark "rule"
+                       :transform [{:filter "datum.sentiment > 4"}]
+                       :encoding {:color {:value "blue"}
+                                  :size {:value 5}
+                                  :x {:field :date :type "temporal"}}}
+                      {:mark "rule"
+                       :transform [{:filter "datum.sentiment < -4"}]
+                       :encoding {:color {:value "red"}
+                                  :size {:value 5}
+                                  :x {:field :date :type "temporal"}}}
+                      {:mark "line"
+                       :encoding {:x {:field "date" :type "temporal"}
+                                  :y {:field "market" :type "quantitative" :color "blue"
+                                      :scale {:type "linear" :zero false}}}}
+                      ]}
              {:title "Sentiment"
               :height 100
-              :width 1200
+              :width w
               :mark "bar"
-              :encoding {:x {:field :date :type "temporal"}
-                         :y {:field "sentiment", :type "quantitative" :color "blue"}}}]})
+              :encoding {:x {:field "date" :type "temporal"}
+                         :y {:field "sentiment" :type "quantitative" :color "blue"}}}]})
 
 
+;[{"filter": {"param": "index"}}]
 
 (defn convert-row [row]
   {:date (:date row)
@@ -42,5 +56,9 @@
 (defn publish-vega [sentiment-ds topic]
   (p/publish nil {:topic topic}
              {:render-fn 'ta.viz.renderfn.vega/vega-lite
-              :data (convert-sentiment-ds-data sentiment-ds)
+              :data {:values (convert-sentiment-ds-data sentiment-ds)}
+              #_[{:name "data"
+                :values (convert-sentiment-ds-data sentiment-ds)}
+               {:name "sentiment"
+                :source "data"}]
               :spec spec}))

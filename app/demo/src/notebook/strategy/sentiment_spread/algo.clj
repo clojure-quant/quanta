@@ -12,13 +12,14 @@
    [tech.v3.datatype.functional :as fun]
    [ta.algo.env.core :refer [get-bars-aligned-filled]]
    [ta.calendar.core :as cal]
-   [ta.helper.returns :refer [diff]]))
+   [ta.helper.returns :refer [diff diff-n]]))
 
 (defn calc-asset-change [env {:keys [calendar asset import] :as spec} cal-seq]
   (info "calculating asset " asset "on calendar:" calendar "import: " import)
   (try (let [bars (get-bars-aligned-filled env spec cal-seq)
              close (:close bars)
-             close-diff (diff close)]
+             ;close-diff (diff close)
+             close-diff (diff-n 10 close)]
          ;(info "close-diff for asst: " asset "diff: " close-diff)
          close-diff)
        (catch Exception ex
@@ -78,4 +79,4 @@
         (tc/add-column :date date-col)
         (add-counts spread-names-ok)
         (tc/add-column :market (:close bars))
-        (tc/select-rows (range 5 (tc/row-count spreads-ds))))))
+        (tc/select-rows (range 15 (tc/row-count spreads-ds))))))
