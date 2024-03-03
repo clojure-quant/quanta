@@ -36,6 +36,10 @@
 
 (v/publish-vega @sentiment-ds :sentiment)
 
+
+
+
+
 ; correlation between factors and spx
 ; (stats/cor 'm spy :method "pearson" :use "pairwise.complete.obs")
 
