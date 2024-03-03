@@ -12,10 +12,23 @@
    :width w ;"100%"
    :height "400" ;"100%"
    :description "Market-Sentiment"
+   :params [{:name "currentyear"
+             :value 2024
+             :bind {:name "Year"
+                    :input "range"
+                    :min 2009 :max 2024 :step 1}}]
+   :transform [{:calculate "year(datum.date)" :as "year"}
+               {:filter "datum.year == currentyear"}]
    :vconcat [{:height 500
               :width w
               :title "Market"
-              :layer [{:mark "rule"
+              :layer [{:mark {:type "text"
+                              :fontSize 100
+                              :x 420
+                              :y 600
+                              :opacity 0.06},
+                       :encoding {:text {:field "year"}}}
+                      {:mark "rule"
                        :transform [{:filter "datum.sentiment > 4"}]
                        :encoding {:color {:value "blue"}
                                   :size {:value 5}
@@ -28,14 +41,14 @@
                       {:mark "line"
                        :encoding {:x {:field "date" :type "temporal"}
                                   :y {:field "market" :type "quantitative" :color "blue"
-                                      :scale {:type "linear" :zero false}}}}
-                      ]}
+                                      :scale {:type "linear" :zero false}}}}]}
              {:title "Sentiment"
               :height 100
               :width w
               :mark "bar"
               :encoding {:x {:field "date" :type "temporal"}
                          :y {:field "sentiment" :type "quantitative" :color "blue"}}}]})
+
 
 
 ;[{"filter": {"param": "index"}}]
@@ -58,7 +71,7 @@
              {:render-fn 'ta.viz.renderfn.vega/vega-lite
               :data {:values (convert-sentiment-ds-data sentiment-ds)}
               #_[{:name "data"
-                :values (convert-sentiment-ds-data sentiment-ds)}
-               {:name "sentiment"
-                :source "data"}]
+                  :values (convert-sentiment-ds-data sentiment-ds)}
+                 {:name "sentiment"
+                  :source "data"}]
               :spec spec}))

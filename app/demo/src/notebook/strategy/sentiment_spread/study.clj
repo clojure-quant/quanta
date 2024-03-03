@@ -32,8 +32,6 @@
 
 @sentiment-ds
 
-(v/publish-vega @sentiment-ds :sentiment)
-
 
 ; correlation between factors and spx
 ; (stats/cor 'm spy :method "pearson" :use "pairwise.complete.obs")
@@ -51,27 +49,6 @@
 ;;    
 ;;    | :$group-name | :count |
 ;;    |-------------:|-------:|
-;;    |         -7.0 |      1 |
-;;    |         -5.0 |      5 |
-;;    |         -3.0 |     13 |
-;;    |         -1.0 |     21 |
-;;    |          1.0 |     21 |
-;;    |          3.0 |     21 |
-;;    |          5.0 |      6 |
-;;    |          7.0 |      7 |
-
-
-(def algo-spec-1000 (assoc algo-spec :trailing-n 1000))
-
-(def sentiment-1000-ds
-  (backtest-algo :bardb-dynamic algo-spec-1000))
-
-
-(distribution @sentiment-1000-ds)
-;; => _unnamed [8 2]:
-;;    
-;;    | :$group-name | :count |
-;;    |-------------:|-------:|
 ;;    |         -7.0 |      9 |
 ;;    |         -5.0 |     55 |
 ;;    |         -3.0 |    174 |
@@ -80,3 +57,16 @@
 ;;    |          3.0 |    216 |
 ;;    |          5.0 |     76 |
 ;;    |          7.0 |     46 |
+
+
+(def algo-spec-4000 (assoc algo-spec :trailing-n 4000))
+
+(def sentiment-4000-ds
+  (backtest-algo :bardb-dynamic algo-spec-4000))
+
+(v/publish-vega @sentiment-4000-ds :sentiment)
+
+
+
+(distribution @sentiment-1000-ds)
+
