@@ -1,9 +1,9 @@
-(ns notebook.algo-config.crypto-live
+(ns notebook.strategy.live.crypto
   (:require
    [modular.system]
    [ta.algo.env.protocol :as algo]
-   [ta.viz.publish :as p]
-   [ta.algo.permutate :as permutate]))
+   [ta.algo.permutate :as permutate]
+   [ta.viz.publish :as p]))
 
 ;; define algo
 
@@ -44,8 +44,8 @@
    :asset "BTCUSDT"
    :feed :bybit
    :import :bybit
-   :algo ['notebook.algo-config.crypto-live/nil-algo
-          'notebook.algo-config.crypto-live/publish-result]})
+   :algo ['notebook.strategy.live.crypto/nil-algo
+          'notebook.strategy.live.crypto/publish-result]})
 
 (defn create-crypto [env & _args]
   (let [specs (permutate/->assets algo-spec ["BTCUSDT" "ETHUSDT"])

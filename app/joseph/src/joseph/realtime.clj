@@ -4,10 +4,13 @@
     [tablecloth.api :as tc]
     [ta.db.asset.db :as db]
     [ta.helper.ds :refer [ds->map]]
-    [ta.import.provider.kibot.ds :as kibot]))
+    [ta.import.provider.kibot.ds :as kibot]
+    [ta.import.provider.kibot.snapshot :as kibot-s]
+   
+   ))
 
 (defn realtime-snapshot [symbols]
-  (let [data (kibot/get-snapshot symbols)
+  (let [data (kibot-s/get-snapshot symbols)
         data-ok (if data
                   (ds->map data)
                   [])]

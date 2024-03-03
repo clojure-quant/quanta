@@ -1,4 +1,4 @@
-(ns notebook.studies.cluster
+(ns notebook.strategy.cluster
   (:require
    [tech.v3.dataset.print :as print]
    [tech.v3.datatype.functional :as fun]

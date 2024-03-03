@@ -1,4 +1,4 @@
-(ns notebook.algo.poc
+(ns notebook.strategy.poc.algo
   (:require
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as fun]

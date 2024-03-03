@@ -1,4 +1,4 @@
-(ns notebook.algo-config.quote-monitor
+(ns notebook.strategy.live.quote-monitor
   (:require
    [taoensso.timbre :refer [info warn error]]
    [modular.system]
@@ -28,18 +28,14 @@
              {:path :asset}
              {:path :price}
              {:path :size}]
-   :algo ['notebook.algo-config.quote-monitor/get-quote-snapshot
+   :algo ['notebook.strategy.live.quote-monitor/get-quote-snapshot
           'ta.viz.publish/publish-ds->table]})
 
 (defn create-quote-monitor [algo-env & args]
-  (try 
-  (algo/add-algo algo-env algo-spec)
-   (catch Exception ex
-     (error "exception in adding quote monitor: " ex)
-     
-     )  
-    )
-  )
+  (try
+    (algo/add-algo algo-env algo-spec)
+    (catch Exception ex
+      (error "exception in adding quote monitor: " ex))))
 
 
 

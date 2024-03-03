@@ -1,4 +1,4 @@
-(ns notebook.algo.sma3
+(ns notebook.strategy.sma-crossover.algo
   (:require
    [tablecloth.api :as tc]
    [ta.indicator :refer [sma]]))

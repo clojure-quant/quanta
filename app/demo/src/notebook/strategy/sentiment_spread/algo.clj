@@ -1,4 +1,4 @@
-(ns notebook.algo.sentiment-spread
+(ns notebook.strategy.sentiment-spread.algo
   "Sentiment Spreads
   Backtest of a strategy described in 
   https://cssanalytics.wordpress.com/2010/09/19/creating-an-ensemble-intermarket-spy-model-with-etf-rewinds-sentiment-spreads/
@@ -68,10 +68,12 @@
         spreads (map #(calc-spread env spec cal-seq %) spreads)
         spreads-ok (filter ok? spreads)
         spread-names-ok (map first spreads-ok)
-        spreads-ok-ds (->> spreads-ok
-                           (filter ok?)
-                           (into {})
-                           (tc/dataset))
-        spreads-ok-ds (tc/add-column spreads-ok-ds :date date-col)]
+        spreads-ds (->> spreads-ok
+                        (filter ok?)
+                        (into {})
+                        (tc/dataset))]
     (info "assets: " assets)
-    (add-counts spreads-ok-ds spread-names-ok)))
+    (-> spreads-ds
+        (tc/add-column :date date-col)
+        (add-counts spread-names-ok)
+        (tc/select-rows (range 5 (tc/row-count spreads-ds))))))

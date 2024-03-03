@@ -1,4 +1,4 @@
-(ns notebook.algo.moon
+(ns notebook.strategy.moon.algo
   (:require
    [tablecloth.api :as tc]
    [tech.v3.datatype :as dtype]

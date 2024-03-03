@@ -1,4 +1,4 @@
-(ns notebook.algo-config.multicalendar-sma)
+(ns notebook.strategy.sma-crossover.multicalendar)
 
 
  (def multi-calendar-algo-demo
@@ -9,11 +9,11 @@
    :us :h [{:trailing-n 100
             :sma 30}
            'ta.algo.env.trailing-window/trailing-window-load-bars
-           'notebook.algo.sma3/bar-strategy]
+           'notebook.strategy.sma-crossover.algo/bar-strategy]
    :us :m [{:trailing-n 60
             :sma 20}
            'ta.algo.env.trailing-window/trailing-window-load-bars
-           'notebook.algo.sma3/bar-strategy]
+           'notebook.strategy.sma-crossover.algo/bar-strategy]
     :* :*  ['ta.algo.ds/get-current-positions
             'ta.algo.ds/all-positions-agree]
    ])

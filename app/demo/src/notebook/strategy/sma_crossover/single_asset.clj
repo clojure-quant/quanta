@@ -1,4 +1,4 @@
-(ns notebook.studies.sma-crossover.single-asset
+(ns notebook.strategy.sma-crossover.single-asset
   (:require
    [tick.core :as t]
    [ta.calendar.core :as cal]
@@ -32,7 +32,7 @@ bdb
                  :import :kibot} window)
 
 (def algo-spec {:type :trailing-bar
-                :algo 'notebook.algo.sma3/bar-strategy
+                :algo 'notebook.strategy.sma-crossover.algo/bar-strategy
                 :calendar [:us :d]
                 :asset "AAPL"
                 :import :kibot

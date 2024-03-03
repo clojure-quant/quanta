@@ -1,4 +1,4 @@
-(ns notebook.studies.sma-crossover.multiple-assets
+(ns notebook.strategy.sma-crossover.multiple-assets
   (:require
    [ta.engine.javelin :refer [create-env]]
    [ta.engine.javelin.algo :as dsl]

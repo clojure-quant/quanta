@@ -1,9 +1,9 @@
-(ns notebook.algo-config.simple-sma-crossover
+(ns notebook.strategy.sma-crossover.simple
   (:require
    [ta.algo.permutate :refer [->assets]]))
 
 (def base {:type :trailing-bar
-           :algo 'notebook.algo.sma3/bar-strategy
+           :algo 'notebook.strategy.sma-crossover.algo/bar-strategy
            :label :sma-crossover-1m
            :bar-category [:us :m]
            :calendar [:us :m] ; hack for dsl-javelin

@@ -1,4 +1,4 @@
-(ns notebook.algo-config.tickerplant-monitor
+(ns notebook.strategy.live.tickerplant-monitor
   (:require
    [taoensso.timbre :refer [info warn error]]
    [modular.system]
@@ -42,7 +42,7 @@
              {:path :close}
              {:path :volume}
              {:path :ticks}]
-   :algo ['notebook.algo-config.tickerplant-monitor/get-tickerplant-status
+   :algo ['notebook.strategy.live.tickerplant-monitor/get-tickerplant-status
           'ta.viz.publish/publish-ds->table]})
  
 (defn create-tickerplant-monitor [env & args]

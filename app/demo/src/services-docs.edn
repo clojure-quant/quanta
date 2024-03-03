@@ -83,7 +83,7 @@
                          :quote-manager (clip/ref :quote-manager) })}
 
   ;; LIVE STRATEGIES
-  :crypto-raw {:start (notebook.algo-config.crypto-live/create-crypto 
+  :crypto-raw {:start (notebook.strategy.live.crypto/create-crypto 
                        (clip/ref :live)
                        ; ref to :tickerplant is needed to start tickerplant FIRST.
                        (clip/ref :tickerplant) (clip/ref :timbre))}
@@ -94,13 +94,13 @@
   ;                     (clip/ref :timbre)
   ;                       ; ref to :tickerplant is needed to start tickerplant FIRST.
   ;                     )}
-  :tickerplant-monitor {:start (notebook.algo-config.tickerplant-monitor/create-tickerplant-monitor
+  :tickerplant-monitor {:start (notebook.strategy.live.tickerplant-monitor/create-tickerplant-monitor
                                  (clip/ref :live)
                                  (clip/ref :tickerplant)
                                  (clip/ref :timbre)
                       ; ref to :tickerplant is needed to start tickerplant FIRST.
                       )}
-  :quote-monitor {:start (notebook.algo-config.quote-monitor/create-quote-monitor
+  :quote-monitor {:start (notebook.strategy.live.quote-monitor/create-quote-monitor
                             (clip/ref :live)
                             (clip/ref :tickerplant)
                             (clip/ref :timbre)

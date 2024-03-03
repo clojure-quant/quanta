@@ -1,4 +1,4 @@
-(ns notebook.studies.moon
+(ns notebook.strategy.moon.study
   (:require
    [tablecloth.api :as tc]
    [tech.v3.datatype :as dtype]
@@ -15,7 +15,7 @@
 ;; 1. calculate algo, observe moon-phase.
 
 (def algo-spec {:calendar [:us :d]
-                :algo  'notebook.algo.moon/moon-indicator
+                :algo  'notebook.strategy.moon.algo/moon-indicator
                 :asset "SPY"
                 :import :kibot
                 :trailing-n 1000

@@ -1,4 +1,4 @@
-(ns notebook.algo-config.raw-dummy)
+(ns notebook.strategy.live.raw-dummy)
 
 ;; define a dummy algo
 (defn algo-dummy [_env opts time]

@@ -1,4 +1,4 @@
-(ns notebook.studies.sentiment-spread
+(ns notebook.strategy.sentiment-spread.study
   "Sentiment Spreads
   Backtest of a strategy described in 
   https://cssanalytics.wordpress.com/2010/09/19/creating-an-ensemble-intermarket-spy-model-with-etf-rewinds-sentiment-spreads/
@@ -6,14 +6,11 @@
   or the greater the sum of the spreads, the more likely the market will go up and vice versa"
   (:require
    [tablecloth.api :as tc]
-   [ta.calendar.core :as cal]
-   [ta.env.backtest :refer [run-backtest]]
-   [ta.engine.javelin :refer [create-env]]
-   [ta.engine.javelin.algo :as dsl]
-   [notebook.algo.sentiment-spread :refer [sentiment-spread]]))
+   [ta.algo.backtest :refer [backtest-algo]]))
 
-
-(def algo-spec {:calendar [:us :d]
+(def algo-spec {:type :time
+                :algo 'notebook.strategy.sentiment-spread.algo/sentiment-spread
+                :calendar [:us :d]
                 :import :kibot
                 :trailing-n 100
                 :spreads [[:consumer-sentiment "XLY" "XLP"]
@@ -26,58 +23,60 @@
                           ; 8th spread- VXX-VXZ – due to insufficient historical data.
                           ]})
 
-
-(def window (-> (cal/trailing-range [:us :d] 1)
-                   ;(window-as-date-time)
-                ))
-
-window
-
-(def env (create-env :bardb-dynamic))
-(def strategy (dsl/add-time-strategy env algo-spec sentiment-spread))
-(run-backtest env window)
+(def sentiment-ds
+  (backtest-algo :bardb-dynamic algo-spec))
 
 
-@strategy
+@sentiment-ds
+
+(require '[notebook.strategy.sentiment-spread.vega :as v])
+
+(v/convert-sentiment-ds-data @sentiment-ds)
+
+(v/publish-vega @sentiment-ds :sentiment)
 
 ; correlation between factors and spx
 ; (stats/cor 'm spy :method "pearson" :use "pairwise.complete.obs")
 
 
-(defn distribution [ds-sentiment]
-  (-> ds-sentiment
+(defn distribution [sentiment-ds]
+  (-> sentiment-ds
       (tc/group-by :sentiment)
       (tc/aggregate
        {:count (fn [ds] (tc/row-count ds))})
       (tc/order-by :$group-name)))
 
-(distribution @strategy)
+(distribution @sentiment-ds)
+;; => _unnamed [8 2]:
+;;    
+;;    | :$group-name | :count |
+;;    |-------------:|-------:|
+;;    |         -7.0 |      1 |
+;;    |         -5.0 |      5 |
+;;    |         -3.0 |     13 |
+;;    |         -1.0 |     21 |
+;;    |          1.0 |     21 |
+;;    |          3.0 |     21 |
+;;    |          5.0 |      6 |
+;;    |          7.0 |      7 |
 
-; | :$group-name | :count |
-; |-------------:|-------:|
-; |          6.0 |      7 |
-; |          0.0 |     29 |
-; |          2.0 |     24 |
-; |         -2.0 |     23 |
-; |          4.0 |     11 |
-; |         -4.0 |      5 |
-; |         -6.0 |      1 |
+
+(def algo-spec-1000 (assoc algo-spec :trailing-n 1000))
+
+(def sentiment-1000-ds
+  (backtest-algo :bardb-dynamic algo-spec-1000))
 
 
-(def algo-spec-long (assoc algo-spec :trailing-n 1000))
-
-(def env (create-env :bardb-dynamic))
-(def strategy (dsl/add-time-strategy env algo-spec-long sentiment-spread))
-(run-backtest env window)
-
-(distribution @strategy)
-
-;; | :$group-name | :count |
-;; |-------------:|-------:|
-;; |         -6.0 |     11 |
-;; |         -4.0 |     76 |
-;; |         -2.0 |    221 |
-;; |          0.0 |    278 |
-;; |          2.0 |    260 |
-;; |          4.0 |     99 |
-;; |          6.0 |     55 |
+(distribution @sentiment-1000-ds)
+;; => _unnamed [8 2]:
+;;    
+;;    | :$group-name | :count |
+;;    |-------------:|-------:|
+;;    |         -7.0 |      9 |
+;;    |         -5.0 |     55 |
+;;    |         -3.0 |    174 |
+;;    |         -1.0 |    208 |
+;;    |          1.0 |    211 |
+;;    |          3.0 |    216 |
+;;    |          5.0 |     76 |
+;;    |          7.0 |     46 |
