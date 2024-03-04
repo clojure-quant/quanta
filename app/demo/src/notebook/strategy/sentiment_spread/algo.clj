@@ -1,9 +1,4 @@
 (ns notebook.strategy.sentiment-spread.algo
-  "Sentiment Spreads
-  Backtest of a strategy described in 
-  https://cssanalytics.wordpress.com/2010/09/19/creating-an-ensemble-intermarket-spy-model-with-etf-rewinds-sentiment-spreads/
-  The indicator according to Jeff Pietsch (who is the creator of ETF Rewind) is most valuable for intraday-trading as an indicator that captures the market’s sentiment towards risk assets. A positive spread or positive differential return implies that the market is willing to take risk and thus likely to go higher. By extension, the more spreads that are positive, 
-  or the greater the sum of the spreads, the more likely the market will go up and vice versa"
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [tick.core :as t]

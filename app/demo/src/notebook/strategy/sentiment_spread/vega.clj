@@ -50,15 +50,10 @@
                          :y {:field "sentiment" :type "quantitative" :color "blue"}}}]})
 
 
-
-;[{"filter": {"param": "index"}}]
-
 (defn convert-row [row]
   {:date (:date row)
    :sentiment (:sentiment row)
-   :market (:market row)
-   ;:z 1000
-   })
+   :market (:market row)})
 
 (defn convert-sentiment-ds-data [sentiment-ds]
   (let [r (tds/mapseq-reader sentiment-ds)]
@@ -70,8 +65,4 @@
   (p/publish nil {:topic topic}
              {:render-fn 'ta.viz.renderfn.vega/vega-lite
               :data {:values (convert-sentiment-ds-data sentiment-ds)}
-              #_[{:name "data"
-                  :values (convert-sentiment-ds-data sentiment-ds)}
-                 {:name "sentiment"
-                  :source "data"}]
               :spec spec}))
