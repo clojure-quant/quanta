@@ -8,6 +8,11 @@
    [ta.db.bars.protocol :refer [bardb] :as b]))
 
 
+(defn add-date-group [ds interval]
+  (case interval 
+    :month (compress/add-date-group-month ds)
+    :year  (compress/add-date-group-year ds)))
+
 (defrecord compressing-provider [provider interval-config]
   bardb
   (get-bars [this opts window]
@@ -19,9 +24,8 @@
                         (assoc opts :calendar
                                [calendar (:interval-config interval)])
                         window)
-            ; TODO - need to generate the column of the higher interval 
-            ; dynamically. 
-            (compress/compress-ds interval))
+            (add-date-group interval)
+            (compress/compress-ds))
         (b/get-bars (:provider this) opts window))))
   (append-bars [this opts ds-bars]
     (error "compressing-provider does not support appending bars!")))
@@ -35,7 +39,9 @@
     {:h :m
      :5m :m
      :10m :m
-     :30m :m})
+     :30m :m
+     :month :d
+     :year :d})
 
   (contains? interval-config :m)
   (contains? interval-config :h)

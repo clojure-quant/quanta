@@ -1,63 +1,54 @@
 (ns ta.calendar.compress
   (:require
-   [tick.core :as tick]
+   [tick.core :as t]
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as dfn]
    [tablecloth.api :as tc]
    [ta.helper.date-ds :as h]))
 
- (def midnight (tick/time "00:00:00"))
+ (def midnight (t/time "00:00:00"))
  
-;; MONTH GROUP
+;; MONTH 
  
 (defn- year-month->date [year month]
- (->
-   (tick/new-date year month 1)
-   (.plusMonths 1)
-   (.plusDays -1)
-   (tick/at midnight)))
+ (-> (t/new-date year month 1)
+     (.plusMonths 1)
+     (.plusDays -1)
+     (t/at midnight)
+     (t/in "UTC")))
   
-(defn- year-month->date-col [ds]
-  (let [year (:year ds)
-        month (:month ds)]
-  (dtype/make-reader 
-   :local-date-time
-   (tc/row-count ds) 
-   (year-month->date (get year idx) (get month idx)))))
-
-(defn add-date-group-col-month [ds]
-  (let [ds-year-month (h/add-year-and-month-date-as-local-date ds)
-        date-group-col (year-month->date-col ds-year-month)]
-    (tc/add-column ds-year-month :date-group date-group-col)))
+ (defn month-end-date [dt]
+   (let [y (-> dt t/year .getValue)
+         m (-> dt t/month .getValue)]
+     (year-month->date y m)))
+ 
+(defn add-date-group-month [ds]
+  (let [date-group-col (dtype/emap month-end-date :zoned-date-time (:date ds))]
+    (tc/add-column ds :date-group date-group-col)))
 
 ;; YEAR
 
 (defn- year->date [year]
   (->
-   (tick/new-date year 1 1)
+   (t/new-date year 1 1)
    (.plusYears 1)
    (.plusDays -1)
-   (tick/at midnight)))
+   (t/at midnight)
+   (t/in "UTC")))
 
-(defn- year->date-col [ds]
-  (let [year (:year ds)]
-    (dtype/make-reader
-     :local-date-time
-     (tc/row-count ds)
-     (year->date (get year idx)))))
+(defn year-end-date [dt]
+  (let [y (-> dt t/year .getValue)]
+    (year->date y)))
 
-(defn add-date-group-col-year [ds]
-  (let [ds-year-month (h/add-year-and-month-date-as-local-date ds)
-        date-group-col (year->date-col ds-year-month)]
-    (tc/add-column ds-year-month :date-group date-group-col)))
-
+(defn add-date-group-year [ds]
+  (let [date-group-col (dtype/emap year-end-date :zoned-date-time (:date ds))]
+    (tc/add-column ds :date-group date-group-col)))
 
 ;; COMPRESS
 
-(defn compress-ds [add-date-group-col ds] 
+(defn compress-ds [grouped-ds] 
   (->
-    ds
-   (add-date-group-col)
+    grouped-ds
    (tc/group-by [:date-group])
    (tc/aggregate {:open (fn [ds]
                           (-> ds :open first ))
@@ -86,21 +77,22 @@
 (comment 
   
   (year-month->date 2021 04)
+  (month-end-date (t/instant))
+  (month-end-date (t/instant "2023-01-01T15:30:00Z"))
 
-  (require '[ta.helper.date :refer [parse-date]])
-  (def ds (tc/dataset [{:date (parse-date "2021-01-01")
+  (def ds (tc/dataset [{:date (t/instant "2021-01-01T15:30:00Z")
                         :open 100
                         :high 110
                         :low 90
                         :close 105
                         :volume 100}
-                       {:date (parse-date "2021-01-02")
+                       {:date (t/instant "2021-01-02T15:30:00Z")
                         :open 106
                         :high 115
                         :low 101
                         :close 109
                         :volume 100}
-                       {:date (parse-date "2021-02-01")
+                       {:date (t/instant "2021-02-01T15:30:00Z")
                         :open 110
                         :high 121
                         :low 105
@@ -109,17 +101,14 @@
                        ]))
   ds
 
-  (compress-ds add-date-group-col-month ds)
-  (compress-ds add-date-group-col-year ds) 
-
-  (require '[ta.warehouse :as wh])
- 
-  (def btc (wh/load-series {:symbol "BTCUSD"
-                            :frequency "D"
-                            :warehouse :crypto}))
+  (-> ds 
+      (add-date-group-year)
+      (compress-ds))
   
-  (compress-ds add-date-group-col-year btc) 
- 
+  (-> ds
+      (add-date-group-month)
+      (compress-ds))
+
   
  ; 
     )
