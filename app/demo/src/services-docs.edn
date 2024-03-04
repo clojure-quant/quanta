@@ -57,7 +57,16 @@
            :stop (ta.db.bars.duckdb/stop-bardb-duck this)
            :post-start ta.db.bars.duckdb/init-tables}
   
-  :bardb-dynamic {:start (ta.db.bars.dynamic/start-bardb-dynamic (clip/ref :duckdb) "../../output/overviewdb")
+  :import-manager {:start (ta.import.core/start-import-manager
+                            {:kibot ta.import.provider.kibot.ds/get-bars
+                            :kibot-http ta.import.provider.kibot-http.ds/get-bars
+                            :alphavantage ta.import.provider.alphavantage.ds/get-bars
+                            :bybit ta.import.provider.bybit.ds/get-bars})}
+
+  :bardb-dynamic {:start (ta.db.bars.dynamic/start-bardb-dynamic 
+                          (clip/ref :duckdb) 
+                          (clip/ref :import-manager) 
+                          "../../output/overviewdb")
                   :stop (ta.db.bars.dynamic/stop-bardb-dynamic this)}
   
   :feed-fx {:start    (ta.quote.fix/start-fix-feed-autoconnect :ctrader-tradeviewmarkets-quote)

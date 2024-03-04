@@ -3,7 +3,6 @@
    [taoensso.timbre :as timbre :refer [debug info warn error]]
    [tick.core :as t]
    [de.otto.nom.core :as nom]
-   [ta.import.core :as i]
    [ta.db.bars.protocol :as bardb]
    [ta.db.bars.dynamic.overview-db :as overview]))
 
@@ -33,9 +32,9 @@
 (defn import-needed? [tasks]
   (not (empty? tasks)))
 
-(defn get-bars-safe [opts task]
+(defn get-bars-safe [state opts task]
   (try
-    (let [bar-ds (i/get-bars opts task)]
+    (let [bar-ds (bardb/get-bars (:importer state) opts task)]
       (if bar-ds
         bar-ds
         (nom/fail ::get-bars-safe {:message "import-provider has returned nil."
@@ -59,7 +58,7 @@
       nil)))
 
 (defn run-import-task [state opts task]
-  (let [bar-ds (get-bars-safe opts task)]
+  (let [bar-ds (get-bars-safe state opts task)]
     (if (and bar-ds (not (nom/anomaly? bar-ds)))
       (append-bars-safe state opts task bar-ds)
       (error "bar-import " opts "error: " bar-ds)

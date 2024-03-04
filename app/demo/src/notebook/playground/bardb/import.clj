@@ -1,41 +1,57 @@
 (ns notebook.playground.bardb.import
   (:require
    [tick.core :as t]
-   [ta.import.core :refer [get-bars]]))
+   [ta.db.bars.protocol :refer [bardb] :as b]
+   [modular.system]))
 
-(def dt (t/date-time "2024-02-01T00:00:00"))
+(def im (modular.system/system :import-manager))
+
+im
+
+(def dt (t/instant "2024-02-01T00:00:00Z"))
 dt
 
 ;; BYBIT
-(get-bars {:asset "BTCUSD" ; crypto
-           :calendar [:crypto :d]
-           :import :bybit}
-          {:start dt})
+(b/get-bars im {:asset "BTCUSD" ; crypto
+                :calendar [:crypto :d]
+                :import :bybit}
+            {:start dt})
 
 ;; ALPHAVANTAGE
-(get-bars {:asset "FMCDX" ; mutual fund
-           :calendar [:us :d]
-           :import :alphavantage}
-          {:start dt
-           :mode :append})
+(b/get-bars im {:asset "FMCDX" ; mutual fund
+                :calendar [:us :d]
+                :import :alphavantage}
+            {:start dt
+             :mode :append})
 
 (defn date-type [ds]
   (-> ds :date meta :datatype))
 
 ;; KIBOT
-(-> (get-bars {:asset "NG0" ; future
-               :calendar [:us :d]
-               :import :kibot}
-              {:start dt})
+(-> (b/get-bars im {:asset "NG0" ; future
+                    :calendar [:us :d]
+                    :import :kibot}
+                {:start dt})
     date-type)
-    
-(get-bars {:asset "EURUSD" ; forex
-           :calendar [:us :d]
-           :import :kibot}
-          {:start dt})
 
-(get-bars {:asset "EU0" ; future(forex)
-           :calendar [:us :d]
-           :import :kibot}
-          {:start dt})
+(b/get-bars im 
+            {:asset "EUR/USD" ; forex
+             :calendar [:forex :d]
+             :import :kibot}
+            {:start (t/instant "2023-09-01T00:00:00Z")
+             :end (t/instant "2023-10-01T00:00:00Z")})
+
+
+(b/get-bars im {:asset "EU0" ; future(forex)
+                :calendar [:us :d]
+                :import :kibot}
+            {:start (t/instant "2023-09-01T00:00:00Z")
+             :end (t/instant "2023-10-01T00:00:00Z")})
+
+(b/get-bars im
+            {:asset "MSFT" 
+             :calendar [:us :d]
+             :import :kibot}
+            {:start (t/instant "2019-12-01T00:00:00Z")
+             :end (t/instant "2020-02-01T00:00:00Z")})
 

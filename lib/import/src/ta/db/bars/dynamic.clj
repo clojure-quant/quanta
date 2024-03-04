@@ -5,7 +5,7 @@
    [ta.db.bars.dynamic.overview-db :as overview]
    [ta.db.bars.dynamic.import :refer [import-on-demand]]))
 
-(defrecord bardb-dynamic [bar-db overview-db]
+(defrecord bardb-dynamic [bar-db importer overview-db]
   bardb
   (get-bars [this opts window]
     (info "dynamic get-bars " opts window)
@@ -18,9 +18,9 @@
     ;(info "this: " this)
     (b/append-bars (:bar-db this) opts ds-bars)))
 
-(defn start-bardb-dynamic [bar-db overview-path]
+(defn start-bardb-dynamic [bar-db importer overview-path]
   (let [overview-db (overview/start-overview-db overview-path)]
-    (bardb-dynamic. bar-db overview-db)))
+    (bardb-dynamic. bar-db importer overview-db)))
 
 (defn stop-bardb-dynamic [this]
   (overview/stop-overview-db (:overview-db this)))

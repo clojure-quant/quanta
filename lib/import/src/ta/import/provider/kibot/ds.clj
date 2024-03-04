@@ -149,15 +149,24 @@
   (get-bars {:asset "MSFT" ; stock
              :calendar [:us :d]}
             {:start dt})
+  
+  (get-bars {:asset "MSFT"
+             :calendar [:us :d]
+             :import :kibot}
+            {:start (t/instant "2020-01-01T00:00:00Z")
+             :end (t/instant "2020-02-01T00:00:00Z")})
+
 
   (-> (get-bars {:asset "NG0" ; future
                  :calendar [:us :d]}
                 {:start dt})
       (tc/info))
 
-  (get-bars {:asset "EURUSD" ; forex
+  (get-bars {:asset "EUR/USD" ; forex
              :calendar [:forex :d]}
-            {:start (parse-date "2023-09-01")})
+            {:start (parse-date "2023-09-01")
+             :end (parse-date "2023-10-01")
+             })
 
   (get-bars  {:asset "IJH" ; ETF
               :calendar [:etf :d]}
