@@ -1,6 +1,9 @@
 (ns ta.calendar.interval
   (:require
    [tick.core :as t]
+   [ta.calendar.year :as year]
+   [ta.calendar.month :as month]
+   [ta.calendar.week :as week]
    [ta.calendar.day :as day]
    [ta.calendar.intraday :as intraday]
    [ta.calendar.calendars :refer [calendars]]
@@ -9,6 +12,10 @@
 
 (defn now-calendar [{:keys [timezone] :as calendar}]
   (now-in-zone timezone))
+
+(defn working-days-count [period]
+  ; TODO
+  )
 
 (defn get-calendar-day-duration [calendar-kw]
   (let [{:keys [open close] :as calendar} (calendar-kw calendars)]
@@ -19,6 +26,13 @@
                                  (t/new-duration 1 :seconds))
       (t/= open close) (t/divide (t/new-duration 1 :days)
                                  (t/new-duration 1 :seconds)))))
+
+(defn get-calendar-month-duration [calendar-kw date]
+  ; TODO
+  ;(let [days (working-days-count )
+  ;      day-duration (get-calendar-day-duration calendar-kw)]
+  ;  (* days day-duration))
+  )
 
 (defn gen-intraday-step-fn [n unit]
   ; close
@@ -46,10 +60,22 @@
    })
 
 (def intervals
-  {:d   {:next-close    day/next-close-dt
+  {:Y   {:next-close    year/next-close
+         :prior-close   year/prior-close
+         :current-close year/current-close}
+
+   :M   {:next-close    month/next-close
+         :prior-close   month/prior-close
+         :current-close month/current-close}
+
+   :W   {:next-close    week/next-close
+         :prior-close   week/prior-close
+         :current-close week/current-close}
+
+   :d   {:next-close    day/next-close-dt
          :prior-close   day/prior-close-dt
-         :current-close day/current-close
-         :current-open  day/current-open}
+         :current-close day/current-close}
+
    :h   (gen-intraday-step-fn 1 :hours)
    :m   (gen-intraday-step-fn 1 :minutes)
    :m15 (gen-intraday-step-fn 15 :minutes)

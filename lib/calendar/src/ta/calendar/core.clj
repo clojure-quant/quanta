@@ -1,7 +1,9 @@
 (ns ta.calendar.core
   (:require
    [tick.core :as t]
-   [ta.calendar.interval :refer [intervals get-calendar-day-duration] :as interval]
+   [ta.calendar.interval :refer [intervals
+                                 get-calendar-day-duration
+                                 get-calendar-month-duration] :as interval]
    [ta.calendar.calendars :refer [calendars]]
    [ta.calendar.core :as cal]))
 
@@ -106,8 +108,12 @@
 (defn get-bar-duration
   "returns duration in seconds of the given calendar"
   [[calendar-kw interval-kw]]
-  (if (= interval-kw :d)
-    (get-calendar-day-duration calendar-kw)
+  (case interval-kw
+    ; TODO
+    ;:Y
+    ;:M (get-calendar-month-duration calendar-kw)
+    ;:W
+    :d (get-calendar-day-duration calendar-kw)
     (get-in intervals [interval-kw :duration])))
 
 

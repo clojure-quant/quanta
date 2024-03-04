@@ -99,6 +99,7 @@
 
       ;
       dt-prev-friday-17-00-30 (to-est "2024-02-02T17:00:30")
+      dt-thursday-17-01 (to-est "2024-02-08T17:01:00")
       dt-thursday-23-00 (to-est "2024-02-08T23:00:00")
 
       dt-friday-06-00 (to-est "2024-02-09T06:00:00")
@@ -178,6 +179,14 @@
     ;    (is (= (nth seq-5-us-d 3) dt-thursday-16-30))
     ;    (is (= (nth seq-5-us-d 4) dt-thursday-17-00))
     ;    (is (not (= (nth seq-5-us-d 0) dt-friday-17-00)))))
+   (testing "1 min seq - forex - jump into next trading day"
+     (let [seq-5-us-d (take 5 (calendar-seq :forex :m dt-thursday-16-27))]
+       (is (= (nth seq-5-us-d 0) dt-thursday-16-27))
+       (is (= (nth seq-5-us-d 1) dt-thursday-16-28))
+       (is (= (nth seq-5-us-d 2) dt-thursday-16-29))
+       (is (= (nth seq-5-us-d 3) dt-thursday-16-30))
+       (is (= (nth seq-5-us-d 4) dt-thursday-17-01))
+       (is (not (= (nth seq-5-us-d 0) dt-friday-17-00)))))
     )
       
   ; us
