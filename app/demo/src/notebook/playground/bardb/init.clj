@@ -9,7 +9,12 @@
 (duck/create-table db [:forex :d])
 (duck/create-table db [:forex :m])
 
-
 (duck/create-table db [:crypto :d])
 (duck/create-table db [:crypto :m])
+
+
+(duck/create-table db [:forex :month])
+(duck/create-table db [:us :month])
+(duck/create-table db [:crypto :month])
+
 

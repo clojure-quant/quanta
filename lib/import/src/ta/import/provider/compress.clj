@@ -16,17 +16,20 @@
 (defrecord compressing-provider [provider interval-config]
   bardb
   (get-bars [this opts window]
-    (let [interval (cal/interval (:calendar opts))
-          calendar (cal/calendar (:calendar opts))
+    (let [exchange (cal/exchange  (:calendar opts))
+          interval (cal/interval (:calendar opts))
           generate? (contains? (:interval-config this) interval)]
       (if generate?
-        (-> (b/get-bars (:provider this)
-                        (assoc opts :calendar
-                               [calendar (:interval-config interval)])
-                        window)
+        (let [calendar [exchange (get (:interval-config this) interval)]
+              opts (assoc opts :calendar calendar)]
+           (warn "compressing bars. opts: " opts)
+        (-> (b/get-bars (:provider this) opts window)
             (add-date-group interval)
-            (compress/compress-ds))
-        (b/get-bars (:provider this) opts window))))
+            (compress/compress-ds)))
+        (do 
+           (warn "forwarding request to import-provider: " opts window)
+           (b/get-bars (:provider this) opts window))
+        )))
   (append-bars [this opts ds-bars]
     (error "compressing-provider does not support appending bars!")))
 
