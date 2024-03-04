@@ -79,7 +79,7 @@
       {:date (t/date-time) :open 4 :high 2 :low 3 :close 14 :volume 5}]))
 
   (convert-data ds
-                [{:bar "x";:trade "flags"
+                [{;:bar "x";:trade "flags"
                   :close {:type "line"
                           :linewidth 2
              ;:color (color :blue-900)
