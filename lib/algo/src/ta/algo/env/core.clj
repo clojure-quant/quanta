@@ -3,7 +3,7 @@
    ;[taoensso.timbre :refer [trace debug info warn error]]
    [tick.core :as t]
    [ta.calendar.core :refer [trailing-window get-bar-window]]
-   [ta.db.bars.protocol :as bardb]
+   [ta.db.bars.protocol :as b]
    [ta.db.bars.aligned :as aligned]
    [ta.algo.env.protocol :as algo-env]
    [ta.algo.spec :as s]))
@@ -18,7 +18,7 @@
     (assert asset "cannot get-bars for unknown asset!")
     (assert calendar "cannot get-bars for unknown calendar!")
     (assert window "cannot get-bars for unknown window!")
-    (bardb/get-bars bar-db spec window)))
+    (b/get-bars bar-db spec window)))
 
 (defn get-bars-aligned-filled
   "returns bars for asset/calendar/window"
@@ -37,7 +37,7 @@
     (assert bar-db "environment does not provide bar-db!")
     (assert calendar "can not execute add-bars - needs calendar parameter.")
     (assert ds-bars "can not execute add-bars - needs ds-bars parameter.")
-    (bardb/append-bars env opts ds-bars)))
+    (b/append-bars env opts ds-bars)))
 
 (defn get-calendar-time [env calendar]
   (let [calendar-time (:calendar-time env)]

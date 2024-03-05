@@ -3,7 +3,7 @@
    [taoensso.timbre :as timbre :refer [debug info warn error]]
    [tick.core :as t]
    [de.otto.nom.core :as nom]
-   [ta.db.bars.protocol :as bardb]
+   [ta.db.bars.protocol :as b]
    [ta.db.bars.dynamic.overview-db :as overview]))
 
 (defn- import-tasks-map [req-window db-window]
@@ -34,7 +34,7 @@
 
 (defn get-bars-safe [state opts task]
   (try
-    (let [bar-ds (bardb/get-bars (:importer state) opts task)]
+    (let [bar-ds (b/get-bars (:importer state) opts task)]
       (if bar-ds
         bar-ds
         (nom/fail ::get-bars-safe {:message "import-provider has returned nil."
@@ -51,7 +51,7 @@
   (try
     (when bar-ds
       (info "dynamically received ds-bars! appending to db...")
-      (bardb/append-bars (:bar-db state) opts bar-ds)
+      (b/append-bars (:bar-db state) opts bar-ds)
       (overview/update-range (:overview-db state) opts (:db task)))
     (catch Exception ex
       (error "dynamic-import.append-bars exception! asset: " (:asset opts) "calendar: " (:calendar opts))

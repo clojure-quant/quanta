@@ -7,7 +7,7 @@
    [tech.v3.datatype :as dtype]
    [clojure.java.io :as java-io]
    [tmducken.duckdb :as duckdb]
-   [ta.db.bars.protocol :refer [bardb]]))
+   [ta.db.bars.protocol :refer [bardb barsource]]))
 
 ;; https://github.com/techascent/tmducken
 
@@ -234,10 +234,11 @@
                    [:crypto :m]])))))
 
 (defrecord bardb-duck [db conn new?]
-  bardb
+  barsource
   (get-bars [this opts window]
     ;(info "this: " this)
     (get-bars this opts window))
+  bardb
   (append-bars [this opts ds-bars]
     ;(info "this: " this)
     (append-bars  this opts ds-bars)))

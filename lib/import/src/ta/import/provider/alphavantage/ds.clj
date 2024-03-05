@@ -5,6 +5,7 @@
    [tech.v3.dataset :as tds]
    [tablecloth.api :as tc]
    [ta.db.asset.db :as db]
+   [ta.db.bars.protocol :refer [barsource]]
    [ta.import.provider.alphavantage.raw :as av]))
 
 (defn alphavantage-result->dataset [response]
@@ -52,6 +53,19 @@
     (-> (av-get-data (range->parameter range) symbol-alphavantage)
         (alphavantage-result->dataset)
         (filter-rows-after-date (:start range)))))
+
+
+(defrecord import-alphavantage [api-key]
+  barsource
+  (get-bars [this opts window]
+    (get-bars opts window)))
+
+(defn create-import-alphavantage [api-key]
+  (av/set-key! api-key)
+  (import-alphavantage. api-key))
+
+
+
 
 (comment
   (require '[ta.helper.date :refer [parse-date]])

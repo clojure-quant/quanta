@@ -14,15 +14,6 @@
 
   :asset-db {:start (demo.asset-db/add-assets)}
 
-  :alphavantage {:start (ta.import.provider.alphavantage.raw/set-key!
-                         (:alphavantage (clip/ref :secrets)))}
-
-  :quandl {:start (ta.import.provider.quandl.raw/set-key!
-                   (:quandl (clip/ref :secrets)))}
-
-  :kibot {:start (ta.import.provider.kibot.raw/set-key!
-                  (:kibot (clip/ref :secrets)))}
-
 ; goldly service returns {:ns-clj :webly           ; this are used to start clj-require and webly
   ;                         :ws-watch :cljs-watch}   ; this is used when stopping goldly
   :goldly {:start (goldly.app.run/start-goldly
@@ -56,12 +47,17 @@
            :start (ta.db.bars.duckdb/start-bardb-duck "../../output/duckdb/bars")
            :stop (ta.db.bars.duckdb/stop-bardb-duck this)
            :post-start ta.db.bars.duckdb/init-tables}
-
+  
   :import-manager {:start (ta.import.core/start-import-manager
-                           {:kibot ta.import.provider.kibot.ds/get-bars
-                            :kibot-http ta.import.provider.kibot-http.ds/get-bars
-                            :alphavantage ta.import.provider.alphavantage.ds/get-bars
-                            :bybit ta.import.provider.bybit.ds/get-bars})}
+                           {:kibot (ta.import.provider.kibot.ds/create-import-kibot
+                                     (:kibot (clip/ref :secrets)))
+                            :kibot-http (ta.import.provider.kibot-http.ds/create-import-kibot-http
+                                         (:kibot (clip/ref :secrets)))
+                            ;:quandl {:start (ta.import.provider.quandl.raw/set-key!
+           ;                 (:quandl (clip/ref :secrets)))}
+                            :alphavantage (ta.import.provider.alphavantage.ds/create-import-alphavantage
+                                           (:alphavantage (clip/ref :secrets)))
+                            :bybit (ta.import.provider.bybit.ds/create-import-bybit)})}
 
   :bardb-dynamic {:start (ta.db.bars.dynamic/start-bardb-dynamic
                           (clip/ref :duckdb)

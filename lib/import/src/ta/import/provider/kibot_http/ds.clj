@@ -7,7 +7,8 @@
    [tablecloth.api :as tc]
    [tech.v3.datatype :as dtype]
    [ta.db.asset.db :as db]
-   [ta.import.provider.kibot.raw :refer [login]]
+   [ta.db.bars.protocol :refer [barsource]]
+   [ta.import.provider.kibot.raw :refer [login] :as kibot]
    [ta.import.provider.kibot-http.raw :as raw]))
 
 (defn date-time->localdate [dt time]
@@ -52,6 +53,16 @@
   (let [csv (get-csv opts range)]
     (info "parsing csv...")
     (kibot-result->dataset csv)))
+
+(defrecord import-kibot-http [api-key]
+  barsource
+  (get-bars [this opts window]
+    (get-bars opts window)))
+
+(defn create-import-kibot-http [api-key]
+  (kibot/set-key! api-key)
+  (import-kibot-http. api-key))
+
 
 (comment
   ; test importing previously imported csv files.

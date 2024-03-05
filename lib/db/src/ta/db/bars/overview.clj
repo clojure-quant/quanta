@@ -1,12 +1,12 @@
 (ns ta.db.bars.overview
   (:require
-   [ta.db.bars.protocol :as bardb]
+   [ta.db.bars.protocol :as b]
    [tablecloth.api :as tc]))
 
 (defn- load-datasets [db opts window assets]
   (->> assets
        (map (fn [asset]
-              (-> (bardb/get-bars db (assoc opts :asset asset) window)
+              (-> (b/get-bars db (assoc opts :asset asset) window)
                   (tc/add-column :asset asset)
                   (tc/drop-columns [:volume]))))))
 

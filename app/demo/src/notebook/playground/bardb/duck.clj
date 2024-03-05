@@ -1,7 +1,7 @@
 (ns notebook.playground.bardb.duck
   (:require
    [tick.core :as t]
-   [ta.db.bars.protocol :refer [bardb] :as b]
+   [ta.db.bars.protocol :as b]
    [modular.system]))
 
 ;(def db (modular.system/system :duckdb))

@@ -4,7 +4,7 @@
    [tablecloth.api :as tc]
    [ta.calendar.core :as cal]
    [ta.calendar.align :as align]
-   [ta.db.bars.protocol :as bardb]))
+   [ta.db.bars.protocol :as b]))
 
 (defn- hack-at-time [date]
   ; TODO: remove this hack
@@ -22,7 +22,7 @@
 (defn get-bars-aligned-filled [db opts calendar-seq]
   (let [window (cal/calendar-seq->range calendar-seq)
         ;_ (info "window: " window)
-        bars-ds (bardb/get-bars db opts window)
+        bars-ds (b/get-bars db opts window)
         bars-ds (hack-time bars-ds)
         calendar-ds (tc/dataset {:date (reverse (map t/instant calendar-seq))})
         bars-aligned-ds (align/align-to-calendar calendar-ds bars-ds)

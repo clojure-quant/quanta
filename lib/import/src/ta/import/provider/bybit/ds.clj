@@ -7,7 +7,8 @@
    [tablecloth.api :as tc]
    [ta.import.provider.bybit.raw :as bybit]
    [ta.calendar.validate :as cal-type]
-   [ta.calendar.core :refer [prior-close]]))
+   [ta.calendar.core :refer [prior-close]]
+   [ta.db.bars.protocol :refer [barsource]]))
 
 ;; RESPONSE CONVERSION
 
@@ -73,6 +74,10 @@
                                    range-bybit))
        (bybit-result->dataset))))
 
+
+
+
+
 ;; PAGING REQUESTS
 
 (defn failed? [bar-ds]
@@ -123,22 +128,28 @@
                                       :range range})))
 
 
-(defn get-bars [{:keys [asset calendar] :as opts} {:keys [start end] :as range}]
+(defn get-bars [{:keys [asset calendar] :as opts} {:keys [start end] :as window}]
   (info "get-bars: " opts range)
   (let [page-size 1000 ; 200
         ; dates need to be instant, because only instant can be converted to unix-epoch-ms
         start (if (t/instant? start) start (t/instant start))
         end (if (t/instant? end) end (t/instant end))
-        range (assoc range :limit page-size :start start :end end)]
+        window (assoc window :limit page-size :start start :end end)]
     (info "start: " start)
-    (->> (iteration (fn [range]
-                      (info "new page req: " range)
-                      (get-bars-req opts range))
-                    :initk range
-                    :kf  (partial next-request calendar range))
+    (->> (iteration (fn [window]
+                      (info "new page req: " window)
+                      (get-bars-req opts window))
+                    :initk window
+                    :kf  (partial next-request calendar window))
          (consolidate-datasets opts range))))
 
+(defrecord import-bybit []
+  barsource
+  (get-bars [this opts window]
+    (get-bars opts window)))
 
+(defn create-import-bybit []
+ (import-bybit.))
 
 
 (comment

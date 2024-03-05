@@ -10,6 +10,7 @@
    [de.otto.nom.core :as nom]
    [ta.calendar.validate :as cal-type]
    [ta.db.asset.db :as db]
+   [ta.db.bars.protocol :refer [barsource]]
    [ta.import.helper :refer [p-or-fail]]
    [ta.import.helper.daily :refer [date-col-to-exchange-close]]
    [ta.import.provider.kibot.raw :as kibot]))
@@ -91,6 +92,17 @@
                  ds (kibot-result->dataset exchange result)]
                 (info "kibot request finished!")
                 ds))
+
+(defrecord import-kibot [api-key]
+  barsource
+  (get-bars [this opts window]
+    (get-bars opts window)))
+
+(defn create-import-kibot [api-key]
+  (kibot/set-key! api-key)
+  (import-kibot. api-key))
+
+
 
 (defn symbols->str [symbols]
   (->> (interpose "," symbols)

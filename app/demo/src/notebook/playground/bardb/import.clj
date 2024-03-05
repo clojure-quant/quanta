@@ -1,7 +1,7 @@
 (ns notebook.playground.bardb.import
   (:require
    [tick.core :as t]
-   [ta.db.bars.protocol :refer [bardb] :as b]
+   [ta.db.bars.protocol :as b]
    [modular.system]))
 
 (def im (modular.system/system :import-manager))

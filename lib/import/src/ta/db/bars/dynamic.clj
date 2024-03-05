@@ -1,18 +1,19 @@
 (ns ta.db.bars.dynamic
   (:require
    [taoensso.timbre :as timbre :refer [debug info warn error]]
-   [ta.db.bars.protocol :refer [bardb] :as b]
+   [ta.db.bars.protocol :refer [bardb barsource] :as b]
    [ta.db.bars.dynamic.overview-db :as overview]
    [ta.db.bars.dynamic.import :refer [import-on-demand]]))
 
 (defrecord bardb-dynamic [bar-db importer overview-db]
-  bardb
+  barsource
   (get-bars [this opts window]
     (info "dynamic get-bars " opts window)
     (if (:import opts)
       (import-on-demand this opts window)
       (debug "no import defined for: " opts))
     (b/get-bars (:bar-db this) opts window))
+  bardb
   (append-bars [this opts ds-bars]
     (info "dynamic append-bars " opts ds-bars)
     ;(info "this: " this)

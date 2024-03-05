@@ -5,7 +5,7 @@
    [tablecloth.api :as tc]
    [ta.calendar.validate :as cal]
    [ta.calendar.compress :as compress]
-   [ta.db.bars.protocol :refer [bardb] :as b]))
+   [ta.db.bars.protocol :refer [barsource] :as b]))
 
 
 (defn add-date-group [ds interval]
@@ -15,7 +15,7 @@
     :h (compress/add-date-group-hour)))
 
 (defrecord compressing-provider [provider interval-config]
-  bardb
+  barsource
   (get-bars [this opts window]
     (let [exchange (cal/exchange  (:calendar opts))
           interval (cal/interval (:calendar opts))
@@ -30,9 +30,7 @@
         (do 
            (warn "forwarding request to import-provider: " opts window)
            (b/get-bars (:provider this) opts window))
-        )))
-  (append-bars [this opts ds-bars]
-    (error "compressing-provider does not support appending bars!")))
+        ))))
 
 (defn start-compressing-provider  [provider interval-config]
   (compressing-provider. provider interval-config))
