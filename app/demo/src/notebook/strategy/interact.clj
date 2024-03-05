@@ -39,7 +39,7 @@
                  :algo   ['juan.algo.intraday/ensure-date-unique
                           'juan.algo.daily/daily]
                  :calendar [:us :d]
-                 :asset "EURUSD"
+                 :asset "EUR/USD"
                  :import :kibot
                  :feed :fx
                  :trailing-n 80
@@ -50,9 +50,9 @@
                     :algo  ['juan.algo.intraday/ensure-date-unique
                             'juan.algo.doji/doji-signal]
                     :type :trailing-bar
-                    :asset "EURUSD"
+                    :asset "EUR/USD"
                     :import :kibot-http
-                    :trailing-n 10000
+                    :trailing-n 1440 ; 24 hour in minute bars
             ; doji
                     :max-open-close-over-low-high 0.3
                     :volume-sma-n 30
@@ -64,7 +64,8 @@
                     :spike-atr-prct-min 0.5
                     :pivot-max-diff 0.001
                     :algo 'juan.algo.combined/daily-intraday-combined}]
-   :viz 'juan.notebook.viz/calc-viz-combined-highchart})
+   :viz 'juan.notebook.viz/calc-viz-combined-highchart
+   :key :signal})
 
 
 (defn add-strategies []

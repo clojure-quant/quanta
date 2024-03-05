@@ -236,7 +236,7 @@
 (defrecord bardb-duck [db conn new?]
   barsource
   (get-bars [this opts window]
-    ;(info "this: " this)
+    (info "get-bars " opts window)
     (get-bars this opts window))
   bardb
   (append-bars [this opts ds-bars]
@@ -297,8 +297,8 @@
                    (tick/instant "2024-01-29T18:56:00Z")
                    (tick/instant "2024-01-29T19:00:00Z"))
 
-  (get-bars-since duckdb [:us :m] "EUR/USD" time)
-  (get-bars-since duckdb [:us :m] "EUR/USD" (str time))
+  (get-bars-since db [:us :m] "EUR/USD" time)
+  (get-bars-since db [:us :m] "EUR/USD" (str time))
   (t/inst time)
   (format-date time)
 
@@ -313,11 +313,6 @@
 
   (duckdb/create-table! (:conn db) empty-ds)
   (duckdb/insert-dataset! (:conn db) empty-ds)
-
-  (get-bars db "000")
-
-  (get-bars db "EUR/USD")
-  (get-bars db "USD/JPY")
 
   (exists-db?  "../../output/duckdb/bars")
 

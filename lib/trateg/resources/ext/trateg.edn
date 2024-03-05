@@ -6,7 +6,7 @@
                           ;ta.db.asset.symbollist/get-lists
                           ;ta.db.asset.symbollist/load-list
                           ;ta.warehouse.overview/overview-map
-                          ta.warehouse.load/load-series
+                          ;ta.warehouse.load/load-series
                           ; algo
                           ta.algo.manager/algo-names
                           ta.algo.manager/algo-info

@@ -1,6 +1,7 @@
 (ns juan.notebook.viz
   (:require
-   [ta.viz.ds.highchart :refer [highstock-render-spec]]))
+    [taoensso.timbre :as log :refer [tracef debug debugf info infof warn error errorf]]
+    [ta.viz.ds.highchart :refer [highstock-render-spec]]))
 
 (def table-spec
   {:topic :juan-daily-table
@@ -60,6 +61,7 @@
             {:volume :column}]})
 
 
-(defn calc-viz-combined-highchart [_daily _minute signal]
+(defn calc-viz-combined-highchart [signal]
+  ;(warn "signal: " signal) ; not good for production - Lots of logging!
   (highstock-render-spec nil combined-chart-spec signal))
 

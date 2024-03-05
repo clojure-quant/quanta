@@ -1,6 +1,7 @@
 (ns ta.import.provider.kibot-http.ds
   (:require
    [taoensso.timbre :refer [info warn error]]
+   [de.otto.nom.core :as nom]
    [clojure.java.io :as io]
    [tick.core :as t]
    [tech.v3.dataset :as tds]
@@ -42,15 +43,18 @@
       date-time-adjust
       (tc/drop-columns [:time])))
 
-(defn get-csv [{:keys [asset calendar]} range]
+(defn get-csv [{:keys [asset calendar] :as opts} range]
   (info "get-bars kibot-http " asset " " calendar " " range " ..")
   (let [{:keys [kibot-http]} (db/instrument-details asset)]
-    (assert kibot-http "kibot-http-feed needs to have asset-db: kibot-http")
-    (login)
-    (raw/download-link-csv kibot-http)))
+    (if kibot-http 
+      (do (login)
+          (raw/download-link-csv kibot-http))
+      (nom/fail ::get-bars-kibot {:message (str "no kibot-http link in asset db for asset: " asset)
+                                 :opts opts
+                                 :window range}))))
 
 (defn get-bars [opts range]
-  (let [csv (get-csv opts range)]
+  (nom/let-nom> [csv (get-csv opts range)]
     (info "parsing csv...")
     (kibot-result->dataset csv)))
 

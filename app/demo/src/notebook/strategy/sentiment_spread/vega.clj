@@ -1,5 +1,6 @@
 (ns notebook.strategy.sentiment-spread.vega
   (:require
+   [taoensso.timbre :refer [trace debug info warn error]]
    [tablecloth.api :as tc]
    [tech.v3.dataset :as tds]
    [ta.viz.publish :as p]))
@@ -61,9 +62,11 @@
          (into []))))
 
 (defn calc-viz-vega [sentiment-ds]
-  {:render-fn 'ta.viz.renderfn.vega/vega-lite
-   :data {:values (convert-sentiment-ds-data sentiment-ds)}
-   :spec spec})
+  (when sentiment-ds 
+    (info "calculating sentiment-spread viz for: " (tc/row-count sentiment-ds))
+    {:render-fn 'ta.viz.renderfn.vega/vega-lite
+     :data {:values (convert-sentiment-ds-data sentiment-ds)}
+     :spec spec}))
 
 (defn publish-vega [sentiment-ds topic]
   (p/publish nil {:topic topic}
