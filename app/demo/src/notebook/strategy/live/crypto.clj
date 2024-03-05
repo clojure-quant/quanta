@@ -3,7 +3,8 @@
    [modular.system]
    [ta.algo.env.protocol :as algo]
    [ta.algo.permutate :as permutate]
-   [ta.viz.publish :as p]))
+   [ta.viz.publish :as p]
+   [ta.viz.ds.highchart :refer [highstock-render-spec]]))
 
 ;; define algo
 
@@ -51,5 +52,21 @@
   (let [specs (permutate/->assets algo-spec ["BTCUSDT" "ETHUSDT"])
         result-a-seq (doall (map #(algo/add-algo env %) specs))]
     result-a-seq))
+
+
+(defn calc-viz-highchart [bar-ds]
+  (highstock-render-spec nil chart-spec bar-ds))
+
+
+(comment
+  (require '[ta.interact.subscription :refer [results-a]])
+
+  @results-a
+
+  (calc-viz-highchart @results-a)
+
+
+ ;
+  )
 
 

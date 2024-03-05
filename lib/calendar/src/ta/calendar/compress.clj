@@ -39,10 +39,26 @@
 (defn year-end-date [dt]
   (let [y (-> dt t/year .getValue)]
     (year->date y)))
-
+ 
 (defn add-date-group-year [ds]
   (let [date-group-col (dtype/emap year-end-date :zoned-date-time (:date ds))]
     (tc/add-column ds :date-group date-group-col)))
+
+; HOUR
+
+(defn hour-end-date [dt]
+  (let [h (-> dt t/hour .getValue)
+        m (-> dt t/minute .getValue)]
+    (if (= 0 m)
+      dt
+      (-> dt
+          (t/with :minute-of-hour 0)
+          (t/with :hour-of-day (inc h))))))
+
+(defn add-date-group-hour [ds]
+  (let [date-group-col (dtype/emap year-end-date :zoned-date-time (:date ds))]
+    (tc/add-column ds :date-group date-group-col)))
+
 
 ;; COMPRESS
 

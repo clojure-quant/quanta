@@ -30,7 +30,6 @@
                                   }}
                    :api {"arrow" :dataset/arrow
                          "sentiment" juan.sentiment/sentiment-cookies-wrapped
-                         
                          }}}
 
  :reval {:rdocument  {:storage-root "../../output/rdocument/"

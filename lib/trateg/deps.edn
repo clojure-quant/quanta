@@ -26,7 +26,8 @@
   ta/indicator {:local/root "../indicator" :deps/manifest :deps}
   ta/algo {:local/root "../algo" :deps/manifest :deps}
   ta/live {:local/root "../live" :deps/manifest :deps}
-  ta/viz {:local/root "../viz" :deps/manifest :deps}}
+  ta/viz {:local/root "../viz" :deps/manifest :deps}
+  ta/interact {:local/root "../interact" :deps/manifest :deps}}
  :aliases
  {:garamond
   {:main-opts ["-m" "garamond.main"]

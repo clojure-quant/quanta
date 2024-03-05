@@ -7,11 +7,7 @@
  }
   
  :aliases
- {:garamond
-  {:main-opts ["-m" "garamond.main"]
-   :extra-deps {com.workframe/garamond {:mvn/version "0.4.0"}}}
-
-  ; https://github.com/weavejester/cljfmt
+ {; https://github.com/weavejester/cljfmt
   :cljfmt
   {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
    :main-opts ["-m" "cljfmt.main"
@@ -33,8 +29,6 @@
   {;:extra-paths ["test/main/clojure"]
    :extra-deps  {lambdaisland/kaocha {:mvn/version "1.0.861"}}
    :main-opts   ["-m" "kaocha.runner"]}
-
-
 
 ;
   }}

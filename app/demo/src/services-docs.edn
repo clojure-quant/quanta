@@ -72,7 +72,8 @@
   :import-mananger-compressing {:start (ta.import.provider.compress/start-compressing-provider
                                  (clip/ref :bardb-dynamic)
                                  {:month :d
-                                  :year :d})}
+                                  :year :d
+                                  :h :m})}
 
   :bardb-dynamic-compressing {:start (ta.db.bars.dynamic/start-bardb-dynamic
                                       (clip/ref :duckdb)
@@ -124,6 +125,9 @@
                           (clip/ref :live)
                           (clip/ref :tickerplant)
                           (clip/ref :timbre))}
+  
+  :interact-strategies {:start (notebook.strategy.interact/add-strategies)}
+ 
 
   ;:sma-strategy-forex {:start (ta.env.dsl.barstrategy/add-bar-strategies (clip/ref :live)
   ;                             (var-get notebook.algo-config.simple-sma-crossover/algos-fx))}

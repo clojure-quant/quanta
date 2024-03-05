@@ -1,4 +1,6 @@
-(ns juan.notebook.viz)
+(ns juan.notebook.viz
+  (:require
+   [ta.viz.ds.highchart :refer [highstock-render-spec]]))
 
 (def table-spec
   {:topic :juan-daily-table
@@ -56,3 +58,8 @@
              :spike-v {:type :column :color "blue"}
              :spike-doji-v {:type :column :color "green"}}
             {:volume :column}]})
+
+
+(defn calc-viz-combined-highchart [_daily _minute signal]
+  (highstock-render-spec nil combined-chart-spec signal))
+

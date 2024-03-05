@@ -1,4 +1,5 @@
-{; runtime
+{:name "trateg"
+    ; runtime
  :clj-services {:name "trateg services"
                 :permission  #{}
                 :symbols [; db

@@ -1,8 +1,8 @@
-{:clj-services {:name "ta-viz-services"
+{:name "ta-viz"
+ :clj-services {:name "ta-viz-services"
                 :permission  #{}
                 :symbols [ta.viz.publish/topic-keys
-                          ta.viz.publish/get-topic
-                         ]}
+                          ta.viz.publish/get-topic]}
  :cljs-routes {"publish" ta.viz.page.publish/publish-page}
  :sci-cljs-ns [ta.viz.renderfn
                ta.viz.renderfn.demo

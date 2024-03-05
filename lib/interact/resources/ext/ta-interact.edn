@@ -1,0 +1,6 @@
+{:name "ta-interact"
+ :clj-services {:name "ta-interact-services"
+                :permission  #{}
+                :symbols [ta.interact.spec-db/available-topics
+                          ta.interact.subscription/subscribe-live]}
+ :cljs-routes {"interact" ta.interact.page.live/live-page}}

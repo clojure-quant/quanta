@@ -60,9 +60,11 @@
     (->> (map convert-row r)
          (into []))))
 
+(defn calc-viz-vega [sentiment-ds]
+  {:render-fn 'ta.viz.renderfn.vega/vega-lite
+   :data {:values (convert-sentiment-ds-data sentiment-ds)}
+   :spec spec})
 
 (defn publish-vega [sentiment-ds topic]
   (p/publish nil {:topic topic}
-             {:render-fn 'ta.viz.renderfn.vega/vega-lite
-              :data {:values (convert-sentiment-ds-data sentiment-ds)}
-              :spec spec}))
+             (calc-viz-vega sentiment-ds)))

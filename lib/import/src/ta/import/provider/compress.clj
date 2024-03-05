@@ -11,7 +11,8 @@
 (defn add-date-group [ds interval]
   (case interval 
     :month (compress/add-date-group-month ds)
-    :year  (compress/add-date-group-year ds)))
+    :year  (compress/add-date-group-year ds)
+    :h (compress/add-date-group-hour)))
 
 (defrecord compressing-provider [provider interval-config]
   bardb
