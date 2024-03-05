@@ -10,8 +10,10 @@
                                day-open? day-closed?
                                intraday? overnight?
                                day-has-prior-close?
+                               day-has-next-close?
                                inside-overnight-gap?
-                               overnight-weekend? overnight-gap-or-weekend?]]))
+                               overnight-weekend? overnight-week-start?
+                               overnight-gap-or-weekend?]]))
 
 ;
 ; base
@@ -48,11 +50,13 @@
          dt-next (dt-base calendar n unit dt conf)
          day-next (t/date dt-next)
          first-close (t/>> open (t/new-duration n unit))]
-     (if (or (day-closed? calendar day-next)
-             (after-trading-hours? calendar dt-next first-close close))
+     (if (not (day-has-next-close? calendar dt-next first-close close))
        (->> (day/next-open calendar dt-next) (next-close-dt calendar n unit))
        (let [open (trading-open-time calendar day-next)]
-         (if (t/<= dt-next open)
+         (if (and (before-trading-hours? calendar dt-next first-close close)
+                  (or (intraday? calendar)
+                      (inside-overnight-gap? calendar dt-next first-close close)
+                      (overnight-week-start? calendar dt-next)))
            (next-close-dt calendar n unit open)
            dt-next))))))
 
@@ -71,7 +75,7 @@
                 (or (intraday? calendar)
                     (inside-overnight-gap? calendar dt-prev first-close close)
                     (overnight-weekend? calendar dt-prev)))
-         (trading-close-time calendar day-prev)
+         (trading-close-time calendar day-prev)             ; TODO: bug 1h, currently: 17:00h => 16:30h  => should: 16:00   => possible solution: rounddown close time.... or last-close
          dt-prev)))))
 
 (defn current-close-dt
@@ -197,6 +201,7 @@
                                ))
        (take 5))
 
+  (next-close-dt (:forex calendars) 1 :minutes (t/in (t/date-time "2024-02-08T16:27:00") "America/New_York"))
   (next-close-dt (:us calendars) 15 :minutes (t/in (t/date-time "2024-02-09T06:00:00") "America/New_York"))
   (->> (iterate (partial next-close-dt (:us calendars) 15 :minutes)
                 (current-close-dt (:us calendars) 15 :minutes

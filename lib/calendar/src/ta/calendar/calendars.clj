@@ -3,22 +3,24 @@
    [tick.core :as t]))
 
 (def week-5
-  #{t/MONDAY t/TUESDAY t/WEDNESDAY
-    t/THURSDAY t/FRIDAY})
+  (sorted-set
+    t/MONDAY t/TUESDAY t/WEDNESDAY
+    t/THURSDAY t/FRIDAY))
 
 (def week-6
-  #{t/MONDAY t/TUESDAY t/WEDNESDAY
-    t/THURSDAY t/FRIDAY
-    t/SATURDAY})
+  (sorted-set
+    t/MONDAY t/TUESDAY t/WEDNESDAY
+    t/THURSDAY t/FRIDAY t/SATURDAY))
 
 (def week-6-sunday
-  #{t/SUNDAY t/MONDAY t/TUESDAY
-    t/WEDNESDAY t/THURSDAY t/FRIDAY})
+  (sorted-set
+    t/SUNDAY t/MONDAY t/TUESDAY
+    t/WEDNESDAY t/THURSDAY t/FRIDAY))
 
 (def week-7
-  #{t/MONDAY t/TUESDAY t/WEDNESDAY
-    t/THURSDAY t/FRIDAY
-    t/SATURDAY t/SUNDAY})
+  (sorted-set
+    t/MONDAY t/TUESDAY t/WEDNESDAY
+    t/THURSDAY t/FRIDAY t/SATURDAY t/SUNDAY))
 
 
 (def calendars

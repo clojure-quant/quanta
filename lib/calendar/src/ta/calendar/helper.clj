@@ -143,12 +143,17 @@
            (day-open? calendar day-after)))
     false))
 
-(defn overnight-weekend? [{:keys [close] :as calendar} dt]
-  (let [time (t/time dt)
-        day-after (t/>> dt (t/new-duration 1 :days))]
+(defn overnight-weekend? [calendar dt]
+  (let [day-after (t/>> dt (t/new-duration 1 :days))]
     (and (overnight? calendar)
-         (t/> time close)
+         (day-open? calendar dt)
          (day-closed? calendar day-after))))
+
+(defn overnight-week-start? [calendar dt]
+  (let [day-before (t/<< dt (t/new-duration 1 :days))]
+    (and (overnight? calendar)
+         (day-open? calendar dt)
+         (day-closed? calendar day-before))))
 
 (defn overnight-gap-or-weekend? [{:keys [close] :as calendar} dt first-close]
   (if (overnight? calendar)
