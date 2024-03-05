@@ -67,16 +67,30 @@
    :viz 'juan.notebook.viz/calc-viz-combined-highchart
    :key :signal})
 
+(def sma-eth
+  {:topic :sma-eth
+   :algo {:type :trailing-bar
+          :algo 'notebook.strategy.sma-crossover.algo/sma-crossover-algo
+          :calendar [:forex :m]
+          :asset "ETHUSDT"
+          :feed :bybit
+          :import :bybit
+          :trailing-n 1000
+          :sma-length-st 20
+          :sma-length-lt 200}
+   :viz 'notebook.strategy.sma-crossover.viz/calc-viz-sma})
+
 
 (defn add-strategies []
   (doall
-    (map add-spec [crypto-watch
-                   sentiment-spread
-                   juan])))
+   (map add-spec [crypto-watch
+                  sentiment-spread
+                  juan
+                  sma-eth])))
 
-(comment 
+(comment
   (add-strategies)
-  
+
  ; 
   )
 

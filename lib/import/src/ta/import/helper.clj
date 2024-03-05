@@ -1,10 +1,17 @@
 (ns ta.import.helper
   (:require
    [taoensso.timbre :refer [debug]]
+   [tick.core :as t]
+   [tech.v3.dataset :as tds]
    [clj-http.client :as http]
    [de.otto.nom.core :as nom]))
 
-(defn http-get [url query-params]
+(defn http-get 
+  "same as clj-http/get, but:
+   - json only
+   - socket timeout (we dont want to wait forever!)
+   - no exceptions, but nom/fail."
+  [url query-params]
   (try
     (http/get url
               {:accept :json
@@ -23,12 +30,19 @@
                               :opts opts
                               :range range})))
 
-
-
 (defn str->float [str]
   (if (nil? str)
     nil
     (Float/parseFloat str)))
+
+
+(defn str->double [str]
+  (if (nil? str)
+    nil
+    (Double/parseDouble str)))
+
+(defn ensure-date-instant [bar-ds]
+  (tds/column-map bar-ds :date #(t/instant %) [:date]))
 
 (defn remove-last-bar-if-timestamp-equals
   "helper function. 
@@ -42,8 +56,9 @@
     (if eq? (take (-> series count dec) series) series)))
 
 (comment
+  (-> "15.123" str->float type)
+  (-> "15.123" str->double type)
 
-; removes
 
   (remove-last-bar-if-timestamp-equals
    [{:date (t/instant "2000-12-31T00:00:00Z")}

@@ -3,33 +3,41 @@
    [tick.core :as t]
    [ta.calendar.core :as cal]
    [ta.db.bars.protocol :as b]
-   [ta.env.backtest :refer [run-backtest]]
    [ta.engine.protocol :as p]
-   [ta.engine.javelin :refer [create-env]]
-   ))
+   [ta.algo.backtest :refer [run-backtest]]
+   [modular.system]))
 
-;; an environment needs to be created for each backtest;
-;; this is because the excel-style calculation tree should only
-;; calculate something relevant to the backtest
-(def env (create-env :bardb-dynamic))
 
-env
+(-> (cal/trailing-range [:us :d] 10)
+    :end
+    t/instant)
 
-(defn window-as-date-time [window]
-  {:start (t/date-time (:start window))
-   :end (t/date-time (:end window))})
+
+(defn window-as-instant [window]
+  {:start (t/instant (:start window))
+   :end (t/instant (:end window))})
 
 (def window (-> (cal/trailing-range [:us :d] 10)
-                (window-as-date-time)))
+                (window-as-instant)))
 
 window
 
 ;; quick test, dynamic bar-db (duckdb + import) is working
-(def bdb (:bar-db env))
-bdb
-(b/get-bars bdb {:asset "AAPL"
-                 :calendar [:us :d]
-                 :import :kibot} window)
+(def db (modular.system/system :duckdb))
+(def db-dyn (modular.system/system :bardb-dynamic))
+db
+db-dyn
+  
+(b/get-bars db {:asset "AAPL"
+                :calendar [:us :d]
+                :import :kibot} window)
+
+(b/get-bars db {:asset "BTCUSDT"
+                :calendar [:crypto :m]
+                :import :bybit}
+            (window-as-instant
+             (cal/trailing-range [:crypto :m] 10)))
+
 
 (def algo-spec {:type :trailing-bar
                 :algo 'notebook.strategy.sma-crossover.algo/bar-strategy

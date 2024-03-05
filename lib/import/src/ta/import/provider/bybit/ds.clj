@@ -15,14 +15,10 @@
 (defn sort-ds [ds]
   (tc/order-by ds [:date] [:asc]))
 
-(defn ensure-date-instant [bar-ds]
-  (tds/column-map bar-ds :date #(t/instant %) [:date]))
-
 (defn bybit-result->dataset [result]
   (-> result
       (tds/->dataset)
       (sort-ds) ; bybit returns last date in first row.
-      (ensure-date-instant)
       (tc/select-columns [:date :open :high :low :close :volume])))
 
 ;; REQUEST CONVERSION
@@ -42,15 +38,15 @@
 (defn bybit-frequency [frequency]
   (get bybit-frequencies frequency))
 
-(defn ->epoch-millisecond [dt]
+(defn instant->epoch-millisecond [dt]
   (-> dt
       (t/long)
       (* 1000)))
 
 (defn range->parameter [range]
   (assoc range
-         :start (->epoch-millisecond (:start range))
-         :end (->epoch-millisecond (:end range))))
+         :start (instant->epoch-millisecond (:start range))
+         :end (instant->epoch-millisecond (:end range))))
 
 (defn get-bars-req [{:keys [asset calendar] :as opts} range]
   (info "get-bars-req" opts range)
@@ -158,33 +154,28 @@
   (bybit-frequency :m)
   (bybit-frequency :s)
 
-  (def ds (tc/dataset [{:date (t/date-time)}
-                       {:date (t/date-time)}]))
+  (def ds (tc/dataset [{:date (t/instant)}
+                       {:date (t/instant)}]))
 
-  (ensure-date-instant ds)
-
-  (-> (t/instant) ->epoch-millisecond)
+  (-> (t/instant) instant->epoch-millisecond)
 
   (get-bars {:asset "BTCUSDT"
              :calendar [:crypto :d]}
-            {:start (t/date-time "2024-02-26T00:00:00")})
+            {:start (t/instant "2024-02-26T00:00:00Z")})
 
-; Execution error (DateTimeParseException) at java.time.format.DateTimeFormatter/parseResolved0 (DateTimeFormatter.java:2106).
-; Text '2024-02-29T00:05:00' could not be parsed at index 19
+
 
   (-> (get-bars-req
        {:asset "BTCUSDT"
         :calendar [:crypto :m]}
-       {:start (-> "2024-02-29T00:00:00Z" t/instant)
-        :end (-> "2024-02-29T00:05:00Z" t/instant)})
-      ;(ensure-date-instant)
-
+       {:start (-> "2024-03-05T00:00:00Z" t/instant)
+        :end (-> "2024-03-06T00:00:00Z" t/instant)})
       (tc/last)
       :date
       first
-
       ;count
       )
+     ; 2024-03-05T21:26:00Z
 
   (all-ds-valid [1 2 3 4 5])
   (all-ds-valid [1 2 3 (nom/fail ::asdf {}) 4 5])
@@ -194,14 +185,6 @@
     :calendar [:crypto :m]}
    {:start (-> "2024-02-29T00:00:00Z" t/instant)
     :end (-> "2024-02-29T00:07:00Z" t/instant)})
-
-  
-   (get-bars
-   {:asset "BTCUSDT"
-    :calendar [:crypto :m]}
-   {:start (-> "2020-02-29T00:00:00Z" t/instant)
-    :end (-> "2024-02-29T00:07:00Z" t/instant)})
-  
 
 ; 
   )

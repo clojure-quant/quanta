@@ -251,6 +251,9 @@
   (duckdb-stop-impl state))
 
 (comment
+  
+  (-> (now) type)
+
   (require '[modular.system])
   (def db (:duckdb modular.system/system))
   (def db (duckdb-start-impl "../../output/duckdb/bars"))

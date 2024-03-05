@@ -17,9 +17,9 @@ db-duck
 (duck/init-tables db-duck)
 
 (def ds
-  (tc/dataset [{:date (-> "1999-12-31T00:00:00Z" t/instant #_t/date-time)
+  (tc/dataset [{:date (-> "1999-12-31T00:00:00Z" t/instant)
                 :open 1.0 :high 1.0 :low 1.0 :close 1.0 :volume 1.0}
-               {:date (-> "2000-12-31T00:00:00Z" t/instant #_t/date-time)
+               {:date (-> "2000-12-31T00:00:00Z" t/instant)
                 :open 1.0 :high 1.0 :low 1.0 :close 1.0 :volume 1.0}]))
 ds
 
@@ -41,8 +41,8 @@ ds
                         :import :kibot}
                ds)
 
-(def window {:start (-> "1999-02-01T20:00:00Z" t/instant t/date-time)
-             :end (-> "2001-03-01T20:00:00Z" t/instant t/date-time)})
+(def window {:start (-> "1999-02-01T20:00:00Z" t/instant)
+             :end (-> "2001-03-01T20:00:00Z" t/instant)})
 window
 
 
