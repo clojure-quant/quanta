@@ -3,7 +3,7 @@
    [ta.calendar.core :as cal]
    [ta.engine.protocol :as eng]
    [ta.algo.env :as algo-env]
-   [ta.algo.env.backtest :refer [backtest-algo run-backtest]]))
+   [ta.algo.backtest :refer [backtest-algo run-backtest]]))
 
 ;; 1. time-based algo spec
 

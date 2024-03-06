@@ -80,13 +80,24 @@
           :sma-length-lt 200}
    :viz 'notebook.strategy.sma-crossover.viz/calc-viz-sma})
 
+(def asset-compare
+  {:topic :asset-compare
+   :algo {:type :time
+          :algo 'notebook.strategy.asset-compare.algo/asset-compare-algo
+          :calendar [:us :d]
+          :assets ["GLD" "UUP" "SPY" "QQQ" "IWM" "EEM" "EFA" "IYR" "USO" "TLT"]
+          :import :kibot
+          :trailing-n 1000}
+   :viz 'notebook.strategy.asset-compare.viz/calc-viz-vega})
+
 
 (defn add-strategies []
   (doall
    (map add-spec [crypto-watch
                   sentiment-spread
                   juan
-                  sma-eth])))
+                  sma-eth
+                  asset-compare])))
 
 (comment
   (add-strategies)

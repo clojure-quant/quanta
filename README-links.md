@@ -37,20 +37,6 @@ For your specific case, column-map seems like the exact fit. Another option is t
               a b))))
 => _unnamed [6 3]:
 
-Let’s first load historical for the 10 major asset classes:
-
-    Gold ( GLD )
-    US Dollar ( UUP )
-    S&P500 ( SPY )
-    Nasdaq100 ( QQQ )
-    Small Cap ( IWM )
-    Emerging Markets ( EEM )
-    International Equity ( EFA )
-    Real Estate ( IYR )
-    Oil ( USO )
-    Treasurys ( TLT )
-
-
 Neanderthal is a core.matrix implementation that is 3000x faster than Java (if in the GPU).
 https://neanderthal.uncomplicate.org/
 Interop from R to Neanderthal has problems. Is this correct???
@@ -92,10 +78,3 @@ https://github.com/sunng87/papaline
 ;; ftp://ftp.nasdaqtrader.com/symboldirectory
 ;; ftp://nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt
 ;; ftp://nasdaqtrader.com/SymbolDirectory/otherlisted.txt
-
-
-SLF4J: Class path contains multiple SLF4J providers.
-SLF4J: Found provider [com.github.fzakaria.slf4j.timbre.TimbreServiceProvider@6297e12a]
-SLF4J: Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@12731c65]
-SLF4J: See https://www.slf4j.org/codes.html#multiple_bindings for an explanation.
-SLF4J: Actual provider is of type [com.github.fzakaria.slf4j.timbre.TimbreServiceProvider@6297e12a]

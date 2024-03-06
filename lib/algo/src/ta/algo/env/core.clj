@@ -1,7 +1,9 @@
 (ns ta.algo.env.core
   (:require
-   ;[taoensso.timbre :refer [trace debug info warn error]]
+   [taoensso.timbre :refer [trace debug info warn error]]
+   [de.otto.nom.core :as nom]
    [tick.core :as t]
+   [tablecloth.api :as tc]
    [ta.calendar.core :refer [trailing-window get-bar-window]]
    [ta.db.bars.protocol :as b]
    [ta.db.bars.aligned :as aligned]
@@ -70,4 +72,26 @@
     (get-bars env {:asset asset
                    :calendar calendar-lower} window)))
 
+(defn get-multiple-bars [env {:keys [assets] :as opts} cal-seq]
+  (let [get-bars (fn [asset]
+                   (info "loading: " asset)
+                   (-> (get-bars-aligned-filled env (assoc opts :asset asset) cal-seq)
+                       (tc/add-column :asset asset)))
+        asset-map-seq (map (fn [asset]
+                          {:asset asset
+                           :bars (get-bars asset)}) assets)
+        assets-bad (->> (filter #(nom/anomaly? (:bars %)) asset-map-seq)
+                        (map :asset))
+        assets-good (->> (remove #(nom/anomaly? (:bars %)) asset-map-seq)
+                        (map :asset))
+        bars-good (->> (remove #(nom/anomaly? (:bars %)) asset-map-seq)
+                        (map :bars))]
+      {:bad assets-bad
+       :good assets-good
+       :bars bars-good}))
+  
+
+(defn get-multiple-bars-trailing [env {:keys [calendar assets trailing-n] :as opts} end-dt]
+  (let [cal-seq (trailing-window calendar trailing-n end-dt)]
+    (get-multiple-bars env opts cal-seq)))
 

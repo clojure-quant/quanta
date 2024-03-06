@@ -20,6 +20,12 @@
             }
             window)
 
+(b/get-bars db
+            {:asset "UUP"
+             :calendar [:us :d]
+             :import :kibot}
+            window)
+
 
 (b/get-bars db {:asset "USD/JPY"
                 :calendar [:us :m]}

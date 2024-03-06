@@ -1,6 +1,7 @@
 (ns ta.db.bars.duckdb
   (:require
    [clojure.set :refer [subset?]]
+   [de.otto.nom.core :as nom]
    [taoensso.timbre :as timbre :refer [debug info warn error]]
    [tick.core :as t]
    [tablecloth.api :as tc]
@@ -185,15 +186,22 @@
 (defn get-bars
   "returns bars for asset/calendar + window"
   [session {:keys [asset calendar]} {:keys [start end] :as window}]
-  (cond
-    (and start end)
-    (get-bars-window session calendar asset start end)
+  (let [bar-ds (cond
+                 (and start end)
+                 (get-bars-window session calendar asset start end)
+               
+                 start
+                 (get-bars-since session calendar asset start)
+               
+                 :else
+                 (get-bars-full session calendar asset))]
+    (cond 
+      (or (nil? bar-ds)
+          (= 0 (tc/row-count bar-ds)))
+      (nom/fail ::get-bars-duckdb {:message (str "asset " asset " has no bars in duckdb!")})
 
-    start
-    (get-bars-since session calendar asset start)
-
-    :else
-    (get-bars-full session calendar asset)))
+      :else
+      bar-ds)))
 
 (defn delete-bars [session]
   (duckdb/sql->dataset

@@ -2,7 +2,7 @@
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [tablecloth.api :as tc]
-   [tech.v3.dataset :as tds]
+   [ta.viz.ds.vega :refer [convert-data]]
    [ta.viz.publish :as p]))
 
 (def w 1600)
@@ -51,21 +51,11 @@
                          :y {:field "sentiment" :type "quantitative" :color "blue"}}}]})
 
 
-(defn convert-row [row]
-  {:date (:date row)
-   :sentiment (:sentiment row)
-   :market (:market row)})
-
-(defn convert-sentiment-ds-data [sentiment-ds]
-  (let [r (tds/mapseq-reader sentiment-ds)]
-    (->> (map convert-row r)
-         (into []))))
-
 (defn calc-viz-vega [sentiment-ds]
-  (when sentiment-ds 
+  (when sentiment-ds
     (info "calculating sentiment-spread viz for: " (tc/row-count sentiment-ds))
     {:render-fn 'ta.viz.renderfn.vega/vega-lite
-     :data {:values (convert-sentiment-ds-data sentiment-ds)}
+     :data {:values (convert-data sentiment-ds [:date :sentiment :market])}
      :spec spec}))
 
 (defn publish-vega [sentiment-ds topic]
