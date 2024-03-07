@@ -1,9 +1,9 @@
 (ns notebook.strategy.interact
   (:require
-   [ta.interact.spec-db :refer [add-spec]]))
+   [ta.interact.template :as template]))
 
 (def crypto-watch
-  {:topic :crypto-watch
+  {:id :crypto-watch
    :algo {:type :trailing-bar
           :trailing-n 300
           :calendar [:crypto :m]
@@ -11,10 +11,17 @@
           :feed :bybit
           :import :bybit
           :algo 'notebook.strategy.live.crypto/nil-algo}
-   :viz 'notebook.strategy.live.crypto/calc-viz-highchart})
+   :viz 'notebook.strategy.live.crypto/calc-viz-highchart
+   :options [{:path :asset
+              :name "Asset"
+              :spec ["BTCUSDT" "ETHUSDT"]}
+             {:path :trailing-n
+              :name "trailing-n"
+              :spec [100 300 500 1000 2000 3000 5000 10000]}]})
+
 
 (def sentiment-spread
-  {:topic :sentiment-spread
+  {:id :sentiment-spread
    :algo {:type :time
           :algo 'notebook.strategy.sentiment-spread.algo/sentiment-spread
           :calendar [:us :d]
@@ -34,7 +41,7 @@
 
 
 (def juan
-  {:topic :juan-fx
+  {:id :juan-fx
    :algo  [:day {:type :trailing-bar
                  :algo   ['juan.algo.intraday/ensure-date-unique
                           'juan.algo.daily/daily]
@@ -68,7 +75,7 @@
    :key :signal})
 
 (def sma-eth
-  {:topic :sma-eth
+  {:id :sma-eth
    :algo {:type :trailing-bar
           :algo 'notebook.strategy.sma-crossover.algo/sma-crossover-algo
           :calendar [:forex :m]
@@ -81,7 +88,7 @@
    :viz 'notebook.strategy.sma-crossover.viz/calc-viz-sma})
 
 (def asset-compare
-  {:topic :asset-compare
+  {:id :asset-compare
    :algo {:type :time
           :algo 'notebook.strategy.asset-compare.algo/asset-compare-algo
           :calendar [:us :d]
@@ -93,7 +100,7 @@
 
 (defn add-strategies []
   (doall
-   (map add-spec [crypto-watch
+   (map template/add [crypto-watch
                   sentiment-spread
                   juan
                   sma-eth

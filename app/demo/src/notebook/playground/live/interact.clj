@@ -1,21 +1,28 @@
 (ns notebook.playground.live.interact
-  (:require [ta.interact.subscription :as sub]))
+  (:require 
+   [ta.interact.template :refer [get-options]]
+   [ta.interact.subscription :as sub]))
 
-(def topic :crypto-watch)
-(def topic :juan-fx)
+(get-options :crypto-watch)
+
+; subscribe
+(def subscription-id 
+  (sub/subscribe-live 
+   :crypto-watch {:asset "ETHUSDT"}))
+
+subscription-id
+
+; check state (developer debugging)
 
 (-> @sub/subscriptions-a keys)
 (-> @sub/results-a keys)
 (-> @sub/visualizations-a keys)
 
 
-; subscribe
-(sub/subscribe-live topic)
-
 ;; watch results..
-(-> @sub/subscriptions-a topic)
-(-> @sub/results-a topic)
-(-> @sub/visualizations-a topic)
+(-> @sub/subscriptions-a (get subscription-id))
+(-> @sub/results-a (get subscription-id))
+(-> @sub/visualizations-a (get subscription-id))
 
 
 ; (require '[notebook.strategy.sentiment-spread.vega :refer [calc-viz-vega]])

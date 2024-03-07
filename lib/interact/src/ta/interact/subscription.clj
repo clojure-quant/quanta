@@ -1,22 +1,23 @@
 (ns ta.interact.subscription
   (:require
    [taoensso.timbre :as log :refer [tracef debug debugf info infof warn error errorf]]
+   [nano-id.core :refer [nano-id]]
    [modular.system]
-   [modular.ws.core :refer [send! send-all! send-response connected-uids]]
+   [modular.ws.core :refer [send-all!  connected-uids]]
    [ta.algo.env.protocol :as algo]
    [ta.engine.protocol :as engine]
    [ta.algo.env.protocol :as env]
-   [ta.interact.spec-db :as db]))
+   [ta.interact.template :as t]))
 
 (defonce subscriptions-a (atom {}))
 (defonce results-a (atom {}))
 (defonce visualizations-a (atom {}))
 
-(defn push-viz-result [topic result]
+(defn push-viz-result [subscription-id result]
   (try
-    (warn "sending viz result: " topic) ; putting result here will spam the log.
+    (warn "sending viz result: " subscription-id) ; putting result here will spam the log.
     ;(warn "result: " result)
-    (send-all! [:interact/subscription {:topic topic :result result}])
+    (send-all! [:interact/subscription {:subscription-id subscription-id :result result}])
     (catch Exception ex
       (error "error in sending viz-result!"))))
 
@@ -25,46 +26,47 @@
     (requiring-resolve fun)
     fun))
 
-(defn create-viz-fn [e {:keys [topic algo viz]}]
+(defn create-viz-fn [e {:keys [id viz]}]
   ;(info "create-viz-fn: " viz)
   (let [viz-fn (get-fn viz)]
     (when viz-fn
       (fn [result]
         (try
-          (warn "calculating visualization:" topic " .. ")
+          (warn "calculating visualization:" id " .. ")
           ;(warn "result: " result)
           (let [r (viz-fn result)]
-            (warn "calculating visualization:" topic " DONE!")
+            (warn "calculating visualization:" id " DONE!")
             r)
           (catch Exception ex
-            (error "exception calculating visualization topic: " topic)
+            (error "exception calculating visualization topic: " id)
             (error ex)))))))
 
-(defn subscribe [e {:keys [topic algo viz key] :as algo-viz-spec}]
-  (let [eng (env/get-engine e)
+(defn subscribe [e {:keys [id algo key] :as template}]
+  (let [subscription-id (nano-id 6)
+        eng (env/get-engine e)
         algo-results-a (algo/add-algo e algo)
         algo-result-a (if key (key algo-results-a)
-                         algo-results-a)
+                          algo-results-a)
         ;_ (info "algo-result-a: " algo-result-a)
-        viz-fn (create-viz-fn e algo-viz-spec)]
+        viz-fn (create-viz-fn e template)]
     (if viz-fn
       (let [viz-result-a (engine/formula-cell eng viz-fn [algo-result-a])]
-        (swap! subscriptions-a assoc topic algo-viz-spec)
-        (swap! results-a assoc topic algo-result-a)
-        (swap! visualizations-a assoc topic viz-result-a)
-        (engine/formula-cell eng #(push-viz-result topic %) [viz-result-a])    
-        #_(add-watch viz-result-a topic (fn [t a old new]
-                                        (push-viz-result topic new))))
-      (error "viz-fn not found! topic: " topic)))
-  topic)
+        (swap! subscriptions-a assoc subscription-id template)
+        (swap! results-a assoc subscription-id algo-result-a)
+        (swap! visualizations-a assoc subscription-id viz-result-a)
+        (engine/formula-cell eng #(push-viz-result subscription-id %) [viz-result-a])
+        subscription-id)
+      (do
+        (error "could not create viz-fn for template: " id)
+        nil))))
 
-(defn subscribe-kw [env-kw topic]
+(defn subscribe-kw [env-kw template-id template-options]
   (let [e (modular.system/system env-kw)
-        algo-viz-spec (db/get-viz-spec topic)]
-    (info "subscribing algo-vizspec: " algo-viz-spec)
-    (subscribe e algo-viz-spec)))
+        template (t/load-with-options template-id template-options)]
+    (info "subscribing template: " template)
+    (subscribe e template)))
 
-(defn subscribe-live [topic]
-  (if-let [result (@visualizations-a topic)]
-     (push-viz-result topic @result)
-     (subscribe-kw :live topic)))
+(defn subscribe-live [template-id template-options]
+  (if-let [result (@visualizations-a template-id)]
+    (push-viz-result template-id @result)
+    (subscribe-kw :live template-id template-options)))
