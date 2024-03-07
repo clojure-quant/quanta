@@ -1,6 +1,6 @@
 (ns ta.engine.javelin.cell
   (:require
-   [javelin.core-clj :refer [cell= cell lift]]
+   [javelin.core-clj :refer [cell= cell lift destroy-cell!]]
    [ta.engine.javelin.calendar :refer [get-calendar]]))
 
 (defn calendar-cell
@@ -30,3 +30,6 @@
   [eng v]
   (let [c (cell v)] ; nom/execute
     c))
+
+(defn destroy-cell [eng c]
+ (destroy-cell! c))

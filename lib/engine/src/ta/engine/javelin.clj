@@ -14,6 +14,8 @@
     (j-cell/formula-cell this formula-fn cell-seq))
   (value-cell [this v]
     (j-cell/value-cell this v))
+  (destroy-cell [this v]
+    (j-cell/destroy-cell this v))
   ; calendar
   (create-calendar [this calendar]
     (j-cal/create-calendar this calendar))

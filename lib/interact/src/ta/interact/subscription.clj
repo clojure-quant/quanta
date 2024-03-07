@@ -12,6 +12,7 @@
 (defonce subscriptions-a (atom {}))
 (defonce results-a (atom {}))
 (defonce visualizations-a (atom {}))
+(defonce pushers-a (atom {}))
 
 (defn push-viz-result [subscription-id result]
   (try
@@ -50,11 +51,12 @@
         ;_ (info "algo-result-a: " algo-result-a)
         viz-fn (create-viz-fn e template)]
     (if viz-fn
-      (let [viz-result-a (engine/formula-cell eng viz-fn [algo-result-a])]
+      (let [viz-result-a (engine/formula-cell eng viz-fn [algo-result-a])
+            pusher-a (engine/formula-cell eng #(push-viz-result subscription-id %) [viz-result-a])]
         (swap! subscriptions-a assoc subscription-id template)
         (swap! results-a assoc subscription-id algo-result-a)
         (swap! visualizations-a assoc subscription-id viz-result-a)
-        (engine/formula-cell eng #(push-viz-result subscription-id %) [viz-result-a])
+        (swap! pushers-a assoc subscription-id pusher-a)
         subscription-id)
       (do
         (error "could not create viz-fn for template: " id)
@@ -70,3 +72,24 @@
   (if-let [result (@visualizations-a template-id)]
     (push-viz-result template-id @result)
     (subscribe-kw :live template-id template-options)))
+
+(defn unsubscribe [subscription-id]
+  (when-let [s (get @subscriptions-a subscription-id)]
+    (warn "unsubscribing subscription-id: " subscription-id)
+    (let [e (modular.system/system :live)
+          eng (env/get-engine e)
+          pusher-result-a (get @pushers-a subscription-id)
+          viz-result-a (get @visualizations-a subscription-id)
+          result-a (get @results-a subscription-id)]
+      ;(warn "destroying pusher..")
+      (engine/destroy-cell eng pusher-result-a)
+      (swap! pushers-a dissoc subscription-id) 
+      ;(warn "destroying viz-result..")
+      (engine/destroy-cell eng viz-result-a)
+      (swap! visualizations-a dissoc subscription-id)
+      ;(warn "destroying algo-result..")
+      (engine/destroy-cell eng result-a)
+      (swap! results-a dissoc subscription-id)
+      ; done!
+      (swap! subscriptions-a dissoc subscription-id))))
+

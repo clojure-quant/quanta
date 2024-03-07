@@ -37,7 +37,10 @@
                     [:yen-eur-currency "FXE" "FXY"]
            ; 8th spread- VXX-VXZ – due to insufficient historical data.
                     ]}
-   :viz 'notebook.strategy.sentiment-spread.vega/calc-viz-vega})
+   :viz 'notebook.strategy.sentiment-spread.vega/calc-viz-vega
+   :options [{:path :market
+              :name "Market"
+              :spec ["SPY" "QQQ" "IWM"]}]})
 
 
 (def juan
@@ -74,7 +77,7 @@
    :viz 'juan.notebook.viz/calc-viz-combined-highchart
    :key :signal})
 
-(def sma-eth
+(def sma-crypto
   {:id :sma-eth
    :algo {:type :trailing-bar
           :algo 'notebook.strategy.sma-crossover.algo/sma-crossover-algo
@@ -85,7 +88,19 @@
           :trailing-n 1000
           :sma-length-st 20
           :sma-length-lt 200}
-   :viz 'notebook.strategy.sma-crossover.viz/calc-viz-sma})
+   :viz 'notebook.strategy.sma-crossover.viz/calc-viz-sma
+   :options [{:path :asset
+              :name "Asset"
+              :spec ["BTCUSDT" "ETHUSDT"]}
+             {:path :trailing-n
+              :name "trailing-n"
+              :spec [100 300 500 1000 2000 3000 5000 10000]}
+             {:path :sma-length-st
+              :name "sma-st"
+              :spec [10 20 50 100]}
+             {:path :sma-length-lt
+              :name "sma-lt"
+              :spec [100 200 500 1000]}]})
 
 (def asset-compare
   {:id :asset-compare
@@ -103,7 +118,7 @@
    (map template/add [crypto-watch
                   sentiment-spread
                   juan
-                  sma-eth
+                  sma-crypto
                   asset-compare])))
 
 (comment
