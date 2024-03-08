@@ -67,6 +67,8 @@
 (defn get-calendar [calendar-kw]
   (get calendars calendar-kw))
 
+(defn get-calendar-list []
+  (keys calendars))
 
 
 
@@ -77,6 +79,8 @@
 
   (calendar-exists? :us)
   (calendar-exists? :us555)
+
+  (get-calendar-list)
 
 ;
   )

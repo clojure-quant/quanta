@@ -2,7 +2,7 @@
  :deps
  {org.clojure/clojure    {:mvn/version "1.11.1"}
   tick/tick              {:mvn/version "0.6.2"}
-  scicloj/tablecloth {:mvn/version "7.000-beta-51"} ; brings techml-dataset
+  scicloj/tablecloth {:mvn/version "7.021"} ; brings techml-dataset
   com.stuartsierra/frequencies {:mvn/version "0.1.0"}     ; percentile stats
   }
 ;

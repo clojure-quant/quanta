@@ -9,11 +9,12 @@
           :trailing-n 300
           :calendar [:crypto :m]
           :asset "BTCUSDT"
-          :dummy "just some text"
-          :super-super-fast? true
-          :feed :bybit
           :import :bybit
-          :algo 'notebook.strategy.live.crypto/nil-algo}
+          :feed :bybit
+          :algo 'notebook.strategy.live.crypto/nil-algo
+          ; irrelevant parameter; just ui demo.
+          :dummy "just some text"
+          :super-super-fast? true}
    :viz 'notebook.strategy.live.crypto/calc-viz-highchart
    :options [{:path :asset
               :name "Asset"
@@ -27,6 +28,33 @@
              {:path :super-super-fast?
               :name "SuperSuperFast?"
               :spec :bool}]})
+
+
+(def sma-crypto
+  {:id :sma-crypto
+   :algo {:type :trailing-bar
+          :algo 'notebook.strategy.sma-crossover.algo/sma-crossover-algo
+          :calendar [:forex :m]
+          :asset "ETHUSDT"
+          :feed :bybit
+          :import :bybit
+          :trailing-n 1000
+          :sma-length-st 20
+          :sma-length-lt 200}
+   :viz 'notebook.strategy.sma-crossover.viz/calc-viz-sma
+   :options [{:path :asset
+              :name "Asset"
+              :spec ["BTCUSDT" "ETHUSDT"]}
+             {:path :trailing-n
+              :name "trailing-n"
+              :spec [100 300 500 1000 2000 3000 5000 10000]}
+             {:path :sma-length-st
+              :name "sma-st"
+              :spec [10 20 50 100]}
+             {:path :sma-length-lt
+              :name "sma-lt"
+              :spec [100 200 500 1000]}]})
+
 
 (def sentiment-spread
   {:id :sentiment-spread
@@ -53,14 +81,15 @@
 
 (def juan-fx
   {:id :juan-fx
-   :algo  [{:asset "EUR/USD"}
+   :algo  [{:asset "USD/JPY"}
            :day {:type :trailing-bar
                  :algo   ['juan.algo.intraday/ensure-date-unique
                           'juan.algo.daily/daily]
                  :calendar [:us :d]
                  :import :kibot
                  :feed :fx
-                 :trailing-n 80
+                 ; daily opts
+                 :trailing-n 120
                  :atr-n 10
                  :step 0.0001
                  :percentile 70}
@@ -70,7 +99,7 @@
                     :type :trailing-bar
                     ;:import :kibot-http ; in live mode dont import
                     :trailing-n 1440 ; 24 hour in minute bars
-            ; doji
+                     ;  doji
                     :max-open-close-over-low-high 0.3
                     :volume-sma-n 30
             ; volume-pivots (currently not added)
@@ -86,46 +115,22 @@
    :options [{:path [0 :asset]
               :name "asset"
               :spec juan-assets/spot-fx-assets}
+             {:path [2 :trailing-n]
+              :name "DailyLoad#"
+              :spec [2 5 10 20 30 50 80 100 120 150]}
              {:path [2 :atr-n]
-              :name "ATR#"
-              :spec [10 20 30]}
+              :name "dATR#"
+              :spec [5 10 20 30]}
              {:path [2 :percentile]
-              :name "Percentile"
+              :name "dPercentile"
               :spec [10 20 30 40 50 60 70 80 90]}
              {:path [2 :step]
-              :name "Step"
+              :name "dStep"
               :spec [0.001 0.0001 0.00004]}
              {:path [4 :max-open-close-over-low-high]
-              :name "co/lh max"
-              :spec [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]}
-             {:path [4 :pivot-max-diff]
-              :name "pivot-max-diff"
-              :spec [0.1 0.01 0.001 0.0001 0.00001]}]})
+              :name "doji-co/lh max"
+              :spec [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]}]})
 
-(def sma-crypto
-  {:id :sma-eth
-   :algo {:type :trailing-bar
-          :algo 'notebook.strategy.sma-crossover.algo/sma-crossover-algo
-          :calendar [:forex :m]
-          :asset "ETHUSDT"
-          :feed :bybit
-          :import :bybit
-          :trailing-n 1000
-          :sma-length-st 20
-          :sma-length-lt 200}
-   :viz 'notebook.strategy.sma-crossover.viz/calc-viz-sma
-   :options [{:path :asset
-              :name "Asset"
-              :spec ["BTCUSDT" "ETHUSDT"]}
-             {:path :trailing-n
-              :name "trailing-n"
-              :spec [100 300 500 1000 2000 3000 5000 10000]}
-             {:path :sma-length-st
-              :name "sma-st"
-              :spec [10 20 50 100]}
-             {:path :sma-length-lt
-              :name "sma-lt"
-              :spec [100 200 500 1000]}]})
 
 (def asset-compare
   {:id :asset-compare

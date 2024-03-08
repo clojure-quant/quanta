@@ -39,7 +39,7 @@
           :stop (.close this)}
 
   :duckdb {; todo: change /bars to /bars.ddb (duck-db db has .ddb extension)
-           :start (ta.db.bars.duckdb/start-bardb-duck "../../output/duckdb/bars")
+           :start (ta.db.bars.duckdb/start-bardb-duck "../../output/duckdb/bars.ddb")
            :stop (ta.db.bars.duckdb/stop-bardb-duck this)
            :post-start ta.db.bars.duckdb/init-tables}
   

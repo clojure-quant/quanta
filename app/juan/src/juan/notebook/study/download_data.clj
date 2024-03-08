@@ -51,6 +51,7 @@ window-intraday
 
 asset-pairs
 
+
 (doall 
   (for [pair asset-pairs]
     (get-forex-daily (:fx pair))))

@@ -12,7 +12,7 @@
 
 ;; Test if duckdb get/append works
 
-(def db-duck (duck/start-bardb-duck "/tmp/demo12"))
+(def db-duck (duck/start-bardb-duck "/tmp/demo12.ddb"))
 db-duck
 (duck/init-tables db-duck)
 

@@ -4,11 +4,11 @@
  :deps {org.clojure/clojure    {:mvn/version "1.11.1"}
         tick/tick {:mvn/version "0.6.2"}
         prismatic/schema {:mvn/version "1.2.0"}
-        nano-id/nano-id {:mvn/version "1.0.0"}
+        nano-id/nano-id {:mvn/version "1.1.0"}
         differ/differ {:mvn/version "0.3.3"}
         babashka/fs {:mvn/version "0.4.19"}
-        org.pinkgorilla/modular {:mvn/version "0.0.38"} ; persistence
-        org.pinkgorilla/webly {:mvn/version "0.4.629"} ; web handlers
+        org.pinkgorilla/modular {:mvn/version "0.0.40"} ; persistence
+        org.pinkgorilla/webly {:mvn/version "0.4.640"} ; web handlers
         ta/trateg {:local/root "../.." :deps/manifest :deps}
         ta/data {:local/root "../import" :deps/manifest :deps}
         ta/warehouse {:local/root "../db" :deps/manifest :deps}}
@@ -21,7 +21,7 @@
 
   :goldly-docs
   {:extra-paths ["resources"]
-   :extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.616"}}
+   :extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.655"}}
    :exec-fn goldly.app/goldly-server-run!
    :exec-args {:profile "jetty"
                :config {:goldly {:lazy true

@@ -8,6 +8,7 @@
    [tech.v3.datatype :as dtype]
    [clojure.java.io :as java-io]
    [tmducken.duckdb :as duckdb]
+   [ta.calendar.calendars :refer [get-calendar-list]]
    [ta.db.bars.protocol :refer [bardb barsource]]))
 
 ;; https://github.com/techascent/tmducken
@@ -228,18 +229,31 @@
   (let [ds (empty-ds calendar)]
     (duckdb/create-table! (:conn session) ds)))
 
+(defn make-table-defs []
+  (let [cals (get-calendar-list)
+        make-one-cal (fn [c] [ [c :d]
+                               [c :h]
+                               [c :m]])]
+    (->> (map make-one-cal cals)
+         (apply concat)
+         (into []))))
+
+(def fixed-table-defs 
+  [[:us :m]
+   [:us :h]
+   [:us :d]
+   [:forex :d]
+   [:forex :m]
+   [:crypto :d]
+   [:crypto :m]])
+
 (defn init-tables [session]
   (let [exists? (:new? session)]
     (when (not exists?)
       (println "init duck-db tables")
       (doall (map (partial create-table session)
-                  [[:us :m]
-                   [:us :h]
-                   [:us :d]
-                   [:forex :d]
-                   [:forex :m]
-                   [:crypto :d]
-                   [:crypto :m]])))))
+                  (make-table-defs)
+                  )))))  
 
 (defrecord bardb-duck [db conn new?]
   barsource
@@ -260,6 +274,8 @@
 
 (comment
   
+  (make-table-defs)
+
   (-> (now) type)
 
   (require '[modular.system])

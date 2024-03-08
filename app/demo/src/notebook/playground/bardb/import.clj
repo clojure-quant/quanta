@@ -12,10 +12,12 @@ im
 dt
 
 ;; BYBIT
-(b/get-bars im {:asset "BTCUSD" ; crypto
+(b/get-bars im {:asset "BTCUSDT" ; crypto
                 :calendar [:crypto :d]
                 :import :bybit}
-            {:start dt})
+            {:start  (t/instant "2020-01-01T00:00:00Z")
+             :end (t/instant "2024-01-01T00:00:00Z")
+             })
 
 ;; ALPHAVANTAGE
 (b/get-bars im {:asset "FMCDX" ; mutual fund
@@ -31,7 +33,8 @@ dt
 (-> (b/get-bars im {:asset "NG0" ; future
                     :calendar [:us :d]
                     :import :kibot}
-                {:start dt})
+                 {:start  (t/instant "2020-01-01T00:00:00Z")
+                 :end (t/instant "2024-01-01T00:00:00Z")})
     date-type)
 
 (b/get-bars im 

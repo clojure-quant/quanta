@@ -1,5 +1,6 @@
 (ns notebook.strategy.live.crypto
   (:require
+   [taoensso.timbre :refer [info warn error]]
    [modular.system]
    [ta.algo.env.protocol :as algo]
    [ta.algo.permutate :as permutate]
@@ -8,7 +9,8 @@
 
 ;; define algo
 
-(defn nil-algo [_env _opts bar-ds]
+(defn nil-algo [_env opts bar-ds]
+  (warn "nil algo: trailing-n: " (:trailing-n opts) " asset: " (:asset opts))
   bar-ds)
 
 (def table-spec

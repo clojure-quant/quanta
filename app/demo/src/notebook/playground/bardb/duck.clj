@@ -9,13 +9,13 @@
 ;(def db (modular.system/system :bardb-dynamic))
 
 
-(def window {:start (t/instant "2024-03-05T00:00:00Z")
+(def window {:start (t/instant "2022-03-05T00:00:00Z")
              :end (t/instant "2024-03-06T20:00:00Z")})
 
 
 (b/get-bars db
            {:asset "EUR/USD"
-            :calendar [:us :d]
+            :calendar [:forex :d]
             :import :kibot
             }
             window)
@@ -33,7 +33,7 @@
 
 (-> (b/get-bars db {:asset "BTCUSDT"
                     ;:import :bybit
-                    :calendar [:crypto :m]}
+                    :calendar [:crypto :d]}
                 window)
     (tc/select-columns [:date :close :volume :epoch :ticks]))
 
