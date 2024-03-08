@@ -116,8 +116,11 @@
               :name "asset"
               :spec juan-assets/spot-fx-assets}
              {:path [2 :trailing-n]
-              :name "DailyLoad#"
+              :name "d#"
               :spec [2 5 10 20 30 50 80 100 120 150]}
+             {:path [4 :trailing-n]
+              :name "i#"
+              :spec [720 1440 2880 5000 10000]}
              {:path [2 :atr-n]
               :name "dATR#"
               :spec [5 10 20 30]}

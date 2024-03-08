@@ -25,18 +25,6 @@
 (defn short-pivots [max-diff daily-pivots intraday-close]
   (dtype/emap (partial short-pivot max-diff) :object daily-pivots intraday-close))
 
-(defn link-date [intraday-ds daily-ds]
-  (try
-    (let [c (link-bars intraday-ds daily-ds :date (-> (t/now) t/inst))]
-      (info "date-cols: " c)
-      )
-
-    (catch Exception ex
-      (error "exception in linking bar-dates")
-      (error ex)
-      nil)))
-
-
 (defn daily-intraday-combined-impl [env spec daily-ds intraday-ds]
   (info "intraday-combined: daily# " (tc/row-count daily-ds) "intraday# " (tc/row-count intraday-ds))
   (let [pivot-max-diff (:pivot-max-diff spec)
@@ -47,7 +35,7 @@
         ;_ (info "calculating pivot nr..")
         daily-pivotnr (link-bars2 intraday-ds daily-ds :ppivotnr 0)
         ;_ (info "calculating date ..")
-        ;daily-date (link-bars intraday-ds daily-ds :date (-> (t/now) t/instant))
+        ;daily-date (link-bars2 intraday-ds daily-ds :date (-> (t/now) t/instant))
         ;daily-date (link-date intraday-ds daily-ds)
         ;_ (info "calculating date .. finished!")
         ;_ (info "daily-date: " daily-date)

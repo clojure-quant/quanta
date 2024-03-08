@@ -15,18 +15,12 @@
         date-next    (fn [] (-> ds :date (get (min idx-max (inc @idx)))))
         get-val (fn [] (-> ds col (get (min idx-max @idx))))]
     (fn [date]
-      ;(info "aligning: " date)
-      ; todo: make it better. 
-      ; in cases where move-next would need to be called, it will 
-      ; just move-next once. really we want to recursively call our function.
-      ; but this is difficult since we already have created a lot of state.
-      ;(info "processing 1-min date: " date " daily-date: " (date-current))
       (if (t/> (date-current) date)
-        ;(do (info "skipping !!")
         v
-         ; )
         (do
-          (when (t/<= (date-next)  date)
+          (while (and (< @idx idx-max)
+                      (t/<= (date-next)  date))
+            (info "move next..")
             (move-next))
           (get-val))))))
 
@@ -35,7 +29,7 @@
 (defn col-type [ds col]
   (-> ds col meta :datatype))
 
-(defn link-bars
+#_(defn link-bars
   "returns timeseries values form remote-col, aligned to a size of bar-ds.
    both bar-ds and remote-ds need to be datasets with :date column.
    alignment rule is: last remote value is shown, except when remote value,
@@ -69,31 +63,31 @@
     ;(info "remote-ds sorted: " (is-ds-sorted? remote-ds))
     (map align (:date bar-ds))))
 
-#_(defn link-bars3 
-  "ALTERNATIVE IMPLEMETATION WITH LOOP.
+#_(defn link-bars3
+    "ALTERNATIVE IMPLEMETATION WITH LOOP.
    NOT YET READY.
    IS TECHNICALLY BETTER THAN LINK-BARS and LINK-BARS2"
-  [local-ds remote-ds nil-val]
-  (loop [local-idx 0
-         remote-idx 0]
-    (let [idx-max 0
-          local-idx-max 0
-          col-name nil
-          col nil
-          mget (fn [ds col idx] :r)
-          mset! (fn [ds col v] :r)
-          dt-local (mget local-ds :date local-idx)
-          dt-remote (mget remote-ds :date remote-idx)
-          dt-remote-next (mget remote-ds col-name (min idx-max  (inc remote-idx)))]
-      (if (t/> dt-local dt-remote)
-        (mset! col local-idx nil-val)
-        (do (when (t/>= dt-remote-next dt-local)
+    [local-ds remote-ds nil-val]
+    (loop [local-idx 0
+           remote-idx 0]
+      (let [idx-max 0
+            local-idx-max 0
+            col-name nil
+            col nil
+            mget (fn [ds col idx] :r)
+            mset! (fn [ds col v] :r)
+            dt-local (mget local-ds :date local-idx)
+            dt-remote (mget remote-ds :date remote-idx)
+            dt-remote-next (mget remote-ds col-name (min idx-max  (inc remote-idx)))]
+        (if (t/> dt-local dt-remote)
+          (mset! col local-idx nil-val)
+          (do (when (t/>= dt-remote-next dt-local)
               ; recur: inc remote-idx
-              (recur local-idx (inc remote-idx)))
-            (mset! col local-idx (mget remote-ds col-name remote-idx))))
+                (recur local-idx (inc remote-idx)))
+              (mset! col local-idx (mget remote-ds col-name remote-idx))))
       ;recur: inc local-idx
-      (when (< local-idx local-idx-max)
-        (recur (inc local-idx) remote-idx)))))
+        (when (< local-idx local-idx-max)
+          (recur (inc local-idx) remote-idx)))))
 
 
 
@@ -103,8 +97,8 @@
                              {:date (t/date-time "2024-01-03T17:00:00") :a 3}]))
   (col-type daily-ds :a)
   (-> daily-ds :a (get 2))
-  (def hour-ds (tc/dataset [{:date (t/date-time "2024-01-01T15:00:00")} ; 0
-                            {:date (t/date-time "2024-01-01T16:00:00")} ; 0
+  (def hour-ds (tc/dataset [{:date (t/date-time "2024-01-01T15:00:00")} ; 0 = no daily
+                            {:date (t/date-time "2024-01-01T16:00:00")} ; 0 = no daily
                             {:date (t/date-time "2024-01-01T17:00:00")} ; 1
                             {:date (t/date-time "2024-01-02T09:00:00")} ; 1
                             {:date (t/date-time "2024-01-02T16:00:00")} ; 1
@@ -133,7 +127,27 @@
 
   (link-bars hour-ds daily-ds :a 0)
   (link-bars2 hour-ds daily-ds :a 0)
+  ;;    (0 0 1 1 1 2)
   ;; => [0 0 1 1 1 2]
+
+  (def early-daily-ds (tc/dataset [{:date (t/date-time "2021-01-01T17:00:00") :a 1}
+                                   {:date (t/date-time "2022-01-01T17:00:00") :a 2}
+                                   {:date (t/date-time "2023-01-01T17:00:00") :a 3}
+                                   {:date (t/date-time "2024-01-01T17:00:00") :a 4}
+                                   {:date (t/date-time "2024-01-02T17:00:00") :a 5}
+                                   {:date (t/date-time "2024-01-03T17:00:00") :a 6}]))
+
+    (link-bars2 hour-ds early-daily-ds :a 0)
+    ;; => 2024-03-08T23:38:39.054Z nuc12 INFO [ta.calendar.link:29] - move next..
+    ;;    2024-03-08T23:38:39.055Z nuc12 INFO [ta.calendar.link:29] - move next..
+    ;;    2024-03-08T23:38:39.055Z nuc12 INFO [ta.calendar.link:29] - move next..
+    ;;    2024-03-08T23:38:39.055Z nuc12 INFO [ta.calendar.link:29] - move next..
+    ;;    (3 3 4 4 4 5)
+
+ 
+
+  
+
   (link-bars hour-ds daily-ds :date (t/date-time "2000-01-01T15:00:00"))
 
   (-> daily-ds tc/info)
