@@ -4,7 +4,8 @@
    [tick.core :as t]
    [de.otto.nom.core :as nom]
    [ta.db.bars.protocol :as b]
-   [ta.db.bars.dynamic.overview-db :as overview]))
+   [ta.db.bars.dynamic.overview-db :as overview]
+   [ta.db.bars.dynamic.logger :as logger]))
 
 (defn- import-tasks-map [req-window db-window]
   {:db-empty (when (not db-window)
@@ -80,4 +81,5 @@
   (let [tasks (tasks-for-request state opts req-window)]
     (info "tasks: " tasks)
     (when (import-needed? tasks)
+      (logger/import-on-demand opts req-window tasks)
       (run-import-tasks state opts tasks))))

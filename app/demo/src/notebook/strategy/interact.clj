@@ -9,7 +9,7 @@
           :calendar [:crypto :m]
           :asset "BTCUSDT"
           :dummy "just some text"
-          :super-fast? true
+          :super-super-fast? true
           :feed :bybit
           :import :bybit
           :algo 'notebook.strategy.live.crypto/nil-algo}
@@ -23,7 +23,7 @@
              {:path :dummy
               :name "dummy-text"
               :spec :string}
-             {:path :super-fast?
+             {:path :super-super-fast?
               :name "SuperSuperFast?"
               :spec :bool}
              ]})
