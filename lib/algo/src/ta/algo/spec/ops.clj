@@ -28,7 +28,7 @@
       (warn "global-opts: " global-opts)
     (->> (map (fn [[id spec]]
                 (let [spec (merge global-opts spec)]
-                  (warn "meged spec: " spec)
+                  (warn "merged spec: " spec)
                 [id (spec->op env spec)]))
               (partition 2 spec))
          (into [])))))
