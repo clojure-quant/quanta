@@ -9,6 +9,7 @@
                ta.viz.renderfn.rtable
                ta.viz.renderfn.highstock
                ta.viz.renderfn.vega
+               ta.viz.renderfn.error
                ta.viz.lib.layout
                ta.viz.lib.ui
                ta.viz.lib.loader

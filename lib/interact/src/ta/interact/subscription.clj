@@ -1,5 +1,6 @@
 (ns ta.interact.subscription
   (:require
+   [de.otto.nom.core :as nom]
    [taoensso.timbre :as log :refer [tracef debug debugf info infof warn error errorf]]
    [nano-id.core :refer [nano-id]]
    [modular.system]
@@ -7,7 +8,8 @@
    [ta.algo.env.protocol :as algo]
    [ta.engine.protocol :as engine]
    [ta.algo.env.protocol :as env]
-   [ta.interact.template :as t]))
+   [ta.interact.template :as t]
+   [ta.viz.error :refer [error-render-spec]]))
 
 (defonce subscriptions-a (atom {}))
 (defonce results-a (atom {}))
@@ -16,9 +18,12 @@
 
 (defn push-viz-result [subscription-id result]
   (try
-    (warn "sending viz result: " subscription-id) ; putting result here will spam the log.
+    (let [result (if (nom/anomaly? result)
+                   (error-render-spec result)
+                   result)]
+      (warn "sending viz result: " subscription-id) ; putting result here will spam the log.
     ;(warn "result: " result)
-    (send-all! [:interact/subscription {:subscription-id subscription-id :result result}])
+      (send-all! [:interact/subscription {:subscription-id subscription-id :result result}]))
     (catch Exception ex
       (error "error in sending viz-result!"))))
 
@@ -32,15 +37,19 @@
   (let [viz-fn (get-fn viz)]
     (when viz-fn
       (fn [result]
-        (try
-          (warn "calculating visualization:" id " .. ")
-          ;(warn "result: " result)
-          (let [r (viz-fn result)]
-            (warn "calculating visualization:" id " DONE!")
-            r)
-          (catch Exception ex
-            (error "exception calculating visualization topic: " id)
-            (error ex)))))))
+        (if (nom/anomaly? result)
+          result
+          (try
+            (warn "calculating visualization:" id " .. ")
+            ;(warn "result: " result)
+            (let [r (viz-fn result)]
+              (warn "calculating visualization:" id " DONE!")
+              r)
+            (catch Exception ex
+              (error "exception calculating visualization topic: " id)
+              (error ex)
+              (nom/fail ::algo-calc {:message "algo calc exception!"
+                                     :location :visualize}))))))))
 
 (defn subscribe [e {:keys [id algo key] :as template}]
   (let [subscription-id (nano-id 6)
@@ -83,7 +92,7 @@
           result-a (get @results-a subscription-id)]
       ;(warn "destroying pusher..")
       (engine/destroy-cell eng pusher-result-a)
-      (swap! pushers-a dissoc subscription-id) 
+      (swap! pushers-a dissoc subscription-id)
       ;(warn "destroying viz-result..")
       (engine/destroy-cell eng viz-result-a)
       (swap! visualizations-a dissoc subscription-id)
@@ -94,21 +103,21 @@
       (swap! subscriptions-a dissoc subscription-id))))
 
 
-(comment 
-  
+(comment
+
   (def s (atom {:mood "perfect"
                 :env {:mode :live}
                 :benchmark ["MSFT"
                             "MO"]
                 :asset "SPY"}))
-  
-    (swap! s assoc :asset "QQQ")
-    (swap! s assoc-in [:env :mode] :backtest)
-    (swap! s assoc-in [:benchmark 0] "AAPL")
-  
 
-  
-  
+  (swap! s assoc :asset "QQQ")
+  (swap! s assoc-in [:env :mode] :backtest)
+  (swap! s assoc-in [:benchmark 0] "AAPL")
+
+
+
+
  ; 
   )
 

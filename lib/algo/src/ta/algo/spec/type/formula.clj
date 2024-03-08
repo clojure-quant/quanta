@@ -1,5 +1,6 @@
 (ns ta.algo.spec.type.formula
   (:require
+   [de.otto.nom.core :as nom]
    [taoensso.timbre :refer [trace debug info warn error]]))
 
 (defn- preprocess-fun [fun]
@@ -15,4 +16,7 @@
         (apply algo-fn env spec args)
         (catch Exception ex
           (error "exception calculating formula-strategy spec: " spec)
-          nil)))))
+          (nom/fail ::algo-calc {:message "algo calc exception!"
+                                 :location :formula
+                                 :spec spec
+                                 :args args}))))))

@@ -85,7 +85,7 @@
            :day {:type :trailing-bar
                  :algo   ['juan.algo.intraday/ensure-date-unique
                           'juan.algo.daily/daily]
-                 :calendar [:us :d]
+                 :calendar [:forex :d]
                  :import :kibot
                  :feed :fx
                  ; daily opts
