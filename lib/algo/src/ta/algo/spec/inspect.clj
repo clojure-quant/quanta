@@ -1,12 +1,26 @@
 (ns ta.algo.spec.inspect)
 
-(defn- specs [spec]
+#_(defn- specs [spec]
   (if (map? spec)
     [(assoc spec :id :0)]
     (->> (map (fn [[id spec]]
                 (assoc spec :id id))
               (partition 2 spec))
          (into []))))
+
+(defn- specs [spec]
+  (if (map? spec)
+    [(assoc spec :id :0)]
+    (let [global-opts? (and (odd? (count spec))
+                            (map? (first spec)))
+          [global-opts spec] (if global-opts?
+                               [(first spec) (rest spec)]
+                               [{} spec])]
+      (->> (map (fn [[id spec]]
+                  (let [spec (merge global-opts spec)]
+                    (assoc spec :id id)))
+                (partition 2 spec))
+           (into [])))))
 
 ;; QUOTE SUBSCRIPTION
 

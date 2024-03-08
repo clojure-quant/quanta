@@ -1,5 +1,6 @@
 (ns ta.algo.spec.ops
   (:require
+   [taoensso.timbre :as timbre :refer [debug info warn error]]
    [ta.algo.spec.type :refer [create-algo]]
    [ta.algo.spec.type.formula :refer [create-formula-algo]]))
 
@@ -19,10 +20,18 @@
 (defn spec->ops [env spec]
   (if (map? spec)
     [[1 (spec->op env spec)]]
+    (let [global-opts? (and (odd? (count spec)) 
+                            (map? (first spec)))
+          [global-opts spec] (if global-opts?
+                                 [(first spec) (rest spec)]
+                                 [{} spec])]
+      (warn "global-opts: " global-opts)
     (->> (map (fn [[id spec]]
-                [id (spec->op env spec)])
+                (let [spec (merge global-opts spec)]
+                  (warn "meged spec: " spec)
+                [id (spec->op env spec)]))
               (partition 2 spec))
-         (into []))))
+         (into [])))))
 
 (comment
   (require '[algo.env :as algo-env])

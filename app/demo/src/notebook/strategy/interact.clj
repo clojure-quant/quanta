@@ -2,8 +2,8 @@
   (:require
    [ta.interact.template :as template]))
 
-(def crypto-watch
-  {:id :crypto-watch
+(def watch-crypto
+  {:id :watch-crypto
    :algo {:type :trailing-bar
           :trailing-n 300
           :calendar [:crypto :m]
@@ -25,8 +25,7 @@
               :spec :string}
              {:path :super-super-fast?
               :name "SuperSuperFast?"
-              :spec :bool}
-             ]})
+              :spec :bool}]})
 
 (def sentiment-spread
   {:id :sentiment-spread
@@ -53,11 +52,11 @@
 
 (def juan-fx
   {:id :juan-fx
-   :algo  [:day {:type :trailing-bar
+   :algo  [{:asset "EUR/USD"}
+           :day {:type :trailing-bar
                  :algo   ['juan.algo.intraday/ensure-date-unique
                           'juan.algo.daily/daily]
                  :calendar [:us :d]
-                 :asset "EUR/USD"
                  :import :kibot
                  :feed :fx
                  :trailing-n 80
@@ -68,8 +67,7 @@
                     :algo  ['juan.algo.intraday/ensure-date-unique
                             'juan.algo.doji/doji-signal]
                     :type :trailing-bar
-                    :asset "EUR/USD"
-                    :import :kibot-http
+                    ;:import :kibot-http ; in live mode dont import
                     :trailing-n 1440 ; 24 hour in minute bars
             ; doji
                     :max-open-close-over-low-high 0.3
@@ -84,29 +82,25 @@
                     :algo 'juan.algo.combined/daily-intraday-combined}]
    :viz 'juan.notebook.viz/calc-viz-combined-highchart
    :key :signal
-   :options [{:path [1 :asset]
+   :options [{:path [0 :asset]
               :name "asset"
               :spec ["EUR/USD" "USD/CHF" "GBP/USD" "USD/SEK"
-                     "USD/NOK" "USD/CAD" "USD/JPY" "AUD/USD" "NZD/USD" ]}
-             {:path [1 :atr-n]
+                     "USD/NOK" "USD/CAD" "USD/JPY" "AUD/USD" "NZD/USD"]}
+             {:path [2 :atr-n]
               :name "ATR#"
               :spec [10 20 30]}
-             {:path [1 :percentile]
+             {:path [2 :percentile]
               :name "Percentile"
               :spec [10 20 30 40 50 60 70 80 90]}
-             {:path [1 :step]
+             {:path [2 :step]
               :name "Step"
               :spec [0.001 0.0001 0.00004]}
-             {:path [3 :max-open-close-over-low-high]
+             {:path [4 :max-open-close-over-low-high]
               :name "co/lh max"
               :spec [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]}
-              {:path [3 :pivot-max-diff]
+             {:path [4 :pivot-max-diff]
               :name "pivot-max-diff"
-              :spec [0.1 0.01 0.001 0.0001 0.00001]}
-             {:path [3 :asset]
-              :name "asset"
-              :spec ["EUR/USD" "USD/CHF" "GBP/USD" "USD/SEK"
-                     "USD/NOK" "USD/CAD" "USD/JPY" "AUD/USD" "NZD/USD"]}]})  
+              :spec [0.1 0.01 0.001 0.0001 0.00001]}]})
 
 (def sma-crypto
   {:id :sma-eth
@@ -146,11 +140,11 @@
 
 (defn add-templates []
   (doall
-   (map template/add [crypto-watch
-                  sentiment-spread
-                  juan-fx
-                  sma-crypto
-                  asset-compare])))
+   (map template/add [watch-crypto
+                      sma-crypto
+                      sentiment-spread
+                      asset-compare
+                      juan-fx])))
 
 
 (comment
