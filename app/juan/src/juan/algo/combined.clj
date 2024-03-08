@@ -1,5 +1,6 @@
 (ns juan.algo.combined
   (:require
+    [de.otto.nom.core :as nom]
    [taoensso.timbre :refer [trace debug info warn error]]
    [tick.core :as t]
    [tablecloth.api :as tc]
@@ -73,14 +74,29 @@
 
 (defn daily-intraday-combined [env spec daily-ds intraday-ds]
   (try 
-    (if (and daily-ds intraday-ds)
-       (daily-intraday-combined-impl env spec daily-ds intraday-ds)    
-       (do (when-not daily-ds (error "juan-fx formula has no daily-ds input."))
-           (when-not intraday-ds (error "juan-fx formula has no intraday-ds input."))
-           nil))
+    (cond 
+      (nom/anomaly? daily-ds)
+      daily-ds
+
+      (nom/anomaly? intraday-ds)
+      intraday-ds
+
+      (nil? daily-ds)
+      (nom/fail ::algo-calc {:message "daily-ds is nil!"
+                             :location :juan-algo-combined
+                             :spec spec})
+      
+       (nil? intraday-ds)
+       (nom/fail ::algo-calc {:message "intraday-ds is nil!"
+                       :location :juan-algo-combined
+                       :spec spec})
+       :else 
+       (daily-intraday-combined-impl env spec daily-ds intraday-ds)    )
     (catch Exception ex
       (error "exception in juan/combined spec: " spec ex)
-      nil)))
+      (nom/fail ::algo-calc {:message "algo calc exception!"
+                             :location :juan-algo-combined
+                             :spec spec}))))
   
 
  
