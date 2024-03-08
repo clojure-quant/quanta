@@ -184,10 +184,20 @@
     (-> (duckdb/sql->dataset (:conn session) query)
         (keywordize-columns))))
 
+(defn ensure-instant [dt]
+  (when dt 
+    (if (t/zoned-date-time? dt) 
+      (t/instant dt)
+      dt)))
+
 (defn get-bars
   "returns bars for asset/calendar + window"
   [session {:keys [asset calendar]} {:keys [start end] :as window}]
-  (let [bar-ds (cond
+  (let [; v0.10 of tmlducken cannot do queries with date
+        ; being zoned-datetime
+        start (ensure-instant start)
+        end (ensure-instant end)
+        bar-ds (cond
                  (and start end)
                  (get-bars-window session calendar asset start end)
                

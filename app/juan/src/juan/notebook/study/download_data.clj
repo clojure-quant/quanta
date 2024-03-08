@@ -29,7 +29,9 @@ window-daily
               window-daily))
 
 (def window-intraday
-  (cal/trailing-range [:forex :m] 90000 (t/zoned-date-time "2024-03-08T17:30-05:00[America/New_York]")))
+  (cal/trailing-range [:forex :m] 90000 (t/zoned-date-time "2024-03-08T20:00-05:00[America/New_York]")))
+
+
 
 window-intraday
 

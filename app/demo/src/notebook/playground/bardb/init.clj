@@ -42,3 +42,14 @@ bar-ds
                 :calendar [:us :d]}
             {:start (t/instant "2022-03-05T00:00:00Z")
              :end (t/instant "2025-03-06T20:00:00Z")})
+
+(b/get-bars db {:asset "EUR/USD"
+                :calendar [:forex :d]}
+            {:start (t/instant "2022-03-05T00:00:00Z")
+             :end (t/instant "2025-03-06T20:00:00Z")})
+
+(b/get-bars db {:asset "EUR/USD"
+                :calendar [:forex :d]}
+            {:start (t/zoned-date-time "2024-03-07T16:30-05:00[America/New_York]")
+             :end (t/zoned-date-time "2020-05-08T16:30-04:00[America/New_York]")})
+
