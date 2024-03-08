@@ -26,3 +26,14 @@
    {:fx "GBP/JPY" :future "PJY" :pip 0.1 :ctrader 7}])
 
 
+(def spot-fx-assets 
+  (->> (map :fx asset-pairs)
+       (into [])))
+
+
+(comment 
+  spot-fx-assets
+  
+ ; 
+  )
+

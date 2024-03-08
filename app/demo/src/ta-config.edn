@@ -1,10 +1,28 @@
-{:timbre/clj {:min-level  [[#{"org.eclipse.jetty.*"
-                              "webly.*"
-                              "webly.ws.*"} :info]
-                           [#{"goldly.*"} :info]
-                           [#{"ui.*"} :info]
-                           [#{"user"} :warn] ; demos
-                           [#{"*"} :info]]}
+{:timbre/clj {:min-level [[#{"org.apache.http.*"
+                             "org.eclipse.aether.*"
+                             "org.eclipse.jetty.*"
+                             "modular.oauth2.*"
+                             "modular.oauth2.token.refresh.*"
+                             "modular.ws.*"
+                             "webly.web.*"
+                             "goldly.ws-connect.*"
+                             "goldly.cljs.discover.*"
+                             "goldly.run.cljs-load.*"
+                             "goldly.run.cljs-load"
+                             "goldly.run.ws-connect"} :warn] ; webserver stuff - warn only
+                                      ; [#{"modular.ws.*"} :debug]
+                          [#{"modular.persist.*"} :warn]
+                          [#{"goldly.service.core"} :warn] ; goldly services - less logging
+                          ; trateg specific:
+                          [#{"ta.import.provider.bybit.*"} ;bybit is already stable
+                             :warn]
+                          [#{"*"} :info]] ; default -> info
+              :appenders {:default {:type :console-color}
+                          :rolling {:type :file-rolling
+                                    :path "../../output/trateg.log"
+                                    :pattern :monthly}
+                          
+                          }}
 
  :webly/web-server {:port 8080
                     :host "0.0.0.0"

@@ -1,6 +1,7 @@
 (ns notebook.strategy.interact
   (:require
-   [ta.interact.template :as template]))
+   [ta.interact.template :as template]
+   [juan.asset-pairs :as juan-assets]))
 
 (def watch-crypto
   {:id :watch-crypto
@@ -84,8 +85,7 @@
    :key :signal
    :options [{:path [0 :asset]
               :name "asset"
-              :spec ["EUR/USD" "USD/CHF" "GBP/USD" "USD/SEK"
-                     "USD/NOK" "USD/CAD" "USD/JPY" "AUD/USD" "NZD/USD"]}
+              :spec juan-assets/spot-fx-assets}
              {:path [2 :atr-n]
               :name "ATR#"
               :spec [10 20 30]}

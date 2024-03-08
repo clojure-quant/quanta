@@ -7,11 +7,6 @@
   :timbre {:start (modular.log/timbre-config!
                    (:timbre/clj (deref (clip/ref :config))))}
 
-    ; load the :ns-clj defined by the user [demo.service]
-    ;  :ns-require {:start (modular.require/require-namespaces
-    ;                      (:ns-clj (deref (clip/ref :config))))}
-
-
   :asset-db {:start (demo.asset-db/add-assets)}
 
 ; goldly service returns {:ns-clj :webly           ; this are used to start clj-require and webly

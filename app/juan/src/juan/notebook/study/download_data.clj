@@ -14,10 +14,10 @@
 
 (def db (modular.system/system :bardb-dynamic))
 
-(cal/trailing-range [:forex :d] 1000)
+(cal/trailing-range [:forex :d] 5000)
 
 (def window-daily
-  (cal/trailing-range [:forex :d] 1000 (t/zoned-date-time "2024-02-20T16:30-05:00[America/New_York]")))
+  (cal/trailing-range [:forex :d] 1000 (t/zoned-date-time "2024-03-07T17:30-05:00[America/New_York]")))
 
 window-daily
 
@@ -29,7 +29,7 @@ window-daily
               window-daily))
 
 (def window-intraday
-  (cal/trailing-range [:forex :m] 90000 (t/zoned-date-time "2024-02-20T16:30-05:00[America/New_York]")))
+  (cal/trailing-range [:forex :m] 90000 (t/zoned-date-time "2024-03-08T17:30-05:00[America/New_York]")))
 
 window-intraday
 
@@ -42,10 +42,10 @@ window-intraday
 
 
 ;; import one forex
-(db/instrument-details "EURUSD")
+(db/instrument-details "EUR/USD")
 
-(get-forex-daily "EURUSD")
-(get-forex-intraday "EURUSD")
+(get-forex-daily "EUR/USD")
+(get-forex-intraday "EUR/USD")
 
 ;; import all forex bars
 
