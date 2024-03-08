@@ -93,3 +93,22 @@
       ; done!
       (swap! subscriptions-a dissoc subscription-id))))
 
+
+(comment 
+  
+  (def s (atom {:mood "perfect"
+                :env {:mode :live}
+                :benchmark ["MSFT"
+                            "MO"]
+                :asset "SPY"}))
+  
+    (swap! s assoc :asset "QQQ")
+    (swap! s assoc-in [:env :mode] :backtest)
+    (swap! s assoc-in [:benchmark 0] "AAPL")
+  
+
+  
+  
+ ; 
+  )
+

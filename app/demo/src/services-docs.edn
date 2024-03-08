@@ -122,7 +122,7 @@
                           (clip/ref :tickerplant)
                           (clip/ref :timbre))}
   
-  :interact-strategies {:start (notebook.strategy.interact/add-strategies)}
+  :interact-strategies {:start (notebook.strategy.interact/add-templates)}
  
 
   ;:sma-strategy-forex {:start (ta.env.dsl.barstrategy/add-bar-strategies (clip/ref :live)

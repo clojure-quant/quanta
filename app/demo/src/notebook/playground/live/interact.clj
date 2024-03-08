@@ -5,6 +5,8 @@
 
 (get-options :crypto-watch)
 
+(get-options :juan-fx)
+
 ; subscribe
 (def subscription-id 
   (sub/subscribe-live 

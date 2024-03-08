@@ -8,6 +8,8 @@
           :trailing-n 300
           :calendar [:crypto :m]
           :asset "BTCUSDT"
+          :dummy "just some text"
+          :super-fast? true
           :feed :bybit
           :import :bybit
           :algo 'notebook.strategy.live.crypto/nil-algo}
@@ -17,8 +19,14 @@
               :spec ["BTCUSDT" "ETHUSDT"]}
              {:path :trailing-n
               :name "trailing-n"
-              :spec [100 300 500 1000 2000 3000 5000 10000]}]})
-
+              :spec [100 300 500 1000 2000 3000 5000 10000]}
+             {:path :dummy
+              :name "dummy-text"
+              :spec :string}
+             {:path :super-fast?
+              :name "SuperSuperFast?"
+              :spec :bool}
+             ]})
 
 (def sentiment-spread
   {:id :sentiment-spread
@@ -43,7 +51,7 @@
               :spec ["SPY" "QQQ" "IWM"]}]})
 
 
-(def juan
+(def juan-fx
   {:id :juan-fx
    :algo  [:day {:type :trailing-bar
                  :algo   ['juan.algo.intraday/ensure-date-unique
@@ -75,7 +83,30 @@
                     :pivot-max-diff 0.001
                     :algo 'juan.algo.combined/daily-intraday-combined}]
    :viz 'juan.notebook.viz/calc-viz-combined-highchart
-   :key :signal})
+   :key :signal
+   :options [{:path [1 :asset]
+              :name "asset"
+              :spec ["EUR/USD" "USD/CHF" "GBP/USD" "USD/SEK"
+                     "USD/NOK" "USD/CAD" "USD/JPY" "AUD/USD" "NZD/USD" ]}
+             {:path [1 :atr-n]
+              :name "ATR#"
+              :spec [10 20 30]}
+             {:path [1 :percentile]
+              :name "Percentile"
+              :spec [10 20 30 40 50 60 70 80 90]}
+             {:path [1 :step]
+              :name "Step"
+              :spec [0.001 0.0001 0.00004]}
+             {:path [3 :max-open-close-over-low-high]
+              :name "co/lh max"
+              :spec [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]}
+              {:path [3 :pivot-max-diff]
+              :name "pivot-max-diff"
+              :spec [0.1 0.01 0.001 0.0001 0.00001]}
+             {:path [3 :asset]
+              :name "asset"
+              :spec ["EUR/USD" "USD/CHF" "GBP/USD" "USD/SEK"
+                     "USD/NOK" "USD/CAD" "USD/JPY" "AUD/USD" "NZD/USD"]}]})  
 
 (def sma-crypto
   {:id :sma-eth
@@ -113,16 +144,17 @@
    :viz 'notebook.strategy.asset-compare.viz/calc-viz-vega})
 
 
-(defn add-strategies []
+(defn add-templates []
   (doall
    (map template/add [crypto-watch
                   sentiment-spread
-                  juan
+                  juan-fx
                   sma-crypto
                   asset-compare])))
 
+
 (comment
-  (add-strategies)
+  (add-templates)
 
  ; 
   )
