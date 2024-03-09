@@ -31,6 +31,8 @@
         _ (assert pivot-max-diff "intraday-combined needs :max-diff for pivot calculation")
         daily-atr (link-bars2 intraday-ds daily-ds :atr 0.0)
         daily-close (link-bars2 intraday-ds daily-ds :close 0.0)
+        daily-spike-upper (link-bars2 intraday-ds daily-ds :spike-upper  0.0)
+        daily-spike-lower (link-bars2 intraday-ds daily-ds :spike-lower  0.0)
         daily-pivots (link-bars2 intraday-ds daily-ds :pivots-price nil)
         ;_ (info "calculating pivot nr..")
         daily-pivotnr (link-bars2 intraday-ds daily-ds :ppivotnr 0)
@@ -44,6 +46,8 @@
         ;_ (info "daily-close #: " (count daily-close))
         combined-ds (tc/add-columns intraday-ds {:daily-atr daily-atr
                                                  :daily-close daily-close
+                                                 :daily-spike-upper daily-spike-upper
+                                                 :daily-spike-lower daily-spike-lower
                                                  :daily-pivots daily-pivots
                                                  :daily-pivotnr daily-pivotnr
                                                  ;:daily-date daily-date

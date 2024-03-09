@@ -1,16 +1,26 @@
 (ns juan.algo.daily
   (:require
    [tablecloth.api :as tc]
+   [tech.v3.datatype.functional :as fun]
    [ta.indicator :refer [atr prior]]
    [juan.algo.pivot-price :refer [add-pivots-price]]))
 
 
-(defn add-atr-prior [env {:keys [atr-n]} bar-ds]
+(defn add-atr-prior [env {:keys [atr-n spike-atr-prct-min]
+                          :or {atr-n 10 
+                               spike-atr-prct-min 0.8}} bar-ds]
   (let [atr-vec (atr {:n atr-n} bar-ds)
-        prior-vec (prior {:of :close} bar-ds)]
+        atr-prct-vec (fun/* atr-vec spike-atr-prct-min)
+        prior-vec (prior {:of :close} bar-ds)
+        spike-upper (fun/+ prior-vec atr-prct-vec)
+        spike-lower (fun/- prior-vec atr-prct-vec)
+        ]
     (tc/add-columns bar-ds
                     {:atr atr-vec
-                     :close-1 prior-vec})))
+                     :close-1 prior-vec
+                     :spike-upper spike-upper
+                     :spike-lower spike-lower
+                     })))
 
 
 (defn daily

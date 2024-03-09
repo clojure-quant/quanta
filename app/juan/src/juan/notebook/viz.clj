@@ -46,6 +46,8 @@
    :chart {:box :fl}
    :charts [{:close :candlestick ; :ohlc 
              :daily-close :line
+             :daily-spike-upper :line
+             :daily-spike-lower :line
              ;:doji :flags
              :spike-doji {:type :flags
                           ;:color "blue" 
