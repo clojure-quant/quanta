@@ -58,5 +58,9 @@
   :quote-harvester
   {:exec-fn juan.fix/start-harvesting}
  
-;
+  :duckdb-performance-test
+  {:exec-fn notebook.playground.bardb.performance-test/run-performance-test}
+
+
   }}
+

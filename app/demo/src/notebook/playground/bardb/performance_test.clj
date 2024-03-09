@@ -90,10 +90,12 @@
   (for [year (range start-year (inc end-year))]
     [(str year "-01-01 00:00:00") (str year "-12-31 23:59:00")]))
 
-(defn create-new-db [path {:keys [years assets]} [calendar-kw interval-kw]]
+(defn create-new-db [path {:keys [years assets]} [calendar-kw interval-kw] & [db-state]]
   (let [table-name (str (name calendar-kw) "_" (name interval-kw))
         path (str path"/duckdb-partitioning_"table-name"_"assets"a_"years"y.db")
-        {:keys [db conn new?] :as state} (start-bardb-duck path)
+        {:keys [db conn new?] :as state} (if db-state
+                                           db-state
+                                           (start-bardb-duck path))
         to-year 2023
         from-year (- to-year (dec years))
         year-ranges (generate-year-ranges from-year to-year)]
@@ -105,7 +107,8 @@
                         from
                         to
                         (gen-asset-names (first asset-range) (last asset-range)))))
-    (stop-bardb-duck state)))
+    (if (not db-state)
+      (stop-bardb-duck state))))
 
 (defn create-hive-partition-by-year [conn table-name path]
   (duckdb/run-query! conn
@@ -119,17 +122,23 @@
           TO '"path"' (FORMAT PARQUET, PARTITION_BY (asset));")))
 
 (defn trailing-window-test [db start end]
-  (loop [cur (cal/current-close :crypto :m end)]
-    (if (t/>= cur start)
+  ;(loop [cur (cal/current-close :crypto :m end)]
+  ;  (if (t/>= cur start)
       (let [table-name "crypto_m"
             asset "ASSET_1"
-            dstart (str (t/date cur)
+            ;dstart (str (t/date cur)
+            ;            " "
+            ;            (t/time cur)":00")
+            ;dend dstart
+            dstart (str (t/date start)
                         " "
-                        (t/time cur)":00")
-            dend dstart
+                        (t/time start)":00")
+            dend (str (t/date end)
+                      " "
+                      (t/time end)":00")
             query (str "select * from " table-name
                        " where asset = '" asset "'"
-                       " and date = '" dstart "'"
+                       ;" and date = '" dstart "'"
                        ;" and date >= '" dstart "'"
                        ;" and date <= '" dend "'"
                        " order by date")
@@ -137,7 +146,9 @@
         (println res)
         ;(b/get-bars db {:asset "ASSET_1" :calendar [:crypto :m]} {:start (t/instant "2023-01-01T00:00:00Z")
         ;                                                          :end (t/instant "2023-01-01T00:10:00Z")})
-        (recur (cal/prior-close :crypto :m cur))))))
+        ;(recur (cal/prior-close :crypto :m cur))
+        ))
+;))
 
 
 
@@ -191,19 +202,39 @@
     (doall (map #(eng/set-calendar! engine %) event-seq))
     strategy))
 
-(defn test-duckdb [_]
-  ;(require '[ta.db.bars.duckdb :refer [start-bardb-duck]])
-  ;
-  ;(let [db (start-bardb-duck "~/Desktop/tmp/duckdb-partitioning_crypto_m_1a_100y.db")]
-  ;  (time (backtest-algo-date db spec (t/in (t/date-time "2023-12-31T23:59:00") "America/New_York"))))
+(defn- exists-db? [path]
+  (.exists (java-io/file path)))
 
-  (require '[ta.db.bars.duckdb :refer [start-bardb-duck]])
-  (let [db-name "duckdb-partitioning_crypto_m_1000a_1y.db"
-        db-path "~/Desktop/tmp"
-        hive-path "~/Desktop/tmp/hive"
-        db (start-bardb-duck (str db-path"/"db-name))]
-    (create-hive-partition-by-year (:conn db) "crypto_m" (str hive-path"/"db-name))
-    )
+(defn single-test [{:keys [years assets]}]
+  (println "===========================================================")
+  (println "years: " years "assets: " assets)
+  (println "===========================================================")
+  (let [db-name (str "duckdb-partitioning_crypto_m_"assets"a_"years"y.db")
+        base-dir "/tmp"
+        path (str base-dir"/"db-name)
+        exists? (exists-db? path)
+        db (start-bardb-duck path)
+        trailing-n (* 500000 years)]
+
+    ; create database
+    (if (not exists?)
+      (create-new-db base-dir {:assets assets :years years} [:crypto :m] db))
+
+    ;; Backtest
+    (time (backtest-algo db (assoc spec :trailing-n trailing-n) (t/in (t/date-time "2023-12-31T23:59:00") "America/New_York")))
+    ;(time (backtest-algo-date db (assoc spec :trailing-n trailing-n) (t/in (t/date-time "2023-12-31T23:59:00") "America/New_York")))
+
+    ; simple read all candles from db
+    ;(time (trailing-window-test db
+    ;                            (t/in (t/date-time "1924-01-01T00:00:00") "America/New_York")
+    ;                            (t/in (t/date-time "2023-12-29T23:59:00") "America/New_York")))
+    (stop-bardb-duck db)
+    ))
+
+(defn run-performance-test [_]
+  (single-test {:years 1 :assets 1})
+  (single-test {:years 10 :assets 1})
+  (single-test {:years 100 :assets 1})
   )
 
 (comment
@@ -239,10 +270,10 @@
   ;(b/get-bars db {:asset "ASSET_1" :calendar [:crypto :m]} {:start (t/instant "2023-01-01T00:00:00Z") :end (t/instant "2023-01-01T00:10:00Z")})
 
   ;; Backtest
-  ;(backtest-algo db (assoc spec :trailing-n 500000) (t/in (t/date-time "2023-02-01T12:00:00") "America/New_York"))
-  (time (backtest-algo-date db (assoc spec :trailing-n 500000) (t/in (t/date-time "2023-12-31T23:59:00") "America/New_York")))
+  (time (backtest-algo db (assoc spec :trailing-n 50000000) (t/in (t/date-time "2023-12-31T23:59:00") "America/New_York")))
+  ;(time (backtest-algo-date db (assoc spec :trailing-n 50000000) (t/in (t/date-time "2023-12-31T23:59:00") "America/New_York")))
   ;(time (trailing-window-test db
-  ;                            (t/in (t/date-time "2023-01-01T00:00:00") "America/New_York")
+  ;                            (t/in (t/date-time "1924-01-01T00:00:00") "America/New_York")
   ;                            (t/in (t/date-time "2023-12-29T23:59:00") "America/New_York") ; last trading day in 2023
   ;                            ))
 
@@ -258,12 +289,11 @@
   ;
   ;(trade-signal ds-bars)
 
-
   ;; results
   ; 500k bars x 1 asset 1y = 1.628 | 2.597 sec
   ; 500k bars x 10 asset 1y =  1.5 | 1.7 sec
   ; 500k bars x 1000 asset 1y = 2.0 | 2.3 | 3.2 sec
 
   ; 5mio  bars x 1 asset 10y = 16.71 sec
-  ; 50mio bars x 1 asset 100y= 450.145 sec
+  ; 50mio bars x 1 asset 100y = 274.860 sec
   )
