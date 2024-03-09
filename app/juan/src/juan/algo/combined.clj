@@ -5,7 +5,7 @@
    [tick.core :as t]
    [tablecloth.api :as tc]
    [tech.v3.datatype :as dtype]
-   [ta.calendar.link :refer [link-bars link-bars2]]
+   [ta.calendar.link :refer [link-bars2]]
    [ta.algo.ds :refer [all-positions-agree-ds]]
    [ta.trade.signal2 :refer [signal-keyword->signal-double]]
    [juan.algo.spike :refer [spike-signal]]
@@ -29,10 +29,10 @@
   (info "intraday-combined: daily# " (tc/row-count daily-ds) "intraday# " (tc/row-count intraday-ds))
   (let [pivot-max-diff (:pivot-max-diff spec)
         _ (assert pivot-max-diff "intraday-combined needs :max-diff for pivot calculation")
-        daily-atr (link-bars2 intraday-ds daily-ds :atr 0.0)
-        daily-close (link-bars2 intraday-ds daily-ds :close 0.0)
-        daily-spike-upper (link-bars2 intraday-ds daily-ds :spike-upper  0.0)
-        daily-spike-lower (link-bars2 intraday-ds daily-ds :spike-lower  0.0)
+        daily-atr (link-bars2 intraday-ds daily-ds :atr-band-atr 0.0)
+        daily-atr-mid (link-bars2 intraday-ds daily-ds :atr-band-mid 0.0)
+        daily-atr-upper (link-bars2 intraday-ds daily-ds :atr-band-upper  0.0)
+        daily-atr-lower (link-bars2 intraday-ds daily-ds :atr-band-lower  0.0)
         daily-pivots (link-bars2 intraday-ds daily-ds :pivots-price nil)
         ;_ (info "calculating pivot nr..")
         daily-pivotnr (link-bars2 intraday-ds daily-ds :ppivotnr 0)
@@ -45,14 +45,14 @@
         ;_ (info "daily-close: " daily-close)
         ;_ (info "daily-close #: " (count daily-close))
         combined-ds (tc/add-columns intraday-ds {:daily-atr daily-atr
-                                                 :daily-close daily-close
-                                                 :daily-spike-upper daily-spike-upper
-                                                 :daily-spike-lower daily-spike-lower
+                                                 :daily-atr-mid daily-atr-mid
+                                                 :daily-atr-upper daily-atr-upper
+                                                 :daily-atr-lower daily-atr-lower
                                                  :daily-pivots daily-pivots
                                                  :daily-pivotnr daily-pivotnr
                                                  ;:daily-date daily-date
                                                  })
-        intraday-spike (spike-signal spec combined-ds)
+        intraday-spike (spike-signal combined-ds)
         spike-doji (all-positions-agree-ds [(:doji intraday-ds) intraday-spike])
         ]
     (tc/add-columns combined-ds {:spike intraday-spike

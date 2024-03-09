@@ -81,8 +81,7 @@
 
 (def juan-fx
   {:id :juan-fx
-   :algo  [{:asset "USD/JPY"
-            :spike-atr-prct-min 0.5}
+   :algo  [{:asset "USD/JPY"}
            :day {:type :trailing-bar
                  :algo   ['juan.algo.intraday/ensure-date-unique
                           'juan.algo.daily/daily]
@@ -91,7 +90,10 @@
                  :feed :fx
                  ; daily opts
                  :trailing-n 120
+                 ; atr-band
                  :atr-n 10
+                 :atr-m 0.5
+                 ; price pivots
                  :step 0.0001
                  :percentile 70}
            :minute {:calendar [:forex :m]
@@ -116,17 +118,17 @@
               :name "asset"
               :spec juan-assets/spot-fx-assets}
              {:path [2 :trailing-n]
-              :name "d#"
+              :name "daily#"
               :spec [2 5 10 20 30 50 80 100 120 150]}
              {:path [4 :trailing-n]
               :name "i#"
               :spec [720 1440 2880 5000 10000]}
              {:path [2 :atr-n]
-              :name "dATR#"
-              :spec [5 10 20 30]}
-             {:path [0 :spike-atr-prct-min]
-              :name "deltaATR*"
-              :spec [0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3]}
+              :name "dATRn"
+              :spec [3 5 7 10 20 30 40 50]}
+             {:path [2 :atr-m]
+              :name "dATRm"
+              :spec [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3]}
              {:path [2 :percentile]
               :name "dPercentile"
               :spec [10 20 30 40 50 60 70 80 90]}

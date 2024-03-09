@@ -45,9 +45,9 @@
   {:topic :juan-combined-chart
    :chart {:box :fl}
    :charts [{:close :candlestick ; :ohlc 
-             :daily-close :line
-             :daily-spike-upper :line
-             :daily-spike-lower :line
+             :daily-atr-mid :line
+             :daily-atr-upper :line
+             :daily-atr-lower :line
              ;:doji :flags
              :spike-doji {:type :flags
                           ;:color "blue" 
