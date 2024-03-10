@@ -12,3 +12,8 @@
 
 (def marks-path "../../data/")
 
+
+(defn import-for-exchange [exchange]
+ (cond 
+   (= exchange :crypto) {:import :bybit}
+   :else {:import :kibot}))

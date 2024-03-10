@@ -78,9 +78,11 @@
 
 (defn load-series [asset resolution from to]
   (let [bar-db (clip/get-bar-db)
-        opts {:calendar [(get-asset-exchange asset)
+        exchange (get-asset-exchange asset)
+        opts {:calendar [exchange
                          (dict-tv->interval resolution)]
               :asset asset}
+        opts (merge opts (clip/import-for-exchange exchange))
         window {:start (epoch-second->instant from)
                 :end (epoch-second->instant to)}
         bar-ds (b/get-bars bar-db opts window)]

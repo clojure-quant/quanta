@@ -30,8 +30,7 @@
   ;
   )
 (defn sanitize-exchange [{:keys [category] :as instrument}]
-  (update instrument :exchange (fn [exchange] (if (or (nil? exchange)
-                                                      (blank? exchange))
+  (update instrument :exchange (fn [exchange] (if (nil? exchange)
                                                 (if (= category :crypto)
                                                   :crypto
                                                   :us)
