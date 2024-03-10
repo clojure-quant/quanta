@@ -1,4 +1,4 @@
-(ns ta.warehouse.split-adjust
+(ns ta.db.bars.split-adjust
   (:require
    [tablecloth.api :as tc]
    [tech.v3.datatype.functional :as dfn]))
@@ -12,6 +12,7 @@
        not
        ;(map :name)
        ))
+
 (defn split-adjust [ds-bars]
   (if (has-col ds-bars :close-adj)
     (let [{:keys [open high low close close-adj]} ds-bars

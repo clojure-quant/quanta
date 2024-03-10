@@ -2,7 +2,7 @@
   (:require
    [ta.data.api.kibot-ftp :as kibot-raw]
    [ta.data.api-ds.kibot-ftp :as kibot-ds]
-   [ta.nippy :as nippy]))
+   [ta.db.bars.nippy :as nippy]))
 
 ;; store one daily-ds
 

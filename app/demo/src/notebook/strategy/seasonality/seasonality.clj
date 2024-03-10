@@ -13,7 +13,7 @@
    [ta.warehouse :as wh]
    [ta.calendar.compress :as compress]
    [ta.helper.date-ds :as h]
-   [ta.nippy :as nippy]
+   [ta.db.bars.nippy :as nippy]
    [ta.trade.metrics.nav-trades :refer [portfolio]]
    [demo.math :as math]
    [tech.v3.dataset.print :refer [print-range]]

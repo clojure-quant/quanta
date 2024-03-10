@@ -1,10 +1,10 @@
-(ns ta.warehouse.random
+(ns ta.db.bars.random
   (:require
    [tablecloth.api :as tc]
    [ta.helper.random :refer [random-series]]
    [ta.helper.date-ds :refer [days-ago]]
-   [ta.warehouse :as wh]
-   [ta.warehouse.shuffle :refer [shuffle-bar-series]]))
+   [ta.db.bars.shuffle :refer [shuffle-bar-series]]
+   [ta.db.bars.protocol :as b]))
 
 (defn add-open-high-low-volume [ds]
   (let [c (:close ds)]
@@ -38,20 +38,24 @@
 ;
   )
 
-(defn create-random-datasets [w symbols frequency n]
+(defn create-random-datasets [db calendar n assets]
   (doall
-   (map (fn [s]
+   (map (fn [asset]
           (let [ds (random-dataset n)]
-            (wh/save-symbol w ds frequency s)))
-        symbols)))
+            (b/append-bars db {:asset asset 
+                               :calendar calendar} 
+                           ds)))
+        assets)))
 
-(defn create-shuffled-datasets [w-source w-shuffled symbols frequency]
+(defn create-shuffled-datasets [db-source db-shuffled calendar assets window]
   (doall
-   (map (fn [s]
-          (let [ds (wh/load-symbol w-source frequency s)
+   (map (fn [asset]
+          (let [opts {:asset asset
+                      :calendar calendar}
+                ds (b/get-bars db-source opts window)
                 ds-shuffled (shuffle-bar-series ds)]
-            (wh/save-symbol w-shuffled ds-shuffled frequency s)))
-        symbols)))
+            (b/append-bars db-shuffled opts ds-shuffled)))
+        assets)))
 
 (comment
   (create-random-datasets :random ["BTCUSD" "ETHUSD"] "EOD" 10)

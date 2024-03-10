@@ -1,7 +1,7 @@
 (ns ta.wh-test
   (:require
    [clojure.test :refer :all]
-   [ta.warehouse.random :refer [random-dataset]]
+   [ta.db.bars.random :refer [random-dataset]]
    [ta.warehouse :as wh]
    [ta.config]))
 

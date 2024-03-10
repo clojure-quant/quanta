@@ -1,9 +1,8 @@
 
-(ns ta.warehouse.shuffle
+(ns ta.db.bars.shuffle
   (:require
    [tech.v3.datatype.functional :as fun]
    [tablecloth.api :as tc]
-   ;[fastmath.random :as fr]
    [ta.indicator.returns :refer [forward-shift-col]]))
 
 (defn shuffle-bar-series [ds]

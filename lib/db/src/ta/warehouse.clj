@@ -7,7 +7,7 @@
    ;[taoensso.nippy :as nippy]
    [tablecloth.api :as tc]
    [modular.config :refer [get-in-config] :as config]
-   [ta.warehouse.split-adjust :refer [split-adjust]]))
+   [ta.db.bars.split-adjust :refer [split-adjust]]))
 
 ; timeseries - name
 
@@ -16,18 +16,10 @@
     (str p symbol ".nippy.gz")))
 
 (defn save-ts [wkw ds name]
-  (let [dir (get-in-config [:ta :warehouse :series wkw])
-        _ (do (debug "creating dir: " dir)
-              (create-dirs dir))
-        s (io/gzip-output-stream! (filename-ts wkw name))]
-    (debug "saving series " name " count: " (tc/row-count ds))
-    (io/put-nippy! s ds)))
+  )
 
 (defn load-ts [wkw name]
-  (let [s (io/gzip-input-stream (filename-ts wkw name))
-        ds (io/get-nippy s)]
-    (debug "loaded series " name " count: " (tc/row-count ds))
-    ds))
+  )
 
 ; timeseries - symbol + frequency
 

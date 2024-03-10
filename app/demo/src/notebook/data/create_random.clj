@@ -1,7 +1,7 @@
 (ns demo.data-import.create-random
   (:require
    [tablecloth.api :as tablecloth]
-   [ta.warehouse.random :as r]
+   [ta.db.bars.random :as r]
    [ta.warehouse :as wh]))
 
 (def bybit-symbols ["BTCUSD" "ETHUSD"])
