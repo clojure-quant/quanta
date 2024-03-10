@@ -14,7 +14,7 @@
    [ta.db.asset.symbollist :refer [load-list]]
    [ta.db.bars.aligned :refer [get-bars-aligned-filled]]
    [ta.db.asset.db :as asset-db]
-   [ta.helper.returns :refer [diff]]))
+   [ta.indicator.returns :refer [diff]]))
 
 ; fidelity-select are mutualfunds, which are not supported by kibot. 
 ;(def assets (load-list "fidelity-select"))

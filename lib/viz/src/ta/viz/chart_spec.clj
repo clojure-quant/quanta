@@ -1,4 +1,4 @@
-(ns ta.viz.ds.highchart.chart-spec)
+(ns ta.viz.chart-spec)
 
 (defn chart-pane-spec? [spec]
   true)
@@ -12,8 +12,8 @@
 (defn pane->series [idx pane]
   (map (fn [[col type]]
          (if (map? type)
-           (merge {:column col :axis idx} type)
-           {:column col :type type :axis idx})) pane))
+           (merge {:axis idx :column col } type)
+           {:axis idx :column col :type type })) pane))
 
 (defn chart->series [chart]
   (->> (map-indexed pane->series chart)
@@ -23,7 +23,7 @@
   (let [series (chart->series chart)]
     (map :column series)))
 
-(defn series-input [chart]
+(defn get-series [chart]
   (let [series (chart->series chart)]
     (map (juxt :column :type) series)))
 

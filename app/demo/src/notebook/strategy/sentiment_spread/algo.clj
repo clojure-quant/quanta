@@ -7,7 +7,7 @@
    [tech.v3.datatype.functional :as fun]
    [ta.algo.env.core :refer [get-bars-aligned-filled]]
    [ta.calendar.core :as cal]
-   [ta.helper.returns :refer [diff diff-n]]))
+   [ta.indicator.returns :refer [diff diff-n]]))
 
 (defn calc-asset-change [env {:keys [calendar asset import] :as spec} cal-seq]
   (info "calculating asset " asset "on calendar:" calendar "import: " import)

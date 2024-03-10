@@ -20,7 +20,7 @@
         (do
           (while (and (< @idx idx-max)
                       (t/<= (date-next)  date))
-            (info "move next..")
+            ;(info "move next..")
             (move-next))
           (get-val))))))
 

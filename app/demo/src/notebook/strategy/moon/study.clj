@@ -3,7 +3,7 @@
    [tablecloth.api :as tc]
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as fun]
-   [ta.helper.returns :refer [log-return]]
+   [ta.indicator.returns :refer [log-return]]
    [ta.trade.roundtrip-backtest :refer [signal-ds->roundtrips]]
    [ta.trade.metrics.roundtrip-stats :refer [roundtrip-metrics]]
    [ta.trade.print :as p]

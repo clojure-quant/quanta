@@ -2,24 +2,43 @@
   (:require
    [tick.core :as t]
    [tech.v3.dataset :as tds]
+   [tech.v3.datatype :as dtype]
    [tablecloth.api :as tc]
-   [ta.helper.date :as dt]
+   [ta.indicator.returns :refer [diff]]
    [ta.trade.signal2 :refer [select-signal-is select-signal-has select-signal-contains]]
-   [ta.viz.ds.highchart.chart-spec :refer [series-input]]))
+   [ta.viz.chart-spec :refer [get-series]]))
 
-(defn add-epoch
+(defn- instant->epoch-millisecond [dt]
+  (-> dt
+      (t/long)
+      (* 1000)))
+
+(defn- epoch
   "add epoch column to ds"
-  [ds]
-  (tds/column-map ds :epoch #(* 1000 (dt/->epoch-second %)) [:date]))
+  [bar-ds]
+  (dtype/emap instant->epoch-millisecond :long (:date bar-ds)))
 
-(defn series
+
+
+
+(defn- series-col
   "extracts one column from ds 
    in format needed by highchart"
   [bar-study-epoch-ds col]
   (let [r (tds/mapseq-reader bar-study-epoch-ds)]
     (mapv (juxt :epoch col) r)))
 
-(defn series-ohlc
+(defn- series-col2
+  "extracts 2 columns
+   in format needed by highchart
+   [[1560864600000,49.01,50.07]
+    [1560951000000,49.92,49.97]]"
+  [bar-study-epoch-ds col1 col2]
+  (let [r (tds/mapseq-reader bar-study-epoch-ds)]
+    (mapv (juxt :epoch col1 col2) r)))
+
+
+(defn- series-ohlc
   "extracts ohlc series
    in format needed by highchart
    [[1560864600000,49.01,50.07,48.8,49.61]
@@ -33,7 +52,7 @@
 ; The attribute "title" is the text which is displayed inside the flag on the chart. 
 ; The attribute "text" contains the text which will appear when the mouse hover above the flag.
 
-(defn flag [col row]
+(defn- flag [col row]
   {:x (:epoch row)
    :y (:close row)
    ;:z 1000
@@ -53,30 +72,61 @@
     (->> (map #(flag col %) r)
          (into []))))
 
-(defn convert-series [bar-study-epoch-ds [col type]]
+;; step
+;; steps carry forward the last value; 
+;; therefore we can filter out unchanged values;
+;; this can be a huge compression!
+
+(defn- select-col-steps [bar-epoch-ds col]
+  (let [price (col bar-epoch-ds)
+        chg (diff price)
+        date (:epoch bar-epoch-ds)]
+    (assert price)
+    (assert date)
+    (-> (tc/dataset {:epoch date
+                     col price
+                     :chg chg})
+        (tc/select-rows #(not (= 0.0 (:chg %))))
+        (tc/select-columns [:epoch col]))))
+
+(defn- series-step [bar-epoch-ds col]
+  (-> bar-epoch-ds
+      (select-col-steps col)
+      (series-col col)))
+
+(defn- convert-series [bar-study-epoch-ds [col-or-cols type]]
   (cond
-    (or (= type :ohlc) (= type :candlestick))
+    (or (= type :ohlc) (= type :candlestick) (= type :hollowcandlestick))
     (series-ohlc bar-study-epoch-ds)
 
     (= type :flags)
-    (series-flags bar-study-epoch-ds col)
+    (series-flags bar-study-epoch-ds col-or-cols)
+
+    (= type :step)
+    (series-step bar-study-epoch-ds col-or-cols)
+
+    (= type :range)
+    (let [[col1 col2] col-or-cols]
+      (series-col2 bar-study-epoch-ds col1 col2))
 
     :else
-    (series bar-study-epoch-ds col)))
+    (series-col bar-study-epoch-ds col-or-cols)))
+
 
 (defn convert-data [bar-study-ds chart-spec]
-  (let [bar-study-epoch-ds (add-epoch bar-study-ds)
-        cols (series-input chart-spec)]
-    (map #(convert-series bar-study-epoch-ds %) cols)))
+  (let [bar-study-epoch-ds (tc/add-column bar-study-ds
+                                          :epoch (epoch bar-study-ds))
+        series (get-series chart-spec)]
+    (map #(convert-series bar-study-epoch-ds %) series)))
 
 (comment
 
   (def ds
     (tc/dataset
-     [{:date (t/date-time) :open 1 :high 2 :low 3 :close 11 :volume 5}
-      {:date (t/date-time) :open 2 :high 2 :low 3 :close 12 :volume 5}
-      {:date (t/date-time) :open 3 :high 2 :low 3 :close 13 :volume 5}
-      {:date (t/date-time) :open 4 :high 2 :low 3 :close 14 :volume 5}]))
+     [{:date (t/instant) :open 1 :high 7 :low 3 :close 11 :volume 5}
+      {:date (t/instant) :open 2 :high 7 :low 3 :close 12 :volume 5}
+      {:date (t/instant) :open 3 :high 8 :low 4 :close 13 :volume 5}
+      {:date (t/instant) :open 4 :high 8 :low 4 :close 14 :volume 5}]))
 
   (convert-data ds
                 [{;:bar "x";:trade "flags"
@@ -92,5 +142,29 @@
            ;:color (color :gold)
            ;:plottype (plot-type :columns)
                            }}])
+
+  (convert-data ds
+                [{;:bar "x";:trade "flags"
+                  :close {:type "line"
+                          :linewidth 2
+             ;:color (color :blue-900)
+                          }
+                  :open {:type :flag
+                         :linewidth 4
+             ;:color (color :red)
+                         }}
+                 {:volume {:type "line"
+           ;:color (color :gold)
+           ;:plottype (plot-type :columns)
+                           }}])
+
+  (convert-data ds [{:high {:type :step}}])
+  (convert-data ds [{:close {:type :step}}])
+  (convert-data ds [{:close :point}])
+  (convert-data ds [{[:low :high] {:type :range}}])
+
+
+
+
 ;
   )

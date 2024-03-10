@@ -2,9 +2,9 @@
   (:require
    [tick.core :as t]
    [tablecloth.api :as tc]
-   [ta.viz.ds.highchart.chart-spec :refer [chart-pane-spec? chart-cols]]
+   [ta.viz.chart-spec :refer [chart-pane-spec? chart-cols]]
    [ta.viz.ds.highchart.data :refer [convert-data]]
-   [ta.viz.ds.highchart.highchart-spec :refer [highchart-spec]]))
+   [ta.viz.ds.highchart.spec :refer [highchart-spec]]))
 
 (defn highstock-render-spec
   "returns a render specification {:render-fn :spec :data}. 

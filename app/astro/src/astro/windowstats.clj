@@ -7,7 +7,7 @@
    [tech.v3.datatype.functional :as fun]
    [ta.warehouse :refer [load-symbol]]
    [ta.helper.date-ds :refer [select-rows-interval days-ago days-ago-instant now]]
-   [ta.helper.returns :refer [log-return]]))
+   [ta.indicator.returns :refer [log-return]]))
 
 ;; interval return
 

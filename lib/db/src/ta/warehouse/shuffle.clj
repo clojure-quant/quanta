@@ -4,7 +4,7 @@
    [tech.v3.datatype.functional :as fun]
    [tablecloth.api :as tc]
    ;[fastmath.random :as fr]
-   [ta.helper.returns :refer [forward-shift-col]]))
+   [ta.indicator.returns :refer [forward-shift-col]]))
 
 (defn shuffle-bar-series [ds]
   (let [open  (-> ds :open fun/log)

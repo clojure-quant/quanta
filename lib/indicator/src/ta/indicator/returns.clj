@@ -1,4 +1,4 @@
-(ns ta.helper.returns
+(ns ta.indicator.returns
   (:require
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as fun]))
