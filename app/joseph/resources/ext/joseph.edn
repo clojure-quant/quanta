@@ -12,20 +12,19 @@
  :cljs-routes {"joseph" {"" joseph.page.tradingview/tradingview-trades-page
                          "/nav" joseph.page.nav/page-joseph-nav
                          "/live" joseph.page.live2/page-live-trading}}
-   
-  :sci-cljs-ns [; lib
-                joseph.lib.live-pl
-                joseph.lib.loader
-                joseph.lib.quote-table
-                joseph.lib.select
-                joseph.lib.trade-filter
-                joseph.lib.viz-filter
+
+ :sci-cljs-ns [; lib
+               joseph.lib.live-pl
+               joseph.lib.loader
+               joseph.lib.quote-table
+               joseph.lib.select
+               joseph.lib.trade-filter
+               joseph.lib.viz-filter
                 ; root
-                joseph.upload
+               joseph.upload
                 ; page
-                joseph.page.live
-                joseph.page.live2
-                joseph.page.nav
-                joseph.page.tradingview]
- }
+               joseph.page.live
+               joseph.page.live2
+               joseph.page.nav
+               joseph.page.tradingview]}
 

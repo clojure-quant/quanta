@@ -40,7 +40,7 @@
                     :run demo.env.task/run}
         :jvm-opts ["-Xmx4G"] ;; or more
         }
- 
+
   :docs ; RUN SERVICES (keep running)
   {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.657"} ;0.4.655
                 org.pinkgorilla/modular {:mvn/version "0.0.40"}
@@ -51,16 +51,25 @@
    :exec-fn modular.system/start!
    :exec-args {:profile "jetty"
                :services "services-docs.edn" ; see demo/src/services-docs.edn
-               :config  ["webly/config.edn" "goldly/config.edn" 
+               :config  ["webly/config.edn" "goldly/config.edn"
                          ;"goldly/docs-config.edn"
                          "ta-config.edn"]}}
 
   :quote-harvester
   {:exec-fn juan.fix/start-harvesting}
- 
+
   :duckdb-performance-test
   {:exec-fn notebook.playground.bardb.performance-test/run-performance-test}
 
+  :extension-test
+  {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.657"} ;0.4.655
+                org.pinkgorilla/modular {:mvn/version "0.0.40"}
+                com.fzakaria/slf4j-timbre {:mvn/version "0.4.0"}
+                io.github.pink-gorilla/extension {:git/url "https://github.com/pink-gorilla/extension.git"
+                                                  :sha "8363595f71473cefe7596164db32c8dfb24ae262"}}
+   :exec-fn demo.extension/test-discovery}
 
+
+;  
   }}
 
