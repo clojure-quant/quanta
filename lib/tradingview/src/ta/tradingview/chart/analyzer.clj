@@ -2,7 +2,7 @@
   (:require
    [clojure.pprint :refer [print-table]]
    [differ.core :as differ]
-   [ta.tradingview.db-ts :refer [save-chart chart-list load-chart]]
+   [ta.tradingview.db.chart :refer [save-chart chart-list load-chart]]
    [ta.tradingview.chart.template :refer [save-template]]))
 
 ;; extract

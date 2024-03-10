@@ -1,12 +1,10 @@
-(ns ta.tradingview.handler-storage
+(ns ta.tradingview.handler.storage
   (:require
    [clojure.walk]
    [taoensso.timbre :refer [trace debug info warnf error]]
-   [schema.core :as s]
+   ;[schema.core :as s]
    [ring.util.response :as res]
-   [ring.middleware.multipart-params :refer [wrap-multipart-params]]
-   [modular.webserver.middleware.api :refer [wrap-api-handler]]
-   [ta.tradingview.db-ts :refer [save-chart-boxed delete-chart load-chart-boxed chart-list now-epoch]]))
+   [ta.tradingview.db.chart :refer [save-chart-boxed delete-chart load-chart-boxed chart-list now-epoch]]))
 
 ;; chart handler
 
@@ -50,10 +48,7 @@
         (res/response {:status "ok" :data chart-list})
         (res/response {:status "error" :error "chart-list for user failed."})))))
 
-(def wrapped-save-chart-handler (wrap-multipart-params (wrap-api-handler save-chart-handler)))
-(def wrapped-modify-chart-handler (wrap-multipart-params (wrap-api-handler modify-chart-handler)))
-(def wrapped-delete-chart-handler (wrap-api-handler delete-chart-handler))
-(def wrapped-load-chart-handler (wrap-api-handler load-chart-handler))
+
 
 (comment
   {"status" "ok"
@@ -129,7 +124,3 @@
     (spit "/tmp/template.edn" (pr-str multipart-params))
     (res/response {:status "ok"
                    :id id})))
-
-(def wrapped-load-template-handler (wrap-api-handler load-template-handler))
-(def wrapped-save-template-handler (wrap-multipart-params (wrap-api-handler save-template-handler)))
-

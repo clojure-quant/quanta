@@ -1,4 +1,4 @@
-(ns notebook.playground.asset-db
+(ns notebook.playground.asset.asset-db
   (:require
    [ta.db.asset.db :as db]
    [clojure.pprint :refer [print-table]]))
@@ -15,7 +15,7 @@
 (db/search "B" "" "")
 
 (db/instrument-details "BTCUSD")
-(db/instrument-details "EURUSD")
+(db/instrument-details "EUR/USD")
 (db/instrument-name "BTCUSD")
 
 (-> (db/get-instruments)

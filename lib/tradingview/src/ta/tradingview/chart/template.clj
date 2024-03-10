@@ -1,19 +1,19 @@
 (ns ta.tradingview.chart.template
   (:require
    [tick.core :as tick]
-   [modular.config :refer [get-in-config]]
    [modular.persist.protocol :refer [save loadr]]
    [modular.persist.edn] ; side effects
    [ta.helper.date :refer [now-datetime datetime->epoch-second epoch-second->datetime]]
    [ta.tradingview.chart.maker :refer [create-study make-chart]]
    [ta.tradingview.chart.template.trendline :as tl]
    [ta.tradingview.chart.template.pitchfork :as pf]
-   [ta.tradingview.chart.template.gann :as g]))
+   [ta.tradingview.chart.template.gann :as g]
+   [ta.tradingview.db.clip :refer [charts-path template-path marks-path]]))
 
 ; db
 
 (defn filename-template  [name]
-  (str (get-in-config [:ta :tradingview :template-path]) name ".edn"))
+  (str template-path name ".edn"))
 
 (defn save-template
   [name data]

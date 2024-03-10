@@ -73,9 +73,7 @@
                             :seasonal "../../output/db/seasonal/"
                             :juan "../../output/db/juan/"
                             }}
-      :tradingview {:charts-path   "../../output/tradingview-charts/"
-                    :template-path "../resources/tradingview-templates/"
-                    :marks-path "../../data/"}}
+      }
 
 
  :demo {:gann-data-file "../resources/gann.edn"}

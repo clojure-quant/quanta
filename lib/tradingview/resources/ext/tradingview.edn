@@ -1,27 +1,27 @@
 {:name "trateg-tradingview"
  ; runtime
- :api-routes {"tv/" {:get  {"config" ta.tradingview.handler-datasource/wrapped-config-handler 
-                            "time" ta.tradingview.handler-datasource/wrapped-time-handler
-                            "search" ta.tradingview.handler-datasource/wrapped-search-handler 
-                            "symbols" ta.tradingview.handler-datasource/wrapped-symbols-handler
-                            "history" ta.tradingview.handler-datasource/wrapped-history-handler 
-                            "marks" ta.tradingview.handler-datasource/wrapped-marks-handler}
-             "storage/1.1/" {"charts" {:get  ta.tradingview.handler-storage/wrapped-load-chart-handler
-                                       :post  ta.tradingview.handler-storage/wrapped-save-chart-handler
-                                       :put  ta.tradingview.handler-storage/wrapped-modify-chart-handler 
-                                       :delete  ta.tradingview.handler-storage/wrapped-delete-chart-handler}
-                            "study_templates" {:get ta.tradingview.handler-storage/wrapped-load-template-handler
-                                               :post ta.tradingview.handler-storage/wrapped-save-template-handler 
+ :api-routes {"tv/" {:get  {"config" ta.tradingview.handler/wrapped-config-handler 
+                            "time" ta.tradingview.handler/wrapped-time-handler
+                            "search" ta.tradingview.handler/wrapped-search-handler 
+                            "symbols" ta.tradingview.handler/wrapped-symbols-handler
+                            "history" ta.tradingview.handler/wrapped-history-handler 
+                            "marks" ta.tradingview.handler/wrapped-marks-handler}
+             "storage/1.1/" {"charts" {:get  ta.tradingview.handler/wrapped-load-chart-handler
+                                       :post  ta.tradingview.handler/wrapped-save-chart-handler
+                                       :put  ta.tradingview.handler/wrapped-modify-chart-handler 
+                                       :delete  ta.tradingview.handler/wrapped-delete-chart-handler}
+                            "study_templates" {:get ta.tradingview.handler/wrapped-load-template-handler
+                                               :post ta.tradingview.handler/wrapped-save-template-handler 
                                                ; :put ta.tradingview.handler-storage/ 
                                                ; :delete ta.tradingview.handler-storage/
                                                }}}}
  :clj-services {:name "tradingview"
                 :permission #{}
                 :symbols [; tradingview api (via websocket)
-                          ta.tradingview.handler-datasource/get-server-config
-                          ta.tradingview.handler-datasource/symbol-info
-                          ta.tradingview.handler-datasource/symbol-search
-                          ta.tradingview.handler-datasource/server-time]}
+                          ta.tradingview.handler.config/get-server-config
+                          ta.tradingview.handler.asset/symbol-info
+                          ta.tradingview.handler.asset/symbol-search
+                          ta.tradingview.handler.time/server-time]}
 
  :cljs-routes {"algo/tradingview" ta.tradingview.goldly.page.tradingview-algo/tvalgo-page
                "tradingview" ta.tradingview.goldly.page.tradingview-udf/tradingview-page}

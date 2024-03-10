@@ -33,8 +33,8 @@
   (update instrument :exchange (fn [exchange] (if (or (nil? exchange)
                                                       (blank? exchange))
                                                 (if (= category :crypto)
-                                                  "BB"
-                                                  "SG")
+                                                  :crypto
+                                                  :us)
                                                 exchange))))
 
 (comment
@@ -107,7 +107,7 @@
 
    (let [list-full (get-instruments)
          q (if (or (nil? q) (blank? q)) nil (lower-case q))
-         e (if (or (nil? exchange) (blank? exchange)) nil exchange)
+         e (if (nil? exchange)  nil exchange)
          c (if (nil? category) nil category)]
      (info "search q: " q "category: " c " exchange: " e)
      (->> list-full

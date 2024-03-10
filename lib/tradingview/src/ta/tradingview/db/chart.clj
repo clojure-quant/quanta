@@ -1,4 +1,4 @@
-(ns ta.tradingview.db-ts
+(ns ta.tradingview.db.chart
   (:require
    [clojure.set :refer [rename-keys]]
    [clojure.walk]
@@ -11,7 +11,8 @@
    [babashka.fs :refer [create-dirs]]
    [modular.persist.protocol :refer [save loadr]]
    [modular.helper.id :refer [guuid-str]]
-   [modular.config :refer [get-in-config]]))
+   [ta.tradingview.db.clip :refer [charts-path template-path marks-path]]
+   ))
 
 (defn now-epoch []
   (-> (tick/now)
@@ -54,7 +55,7 @@
 ;; chart
 
 (defn filename-chart  [client-id user-id chart-id]
-  (str (get-in-config [:ta :tradingview :charts-path]) "chart_" client-id "_" user-id "_" chart-id ".edn"))
+  (str charts-path "chart_" client-id "_" user-id "_" chart-id ".edn"))
 
 (defn save-chart
   [client-id user-id chart-id data]
@@ -63,12 +64,12 @@
                     :id (if (string? chart-id)  (Integer/parseInt chart-id) chart-id)
                     :client (if (string? client-id)  (Integer/parseInt client-id) client-id)
                     :user (if (string? user-id)  (Integer/parseInt user-id) user-id))]
-    (create-dirs (get-in-config [:ta :tradingview :charts-path]))
+    (create-dirs charts-path)
     (save :edn (filename-chart client-id user-id chart-id) data)
     (info "saved chart id: " chart-id)))
 
 (defn filename-chart-unboxed  [client-id user-id chart-id]
-  (str (get-in-config [:ta :tradingview :charts-path]) "boxed_chart_" client-id "_" user-id "_" chart-id ".edn"))
+  (str charts-path "boxed_chart_" client-id "_" user-id "_" chart-id ".edn"))
 
 (def debug? false)
 
@@ -142,7 +143,7 @@
   (let [client-id (if (string? client-id)  (Integer/parseInt client-id) client-id)
         user-id (if (string? user-id)  (Integer/parseInt user-id) user-id)]
     (info "chart list for: client: " client-id " user: " user-id)
-    (->> (explore-dir (get-in-config [:ta :tradingview :charts-path]))
+    (->> (explore-dir charts-path)
          (filter (user-files "chart" client-id user-id))
          (map chart-summary)
          (into []))))
