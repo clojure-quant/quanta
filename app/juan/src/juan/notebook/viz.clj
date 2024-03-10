@@ -48,7 +48,8 @@
              :daily-atr-mid :line
              :daily-atr-upper :line
              :daily-atr-lower :line
-             [:daily-atr-lower :daily-atr-upper] :range
+             [:daily-atr-lower :daily-atr-upper] {:type :range 
+                                                  :color "red"}
              ;:doji :flags
              :spike-doji {:type :flags
                           ;:color "blue" 

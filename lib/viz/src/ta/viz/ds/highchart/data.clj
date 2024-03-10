@@ -18,15 +18,20 @@
   [bar-ds]
   (dtype/emap instant->epoch-millisecond :long (:date bar-ds)))
 
-
-
-
 (defn- series-col
   "extracts one column from ds 
    in format needed by highchart"
   [bar-study-epoch-ds col]
   (let [r (tds/mapseq-reader bar-study-epoch-ds)]
     (mapv (juxt :epoch col) r)))
+
+; Data points for range series can be defined either 
+; as objects ({ x: 0, low: 1, high: 9 }) or 
+; as arrays ([0, 1, 9]). 
+; In either case, the x value can be skipped.
+; Demonstrating an arearange chart with a low and high value per point. 
+; Area range charts are commonly used to visualize a range that changes over time.
+
 
 (defn- series-col2
   "extracts 2 columns
