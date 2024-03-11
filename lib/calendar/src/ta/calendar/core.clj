@@ -159,7 +159,8 @@
       calendar-seq->range)
 
 
-
+  (trailing-range [:us :d] 2)
+  (trailing-range [:us :m] 10 (t/in (t/date-time "2023-02-01T12:00:00") "America/New_York"))
 
 
 
