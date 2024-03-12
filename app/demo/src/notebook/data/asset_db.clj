@@ -1,22 +1,30 @@
-(ns demo.asset-db
+(ns notebook.data.asset-db
   (:require
    [ta.db.asset.db :as db]
    [ta.db.asset.symbollist :refer [load-lists-full]]
    [ta.import.provider.kibot-http.assets :as kibot-http]))
 
 (def asset-lists
-  ["crypto"
-   "fidelity-select"
+  [;crypto
+   "crypto"
+   "bybit" ; auto-generated from bybit
+   ; currency
+   "currency-spot"
+   ; futures
+   "futures-kibot"
+   ; bonds
    "bonds"
+   ; mutualfunds
+   "fidelity-select"
+   ; stocks/etf
    "commodity-industry"
    "commodity-sector"
-   "currency-spot"
    "equity-region"
    "equity-region-country"
    "equity-sector-industry"
    "equity-style"
    "test"
-   "futures-kibot"])
+   ])
 
 (def asset-list-directory "../resources/symbollist/")
 

@@ -1,4 +1,4 @@
-(ns notebook.playground.asset.asset-db
+(ns notebook.data.asset-db-interact
   (:require
    [ta.db.asset.db :as db]
    [clojure.pprint :refer [print-table]]))

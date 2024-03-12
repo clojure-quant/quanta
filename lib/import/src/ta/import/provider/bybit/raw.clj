@@ -65,12 +65,21 @@
                                     :ret-code (:retCode result)
                                     :query-params query-params}))))
 
+(defn get-assets-spot []
+  (->> (http-get-json "https://api.bybit.com/v5/market/instruments-info"
+                      {:category "spot"})
+       :result
+       :list
+       (map :symbol)))
+
 (comment
+
+  (get-assets-spot)
 
   (require '[tick.core :as t])
   (def start-date-daily (t/instant "2018-11-01T00:00:00Z"))
 
-  (t/instant 1669852800000)   
+  (t/instant 1669852800000)
   (t/instant 1693180800000)
   (t/instant 1709673240000)
 
@@ -78,7 +87,7 @@
   ;; => java.time.Instant
   (-> (t/inst) type)
   ;; => java.util.Date    WE DO NOT WANT THIS ONE!
-  
+
   (-> (get-history-request
        {:symbol "BTCUSD"
         :start 1669852800000
@@ -93,7 +102,7 @@
         :interval "1"
         :limit 3})
       count)
-  
+
   ; first row is the LAST date.
   ; last row is the FIRST date
   ; if result is more than limit, then it will return LAST values first.

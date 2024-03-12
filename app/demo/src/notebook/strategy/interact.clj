@@ -1,7 +1,12 @@
 (ns notebook.strategy.interact
   (:require
    [ta.interact.template :as template]
+   [ta.db.asset.db :as db]
    [juan.asset-pairs :as juan-assets]))
+
+(defn all-cryptos []
+  (->> (db/symbols-available :crypto)
+       (into [])))
 
 (def watch-crypto
   {:id :watch-crypto
@@ -16,9 +21,12 @@
           :dummy "just some text"
           :super-super-fast? true}
    :viz 'notebook.strategy.live.crypto/calc-viz-highchart
-   :options [{:path :asset
+   :options (fn []
+              [{:path :asset
               :name "Asset"
-              :spec ["BTCUSDT" "ETHUSDT"]}
+              :spec (all-cryptos) ; ["BTCUSDT" "ETHUSDT"]
+                
+                }
              {:path :trailing-n
               :name "trailing-n"
               :spec [100 300 500 1000 2000 3000 5000 10000]}
@@ -27,7 +35,7 @@
               :spec :string}
              {:path :super-super-fast?
               :name "SuperSuperFast?"
-              :spec :bool}]})
+              :spec :bool}])})
 
 
 (def sma-crypto
