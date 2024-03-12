@@ -158,14 +158,43 @@
           :trailing-n 1000}
    :viz 'notebook.strategy.asset-compare.viz/calc-viz-vega})
 
+(def reversal-and-breakout
+  {:id :reversal-and-breakout
+   :algo {:type :trailing-bar
+          :calendar [:crypto :m]
+          :asset "BTCUSDT"
+          :trailing-n 1000
+          :import :bybit
+          :feed :bybit
+          :len 20
+          :vlen 20
+          :threshold 2
+          :algo 'notebook.strategy.reversal-and-breakout.algo/rb-algo}
+   :viz 'notebook.strategy.reversal-and-breakout.viz/calc-viz-test
+   :options [{:path :asset
+              :name "Asset"
+              :spec ["BTCUSDT" "ETHUSDT"]}
+             {:path :trailing-n
+              :name "trailing-n"
+              :spec [100 300 500 1000 2000 3000 5000 10000]}
+             {:path :len
+              :name "Length"
+              :spec [10 15 20 25 30]}
+             {:path :vlen
+              :name "V-Length"
+              :spec [10 15 20 25 30]}
+             {:path :threshold
+              :name "Threshold"
+              :spec [0.1 0.5 1.0 1.5 2.0 2.5 3.0 5.0]}]})
 
 (defn add-templates []
   (doall
-   (map template/add [watch-crypto
-                      sma-crypto
-                      sentiment-spread
-                      asset-compare
-                      juan-fx])))
+    (map template/add [watch-crypto
+                       sma-crypto
+                       sentiment-spread
+                       asset-compare
+                       juan-fx
+                       reversal-and-breakout])))
 
 
 (comment
