@@ -44,9 +44,12 @@
     {:width 500
      :height 500}
     [:path {:d "M 200 200" :stroke "green" :stroke-width 5}]
-    [:circle {:cx "250" :cy "250" :r 200 :fill "yellow"}]
-    [:circle {:cx "250" :cy "250" :r 150 :fill "white"}]
-    [:circle {:cx "250" :cy "250" :r 20 :fill "blue"}]
+    [:circle {:cx "250" :cy "250" :r 200 :fill "yellow"
+              :stroke "black" :stroke-width 2}] ;outer sign
+    [:circle {:cx "250" :cy "250" :r 150 :fill "white"
+              :stroke "black" :stroke-width 2}] ; inner sign
+    [:circle {:cx "250" :cy "250" :r 20 :fill "blue"
+              :stroke "black" :stroke-width 2}] ; earth
     #_[:rect {:x 250 :y 400 :width 10 :height 50 :fill "blue"}]
     #_[:rect {:x 250 :y 400 :width 10 :height 50 :fill "blue"
             :transform "rotate(90,250,250)"}]
