@@ -13,6 +13,7 @@
 ;; https://eodhd.com
 ;; https://eodhd.com/financial-apis/api-for-historical-data-and-volumes/
 ;; https://eodhd.com/financial-apis/exchanges-api-list-of-tickers-and-trading-hours/
+;; https://eodhd.com/financial-apis/bulk-api-eod-splits-dividends/
 ;; nice api and entire-market download option.
 ;; 15 min delayed stock prices entire market. Us stocks + fx in realtime.
 ;; With End-of-Day data API, we have data for more than 150 000 tickers all around the 
