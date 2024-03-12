@@ -5,18 +5,25 @@
 (defn line [t0 p0 t1 p1]
   [:line {:color "blue"} [t0 p0] [t1 p1]])
 
-(defn degree-marker [d w]
-  [:rect {:x 250 :y 400 :width w :height 50 :fill "blue"
+(defn angle-marker [d w h]
+  [:rect {:x 250 :y 400 :width w :height h :fill "blue"
           :transform (str "rotate(" d ",250,250)")}])
+
+(defn sign-marker [d]
+  (angle-marker d 4 50))
+
+(defn scale-marker [d]
+  (angle-marker d 2 10))
+
 
 (defn degrees-marker []
   (into [:g {:stroke "green"}]
-        (map #(degree-marker % 2)
-             (range 360))))
+        (map #(scale-marker (* 10 %))
+             (range 36))))
 
 (defn zodiac-marker []
   (into [:g {:stroke "green"}]
-        (map #(degree-marker (* 30 %) 10)
+        (map #(sign-marker (* 30 %))
              (range 12))))
 
 (defn planet-marker [d]
@@ -39,11 +46,10 @@
     [:path {:d "M 200 200" :stroke "green" :stroke-width 5}]
     [:circle {:cx "250" :cy "250" :r 200 :fill "yellow"}]
     [:circle {:cx "250" :cy "250" :r 150 :fill "white"}]
-    [:rect {:x 250 :y 400 :width 10 :height 50 :fill "blue"}]
-    [:rect {:x 250 :y 400 :width 10 :height 50 :fill "blue"
+    [:circle {:cx "250" :cy "250" :r 20 :fill "blue"}]
+    #_[:rect {:x 250 :y 400 :width 10 :height 50 :fill "blue"}]
+    #_[:rect {:x 250 :y 400 :width 10 :height 50 :fill "blue"
             :transform "rotate(90,250,250)"}]
-    (degree-marker 180 10)
-    (degree-marker 270 5)
     (degrees-marker)
     (zodiac-marker)
     ;(planet-marker 5)
