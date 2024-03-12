@@ -1,4 +1,4 @@
-(ns notebook.playground.import.core
+(ns notebook.data.import.core
   (:require
    [tick.core :as t]
    [ta.db.bars.protocol :as b]
@@ -58,3 +58,19 @@ dt
             {:start (t/instant "2019-12-01T00:00:00Z")
              :end (t/instant "2020-02-01T00:00:00Z")})
 
+; eodhd
+
+(b/get-bars im
+            {:asset "AEE.AU"
+             :calendar [:us :d]
+             :import :eodhd} 
+            ; fails because more than a year ago
+            {:start (-> "2019-12-01T00:00:00Z" t/instant t/zoned-date-time)
+             :end (-> "2020-02-01T00:00:00Z" t/instant t/zoned-date-time)})
+
+(b/get-bars im
+            {:asset "AEE.AU"
+             :calendar [:us :d]
+             :import :eodhd}
+            {:start (-> "2023-05-01T00:00:00Z" t/instant t/zoned-date-time)
+             :end (-> "2024-03-12T00:00:00Z" t/instant t/zoned-date-time)})

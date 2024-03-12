@@ -7,7 +7,7 @@
   :timbre {:start (modular.log/timbre-config!
                    (:timbre/clj (deref (clip/ref :config))))}
 
-  :asset-db {:start (notebook.data.asset-db/add-assets)}
+  :asset-db {:start (notebook.data.asset.db/add-assets)}
 
 ; goldly service returns {:ns-clj :webly           ; this are used to start clj-require and webly
   ;                         :ws-watch :cljs-watch}   ; this is used when stopping goldly

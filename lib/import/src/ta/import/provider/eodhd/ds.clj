@@ -40,14 +40,20 @@
       ;(tc/select-columns [:date :open :high :low :close :volume])
       ))
 
+(defn error? [body]
+  (-> body first :warning))
+
 (defn get-bars-eodhd [api-token {:keys [asset calendar] :as opts} {:keys [start end] :as window}]
   (warn "get-bars: " opts window)
   (let [start-str (fmt-yyyymmdd start)
         end-str (fmt-yyyymmdd end)
-        r (eodhd/get-bars api-token asset start-str end-str)
-        ds (eodhd-result->dataset r)]
+        r (eodhd/get-bars api-token asset start-str end-str)]
     (warn "r: " r)
-    ds))
+    (if-let [e (error? r)]
+      (nom/fail ::eodhd-get-history {:message e
+                                     :opts opts
+                                     :window window})
+      (eodhd-result->dataset r))))
 
 (defrecord import-eodhd [api-token]
   barsource
@@ -60,6 +66,9 @@
 (comment
   (fmt-yyyymmdd (t/zoned-date-time))
   (fmt-yyyymmdd (t/instant))
+
+  (error? [{:warning "Data is limited by one year as you have free subscription "}])
+
 
   (require '[ta.import.provider.eodhd.raw :refer [d]])
   d

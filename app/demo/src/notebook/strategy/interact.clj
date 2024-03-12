@@ -198,6 +198,29 @@
               :spec ["BTCUSDT" "ETHUSDT"]}
             ]})
 
+(def eodhd-eod
+  {:id :eodhd-eod
+   :algo {:type :trailing-bar
+          :algo 'notebook.strategy.sma-crossover.algo/sma-crossover-algo
+          :calendar [:us :d]
+          :asset ""
+          :import :eodhd
+          :trailing-n 400
+          :sma-length-st 20
+          :sma-length-lt 200}
+   :viz 'notebook.strategy.sma-crossover.viz/calc-viz-sma
+   :options [{:path :asset
+              :name "Asset"
+              :spec :string}
+             {:path :trailing-n
+              :name "trailing-n"
+              :spec [200 400 600 800 1000 2000 3000 5000 10000]}
+             {:path :sma-length-st
+              :name "sma-st"
+              :spec [10 20 50 100]}
+             {:path :sma-length-lt
+              :name "sma-lt"
+              :spec [100 200 500 1000]}]})
 
 
 (defn add-templates []
@@ -208,7 +231,9 @@
                        asset-compare
                        juan-fx
                        reversal-and-breakout
-                       astro-chart])))
+                       astro-chart
+                       eodhd-eod
+                       ])))
 
 
 (comment

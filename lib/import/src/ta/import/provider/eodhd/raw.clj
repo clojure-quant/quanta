@@ -9,6 +9,18 @@
    [ta.import.helper :refer [str->float http-get]]
    [throttler.core]))
 
+;; https://eodhd.com/pricing all world EOD 20 USD/month.
+;; https://eodhd.com
+;; https://eodhd.com/financial-apis/api-for-historical-data-and-volumes/
+;; https://eodhd.com/financial-apis/exchanges-api-list-of-tickers-and-trading-hours/
+;; nice api and entire-market download option.
+;; 15 min delayed stock prices entire market. Us stocks + fx in realtime.
+;; With End-of-Day data API, we have data for more than 150 000 tickers all around the 
+;; world. We cover all US stocks, ETFs, and Mutual Funds (more than 51 000 in total) 
+;; from the beginning, for example, the Ford Motors data is from Jun 1972 and so on. 
+;; And non-US stock exchanges we cover mostly from Jan 3, 2000.
+;; FREE SUBSCRIPTIONS HAVE ACCESS TO 1 YEAR OF EOD DATA.
+
 (def base-url "https://eodhd.com/api/")
 
 (defn make-request [api-token endpoint query-params]
@@ -16,11 +28,10 @@
                                      :api_token api-token
                                      :fmt "json")
                  result (http-get (str base-url endpoint) query-params)
+                 _ (warn "eodhd response status: " (:status result))    
+                 _ (warn "eodhd response: "  result)
                  body-json (:body result)
-                 body (cheshire/parse-string body-json true)
-                 ;kibot-error (extract-error body)
-                 ]
-     ;(info "kibot response status: " (:status result))           
+                 body (cheshire/parse-string body-json true)]
                 body))
 
 (defn get-bars [api-token asset start-str end-str]
@@ -50,6 +61,3 @@
   d
 ;  
   )
-
-
-

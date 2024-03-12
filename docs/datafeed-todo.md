@@ -1,16 +1,5 @@
 # datafeed todo
 
-## https://eodhd.com
-- https://eodhd.com/financial-apis/exchanges-api-list-of-tickers-and-trading-hours/
-- nice api and entire-market download option.
-- 15 min delayed stock prices entire market. Us stocks + fx in realtime.
-- With End-of-Day data API, we have data for more than 150 000 tickers all around the 
-  world. We cover all US stocks, ETFs, and Mutual Funds (more than 51 000 in total) 
-  from the beginning, for example, the Ford Motors data is from Jun 1972 and so on. 
-  And non-US stock exchanges we cover mostly from Jan 3, 2000.
-- https://eodhd.com/pricing all world EOD 20 USD/month.
-
-
 ## eoddata
   http://eoddata.com/products/default.aspx
 ; http://eoddata.com/symbols.aspx

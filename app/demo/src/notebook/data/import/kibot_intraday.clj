@@ -1,4 +1,4 @@
-(ns notebook.playground.import.kibot-intraday
+(ns notebook.data.import.kibot-intraday
   (:require
    [tick.core :as t]
    [taoensso.timbre :as timbre :refer [debug info warn error]]

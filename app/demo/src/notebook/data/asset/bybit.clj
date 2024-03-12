@@ -1,4 +1,4 @@
-(ns notebook.data.bybit-assets
+(ns notebook.data.asset.bybit
   (:require
    [ta.import.provider.bybit.raw :refer [get-assets-spot]]))
 

@@ -1,4 +1,4 @@
-(ns notebook.data.eodhd-assets
+(ns notebook.data.asset.eodhd
   (:require
    [ta.import.provider.eodhd.raw :refer [get-exchanges get-exchange-tickers]]))
 

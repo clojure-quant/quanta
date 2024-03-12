@@ -1,4 +1,4 @@
-(ns notebook.playground.bardb.duck
+(ns notebook.data.bardb.duck
   (:require
    [tick.core :as t]
    [tablecloth.api :as tc]
@@ -22,6 +22,13 @@
 
 (b/get-bars db
             {:asset "UUP"
+             :calendar [:us :d]
+             :import :kibot}
+            window)
+
+; test for unknown asset
+(b/get-bars db
+            {:asset "AEE.AU"
              :calendar [:us :d]
              :import :kibot}
             window)

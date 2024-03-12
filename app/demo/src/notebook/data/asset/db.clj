@@ -1,4 +1,4 @@
-(ns notebook.data.asset-db
+(ns notebook.data.asset.db
   (:require
    [ta.db.asset.db :as db]
    [ta.db.asset.symbollist :refer [load-lists-full]]
