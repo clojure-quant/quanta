@@ -13,11 +13,11 @@
 
 (defn text-marker [d t]
   [:text {:x 250 :y 428
-          :transform (str "rotate(" (- d 15) ",250,250)")}
+          :transform (str "rotate(" (+ d -15) ",250,250)")}
    t])
 
 (defn sign-marker [i]
-  (let [d (* 30 i)]
+  (let [d (+ (* -30 i) 90)]
     [:g
      (text-marker d (get-text i))
      (angle-marker d 4 50)]))
