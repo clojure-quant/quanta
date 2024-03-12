@@ -38,8 +38,8 @@
 (defn planet-marker [p d]
   #_[:circle {:cx "150" :cy "250" :r 5 :fill "blue"
               :transform (str "rotate(" d ",250,250)")}]
-  [:text {:x "150" :y "250"
-          :transform (str "rotate(" d ",250,250)")}
+  [:text {:x "120" :y "250"
+          :transform (str "rotate(" (- 0 d) ",250,250)")}
    (get-body-text p)])
 
 (defn planet-all  [planets]
