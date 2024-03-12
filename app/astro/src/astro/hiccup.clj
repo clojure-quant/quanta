@@ -51,6 +51,9 @@
 
 (defn astro-hiccup [{:keys [date planets]}]
   (hiccup-render-spec
+   [:div 
+    [:h1 "date: " (pr-str date)]
+    
    [:svg
     {:width 500
      :height 500}
@@ -70,11 +73,10 @@
     ;(planet-marker 35)
     ;(planet-marker 180)
     (planet-all planets)
-
     ;(line 100 100 1000 1000)
     ;(line 0 1000 1000 1000) 
     ;(line 1000 0 1000 1000)
-    ]))
+    ]]))
 
 
 
