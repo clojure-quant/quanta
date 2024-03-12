@@ -6,39 +6,28 @@
    [clojure.pprint :refer [print-table]]
    [tick.core :as t]))
 
-;Zodiac Symbols	Name Of Zodiac Symbol	Zodiac Sign Unicode
-; ♈︎	Aries (Ram)	U+2648
-; ♉︎	Taurus (Bull)	U+2649
-; ♊︎	Gemini (Twins)	U+264A
-; ♋︎	Cancer (Crab)	U+264B
-; ♌︎	Leo (Lion)	U+264C
-; ♍︎	Virgo (Virgin)	U+264D
-; ♎︎	Libra (Scale)	U+264E
-; ♏︎	Scorpio (Scorpion)	U+264F
-; ♐︎	Sagittarius (Archer)	U+2650
-; ♑︎	Capricorn (Sea-Goat)	U+2651
-; ♒︎	Aquarius (Waterbearer)	U+2652
-; ♓︎	Pisces (Fish)	U+2653
-
-;<p>I will display &spades;<p>
-;<p>I will display &#9824;<p>
-;<p>I will display &#x2660;<p>
-
 ; https://github.com/astrolin/ephemeris/blob/develop/src/clj/ephemeris/points.clj
 
 (def sign-dict
-  {0 {:sign :aries :dstart 0 :sun-time "MAR 21 - APR 19"}
-   1 {:sign :taurus :dstart 30 :sun-time "APR 20 - MAY 20"}
-   2 {:sign :gemini :dstart 60 :sun-time "MAY 21 - JUN 20"}
-   3 {:sign :cancer :dstart 90 :sun-time "JUN 21 - JUL 22"}
-   4 {:sign :leo :dstart 120 :sun-time "JUL 23 - AUG 22"}
-   5 {:sign :virgio :dstart 150 :sun-time "AUG 23 - SEP 22"}
-   6 {:sign :libra :dstart 180 :sun-time "SEP 23 - OCT 22"}
-   7 {:sign :scorpio :dstart 210 :sun-time "OCT 23 - NOV 21"}
-   8 {:sign :sagittarius :dstart 240 :sun-time "NOV 22 - DEC 21"}
-   9 {:sign :capricorn :dstart 270 :sun-time "DEC 22 - JAN 19"}
-   10 {:sign :aquarius :dstart 300 :sun-time "JAN 20 - FEB 18"}
-   11 {:sign :piscies :dstart 330 :sun-time "FEB 19 - MAR 20"}})
+  {0 {:sign :aries :dstart 0 :sun-time "MAR 21 - APR 19" :text "♈︎"} ; 	Aries (Ram)	U+2648
+   1 {:sign :taurus :dstart 30 :sun-time "APR 20 - MAY 20" :text "♉︎"}  ; 	Taurus (Bull)	U+2649
+   2 {:sign :gemini :dstart 60 :sun-time "MAY 21 - JUN 20" :text "♊︎"} ; 	Gemini (Twins)	U+264A
+   3 {:sign :cancer :dstart 90 :sun-time "JUN 21 - JUL 22" :text "♋︎"} ; 	Cancer (Crab)	U+264B
+   4 {:sign :leo :dstart 120 :sun-time "JUL 23 - AUG 22" :text "♌︎"} ; 	Leo (Lion)	U+264C
+   5 {:sign :virgio :dstart 150 :sun-time "AUG 23 - SEP 22" :text "♍︎"} ; 	Virgo (Virgin)	U+264D
+   6 {:sign :libra :dstart 180 :sun-time "SEP 23 - OCT 22" :text "♎︎"} ; 	Libra (Scale)	U+264E
+   7 {:sign :scorpio :dstart 210 :sun-time "OCT 23 - NOV 21" :text "♏︎"} ; Scorpio (Scorpion)	U+264F
+   8 {:sign :sagittarius :dstart 240 :sun-time "NOV 22 - DEC 21" :text "♐︎"} ; 	Sagittarius (Archer)	U+2650
+   9 {:sign :capricorn :dstart 270 :sun-time "DEC 22 - JAN 19" :text "♑︎"}  ;(Sea-Goat)	U+2651
+   10 {:sign :aquarius :dstart 300 :sun-time "JAN 20 - FEB 18" :text  "♒︎"} ; (Waterbearer)	U+2652
+   11 {:sign :piscies :dstart 330 :sun-time "FEB 19 - MAR 20" :text "♓︎"} ; (Fish) U+2653
+   })
+
+(defn get-text [i]
+  (-> (get sign-dict i)
+      :text))
+
+;(get-text 3)
 
 (defn deg->sign [d]
   (let [q (quot d 30.0)

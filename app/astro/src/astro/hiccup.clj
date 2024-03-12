@@ -1,5 +1,6 @@
 (ns astro.hiccup
   (:require
+   [astro :refer [get-text]]
    [ta.viz.ds.hiccup :refer [hiccup-render-spec]]))
 
 (defn line [t0 p0 t1 p1]
@@ -9,8 +10,19 @@
   [:rect {:x 250 :y 400 :width w :height h :fill "blue"
           :transform (str "rotate(" d ",250,250)")}])
 
-(defn sign-marker [d]
-  (angle-marker d 4 50))
+
+(defn text-marker [d t]
+  [:text {:x 250 :y 428
+          :transform (str "rotate(" (- d 15) ",250,250)")}
+   t
+   ])
+
+(defn sign-marker [i]
+  (let [d (* 30 i)]
+    [:g 
+      (text-marker d (get-text i))
+      (angle-marker d 4 50)]
+  ))
 
 (defn scale-marker [d]
   (angle-marker d 2 10))
@@ -23,8 +35,7 @@
 
 (defn zodiac-marker []
   (into [:g {:stroke "green"}]
-        (map #(sign-marker (* 30 %))
-             (range 12))))
+        (map sign-marker (range 12))))
 
 (defn planet-marker [d]
     [:circle {:cx "150" :cy "250" :r 5 :fill "blue"
