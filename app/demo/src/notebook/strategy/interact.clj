@@ -187,6 +187,19 @@
               :name "Threshold"
               :spec [0.1 0.5 1.0 1.5 2.0 2.5 3.0 5.0]}]})
 
+(def astro-chart
+  {:id :astro-chart
+   :algo {:type :time
+          :algo 'astro.algo/astro-algo
+          :calendar [:forex :m]}
+   :viz 'astro.hiccup/astro-hiccup
+   :options [{:path :asset
+              :name "Asset"
+              :spec ["BTCUSDT" "ETHUSDT"]}
+            ]})
+
+
+
 (defn add-templates []
   (doall
     (map template/add [watch-crypto
@@ -194,7 +207,8 @@
                        sentiment-spread
                        asset-compare
                        juan-fx
-                       reversal-and-breakout])))
+                       reversal-and-breakout
+                       astro-chart])))
 
 
 (comment
