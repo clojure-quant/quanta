@@ -1,10 +1,30 @@
 (ns astro
   (:require
    [clojure.data :refer [diff]]
-   [taoensso.timbre :refer [debug info warnf error]]
+   [taoensso.timbre :refer [debug info warn error]]
    [ephemeris.core :refer [calc]]
    [clojure.pprint :refer [print-table]]
    [tick.core :as t]))
+
+
+(def planet-dict 
+  {:Moon  "☾"
+   :Mercury "☿"
+   :Venus "♀︎"
+   :Sun "☉"
+   :Mars "♂︎"
+   :Jupiter "♃"
+   :Saturn "♄"
+   :Neptune "♆"
+   :TrueNode "☊"
+   :Pluto "♇"
+   :Uranus "♅"
+   })
+
+(defn get-body-text [b]
+  ;(warn "body: " b)
+  (or (get planet-dict b) "?"))
+
 
 ; https://github.com/astrolin/ephemeris/blob/develop/src/clj/ephemeris/points.clj
 

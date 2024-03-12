@@ -1,6 +1,6 @@
 (ns astro.hiccup
   (:require
-   [astro :refer [get-text]]
+   [astro :refer [get-text get-body-text]]
    [ta.viz.ds.hiccup :refer [hiccup-render-spec]]))
 
 (defn line [t0 p0 t1 p1]
@@ -14,15 +14,13 @@
 (defn text-marker [d t]
   [:text {:x 250 :y 428
           :transform (str "rotate(" (- d 15) ",250,250)")}
-   t
-   ])
+   t])
 
 (defn sign-marker [i]
   (let [d (* 30 i)]
-    [:g 
-      (text-marker d (get-text i))
-      (angle-marker d 4 50)]
-  ))
+    [:g
+     (text-marker d (get-text i))
+     (angle-marker d 4 50)]))
 
 (defn scale-marker [d]
   (angle-marker d 2 10))
@@ -37,15 +35,17 @@
   (into [:g {:stroke "green"}]
         (map sign-marker (range 12))))
 
-(defn planet-marker [d]
-    [:circle {:cx "150" :cy "250" :r 5 :fill "blue"
-              :transform (str "rotate(" d ",250,250)")
-              }])
+(defn planet-marker [p d]
+  #_[:circle {:cx "150" :cy "250" :r 5 :fill "blue"
+              :transform (str "rotate(" d ",250,250)")}]
+  [:text {:x "150" :y "250"
+          :transform (str "rotate(" d ",250,250)")}
+   (get-body-text p)])
 
 (defn planet-all  [planets]
   (into [:g {:stroke "green"}]
         (map (fn [{:keys [planet degree]}]
-               (planet-marker degree))
+               (planet-marker planet degree))
              planets)))
 
 
@@ -63,7 +63,7 @@
               :stroke "black" :stroke-width 2}] ; earth
     #_[:rect {:x 250 :y 400 :width 10 :height 50 :fill "blue"}]
     #_[:rect {:x 250 :y 400 :width 10 :height 50 :fill "blue"
-            :transform "rotate(90,250,250)"}]
+              :transform "rotate(90,250,250)"}]
     (degrees-marker)
     (zodiac-marker)
     ;(planet-marker 5)
@@ -82,19 +82,19 @@
 (comment
   (astro-hiccup {:date #inst "2024-03-12T14:39:41.432817061-00:00",
                  :planets
-                  '({:planet :TrueNode, :degree 15.705733886619516}
-                    {:planet :Neptune, :degree 357.1749663425126}
-                    {:planet :Saturn, :degree 341.32594054372174}
-                    {:planet :Mars, :degree 321.9272594479421}
-                    {:planet :Mercury, :degree 4.648438122953529}
-                    {:planet :Pluto, :degree 301.50119987157836}
-                    {:planet :Sun, :degree 352.5127626101504}
-                    {:planet :Moon, :degree 23.991116870430357}
-                    {:planet :Venus, :degree 330.867660074795}
-                    {:planet :Uranus, :degree 49.9589078417395}
-                    {:planet :Jupiter, :degree 43.41381669923683})})
+                 '({:planet :TrueNode, :degree 15.705733886619516}
+                   {:planet :Neptune, :degree 357.1749663425126}
+                   {:planet :Saturn, :degree 341.32594054372174}
+                   {:planet :Mars, :degree 321.9272594479421}
+                   {:planet :Mercury, :degree 4.648438122953529}
+                   {:planet :Pluto, :degree 301.50119987157836}
+                   {:planet :Sun, :degree 352.5127626101504}
+                   {:planet :Moon, :degree 23.991116870430357}
+                   {:planet :Venus, :degree 330.867660074795}
+                   {:planet :Uranus, :degree 49.9589078417395}
+                   {:planet :Jupiter, :degree 43.41381669923683})})
   (zodiac-marker)
-  
+
  ; 
   )
 
