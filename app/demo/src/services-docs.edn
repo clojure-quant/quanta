@@ -50,6 +50,8 @@
                                          (:kibot (clip/ref :secrets)))
                             ;:quandl {:start (ta.import.provider.quandl.raw/set-key!
            ;                 (:quandl (clip/ref :secrets)))}
+                            :eodhd (ta.import.provider.eodhd.ds/create-import-eodhd
+                                           (:eodhd (clip/ref :secrets)))
                             :alphavantage (ta.import.provider.alphavantage.ds/create-import-alphavantage
                                            (:alphavantage (clip/ref :secrets)))
                             :bybit (ta.import.provider.bybit.ds/create-import-bybit)})}

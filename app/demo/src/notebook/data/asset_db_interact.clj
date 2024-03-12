@@ -7,6 +7,8 @@
 (db/search "P")
 (db/search "Bitc")
 (db/search "BT")
+(db/search "Aura")
+
 
 (db/search "BT" :crypto)
 (db/search "B" :equity)

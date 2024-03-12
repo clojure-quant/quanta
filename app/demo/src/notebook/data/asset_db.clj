@@ -16,13 +16,15 @@
    "bonds"
    ; mutualfunds
    "fidelity-select"
-   ; stocks/etf
+   ; etf
    "commodity-industry"
    "commodity-sector"
    "equity-region"
    "equity-region-country"
    "equity-sector-industry"
    "equity-style"
+   ; stocks
+   "eodhd-AU"
    "test"
    ])
 
