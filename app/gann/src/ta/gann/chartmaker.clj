@@ -2,7 +2,7 @@
   (:require
    [clojure.pprint]
    [taoensso.timbre :refer [trace debug info warnf error]]
-   [ta.helper.date :refer [parse-date now-datetime epoch-second->datetime ->epoch-second]]
+   [ta.helper.date :refer [->epoch-second]]
    [ta.tradingview.chart.maker :refer [make-chart]]
    [ta.tradingview.chart.template :as t :refer [dt gann]]
    [ta.gann.db :refer [gann-symbols]]

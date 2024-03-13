@@ -1,4 +1,4 @@
-(ns notebook.playground.bardb.bug-duckdb
+(ns notebook.data.bardb.duck-bug
    (:require
    [tick.core :as t]
    [tablecloth.api :as tc]

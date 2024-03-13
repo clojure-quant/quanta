@@ -2,7 +2,7 @@
   (:require
    [taoensso.timbre :refer [trace debug info warnf error]]
    [cljc.java-time.duration :as duration]
-   [tick.core :as tick :refer [>>]]
+   [tick.core :as t :refer [>>]]
    [tick.alpha.interval :as t.i]
    [tablecloth.api :as tc]
    [tech.v3.dataset :as tds]
@@ -11,28 +11,27 @@
    [ta.warehouse :refer [exists-symbol? load-symbol]]
    [ta.data.settings :refer [determine-wh]]
    [ta.gann.box :refer [get-boxes-in-window make-root-box zoom-out zoom-in]]
-   [ta.gann.db :refer [get-root-box]]))
+   [ta.gann.db :refer [get-root-box]]
+   [ta.gann.clip :refer [get-bar-db]]
+   [ta.db.bars.protocol :as b]))
 
 ;; get prices
 
-(defn row-in-range [dt-start dt-end {:keys [date] :as row}]
-  (and (tick/>= date dt-start)
-       (tick/<= date dt-end)))
-
-(defn get-prices [wh symbol dt-start dt-end]
-  (when (exists-symbol? wh "D" symbol)
-    (let [ds (-> (load-symbol wh "D" symbol)
-                 (tc/select-rows
-                  (partial row-in-range dt-start dt-end))
-                 (tc/select-columns [:date :close]))
-          ds-log (tc/add-columns ds {:close-log (dfn/log10 (:close ds))})]
-      {:series (mapv (juxt :date :close-log) (tds/mapseq-reader ds-log))
-       :px-min (apply min (:close-log ds-log))
-       :px-max (apply max (:close-log ds-log))
-       :count (count (:close-log ds-log))})))
+(defn get-prices [opts window]
+  (let [db (get-bar-db)
+        ds (-> (b/get-bars db opts window)
+               (tc/select-columns [:date :close]))
+        ds-log (tc/add-columns ds {:close-log (dfn/log10 (:close ds))})]
+    {:series (mapv (juxt :date :close-log) (tds/mapseq-reader ds-log))
+     :px-min (apply min (:close-log ds-log))
+     :px-max (apply max (:close-log ds-log))
+     :count (count (:close-log ds-log))}))
 
 (comment
-  (-> (get-prices :crypto "BTCUSD" (parse-date "2021-01-01") (parse-date "2021-12-31"))
+  (-> (get-prices {:asset "BTCUSDT"
+                   :calendar [:crypto :d]}
+                  {:start (t/instant "2021-01-01T00:00:00Z") 
+                  :end  (t/instant "2021-12-31T00:00:00Z")})
       (dissoc :series))
 
   (-> (get-prices :stocks "GLD" (parse-date "2021-01-01") (parse-date "2021-12-31"))
