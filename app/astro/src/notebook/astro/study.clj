@@ -1,4 +1,4 @@
-(ns notebook.studies.astro
+(ns notebook.astro.study
   (:require
    [clojure.edn :as edn]
    [tick.core :as t]
