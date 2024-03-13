@@ -57,7 +57,7 @@
 
 
 (defn calc-viz-highchart [bar-ds]
-  (highstock-render-spec nil chart-spec bar-ds))
+  (highstock-render-spec chart-spec bar-ds))
 
 
 (comment

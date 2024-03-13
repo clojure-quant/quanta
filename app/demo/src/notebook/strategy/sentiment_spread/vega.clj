@@ -1,9 +1,4 @@
-(ns notebook.strategy.sentiment-spread.vega
-  (:require
-   [taoensso.timbre :refer [trace debug info warn error]]
-   [tablecloth.api :as tc]
-   [ta.viz.ds.vega :refer [convert-data]]
-   [ta.viz.publish :as p]))
+(ns notebook.strategy.sentiment-spread.vega)
 
 (def w 1600)
 
@@ -50,14 +45,6 @@
               :encoding {:x {:field "date" :type "temporal"}
                          :y {:field "sentiment" :type "quantitative" :color "blue"}}}]})
 
-
-(defn calc-viz-vega [sentiment-ds]
-  (when sentiment-ds
-    (info "calculating sentiment-spread viz for: " (tc/row-count sentiment-ds))
-    {:render-fn 'ta.viz.renderfn.vega/vega-lite
-     :data {:values (convert-data sentiment-ds [:date :sentiment :market])}
-     :spec spec}))
-
-(defn publish-vega [sentiment-ds topic]
-  (p/publish nil {:topic topic}
-             (calc-viz-vega sentiment-ds)))
+(def vega-spec 
+  {:rows [:date :sentiment :market]
+   :spec spec})

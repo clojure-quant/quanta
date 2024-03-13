@@ -12,7 +12,7 @@
    The ui shows a barchart with extra specified columns 
    plotted with a specified style/position, 
    created from the bar-algo-ds"
-  [env spec bar-algo-ds]
+  [spec bar-algo-ds]
   (let [chart-spec (:chart spec)
         pane-spec (:charts spec)]
     (assert (chart-pane-spec? pane-spec) "please comply with chart-pane-spec")
@@ -40,7 +40,7 @@
 
   (-> spec :charts chart-cols)
 
-  (highstock-render-spec nil spec ds)
+  (highstock-render-spec spec ds)
 
 ; 
   )

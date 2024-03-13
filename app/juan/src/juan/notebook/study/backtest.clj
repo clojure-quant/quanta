@@ -155,7 +155,7 @@
                          
  (require '[ta.viz.ds.highchart :refer [highstock-render-spec]])
 
-(highstock-render-spec nil combined-chart-spec 
+(highstock-render-spec combined-chart-spec 
            (-> @(:signal combined)
                (tc/select-rows (range 1000 1100)))            
                        )

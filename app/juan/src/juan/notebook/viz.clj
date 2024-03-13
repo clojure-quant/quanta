@@ -67,5 +67,5 @@
 
 (defn calc-viz-combined-highchart [signal]
   ;(warn "signal: " signal) ; not good for production - Lots of logging!
-  (highstock-render-spec nil combined-chart-spec signal))
+  (highstock-render-spec combined-chart-spec signal))
 

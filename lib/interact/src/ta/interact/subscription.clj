@@ -32,7 +32,7 @@
     (requiring-resolve fun)
     fun))
 
-(defn create-viz-fn [e {:keys [id viz]}]
+(defn create-viz-fn [e {:keys [id viz viz-options]}]
   ;(info "create-viz-fn: " viz)
   (let [viz-fn (get-fn viz)]
     (when viz-fn
@@ -42,7 +42,9 @@
           (try
             (warn "calculating visualization:" id " .. ")
             ;(warn "result: " result)
-            (let [r (viz-fn result)]
+            (let [r (if viz-options
+                      (viz-fn viz-options result)
+                      (viz-fn result))]
               (warn "calculating visualization:" id " DONE!")
               r)
             (catch Exception ex

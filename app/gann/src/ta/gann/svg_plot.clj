@@ -6,8 +6,6 @@
    [tablecloth.api :as tc]
    [tech.v3.dataset :as tds]
    [tech.v3.datatype.functional :as dfn]
-   [ta.helper.date :refer [parse-date now-datetime]]
-   [ta.warehouse :refer [load-symbol]]
    [ta.gann.svg-view :refer [svg-view]]
    ;  [ta.gann.gann :refer [get-boxes-in-window make-root-box zoom-out zoom-in load-root-box]]
    [ta.gann.window :as window]

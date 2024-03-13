@@ -19,11 +19,8 @@
                    :axis {:tickCount 8
                           :labelAlign "left"}}}})
 
-
-(defn calc-viz-vega [bar-algo-ds]
-  (when bar-algo-ds
-    (warn "calculating sentiment-spread viz for: " (tc/row-count bar-algo-ds))
-    {:render-fn 'ta.viz.renderfn.vega/vega-lite
-     :data {:values (convert-data bar-algo-ds [:date :close :asset])}
-     :spec spec}))
+(def vega-spec 
+  {:cols [:date :close :asset]
+   :spec spec
+    })
 

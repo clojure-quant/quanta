@@ -27,18 +27,18 @@
 
 
 
-(defn get-gann-data [{:keys [s wh dt-start dt-end root-box]
+(defn get-gann-data [{:keys [s dt-start dt-end root-box]
                       :or {root-box (get-root-box s)
-                           wh (determine-wh s)
                            dt-start (parse-date "2021-01-01")
                            dt-end (parse-date "2021-12-31")}}]
-  (info "get-gann-data symbol: " s "wh: " wh)
+  (info "get-gann-data symbol: " s )
   ;(error "root box:" root-box)
   (let [dt-start (if (string? dt-start) (parse-date dt-start) dt-start)
         dt-end (if (string? dt-end) (parse-date dt-end) dt-end)
         window {:start dt-start
                 :end dt-end}
-        data (get-prices  window)  ; vec of float
+        data (get-prices {:asset s 
+                          :calendar [:us :d]} window)  ; vec of float
         px-min (:px-min data)  ;(Math/log10 3000) 
         px-max (:px-max data) ; (Math/log10 70000) ; ; 
         close-series (:series data)

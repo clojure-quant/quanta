@@ -124,38 +124,6 @@
 
   (specter/select [:a :b] data)
 
-  (specter/select (specter/multi-path [:a :x] :b) {:a {:x 0}, :b 1, :c 2})
-
-
-
-  (specter/transform (specter/multi-path [:a :x] :b)
-                     specter/NONE
-                     {:a {:x 0}, :b 1, :c 2})
-
-  (0 1)
-
-
-  (setval [ALL
-           (specter/selected? (filterer even?) (view count) (pred>= 2))
-           END]
-          (specter/select
-           (specter/walker path?) data))
-
-
-
-  (specter/transform [specter/ALL (specter/filterer no-path?)]
-                     specter/NONE
-                     data)
-
-
-  (specter/setval [(specter/filterer no-path?)]
-                  specter/NONE
-                  data)
-
-
-  (transform [(srange 1 4) ALL odd?] inc [0 1 2 3 4 5 6 7])
-
-
   (def template (load-template :juan-fx))
 
   (load-with-options :juan-fx {[1 :atr-n] 20})
