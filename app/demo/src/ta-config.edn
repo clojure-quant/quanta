@@ -32,8 +32,6 @@
                     :jetty-ws {"/api/chsk" :ws/chsk-get}}
 
  :ns-clj [demo.goldly.reval ; for techml rendering (no need to require namespace)
-          demo.env.algos
-          demo.env.wh ; default-warehose
           ]
 
  :goldly {:lazy true

@@ -98,14 +98,8 @@
                 {:phase phase
                  :signal signal})
     )
-  
-   (require '[ta.warehouse :as wh]) 
-   (require '[ta.data.settings :refer [determine-wh]])
+    
    (require '[tablecloth.api :as tc])
-
-   (def w (determine-wh "GOOGL"))
-   (def ds-bars (wh/load-symbol :stocks "D" "SPY")) 
-   (tc/info ds-bars)
   
   (require '[ta.trade.signal :refer [trade-signal]])
   (require '[ta.trade.roundtrip-backtest :refer [calc-roundtrips]])   
@@ -116,8 +110,6 @@
       )
 
   (trade-signal ds-bars)
-
-
      
    (am/algo-run "moon" {:symbol "SPY" :frequency "D"})
    (am/algo-run "moon" {:symbol "GOOGL" :frequency "D"})

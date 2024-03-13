@@ -2,11 +2,9 @@
   (:require
    [tablecloth.api :as tc]
    [tech.v3.datatype.functional :as dfn]
-   [ta.helper.date :refer [parse-date]]
    [ta.helper.ago :refer [xf-ago]]
    [ta.trade.signal :refer [running-index-vec]]
    [ta.trade.signal2 :refer [prior-int cross-up cross-down price-when]]
-   [ta.algo.manager :refer [add-algo]]
    [ta.gann.box :refer [find-quadrant get-quadrant]]))
 
 ;; up/down gann diagonal (for base box)
@@ -111,44 +109,4 @@
 
 ;:cross (price-when px sr-cross)
      )))
-
-(add-algo
- {:name "gann"
-  :comment ""
-  :algo algo-gann-signal
-  :charts [{:sr-up-0 "line"
-            :sr-up-1 "line"
-            :sr-up-2 "line"
-            :sr-down-0 {:type "line" :color "red"}
-            :sr-down-1 {:type "line" :color "red"}
-            :sr-down-2 {:type "line" :color "red"}}
-           {:cross-up-close "column"
-            :cross-down-close "column"}
-           {:qp "column"
-                         ;:qt "column"
-            }
-                       ;{:index "column"}
-                       ; {:qt-jump-close "column"}
-           ]
-  :options {:w :crypto
-            :symbol "BTCUSD"
-            :frequency "D"
-            :box {:ap 8000.0
-                  :at 180
-                  :bp 12000.0
-                  :bt 225}
-            :axes-spec [{:sr-up-0 "line"
-                         :sr-up-1 "line"
-                         :sr-up-2 "line"
-                         :sr-down-0 {:type "line" :color "red"}
-                         :sr-down-1 {:type "line" :color "red"}
-                         :sr-down-2 {:type "line" :color "red"}}
-                        {:cross-up-close "column"
-                         :cross-down-close "column"}
-                        {:qp "column"
-                         ;:qt "column"
-                         }
-                       ;{:index "column"}
-                       ; {:qt-jump-close "column"}
-                        ]}})
 

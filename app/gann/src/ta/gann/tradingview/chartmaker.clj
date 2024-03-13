@@ -1,4 +1,4 @@
-(ns ta.gann.chartmaker
+(ns ta.gann.tradingview.chartmaker
   (:require
    [clojure.pprint]
    [taoensso.timbre :refer [trace debug info warnf error]]

@@ -23,19 +23,18 @@
    :viz 'notebook.strategy.live.crypto/calc-viz-highchart
    :options (fn []
               [{:path :asset
-              :name "Asset"
-              :spec (all-cryptos) ; ["BTCUSDT" "ETHUSDT"]
-                
+                :name "Asset"
+                :spec (all-cryptos) ; ["BTCUSDT" "ETHUSDT"]
                 }
-             {:path :trailing-n
-              :name "trailing-n"
-              :spec [100 300 500 1000 2000 3000 5000 10000]}
-             {:path :dummy
-              :name "dummy-text"
-              :spec :string}
-             {:path :super-super-fast?
-              :name "SuperSuperFast?"
-              :spec :bool}])})
+               {:path :trailing-n
+                :name "trailing-n"
+                :spec [100 300 500 1000 2000 3000 5000 10000]}
+               {:path :dummy
+                :name "dummy-text"
+                :spec :string}
+               {:path :super-super-fast?
+                :name "SuperSuperFast?"
+                :spec :bool}])})
 
 
 (def sma-crypto
@@ -195,8 +194,7 @@
    :viz 'astro.hiccup/astro-hiccup
    :options [{:path :asset
               :name "Asset"
-              :spec ["BTCUSDT" "ETHUSDT"]}
-            ]})
+              :spec ["BTCUSDT" "ETHUSDT"]}]})
 
 (def eodhd-eod
   {:id :eodhd-eod
@@ -222,18 +220,56 @@
               :name "sma-lt"
               :spec [100 200 500 1000]}]})
 
+(def gann
+  {:id :gann
+   :algo {:type :trailing-bar
+          :algo 'ta.gann.algo/algo-gann-signal
+          :asset "BTCUSDT"
+          :import :bybit
+          :calendar [:crypto :d]
+          :box {:ap 8000.0
+                :at 180
+                :bp 12000.0
+                :bt 225}
+          :options [{:path :asset
+                     :name "Asset"
+                     :spec :string}
+                    {:path :trailing-n
+                     :name "trailing-n"
+                     :spec [200 400 600 800 1000 2000 3000 5000 10000]}
+                    {:path :sma-length-st
+                     :name "sma-st"
+                     :spec [10 20 50 100]}
+                    {:path :sma-length-lt
+                     :name "sma-lt"
+                     :spec [100 200 500 1000]}]}
+   :viz 'notebook.strategy.sma-crossover.viz/calc-viz-sma
+   :viz-options [{:sr-up-0 "line"
+                  :sr-up-1 "line"
+                  :sr-up-2 "line"
+                  :sr-down-0 {:type "line" :color "red"}
+                  :sr-down-1 {:type "line" :color "red"}
+                  :sr-down-2 {:type "line" :color "red"}}
+                 {:cross-up-close "column"
+                  :cross-down-close "column"}
+                 {:qp "column"
+                  ;:qt "column"
+                  }
+                ;{:index "column"}
+               ; {:qt-jump-close "column"}
+                 ]})
 
 (defn add-templates []
   (doall
-    (map template/add [watch-crypto
-                       sma-crypto
-                       sentiment-spread
-                       asset-compare
-                       juan-fx
-                       reversal-and-breakout
-                       astro-chart
-                       eodhd-eod
-                       ])))
+   (map template/add [watch-crypto
+                      sma-crypto
+                      sentiment-spread
+                      asset-compare
+                      juan-fx
+                      reversal-and-breakout
+                      astro-chart
+                      eodhd-eod
+                      gann])))
 
 
 (comment

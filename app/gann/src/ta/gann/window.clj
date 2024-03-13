@@ -8,8 +8,6 @@
    [tech.v3.dataset :as tds]
    [tech.v3.datatype.functional :as dfn]
    [ta.helper.date :refer [parse-date now-datetime]]
-   [ta.warehouse :refer [exists-symbol? load-symbol]]
-   [ta.data.settings :refer [determine-wh]]
    [ta.gann.box :refer [get-boxes-in-window make-root-box zoom-out zoom-in]]
    [ta.gann.db :refer [get-root-box]]
    [ta.gann.clip :refer [get-bar-db]]
@@ -21,36 +19,13 @@
   (let [db (get-bar-db)
         ds (-> (b/get-bars db opts window)
                (tc/select-columns [:date :close]))
-        ds-log (tc/add-columns ds {:close-log (dfn/log10 (:close ds))})]
-    {:series (mapv (juxt :date :close-log) (tds/mapseq-reader ds-log))
-     :px-min (apply min (:close-log ds-log))
-     :px-max (apply max (:close-log ds-log))
-     :count (count (:close-log ds-log))}))
+        ds (tc/add-columns ds {:close-log (dfn/log10 (:close ds))})]
+    {:series (mapv (juxt :date :close-log) (tds/mapseq-reader ds))
+     :px-min (apply min (:close-log ds))
+     :px-max (apply max (:close-log ds))
+     :count (count (:close-log ds))}))
 
-(comment
-  (-> (get-prices {:asset "BTCUSDT"
-                   :calendar [:crypto :d]}
-                  {:start (t/instant "2021-01-01T00:00:00Z") 
-                  :end  (t/instant "2021-12-31T00:00:00Z")})
-      (dissoc :series))
 
-  (-> (get-prices :stocks "GLD" (parse-date "2021-01-01") (parse-date "2021-12-31"))
-      (dissoc :series))
-
-  (-> (get-boxes-in-window (get-root-box "GLD") (parse-date "2004-01-01") (parse-date "2021-12-31")
-                           (Math/log10 2000) (Math/log10 3000))
-      (clojure.pprint/print-table))
-
-;
-  )
-(comment  ; in case you dont want to load instrument data below:
-
-  (defn get-close-prices-test [symbol dt-start dt-end]
-    [[(parse-date "2021-03-01") (Math/log10 50000)]
-     [(parse-date "2021-07-01") (Math/log10 40000)]
-     [(parse-date "2021-08-01") (Math/log10 60000)]])
- ; 
-  )
 
 (defn get-gann-data [{:keys [s wh dt-start dt-end root-box]
                       :or {root-box (get-root-box s)
@@ -61,7 +36,9 @@
   ;(error "root box:" root-box)
   (let [dt-start (if (string? dt-start) (parse-date dt-start) dt-start)
         dt-end (if (string? dt-end) (parse-date dt-end) dt-end)
-        data (get-prices wh s dt-start dt-end)  ; vec of float
+        window {:start dt-start
+                :end dt-end}
+        data (get-prices  window)  ; vec of float
         px-min (:px-min data)  ;(Math/log10 3000) 
         px-max (:px-max data) ; (Math/log10 70000) ; ; 
         close-series (:series data)
@@ -84,14 +61,26 @@
        ;(map #(dissoc % :dt))
        ))
 
+
 (comment
+  (-> (get-prices {:asset "BTCUSDT"
+                   :import :bybit
+                   :calendar [:crypto :d]}
+                  {:start (t/instant "2021-01-01T00:00:00Z")
+                   :end  (t/instant "2021-12-31T00:00:00Z")})
+      (dissoc :series))
 
-  (load-symbol :crypto "D" "ETHUSD")
-  (exists-symbol? :crypto "D" "BAD")
-  (load-symbol :crypto "D" "BAD") ; throws exception
-  (determine-wh "ETHUSD")
-  (determine-wh "BAD")
 
+  (-> (get-boxes-in-window (get-root-box "GLD") (parse-date "2004-01-01") (parse-date "2021-12-31")
+                           (Math/log10 2000) (Math/log10 3000))
+      (clojure.pprint/print-table))
+
+  (defn get-close-prices-test [symbol dt-start dt-end]
+    [[(parse-date "2021-03-01") (Math/log10 50000)]
+     [(parse-date "2021-07-01") (Math/log10 40000)]
+     [(parse-date "2021-08-01") (Math/log10 60000)]])
+
+  
   (get-root-box "BTCUSD")
   (get-root-box "BAD")
 
