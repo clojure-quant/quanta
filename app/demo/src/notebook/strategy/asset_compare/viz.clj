@@ -1,8 +1,4 @@
-(ns notebook.strategy.asset-compare.viz
-  (:require
-   [taoensso.timbre :refer [trace debug info warn error]]
-   [tablecloth.api :as tc]
-   [ta.viz.ds.vega :refer [convert-data]]))
+(ns notebook.strategy.asset-compare.viz)
 
 (def w 1600)
 
@@ -19,8 +15,7 @@
                    :axis {:tickCount 8
                           :labelAlign "left"}}}})
 
-(def vega-spec 
+(def vega-spec
   {:cols [:date :close :asset]
-   :spec spec
-    })
+   :spec spec})
 

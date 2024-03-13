@@ -24,9 +24,11 @@
 
 
 (defn astro-algo [env opts dt]
-  {:date dt
-   :planets (-> (calc-date dt) 
-                extract-planets)})
+  (if dt
+    {:date dt
+     :planets (-> (calc-date dt)
+                  extract-planets)}
+    {}))
 
 
 (comment
@@ -34,7 +36,7 @@
   (-> (calc-date (t/instant))
       extract-planets)
 
- (astro-algo nil nil (t/instant))
+  (astro-algo nil nil (t/instant))
  ;; => {:date #inst "2024-03-12T14:39:41.432817061-00:00",
  ;;     :planets
  ;;     ({:planet :TrueNode, :degree 15.705733886619516}

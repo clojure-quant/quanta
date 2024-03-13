@@ -52,11 +52,15 @@ subscription-id
 ; check state (developer debugging)
 
 (-> @sub/subscriptions-a keys)
+;; => ()
+
 (-> @sub/results-a keys)
 (-> @sub/visualizations-a keys)
 
 
 ;; watch results..
+(def subscription-id "FOkpkS")
+
 (-> @sub/subscriptions-a (get subscription-id))
 (-> @sub/results-a (get subscription-id))
 (-> @sub/visualizations-a (get subscription-id))

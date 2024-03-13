@@ -53,7 +53,7 @@
   (hiccup-render-spec
    [:div 
     [:h1 "date: " (pr-str date)]
-    
+    (when date
    [:svg
     {:width 500
      :height 500}
@@ -76,7 +76,7 @@
     ;(line 100 100 1000 1000)
     ;(line 0 1000 1000 1000) 
     ;(line 1000 0 1000 1000)
-    ]]))
+    ])]))
 
 
 

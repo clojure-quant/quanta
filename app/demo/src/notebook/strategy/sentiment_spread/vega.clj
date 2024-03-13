@@ -46,5 +46,5 @@
                          :y {:field "sentiment" :type "quantitative" :color "blue"}}}]})
 
 (def vega-spec 
-  {:rows [:date :sentiment :market]
+  {:cols [:date :sentiment :market]
    :spec spec})

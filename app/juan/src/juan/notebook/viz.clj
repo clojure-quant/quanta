@@ -1,6 +1,5 @@
 (ns juan.notebook.viz
   (:require
-    [taoensso.timbre :as log :refer [tracef debug debugf info infof warn error errorf]]
     [ta.viz.ds.highchart :refer [highstock-render-spec]]))
 
 (def table-spec
@@ -42,8 +41,7 @@
              {:path :short}]})
 
 (def combined-chart-spec
-  {:topic :juan-combined-chart
-   :chart {:box :fl}
+  {:chart {:box :fl}
    :charts [{:close :candlestick ; :ohlc 
              :daily-atr-mid :line
              :daily-atr-upper :line
@@ -63,9 +61,4 @@
              :spike-v {:type :column :color "blue"}
              :spike-doji-v {:type :column :color "green"}}
             {:volume :column}]})
-
-
-(defn calc-viz-combined-highchart [signal]
-  ;(warn "signal: " signal) ; not good for production - Lots of logging!
-  (highstock-render-spec combined-chart-spec signal))
 

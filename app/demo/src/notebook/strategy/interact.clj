@@ -3,8 +3,11 @@
    [ta.interact.template :as template]
    [ta.db.asset.db :as db]
    [juan.asset-pairs :as juan-assets]
+   ; vega specs here:
    [notebook.strategy.sentiment-spread.vega]
-   [notebook.strategy.asset-compare.viz]))
+   [notebook.strategy.asset-compare.viz]
+   [juan.notebook.viz]
+   ))
 
 (defn all-cryptos []
   (->> (db/symbols-available :crypto)
@@ -154,7 +157,8 @@
              {:path [4 :max-open-close-over-low-high]
               :name "doji-co/lh max"
               :spec [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]}]
-   :viz 'juan.notebook.viz/calc-viz-combined-highchart
+   :viz 'ta.viz.ds.highchart/highstock-render-spec
+   :viz-options juan.notebook.viz/combined-chart-spec
    :key :signal})
 
 
@@ -210,7 +214,7 @@
   {:id :astro-chart
    :algo {:type :time
           :algo 'astro.algo/astro-algo
-          :calendar [:forex :m]}
+          :calendar [:crypto :m]}
    :options [{:path :asset
               :name "Asset"
               :spec ["BTCUSDT" "ETHUSDT"]}]
