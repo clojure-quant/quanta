@@ -42,7 +42,7 @@
         }
 
   :docs ; RUN SERVICES (keep running)
-  {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.657"} ;0.4.655
+  {:extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.658"} ; 0.4.657
                 org.pinkgorilla/modular {:mvn/version "0.0.40"}
                 com.fzakaria/slf4j-timbre {:mvn/version "0.4.0"}}
    :extra-paths ["target/webly" ; to include the sci-bindings info

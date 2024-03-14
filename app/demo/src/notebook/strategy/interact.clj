@@ -26,19 +26,21 @@
           :dummy "just some text"
           :super-super-fast? true}
    :options (fn []
-              [{:path :asset
+              [{:type :select
+                :path :asset
                 :name "Asset"
                 :spec (all-cryptos) ; ["BTCUSDT" "ETHUSDT"]
                 }
-               {:path :trailing-n
+               {:type :select
+                :path :trailing-n
                 :name "trailing-n"
                 :spec [100 300 500 1000 2000 3000 5000 10000]}
-               {:path :dummy
-                :name "dummy-text"
-                :spec :string}
-               {:path :super-super-fast?
-                :name "SuperSuperFast?"
-                :spec :bool}])
+               {:type :string
+                :path :dummy
+                :name "dummy-text"}
+               {:type :bool
+                :path :super-super-fast?
+                :name "SuperSuperFast?"}])
    :viz 'ta.viz.ds.highchart/highstock-render-spec
    :viz-options {:chart {:box :fl}
                  :charts [{:close :candlestick #_:ohlc}
@@ -56,16 +58,20 @@
           :trailing-n 1000
           :sma-length-st 20
           :sma-length-lt 200}
-   :options [{:path :asset
+   :options [{:type :select
+              :path :asset
               :name "Asset"
               :spec ["BTCUSDT" "ETHUSDT"]}
-             {:path :trailing-n
+             {:type :select
+              :path :trailing-n
               :name "trailing-n"
               :spec [100 300 500 1000 2000 3000 5000 10000]}
-             {:path :sma-length-st
+             {:type :select
+              :path :sma-length-st
               :name "sma-st"
               :spec [10 20 50 100]}
-             {:path :sma-length-lt
+             {:type :select
+              :path :sma-length-lt
               :name "sma-lt"
               :spec [100 200 500 1000]}]
    :viz 'ta.viz.ds.highchart/highstock-render-spec
@@ -93,7 +99,8 @@
                     [:yen-eur-currency "FXE" "FXY"]
            ; 8th spread- VXX-VXZ – due to insufficient historical data.
                     ]}
-   :options [{:path :market
+   :options [{:type :select
+              :path :market
               :name "Market"
               :spec ["SPY" "QQQ" "IWM"]}]
    :viz 'ta.viz.ds.vega/vega-render-spec
@@ -133,28 +140,36 @@
            :signal {:formula [:day :minute]
                     :pivot-max-diff 0.001
                     :algo 'juan.algo.combined/daily-intraday-combined}]
-   :options [{:path [0 :asset]
+   :options [{:type :select
+              :path [0 :asset]
               :name "asset"
               :spec juan-assets/spot-fx-assets}
-             {:path [2 :trailing-n]
+             {:type :select
+              :path [2 :trailing-n]
               :name "daily#"
               :spec [2 5 10 20 30 50 80 100 120 150]}
-             {:path [4 :trailing-n]
+             {:type :select
+              :path [4 :trailing-n]
               :name "i#"
               :spec [720 1440 2880 5000 10000]}
-             {:path [2 :atr-n]
+             {:type :select
+              :path [2 :atr-n]
               :name "dATRn"
               :spec [3 5 7 10 20 30 40 50]}
-             {:path [2 :atr-m]
+             {:type :select
+              :path [2 :atr-m]
               :name "dATRm"
               :spec [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3]}
-             {:path [2 :percentile]
+             {:type :select
+              :path [2 :percentile]
               :name "dPercentile"
               :spec [10 20 30 40 50 60 70 80 90]}
-             {:path [2 :step]
+             {:type :select
+              :path [2 :step]
               :name "dStep"
               :spec [0.001 0.0001 0.00004]}
-             {:path [4 :max-open-close-over-low-high]
+             {:type :select
+              :path [4 :max-open-close-over-low-high]
               :name "doji-co/lh max"
               :spec [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]}]
    :viz 'ta.viz.ds.highchart/highstock-render-spec
@@ -185,19 +200,24 @@
           :vlen 20
           :threshold 2
           :algo 'notebook.strategy.reversal-and-breakout.algo/rb-algo}
-   :options [{:path :asset
+   :options [{:type :select
+              :path :asset
               :name "Asset"
               :spec ["BTCUSDT" "ETHUSDT"]}
-             {:path :trailing-n
+             {:type :select
+              :path :trailing-n
               :name "trailing-n"
               :spec [100 300 500 1000 2000 3000 5000 10000]}
-             {:path :len
+             {:type :select
+              :path :len
               :name "Length"
               :spec [10 15 20 25 30]}
-             {:path :vlen
+             {:type :select
+              :path :vlen
               :name "V-Length"
               :spec [10 15 20 25 30]}
-             {:path :threshold
+             {:type :select
+              :path :threshold
               :name "Threshold"
               :spec [0.1 0.5 1.0 1.5 2.0 2.5 3.0 5.0]}]
    :viz 'ta.viz.ds.highchart/highstock-render-spec
@@ -215,7 +235,8 @@
    :algo {:type :time
           :algo 'astro.algo/astro-algo
           :calendar [:crypto :m]}
-   :options [{:path :asset
+   :options [{:type :select
+              :path :asset
               :name "Asset"
               :spec ["BTCUSDT" "ETHUSDT"]}]
    :viz 'astro.hiccup/astro-hiccup})
@@ -230,16 +251,19 @@
           :trailing-n 400
           :sma-length-st 20
           :sma-length-lt 200}
-   :options [{:path :asset
-              :name "Asset"
-              :spec :string}
-             {:path :trailing-n
+   :options [{:type :asset-picker ; custom DYNAMIC UI!!!
+              :path :asset
+              :name "Asset"}
+             {:type :select
+              :path :trailing-n
               :name "trailing-n"
               :spec [200 400 600 800 1000 2000 3000 5000 10000]}
-             {:path :sma-length-st
+             {:type :select
+              :path :sma-length-st
               :name "sma-st"
               :spec [10 20 50 100]}
-             {:path :sma-length-lt
+             {:type :select
+              :path :sma-length-lt
               :name "sma-lt"
               :spec [100 200 500 1000]}]
    :viz 'ta.viz.ds.highchart/highstock-render-spec
@@ -260,16 +284,19 @@
                 :at 180
                 :bp 12000.0
                 :bt 225}}
-   :options [{:path :asset
-              :name "Asset"
-              :spec :string}
-             {:path :trailing-n
+   :options [{:type :string
+              :path :asset
+              :name "Asset"}
+             {:type :select
+              :path :trailing-n
               :name "trailing-n"
               :spec [200 400 600 800 1000 2000 3000 5000 10000]}
-             {:path :sma-length-st
+             {:type :select
+              :path :sma-length-st
               :name "sma-st"
               :spec [10 20 50 100]}
-             {:path :sma-length-lt
+             {:type :select
+              :path :sma-length-lt
               :name "sma-lt"
               :spec [100 200 500 1000]}]
    :viz 'ta.viz.ds.highchart/highstock-render-spec
