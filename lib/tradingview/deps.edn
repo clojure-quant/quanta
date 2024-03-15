@@ -9,7 +9,6 @@
         babashka/fs {:mvn/version "0.4.19"}
         org.pinkgorilla/modular {:mvn/version "0.0.40"} ; persistence
         org.pinkgorilla/webly {:mvn/version "0.4.640"} ; web handlers
-        ta/trateg {:local/root "../.." :deps/manifest :deps}
         ta/import {:local/root "../import" :deps/manifest :deps}
         ta/db {:local/root "../db" :deps/manifest :deps}}
  :aliases

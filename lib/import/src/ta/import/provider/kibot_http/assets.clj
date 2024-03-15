@@ -48,12 +48,15 @@
        extract-table
        ;(remove nil?)
        ))
-(defn assets-for [category]
-  (let [assets (-> (str "../resources/kibot-http/" category ".html")
+
+;
+
+(defn assets-for [path category]
+  (let [assets (-> (str path  category ".html")
                    slurp
                    parse
                    rest)
-        links (-> (str "../resources/kibot-http/" category ".txt")
+        links (-> (str path category ".txt")
                   slurp
                   (str/split #"\r\n"))]
     (if (= (count assets) (count links))
@@ -72,22 +75,22 @@
     (when-let [old (db/instrument-details asset)]
       (update-kibot-asset-impl (:symbol old) link))))
 
-(defn import-kibot-links [category]
-  (let [assets (assets-for category)]
+(defn import-kibot-links [path category]
+  (let [assets (assets-for path category)]
     (doall (map update-kibot-asset assets))
     :kibot-link-import-finished))
 
 (comment
-  (assets-for "forex")
+  (assets-for  "../resources/kibot-http/" "forex")
 
-  (assets-for "futures")
+  (assets-for  "../resources/kibot-http/"  "futures")
 
-  (assets-for "etf")
+  (assets-for   "../resources/kibot-http/" "etf")
 
   ; stocks does not work yet.
   ;(assets-for "stocks")
 
-  (import-kibot-links "forex")
+  (import-kibot-links   "../resources/kibot-http/" "forex")
 
   (db/instrument-details "EURUSD")
 

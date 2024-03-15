@@ -25,7 +25,9 @@
   ta/algo {:local/root "./lib/algo" :deps/manifest :deps}
   ta/live {:local/root "./lib/live" :deps/manifest :deps}
   ta/viz {:local/root "./lib/viz" :deps/manifest :deps}
-  ta/interact {:local/root "./lib/interact" :deps/manifest :deps}}
+  ta/interact {:local/root "./lib/interact" :deps/manifest :deps}
+  ta/tradingview {:local/root "./lib/tradingview" :deps/manifest :deps}
+  }
  :aliases
  {;https://github.com/applied-science/deps-library
   :release
