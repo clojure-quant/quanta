@@ -1,7 +1,0 @@
-Inverse returns
-Short QQQ                                                                  PSQ     0.95     no           130
-Short S&P 500                                                            SH       0.95     no           109
-Short Dow 30                                                              DOG    0.95     no             84
-Short Mid Cap 400                                                      MYY   0.95     no             81
-            Short Small Cap 600                                                    SBB     0.95     no               4
-            Short Russell 2000                                                       RWM  0.95     no             10

@@ -1,9 +1,0 @@
-; used to test alphavantage import of symbols that dont return data
-[{:symbol "IHI" :name "" :category :etf}
- {:symbol "GML" :name "" :category :equity}
- {:symbol "PHW" :name "" :category :equity}
- {:symbol "IGW" :name "" :category :equity}
- {:symbol "PXN " :name "" :category :equity}
- {:symbol "IWZ" :name "" :category :equity}
- {:symbol "IWW" :name "" :category :etf}]
-

@@ -1,6 +1,0 @@
-[{:name "Bitcoin" :symbol "BTCUSDT" :category :crypto :exchange :crypto}
- {:name "Etherium" :symbol "ETHUSDT" :category :crypto :exchange :crypto}
- {:name "Litecoin" :symbol "LTCUSDT" :category :crypto :exchange :crypto}
-
- 
- ]
