@@ -214,10 +214,17 @@
       :else
       bar-ds)))
 
-(defn delete-bars [session]
-  (duckdb/sql->dataset
+(defn sql-delete-bars-asset [session calendar asset]
+  (let [table-name (bar-category->table-name calendar)]
+    (str "delete from " table-name
+         " where asset = '" asset "'")))
+
+(defn delete-bars [session calendar asset]
+  (duckdb/run-query!
    (:conn session)
-   (str "delete from bars")))
+   (sql-delete-bars-asset session calendar asset)))
+
+
 
  ;; CREATE INDEX s_idx ON films (revenue);
 
