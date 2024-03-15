@@ -8,7 +8,7 @@
    [deps-deploy.deps-deploy :as dd]))
 
 
-(def lib 'org.pink-gorilla/ta)
+(def lib 'org.pinkgorilla/ta)
 (def version (format "0.3.%s" (b/git-count-revs nil)))
 
 (defn jar [opts]
