@@ -3,9 +3,8 @@
    [taoensso.timbre :as timbre :refer [debug info warn error]]
    [de.otto.nom.core :as nom]
    [tablecloth.api :as tc]
-   [ta.db.bars.protocol :refer [bardb barsource] :as b]))
-
-
+   [ta.db.bars.protocol :refer [bardb barsource] :as b]
+   [ta.import.logger :as logger]))
 
 (defn- get-provider
   "returns the get-series fn for the specified provider
@@ -13,19 +12,19 @@
    provider can also be (fn [s]) to get-series depending on the symbol passed"
   [dict-provider p asset]
   (let [r (get dict-provider p)]
-    (if r 
-      r 
-      (nom/fail ::get-importer
-                {:message (str "import provider [" p "] not found!")}))))
+    (or r (nom/fail ::get-importer
+                    {:message (str "import provider [" p "] not found!")}))))
 
 (defn- get-bars-impl
   "downloads timeseries from provider"
-  [dict-provider {:keys [asset import] :as asset-opts} range]
+  [dict-provider {:keys [asset import calendar] :as asset-opts} window]
   (when import
-    (nom/let-nom> [p (get-provider dict-provider import asset)
-                   series-ds (b/get-bars p asset-opts range)
-                   series-ds (tc/add-columns series-ds {:asset asset :epoch 0 :ticks 0})] 
-       series-ds)))
+    (let [r (nom/let-nom> [p (get-provider dict-provider import asset)
+                           series-ds (b/get-bars p asset-opts window)
+                           series-ds (tc/add-columns series-ds {:asset asset :epoch 0 :ticks 0})]
+                          series-ds)]
+      (logger/add import asset calendar window r)
+      r)))
 
 (defrecord import-manager [feeds]
   barsource

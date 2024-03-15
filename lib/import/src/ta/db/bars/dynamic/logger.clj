@@ -14,7 +14,11 @@
 
 
 (comment 
-  @log-a
+  (->> @log-a
+       (filter #(= :eodhd (:import %)))
+   )
+  
+  
   
   
   

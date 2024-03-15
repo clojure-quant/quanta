@@ -69,7 +69,6 @@
 
   (error? [{:warning "Data is limited by one year as you have free subscription "}])
 
-
   (require '[ta.import.provider.eodhd.raw :refer [d]])
   d
 
@@ -86,12 +85,10 @@
   (def eodhd (create-import-eodhd "65f0ad82c56400.56029279"))
 
   (b/get-bars eodhd
-              {:asset "MCD.US"
+              {:asset "RPM.AU"
                :calendar [:us :d]}
               {:start (t/zoned-date-time "2024-01-01T00:00:00Z")
-               :end (t/zoned-date-time "2024-03-15T00:00:00Z")})
+               :end (t/zoned-date-time "2024-03-20T00:00:00Z")})
 
-
-
-   ; 
+; 
   )

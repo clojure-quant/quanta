@@ -20,7 +20,6 @@
         (do
           (while (and (< @idx idx-max)
                       (t/<= (date-next)  date))
-            ;(info "move next..")
             (move-next))
           (get-val))))))
 
@@ -103,6 +102,9 @@
                             {:date (t/date-time "2024-01-02T09:00:00")} ; 1
                             {:date (t/date-time "2024-01-02T16:00:00")} ; 1
                             {:date (t/date-time "2024-01-02T17:00:00")} ; 2
+                            {:date (t/date-time "2024-01-02T18:00:00")} ; 2
+                            {:date (t/date-time "2024-01-03T17:00:00")} ; 3
+                            {:date (t/date-time "2024-01-03T18:00:00")} ; 3
                             ]))
   (:date daily-ds)
 
@@ -125,8 +127,7 @@
                      (tc/row-count daily-ds)
                      ((:date daily-ds) idx))
 
-  (link-bars hour-ds daily-ds :a 0)
-  (link-bars2 hour-ds daily-ds :a 0)
+    (link-bars2 hour-ds daily-ds :a 0)
   ;;    (0 0 1 1 1 2)
   ;; => [0 0 1 1 1 2]
 
