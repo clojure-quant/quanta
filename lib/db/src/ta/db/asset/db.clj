@@ -11,13 +11,7 @@
                                               (blank? name))
                                         (str "Unknown: " symbol)
                                         name))))
-(comment
-  (sanitize-name {:symbol "a"})
-  (sanitize-name {:symbol "a" :name nil})
-  (sanitize-name {:symbol "a" :name ""})
-  (sanitize-name {:symbol "a" :name "test"})
-  ;
-  )
+
 (defn sanitize-category [instrument]
   (update instrument :category (fn [category] (if (nil? category)
                                                 :equity
@@ -36,13 +30,7 @@
                                                   :us)
                                                 exchange))))
 
-(comment
-  (sanitize-exchange {:symbol "a"})
-  (sanitize-exchange {:symbol "a" :exchange "VI"})
-  (sanitize-exchange {:symbol "a" :category :stocks})
-  (sanitize-exchange {:symbol "a" :category :crypto})
-  ;
-  )
+
 
 (defn instrument-details [s]
   (if-let [f (is-future? s)]
@@ -62,11 +50,6 @@
         merged (merge old instrument)]
     (swap! db assoc symbol merged)))
 
-(comment
-  (add {:symbol "MSFT" :name "Microsoft"})
-  (add {:symbol "IBM" :name "IBM"})
- ; 
-  )
 
 (defn get-instruments []
   (-> @db vals))
@@ -103,7 +86,6 @@
   ([q category]
    (search q category nil))
   ([q category exchange]
-
    (let [list-full (get-instruments)
          q (if (or (nil? q) (blank? q)) nil (lower-case q))
          e (if (nil? exchange)  nil exchange)
@@ -125,3 +107,20 @@
         (vals @db)))
 
 
+(comment
+  
+  (sanitize-name {:symbol "a"})
+  (sanitize-name {:symbol "a" :name nil})
+  (sanitize-name {:symbol "a" :name ""})
+  (sanitize-name {:symbol "a" :name "test"})
+
+  (sanitize-exchange {:symbol "a"})
+  (sanitize-exchange {:symbol "a" :exchange "VI"})
+  (sanitize-exchange {:symbol "a" :category :stocks})
+  (sanitize-exchange {:symbol "a" :category :crypto})
+
+
+  (add {:symbol "MSFT" :name "Microsoft"})
+  (add {:symbol "IBM" :name "IBM"})
+ ; 
+  )

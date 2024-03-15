@@ -1,0 +1,4 @@
+{:name "ta-db-asset"
+ :clj-services {:name "ta-db-asset"
+                :permission  #{}
+                :symbols [ta.db.asset.db/search]}}
