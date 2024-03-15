@@ -6,7 +6,6 @@
                           ;ta.db.asset.symbollist/get-lists
                           ;ta.db.asset.symbollist/load-list
                           ;ta.warehouse.overview/overview-map
-                          ;ta.warehouse.load/load-series
                           ; algo
                           ta.algo.manager/algo-names
                           ta.algo.manager/algo-info
@@ -19,7 +18,6 @@
                           ta.helper.date/now-datetime]}
   :cljs-routes {;warehouse
                 "warehouse" ta.viz.page.warehouse/warehouse-page
-                "series" ta.viz.page.series/series-page
                 "algo/backtest" ta.viz.page.backtest/algo-backtest-page}
 
   :sci-cljs-ns [; viz

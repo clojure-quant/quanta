@@ -2,9 +2,6 @@
   (:require
    [de.otto.nom.core :as nom]))
 
-
-
-
 (defn error-render-spec
   "returns a render specification {:render-fn :spec :data}. 
    spec must follow chart-pane format.
