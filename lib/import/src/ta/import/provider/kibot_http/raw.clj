@@ -30,11 +30,11 @@
     (bs/to-string (:body request))))
 
 (defn save-csv-data [asset data]
-  (spit (str "../../output/kibot-http/" asset ".txt")
+  (spit (str "output/kibot-http/" asset ".txt")
         data))
 
 (defn load-csv-data [asset]
-  (slurp (str "../../output/kibot-http/" asset ".txt")))
+  (slurp (str "output/kibot-http/" asset ".txt")))
 
 (defn download-import [url]
   (println "downloading url: " url)

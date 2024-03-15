@@ -12,14 +12,17 @@
    [ta.import.provider.kibot.raw :refer [login] :as kibot]
    [ta.import.provider.kibot-http.raw :as raw]))
 
-(defn date-time->localdate [dt time]
-  (t/at dt time))
+;; kibot intraday times are in EST.
+
+(defn date-time->zoned [dt time]
+  (-> (t/at dt time)
+      (t/in "America/New_York")))
 
 (defn date-time-adjust [bar-ds]
   (let [date-vec (:date bar-ds)
         time-vec (:time bar-ds)
-        date-time-vec  (dtype/emap date-time->localdate
-                                   :local-date-time
+        date-time-vec  (dtype/emap date-time->zoned
+                                   :zoned-date-time
                                    date-vec time-vec)]
     (tc/add-or-replace-column bar-ds :date date-time-vec)))
 

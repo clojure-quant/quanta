@@ -6,8 +6,6 @@ https://www.quantconnect.com/market/alpha/e219bc8c86278eb3d2d0d8ab6/v1.1
 https://github.com/systematicinvestor/SIT/blob/master/R/bt.test.r
 
 
-
-
      :b [1 2 3 4 3 3]}
   ds/->dataset
   (ds/column-map

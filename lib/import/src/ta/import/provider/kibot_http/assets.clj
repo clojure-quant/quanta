@@ -92,7 +92,7 @@
 
   (import-kibot-links   "../resources/kibot-http/" "forex")
 
-  (db/instrument-details "EURUSD")
+  (db/instrument-details "EUR/USD")
 
  ; 
   )
