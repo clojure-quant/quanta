@@ -53,9 +53,5 @@ jobs:
       run: |
         git config --global user.email "ci@pinkgorilla.org"
         git config --global user.name "CI/CD"
-        clojure -M:release tag --minor
-        clojure -M:release pom
-        clojure -M:release jar
-        clojure -M:release deploy
-      # lein release
-      # bash <(curl -s https://codecov.io/bash)
+        clojure -T:build jar 
+        clojure -T:build deploy 

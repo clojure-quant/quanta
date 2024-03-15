@@ -1,0 +1,81 @@
+{:paths ["src"]
+ :deps
+ {org.clojure/clojure    {:mvn/version "1.11.1"}
+  org.clojure/core.async {:mvn/version "1.3.618"}
+  org.clojure/data.avl   {:mvn/version "0.1.0"}
+  medley/medley          {:mvn/version "1.4.0"}  ; lightweight pure functions that are "missing" from clojure.core.
+  tick/tick {:mvn/version "0.6.2"}
+  org.clojure/data.csv   {:mvn/version "1.0.1"}  ; read/write csv
+  net.cgrand/xforms      {:mvn/version "0.19.2"} ; transducers for timeseries (ema sma)
+  org.ta4j/ta4j-core     {:mvn/version "0.14"}   ; ta4j java technical indicator library
+  org.clojure/algo.generic {:mvn/version "0.1.3"}
+  generateme/fastmath {:mvn/version "2.4.0"}
+  try-let/try-let {:mvn/version "1.3.1"}
+
+  io.github.clojure-quant/vector-math {:git/url "https://github.com/clojure-quant/techml.vector-math.git"
+                                       :sha "1d6e5d0ef3eba53e2afddb5ca0927385a9f62ece"}
+  ta/db {:local/root "./lib/db" :deps/manifest :deps}
+  ta/calendar {:local/root "./lib/calendar" :deps/manifest :deps}
+  ta/engine {:local/root "./lib/engine" :deps/manifest :deps} ; javelin formula engine
+  ta/import {:local/root "./lib/import" :deps/manifest :deps} ; series import
+  ta/quote {:local/root "./lib/quote" :deps/manifest :deps} ; quotefeeds
+  ta/trade {:local/root "./lib/trade" :deps/manifest :deps} ; trade signal / backtest / metrics
+  ta/math {:local/root "./lib/math" :deps/manifest :deps}
+  ta/indicator {:local/root "./lib/indicator" :deps/manifest :deps}
+  ta/algo {:local/root "./lib/algo" :deps/manifest :deps}
+  ta/live {:local/root "./lib/live" :deps/manifest :deps}
+  ta/viz {:local/root "./lib/viz" :deps/manifest :deps}
+  ta/interact {:local/root "./lib/interact" :deps/manifest :deps}}
+ :aliases
+ {:garamond
+  {:main-opts ["-m" "garamond.main"]
+   :extra-deps {com.workframe/garamond {:mvn/version "0.4.0"}}}
+
+  ;https://github.com/applied-science/deps-library
+  :release
+  {:extra-deps {applied-science/deps-library {:mvn/version "0.4.0"}}
+   :main-opts ["-m" "applied-science.deps-library"]}
+
+  ; https://github.com/weavejester/cljfmt
+  :cljfmt
+  {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
+   :main-opts ["-m" "cljfmt.main"
+               "--indents" "cljfmt.edn"]}
+
+ ; https://github.com/clj-kondo/clj-kondo/blob/master/doc/jvm.md
+  :lint
+  {:extra-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}
+   :main-opts ["-m" "clj-kondo.main"
+               "--config" "cljkondo.edn"
+               "--lint"]}
+
+  :cloverage
+  {:extra-paths ["test"]
+   :extra-deps  {cloverage/cloverage {:mvn/version "RELEASE"}}
+   :main-opts   ["-m" "cloverage.coverage"
+                 "--src-ns-path" "src"
+                 "--test-ns-path" "test"]
+   :exec-fn     cloverage.coverage/run-project
+   :exec-args   {:src-ns-path  ["src"]
+                 :test-ns-path ["test"]}}
+
+  :check
+  {:extra-deps {athos/clj-check {:git/url "https://github.com/athos/clj-check.git"
+                                 :sha "518d5a1cbfcd7c952f548e6dbfcb9a4a5faf9062"}}
+   :main-opts ["-m" "clj-check.check"]}
+
+  :test
+  {;:extra-paths ["test/main/clojure"]
+   :extra-deps  {lambdaisland/kaocha {:mvn/version "1.0.861"}}
+   :main-opts   ["-m" "kaocha.runner"]}
+
+  :build {:deps {io.github.clojure/tools.build {:git/tag "v0.6.1" :git/sha "515b334"}
+                 io.github.slipset/deps-deploy {:git/sha "b4359c5d67ca002d9ed0c4b41b710d7e5a82e3bf"}
+                 io.github.seancorfield/build-clj {:git/tag "v0.5.4" :git/sha "bc9c0cc"}
+                  ;rewrite-clj/rewrite-clj {:mvn/version "1.0.699-alpha"}
+                 babashka/fs {:mvn/version "0.0.5"}}
+          :ns-default build}
+
+
+;
+  }}
