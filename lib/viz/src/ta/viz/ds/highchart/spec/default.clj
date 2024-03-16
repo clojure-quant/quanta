@@ -12,7 +12,7 @@
               ;:categories (:labels data)  
               }
    ;:title {:text title}
-   :navigator     {:enabled true}
+   :navigator     {:enabled false}
    :tooltip {:style {:width "200px"}
              :valueDecimals 4
              ;:valueSuffix " %"
