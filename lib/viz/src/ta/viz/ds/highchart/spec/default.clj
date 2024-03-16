@@ -17,6 +17,14 @@
              :valueDecimals 4
              ;:valueSuffix " %"
              :shared true}
+   ; webgl boost enabled by default
+   :boost {:useGPUTranslations true
+           :seriesThreshold 5 ; Chart-level boost when there are more than 5 series in the chart
+           :debug {:timeSetup true 
+                   :timeSeriesProcessing true
+                   :timeKDTree true
+                   :timeBufferCopy  true
+                   :timeRendering true}}
    :chart {:height 1000} ; this gets overwritten by set-chart-height
    :rangeSelector {; timeframe selector on the top
                    :verticalAlign "top"
