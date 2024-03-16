@@ -12,7 +12,7 @@
   [{:keys [id algo viz] :as template-spec}]
   (assert id "missing mandatory parameter :id")
   (assert algo "missing mandatory parameter :algo")
-  (assert viz "missing mandatory parameter :viz")
+  ;(assert viz "missing mandatory parameter :viz")
   (swap! db assoc id template-spec))
 
 (defn available-templates

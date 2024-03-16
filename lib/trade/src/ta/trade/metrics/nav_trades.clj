@@ -6,16 +6,12 @@
    [tech.v3.datatype.functional :as dfn]
    [tech.v3.datatype.argops :as argops]
    [tech.v3.tensor :as dtt]
-   [ta.multi.aligned :refer [load-aligned-filled load-symbol-window]]
-   [ta.multi.calendar :refer [daily-calendar daily-calendar-sunday-included]]))
+   [ta.calendar.core :as cal]
+   [ta.db.bars.multi-asset :refer [load-aligned-assets is-valid? calendar-seq->date-ds]]))
 
-;; todo:
-;; 1. use calendar that uses ta.calendar
-;; 2. remove ta.multi.aligned and instead use bar-db protocol.
-
-(defn filter-range [ds-bars {:keys [start end]}]
+(defn filter-range [bar-ds {:keys [start end]}]
   (tc/select-rows
-   ds-bars
+   bar-ds
    (fn [row]
      (let [date (:date row)]
        (and
@@ -151,52 +147,49 @@
                :warnings []}]
     (reduce effects+ empty effects)))
 
-(defn empty-series [calendar]
-  (:calendar calendar))
-
-(defn effects-symbol [symbol warehouse calendar trades]
-  ;(info "calculating " symbol)
-  (let [ds-bars (load-aligned-filled symbol warehouse calendar)
-        has-series? ds-bars
-        ds-bars (or ds-bars (empty-series calendar))
-        effects (map #(trade-effect ds-bars has-series? %) trades)]
+(defn effects-asset [bar-ds has-series? trades]
+  (info "calculating " (if has-series? (tc/row-count bar-ds) "no-series"))
+  (let [effects (map #(trade-effect bar-ds has-series? %) trades)]
     (effects-sum effects)))
 
-(defn portfolio [trades {:keys [warehouse]}]
-  (let [start-dt (apply t/min (map :entry-date trades))
+(defn portfolio [bardb trades {:keys [calendar] :as opts}]
+  (let [assets (->> trades
+                    (map :asset)
+                    (into #{})
+                    (into []))
+        start-dt (apply t/min (map :entry-date trades))
         end-dt (apply t/max (->> (map :exit-date trades)
                                  (remove nil?)))
-        ;calendar (daily-calendar start-dt end-dt)
-        calendar (daily-calendar-sunday-included start-dt end-dt)
-        trades-symbol (fn [symbol]
-                        (filter #(= symbol (:symbol %)) trades))
-        calc-symbol (fn [symbol]
-                      (effects-symbol symbol warehouse calendar (trades-symbol symbol)))
-        symbols (->> trades
-                     (map :symbol)
-                     ;(filter exists-series?)
-                     (into #{})
-                     (into []))
+        window {:start start-dt :end end-dt}
+        cal-seq (cal/fixed-window calendar window)
+        date-ds (calendar-seq->date-ds cal-seq)
+        l (tc/row-count date-ds)
+        bar-dict (load-aligned-assets bardb opts assets cal-seq)
+        _ (info "bar-ds count: " (tc/row-count date-ds))
+        trades-asset (fn [asset]
+                       (filter #(= asset (:asset %)) trades))
+        calc-asset (fn [asset]
+                     (let [has-series? (is-valid? bar-dict asset)
+                           bar-ds (if has-series?
+                                    (get bar-dict asset)
+                                    date-ds)]
+                       (effects-asset bar-ds has-series? (trades-asset asset))))
         {:keys [eff warnings]} (reduce effects+
-                                       {:eff (no-effect (tc/row-count (:calendar calendar)))
+                                       {:eff (no-effect l)
                                         :warnings []}
-                                       (map calc-symbol symbols))
+                                       (map calc-asset assets))
         ; result
         pl-r-cum (dfn/cumsum (:pl-r eff))]
     {:warnings warnings
-     :warehouse warehouse
      :eff (tc/add-columns
            eff
-           {:date (-> calendar :calendar :date)
+           {:date (-> date-ds :date)
             :pl-r-cum pl-r-cum
             :pl-cum (dfn/+ (:pl-u eff) pl-r-cum)})}))
 
 (comment
 
   (require '[ta.helper.date :refer [parse-date]])
-  (require '[tech.v3.dataset.print :refer [print-range]])
-  (require '[clojure.pprint :refer [print-table]])
-
   (t/min  (parse-date "2022-01-02")
           (parse-date "2022-01-01")
           (parse-date "2022-01-04"))
@@ -218,21 +211,6 @@
 
   (tc/select-rows ds1 [0 5])
 
-  (require '[joseph.trades :refer [load-trades-valid]])
-
-  (def trades (load-trades-valid))
-  (count trades)
-
-  (def trades-googl
-    (filter #(= "GOOGL" (:symbol %)) trades))
-  (count trades-googl)
-
-  (print-table [:entry-date :exit-date :symbol] trades)
-  (print-table [:entry-date :exit-date :symbol] trades-googl)
-
-  (def trade (last trades-googl))
-  trade
-
   (defn in-range? [entry-date exit-date date]
     (t/<= entry-date date exit-date))
 
@@ -244,92 +222,41 @@
   (in-range? entry-date exit-date (parse-date "2022-03-08"))
   (in-range? entry-date exit-date (parse-date "2022-03-07"))
 
-  (load-aligned-filled
-   "GOOGL"
-   nil
-   (daily-calendar (parse-date "2022-10-01")
-                   (parse-date "2023-04-01")))
-
-  (def ds-bars
-    (load-symbol-window {:symbol "GOOGL"
-                         :frequency "D"
-                         :warehouse nil}
-                        (parse-date "2023-03-01")
-                        (parse-date "2023-03-20")))
-  ds-bars
-  (trade-effect ds-bars true trade)
-
-  (effects-sum [(trade-effect ds-bars true trade)
-                (trade-effect ds-bars true trade)])
-
-  (-> (effects-symbol
-       "GOOGL"
-       nil
-       (daily-calendar (parse-date "2022-10-01")
-                       (parse-date "2023-04-01"))
-       trades-googl)
-      :eff
-      (print-range :all))
-
-  (def trades-test
-    [{:symbol "GOOGL"
-      :side :long
-      :qty 1000.0
-      :entry-date #time/date-time "2023-03-06T00:00"
-      :entry-price 94.78
-      :exit-date #time/date-time "2023-03-16T00:00"
-      :exit-price 96.92}])
-
-  (portfolio trades-googl {:warehouse nil})
-
-  (portfolio trades-googl {:warehouse :seasonal})
-
-  (portfolio [{:symbol "BZ0"
+  (def trade1 {:asset "EUR/USD"
                :side :long
                :qty 1000.0
-               :entry-date #time/date-time "2022-11-27T00:00"
-               :entry-price 80.96
-               :exit-date #time/date-time "2022-11-27T00:00"
-               :exit-price 82.18}]
-             {:warehouse :seasonal2})
+               :entry-date (t/instant "2023-03-09T17:00:00Z")
+               :entry-price 94.78
+               :exit-date (t/instant "2023-03-16T17:00:00Z")
+               :exit-price 96.92})
 
-  (def trades-dax
-    (filter #(= "DAX0" (:symbol %)) trades))
+  (def trades-test
+    [trade1])
 
-  (count trades-dax)
+  (require '[modular.system])
+  (def bardb (modular.system/system :duckdb ;:bardb-dynamic
+                                   ))
+  bardb
 
-  (portfolio trades-dax {:warehouse :s2})
+  (require '[ta.db.bars.protocol :as b])
+  (def eurusd (b/get-bars bardb {:asset "EUR/USD"
+                                 :calendar [:forex :d]}
+                          {:start (t/instant "2023-03-06T20:30:00Z")
+                           :end (t/instant "2023-03-16T20:30:00Z")}))
 
-  (portfolio (take 1 trades))
-  (portfolio (take 5 trades))
+  (-> (effects-asset
+       eurusd
+       true
+       trades-test)
+      :eff)
+   
+  (trade-effect eurusd true trade1)
+  
+  (effects-sum [(trade-effect eurusd true trade1)
+                (trade-effect eurusd true trade1)])
 
-  (portfolio (take 10 trades))
-  (portfolio (take 20 trades))
-  (portfolio (take 50 trades))
-  (portfolio (take 100 trades))
-  (portfolio (take 200 trades))
-  (portfolio (take 300 trades))
-  (portfolio (take 400 trades))
-  (portfolio trades)
-
-  (->>
-   (portfolio trades)
-   :warnings
-   ;(print-table [:warning :symbol :side :exit-date])
-   )
-  (require '[ta.multi.aligned :refer [load-symbol-window]])
-
-  (->
-   (load-symbol-window "BZ0" "D"
-                       #time/date-time "2022-08-01T00:00"
-                       #time/date-time "2023-08-01T00:00")
-
-   (print-range :all))
-; |   :realized |     BZ0 |     :short | 2023-07-16T00:00 |
-; | :unrealized |     BZ0 |     :short | 2022-10-03T00:00 |
-; |   :realized |     BZ0 |      :long | 2022-11-27T00:00 |
-; |   :realized |     BZ0 |     :short | 2023-07-16T00:00 |
-; | :unrealized |     NG0 |     :short | 2022-08-08T00:00 |
+  (portfolio bardb trades-test {:calendar [:forex :d]
+                                :import :kibot})
 
 ; 
   )

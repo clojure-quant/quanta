@@ -1,6 +1,5 @@
 (ns ta.trade.roundtrip-backtest
   (:require
-   [taoensso.timbre :refer [trace debug info warnf error]]
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as fun]
    [tablecloth.api :as tc]
@@ -99,8 +98,18 @@
     (tc/add-column ds :win
                    (dtype/emap win :bool (:pl-log ds)))))
 
-(defn calc-rountrips-simple [signal-ds]
-  (calc-roundtrips signal-ds {}))
+
+
+(defn signal-ds->roundtrips
+  "algo has to create :position column
+   creates roundtrips based on this column"
+  [signal-ds]
+  (let [options {}]
+    (assert (:signal signal-ds) "to create roundtrips :signal column needs to be present!")
+    (assert (:date  signal-ds) "to create roundtrips :date column needs to be present!")
+    (assert (:close  signal-ds) "to create roundtrips :close column needs to be present!")
+    (-> (trade-signal signal-ds)
+        (calc-roundtrips options))))
 
 (comment
   (-> (tc/dataset {:l [:x :x :y :y :y]
@@ -111,30 +120,31 @@
                       {:sum-of-b (reduce + (ds :b))})
                     {:default-column-name-prefix "xxx"}))
 
+  (require '[tick.core :as t])
+
+  (def signal-ds (tc/dataset {:date [(t/instant "2020-01-01T00:00:00Z")
+                                     (t/instant "2020-01-12T00:00:00Z")
+                                     (t/instant "2020-01-17T00:00:00Z")
+                                     (t/instant "2020-01-20T00:00:00Z")
+                                     (t/instant "2020-01-22T00:00:00Z")
+                                     (t/instant "2020-01-23T00:00:00Z")
+                                     (t/instant "2020-01-24T00:00:00Z")
+                                     ]
+                              :close [1 2 3 4 5 6 7]
+                              :signal [:buy :hold :flat :buy :hold :hold :flat]}))
+  signal-ds
+
+  (trade-signal signal-ds)
+
+
+  (require '[ta.trade.print :as p])
+  (-> (signal-ds->roundtrips signal-ds)
+      (p/print-roundtrips))
+  
+  
+  
+
+
 ;  
   )
-
-(defn signal-ds->roundtrips
-  "algo has to create :position column
-   creates roundtrips based on this column"
-  [ds-signal]
-  (let [signal (:signal ds-signal)
-        options {}]
-    (assert signal "to crate positions :signal column needs to be present!")
-    (-> (trade-signal ds-signal)
-        (calc-roundtrips options))))
-
-#_(defn run-backtest-parameter-range
-    [algo base-options
-     prop-to-change prop-range]
-    (let [{:keys [backtest-runner]
-           :or {backtest-runner run-backtest}}
-          base-options]
-      (for [m prop-range]
-        (let [options (assoc base-options prop-to-change m)
-              r (backtest-runner algo options)
-              r (-> r
-                    (assoc :ds-roundtrips (tc/set-dataset-name (:ds-roundtrips r) m)))]
-          r))))
-
 

@@ -4,6 +4,7 @@
    [de.otto.nom.core :as nom]
    [taoensso.timbre :as timbre :refer [debug info warn error]]
    [tablecloth.api :as tc]
+   [tick.core :as t]
    [clojure.java.io :as java-io]
    [tech.v3.io :as io]
    [babashka.fs :refer [create-dirs]]
@@ -27,13 +28,25 @@
         ]
   (str (:base-path this) asset "-" (name exchange) "-" (name interval) ".nippy.gz")))
 
+(defn filter-range [ds-bars {:keys [start end]}]
+  (tc/select-rows
+   ds-bars
+   (fn [row]
+     (let [date (:date row)]
+       (and
+        (or (not start) (t/>= date start))
+        (or (not end) (t/<= date end)))))))
+
+(defn get-bars-nippy [this opts window]
+  (info "get-bars " opts window)
+  (-> (load-ds (filename-asset this opts))
+      (tc/add-column :asset (:asset opts))
+      (filter-range window)))
 
 (defrecord bardb-nippy [base-path]
   barsource
   (get-bars [this opts window]
-    (info "get-bars " opts window)
-    (-> (load-ds (filename-asset this opts))
-        (tc/add-column :asset (:asset opts))))
+     (get-bars-nippy this opts window))
   bardb
   (append-bars [this opts ds-bars]
     ;(info "this: " this)

@@ -32,9 +32,10 @@
     (requiring-resolve fun)
     fun))
 
-(defn create-viz-fn [e {:keys [id viz viz-options]}]
+(defn create-viz-fn [e {:keys [id chart metrics]} mode]
   ;(info "create-viz-fn: " viz)
-  (let [viz-fn (get-fn viz)]
+  (let [{:keys [viz viz-options]} (if (= mode :chart) chart metrics)
+        viz-fn (get-fn viz)]
     (when viz-fn
       (fn [result]
         (if (nom/anomaly? result)
@@ -53,14 +54,14 @@
               (nom/fail ::algo-calc {:message "algo calc exception!"
                                      :location :visualize}))))))))
 
-(defn subscribe [e {:keys [id algo key] :as template}]
+(defn subscribe [e {:keys [id algo key] :as template} mode]
   (let [subscription-id (nano-id 6)
         eng (env/get-engine e)
         algo-results-a (algo/add-algo e algo)
         algo-result-a (if key (key algo-results-a)
                           algo-results-a)
         ;_ (info "algo-result-a: " algo-result-a)
-        viz-fn (create-viz-fn e template)]
+        viz-fn (create-viz-fn e template mode)]
     (if viz-fn
       (let [viz-result-a (engine/formula-cell eng viz-fn [algo-result-a])
             pusher-a (engine/formula-cell eng #(push-viz-result subscription-id %) [viz-result-a])]
@@ -73,16 +74,17 @@
         (error "could not create viz-fn for template: " id)
         nil))))
 
-(defn subscribe-kw [env-kw template-id template-options]
+(defn subscribe-kw [env-kw template-id template-options mode]
   (let [e (modular.system/system env-kw)
         template (t/load-with-options template-id template-options)]
     (info "subscribing template: " template)
-    (subscribe e template)))
+    (subscribe e template mode)))
 
-(defn subscribe-live [template-id template-options]
+(defn subscribe-live [template-id template-options mode]
+  (info "subscribe-live template:" template-id "mode: " mode)
   (if-let [result (@visualizations-a template-id)]
     (push-viz-result template-id @result)
-    (subscribe-kw :live template-id template-options)))
+    (subscribe-kw :live template-id template-options mode)))
 
 (defn unsubscribe [subscription-id]
   (when-let [s (get @subscriptions-a subscription-id)]
@@ -104,7 +106,6 @@
       ; done!
       (swap! subscriptions-a dissoc subscription-id))))
 
-
 (comment
 
   (def s (atom {:mood "perfect"
@@ -117,9 +118,6 @@
   (swap! s assoc-in [:env :mode] :backtest)
   (swap! s assoc-in [:benchmark 0] "AAPL")
 
-
-
-
- ; 
+; 
   )
 

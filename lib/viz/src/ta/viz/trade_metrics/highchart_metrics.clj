@@ -1,4 +1,4 @@
-(ns highchart-metrics
+(ns ta.viz.trade-metrics.highchart-metrics
   (:require
    [clojure.walk :refer [prewalk]]
    ;[cheshire.core :as json]

@@ -7,19 +7,14 @@
    [ta.trade.drawdown :refer [trailing-sum drawdowns-from-value]]
    [ta.trade.position-pl :refer [position-pl]]))
 
-(defn nav-stats [ds-study group-by]
+(defn- nav-stats [ds-study group-by]
   (-> ds-study
       (tc/group-by group-by)
-      (tc/aggregate {;:bars (fn [ds]
-                     ;        (->> ds
-                     ;             :bars
-                     ;             (apply +)))
-                     :trades (fn [ds]
+      (tc/aggregate {:trades (fn [ds]
                                (->> ds
                                     :trade
                                     (remove nil?)
                                     count))
-                     ; log
                      :pl-log-cum (fn [ds]
                                    (->> ds
                                         :pl-log

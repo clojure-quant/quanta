@@ -3,17 +3,17 @@
    [tablecloth.api :as tc]
    [ta.helper.ago :refer [xf-ago-pair]]))
 
-(defn running-index-vec [ds]
+(defn- running-index-vec [ds]
   (range 0  (tc/row-count ds)))
 
-(defn add-running-index [ds]
+(defn- add-running-index [ds]
   (tc/add-column ds :index (running-index-vec ds)))
 
 ; signal :buy :sell :hold  
 ; one or more buy signals mean we do want to be long.
 ; vice versa sell signal.
 
-(defn xf-signal->position [xf]
+(defn- xf-signal->position [xf]
   (let [position (atom :flat)]
     (fn
       ;; SET-UP
@@ -31,7 +31,7 @@
       ([result]
        (xf result)))))
 
-(defn position-change->trade [[position-prior position-current]]
+(defn- position-change->trade [[position-prior position-current]]
   (if (= position-prior position-current)
     nil
     (case position-current
@@ -51,7 +51,7 @@
             (map position-change->trade))
         signal-seq))
 
-(defn xf-trade->trade-no [xf]
+(defn- xf-trade->trade-no [xf]
   (let [no (atom 0)]
     (fn
       ;; SET-UP
@@ -67,7 +67,7 @@
       ([result]
        (xf result)))))
 
-(defn trade->trade-no [trade-seq]
+(defn- trade->trade-no [trade-seq]
   (into [] xf-trade->trade-no
         trade-seq))
 

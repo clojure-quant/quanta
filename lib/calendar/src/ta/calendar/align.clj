@@ -4,7 +4,6 @@
    [tablecloth.api :as tc]
    [tech.v3.datatype.argops :as argops]
    [tech.v3.tensor :as dtt]))
-  
 
 (defn align-to-calendar 
   "aligns ds-bars to a calendar.
@@ -67,11 +66,22 @@
 (comment 
   
   (def ds-cal (tc/dataset {:date [1 2 3 4]}))
-  (def ds-bars (tc/dataset {:date [0 1 2 2 3 5 6 7 8 8] :close [0 1 2 2.2 3 5 6 7 8 8.8]}))
+  (def ds-bars (tc/dataset {:date [0 1 2 2 3 5 6 7 8 8] 
+                            :low [0.0 0.1 0.2 0.22 0.3 0.5 0.6 0.7 0.8 0.88]
+                            :close [0 1 2 2.2 3 5 6 7 8 8.8]}))
 
   (tc/unique-by ds-bars :date)
 
-  (align-to-calendar ds-cal ds-bars)
+  (defn align-to-calendar2 [ds-bars ds-cal]
+    (align-to-calendar ds-cal ds-bars)
+    )
+
+  (-> ds-bars
+     (tc/set-dataset-name "MSFT")
+     (align-to-calendar2 ds-cal)
+    (fill-missing-close)
+   )
+  
   
  ;  
   )

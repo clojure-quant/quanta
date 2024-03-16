@@ -3,8 +3,7 @@
    [tablecloth.api :as tc]
    [ta.trade.metrics.roundtrip-stats :refer [calc-roundtrip-stats]]
    [ta.trade.metrics.nav :refer [nav]]
-   [ta.helper.print :refer [print-all]]
-   [ta.viz.table :as viz]))
+   [ta.helper.print :refer [print-all]]))
 
 ;; ROUNDTRIPS
 
@@ -20,13 +19,13 @@
 (defn- roundtrips-view [ds-rt]
   (tc/select-columns ds-rt cols-rt))
 
-(defn print-roundtrips [backtest-result]
-  (-> (:ds-roundtrips backtest-result)
+(defn print-roundtrips [roundtrip-ds]
+  (-> roundtrip-ds
       (roundtrips-view)
       (print-all)))
 
-(defn print-roundtrips-pl-desc [backtest-result]
-  (-> (:ds-roundtrips backtest-result)
+(defn print-roundtrips-pl-desc [roundtrip-ds]
+  (-> roundtrip-ds
       (tc/order-by :pl-log)
       (roundtrips-view)
       (print-all)))
@@ -49,20 +48,3 @@
 (defn print-nav [backtest-result]
   (-> (nav backtest-result)
       (print-all)))
-
-(defn viz-roundtrips [backtest-result]
-  (let [ds-rt (:ds-roundtrips backtest-result)
-        ds-view (roundtrips-view ds-rt)]
-    ^:R [:p/aggrid
-         {:box :lg
-          :rowData (viz/ds->table ds-view)
-          :columnDefs [{:field "rt-no" :headerName "rt-no" :resizable true :sortable true :filter true}
-                       {:field "trade" :headerName "dir" :resizable true :sortable true :filter true}
-                       {:field "date-open" :headerName "dt-open" :resizeable true}
-                       {:field "price-open" :headerName "px-open" :resizable true :sortable true :filter true}
-                       {:field "date-close" :headerName "dt-close" :resizable true :sortable true :filter true}
-                       {:field "price-close" :headerName "px-close" :resizable true :sortable true :filter true}
-                       {:field "pl-log" :headerName "pl" :resizable true :sortable true :filter true}
-                       {:field "index-open" :headerName "idx-open" :resizable true :sortable true :filter true}
-                       {:field "index-close" :headerName "idx-close" :resizable true :sortable true :filter true}]}]))
-

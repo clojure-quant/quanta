@@ -7,6 +7,10 @@
    [ta.calendar.align :as align]
    [ta.db.bars.protocol :as b]))
 
+;; TODO: remove this. 
+;; it is only used in algo-env.
+;; once our bar-dbs are more stable, we dont need a hack.
+
 (defn- hack-at-time [date]
   ; TODO: remove this hack
   ;(info "hacking date: " date)
