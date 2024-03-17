@@ -1,7 +1,7 @@
 (ns ta.viz.ds.metrics
   (:require
-    [tech.v3.dataset :as tds]
-    [ta.trade.roundtrip-backtest :refer [signal-ds->roundtrips]]))
+   [tech.v3.dataset :as tds]
+   [ta.trade.core :refer [trade-summary]]))
 
 (defn ds->map [ds]
   ;(tc/rows :as-maps) ; this does not work, type of it is a reified dataset. 
@@ -15,11 +15,15 @@
    The ui shows a barchart with extra specified columns 
    plotted with a specified style/position, 
    created from the bar-algo-ds"
-  [spec bar-algo-ds]
-  (let [roundtrips (signal-ds->roundtrips bar-algo-ds) 
-        ;pane-spec (:charts spec)
+  [spec bar-signal-ds]
+  (let [{:keys [trade-ds roundtrip-ds nav-ds metrics]} (trade-summary bar-signal-ds) 
         ]
     ;(assert (chart-pane-spec? pane-spec) "please comply with chart-pane-spec")
     {:render-fn 'ta.viz.renderfn.metrics/metrics
-     :data {:roundtrips (ds->map roundtrips) }
+     :data {:trades (ds->map trade-ds)
+            :roundtrips (ds->map roundtrip-ds)
+            :nav (ds->map nav-ds)
+            :metrics metrics}
      :spec {}}))
+
+  

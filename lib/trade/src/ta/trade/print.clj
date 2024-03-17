@@ -1,8 +1,8 @@
 (ns ta.trade.print
   (:require
    [tablecloth.api :as tc]
-   [ta.trade.metrics.roundtrip-stats :refer [calc-roundtrip-stats]]
-   [ta.trade.metrics.nav :refer [nav]]
+   [ta.trade.metrics.roundtrip :refer [calc-roundtrip-stats]]
+   [ta.trade.nav.realized :refer [nav]]
    [ta.helper.print :refer [print-all]]))
 
 ;; ROUNDTRIPS

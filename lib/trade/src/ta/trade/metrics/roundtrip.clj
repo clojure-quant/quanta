@@ -1,4 +1,4 @@
-(ns ta.trade.metrics.roundtrip-stats
+(ns ta.trade.metrics.roundtrip
   (:require
    [clojure.set]
    [tablecloth.api :as tc]
@@ -76,11 +76,8 @@
 
 (defn roundtrip-metrics [roundtrips-ds]
   (let [wl-stats (win-loss-stats roundtrips-ds)
-        metrics (win-loss-performance-metrics wl-stats)
-        metrics-ds (tc/dataset metrics)]
-    (-> metrics-ds
-        (tc/set-dataset-name "rt-stats")
-        (tc/add-column :p (tc/dataset-name roundtrips-ds)))))
+        metrics (win-loss-performance-metrics wl-stats)]
+    metrics))
 
 ; {:drop-missing? false} as an option
 
@@ -90,6 +87,8 @@
                     :win-nr-prct
                     :avg-win-log :avg-loss-log
                     :avg-bars-win :avg-bars-loss])
+
+;; used in trateg.demo:
 
 (defn backtests->performance-metrics [backtest-results]
   (as-> (map roundtrip-metrics backtest-results) x

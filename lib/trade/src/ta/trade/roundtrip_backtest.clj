@@ -108,8 +108,10 @@
     (assert (:signal signal-ds) "to create roundtrips :signal column needs to be present!")
     (assert (:date  signal-ds) "to create roundtrips :date column needs to be present!")
     (assert (:close  signal-ds) "to create roundtrips :close column needs to be present!")
-    (-> (trade-signal signal-ds)
-        (calc-roundtrips options))))
+    (let [trade-ds (trade-signal signal-ds)
+          roundtrip-ds (calc-roundtrips trade-ds options)]
+      {:trade-ds trade-ds
+       :roundtrip-ds roundtrip-ds})))
 
 (comment
   (-> (tc/dataset {:l [:x :x :y :y :y]
@@ -132,6 +134,7 @@
                                      ]
                               :close [1 2 3 4 5 6 7]
                               :signal [:buy :hold :flat :buy :hold :hold :flat]}))
+  
   signal-ds
 
   (trade-signal signal-ds)

@@ -2,12 +2,10 @@
   (:require
    [taoensso.timbre :refer [info warn error]]
    [tech.v3.dataset :as tds]
-   [ta.helper.date :refer [parse-date epoch-second->datetime ->epoch-second]]
-   [ta.algo.manager :refer [algo-run-window]]))
+   [ta.helper.date :refer [parse-date epoch-second->datetime ->epoch-second]]))
 
-(defn algo-col->shapes [algo options epoch-start epoch-end col cell->shape]
-  (let [ds (algo-run-window algo (:symbol options) (:frequency options) options epoch-start epoch-end)
-        r (tds/mapseq-reader ds)]
+(defn col->shapes [ds col cell->shape]
+  (let [r (tds/mapseq-reader ds)]
     (into []
           (map (fn [row]
                  (cell->shape (:epoch row) (col row))) r))))

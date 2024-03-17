@@ -25,20 +25,7 @@
 (defn ds-epoch [ds]
   (tds/column-map ds :epoch #(* 1000 (dt/->epoch-second %)) [:date]))
 
-(defn select-rows-since [ds date]
-  (-> ds
-      (tc/select-rows
-       (fn [row]
-         (-> row
-             :date
-             (tick/>= date))))))
 
-(defn select-rows-interval [ds date-start date-end]
-  (tc/select-rows ds
-                  (fn [row]
-                    (let [date (:date row)]
-                      (and (tick/>= date date-start)
-                           (tick/<= date date-end))))))
 
 (defn add-year-and-month-date-as-local-date [ds]
   (-> ds
@@ -62,38 +49,6 @@
        (add-year-and-month-date-as-local-date))
 ;
   )
-(defn year [v]
-  (let [n (count v)]
-    ;(println "year vec count: " n " v: " v)
-    (dtype/clone
-     (dtype/make-reader
-      :int32
-      n
-      (-> (tick/year (v idx)) .getValue)))))
-
-(defn day-of-month [v]
-  (let [n (count v)]
-    ;(println "year vec count: " n " v: " v)
-    (dtype/clone
-     (dtype/make-reader
-      :int32
-      n
-      (tick/day-of-month (v idx))))))
-
-(defn month [v]
-  (let [n (count v)]
-    ;(println "year vec count: " n " v: " v)
-    (dtype/clone
-     (dtype/make-reader
-      :int32
-      n
-      (-> (tick/month (v idx)) .getValue)))))
-
-(defn add-year-and-month-date-as-instant [ds]
-  (-> ds
-      (tc/add-columns
-       {:year  (year (:date ds))
-        :month (month (:date ds))})))
 
 ; (require '[clj-time.coerce])
 ; (clj-time.coerce/to-long dt)

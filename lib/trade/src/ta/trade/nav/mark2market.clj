@@ -1,4 +1,4 @@
-(ns ta.trade.metrics.nav-trades
+(ns ta.trade.nav.mark2market
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [tick.core :as t]
