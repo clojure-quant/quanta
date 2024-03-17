@@ -1,8 +1,8 @@
-# ta [![GitHub Actions status |pink-gorilla/trateg](https://github.com/pink-gorilla/trateg/workflows/CI/badge.svg)](https://github.com/pink-gorilla/trateg/actions?workflow=CI)[![Clojars Project](https://img.shields.io/clojars/v/org.pinkgorilla/ta.svg)](https://clojars.org/org.pinkgorilla/ta)
+# quanta [![GitHub Actions status |pink-gorilla/trateg](https://github.com/pink-gorilla/trateg/workflows/CI/badge.svg)](https://github.com/pink-gorilla/trateg/actions?workflow=CI)[![Clojars Project](https://img.shields.io/clojars/v/org.pinkgorilla/ta.svg)](https://clojars.org/org.pinkgorilla/ta)
 
-## What is TA?
+## What is quanta?
 
-TA is a technical analysis datascience platform written in Clojure.
+Quanta is a technical analysis datascience platform written in Clojure.
 
 - Ease of Use: TA tries to get out of your way so that you can focus on algorithm development. See below for a code example.
 
@@ -16,22 +16,8 @@ You can use libraries similar to matplotlib, scipy, statsmodels, and sklearn to 
 
 ## symbol-lists
 
-*symbol lists*
-`app/resources/symbollist`contains edn files that contain symbols.
-The name (without .edn) can be specified in the commandline.
 
-## timeseries warehouse
 
-Timeseries data is stored as gzipped nippy files in db directory. The path is
-stored in the config in [:ta :warehouse :series]. :crypto and :stocks are two different
-warehouses. Bybit goes to :crypto. Alphavantage goes to :stocks.
-
-*warehouse summary* `cd app/demo && clojure -X:run :task :warehouse` or
-                    `bb warehouse-summary`
-
-*shuffle warehouse* `cd app/demo && clojure -X:run :task :shuffle` 
-
-This reads the :crypto warehouse, shuffles the returns and creates the :random warehouse.
 
 ## VAULT
 
