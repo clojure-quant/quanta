@@ -32,10 +32,19 @@
                                    (t/instant "2020-01-23T00:00:00Z")
                                    (t/instant "2020-01-24T00:00:00Z")]
                             :close [1 2 3 4 5 6 7]
-                            :signal [:buy :hold :flat :buy :hold :hold :flat]}))
+                            :signal [:buy :hold :flat ;rt1 
+                                     :buy :hold :hold :flat ; rt2
+                                     ]}))
 signal-ds
 
-(trade-summary signal-ds)
+(def r (trade-summary signal-ds))
+
+  (:trade-ds r)
+  (:roundtrip-ds r)
+
+(:nav-ds r) 
+
+
 
 ;
     )

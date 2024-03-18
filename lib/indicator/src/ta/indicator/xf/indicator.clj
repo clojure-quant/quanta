@@ -2,33 +2,7 @@
   (:require [net.cgrand.xforms :as x]
             [net.cgrand.xforms.rfs :as rfs]))
 
-; stolen from: https://github.com/rereverse/tapassage
-(defmacro indicator
-  ([trans-fn] `(indicator [] ~trans-fn))
-  ([bindings trans-fn]
-   `(fn [xf#]
-      (let ~bindings
-        (fn
-          ([] (xf#))
-          ([result#] (xf# result#))
-          ([result# input#]
-           (if-let [r# (~trans-fn input#)]
-             (if (reduced? r#)
-               r# (xf# result# r#))
-             result#)))))))
 
-(defn field-xf [f]
-  (indicator
-   []
-   (fn [x]
-     (f x))))
-
-(defn multiple-xf [m]
-  (indicator
-   (fn [x]
-     (into {} (map (fn [[k v]]
-                     (println k "x: " x "v: " (v x))
-                     [k (v x)]) m)))))
 
 ; stolen from: https://github.com/pangloss/transducers/blob/master/src/xn/transducers.cljc
 (defn multiplex

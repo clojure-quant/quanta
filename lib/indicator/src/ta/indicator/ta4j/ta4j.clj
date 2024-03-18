@@ -1,4 +1,4 @@
-(ns ta.indicator.ta4j
+(ns ta.indicator.ta4j.ta4j
   "convenience wrapper on the java library ta4j"
   (:require
    [tick.core :as tick]

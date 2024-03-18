@@ -23,17 +23,18 @@
 (defn realized-nav [backtest-ds]
   (let [;{:keys [date close position]} backtest-ds
         date (:date backtest-ds)
-        close (:position backtest-ds)
+        close (:close backtest-ds)
         position (:position backtest-ds)
-        _ (println " add columns ...")
+        _ (println "REALIZED NAV : add columns ...")
         _ (println backtest-ds)
         ds (-> backtest-ds
                dt/add-year
                dt/add-month
-              ;(tc/add-column :pl-log (position-pl close position))
+              (tc/add-column :pl-log (position-pl close position))
             )
-        _ (println "*************")
+        _ (println "CALC NAV-STATS *************")
         ds-by-month (nav-stats ds [:year :month])
+        _ (println "CALC trailing sum *************")
         cum-pl-t (trailing-sum (:pl-log-cum ds-by-month))
         nav (dfn/+ cum-pl-t 2.0)
         nav-px (dfn/pow 10 nav)]

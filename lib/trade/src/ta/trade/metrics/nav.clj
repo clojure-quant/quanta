@@ -5,6 +5,7 @@
    [ta.trade.position-pl :refer [position-pl]]))
 
 (defn nav-metrics [backtest-ds]
+  (println "nav metrics...")
   (let [pl-log (position-pl (:close backtest-ds) (:position backtest-ds))
         cum-pl (trailing-sum pl-log)
         dd (drawdowns-from-value cum-pl)
@@ -15,5 +16,6 @@
           ;                             :pl-cum cum-pl
           ;                             :dd dd})
         ]
+    (println "nav-metrics .. done!")
     {:cum-pl cum-pl-last
      :max-dd max-dd}))

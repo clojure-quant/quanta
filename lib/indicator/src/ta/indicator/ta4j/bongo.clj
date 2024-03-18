@@ -1,5 +1,5 @@
-(ns ta.indicator.bongo
-  (:require [ta.indicator.ta4jcolumn])
+(ns ta.indicator.ta4j.bongo
+  (:require [ta.indicator.ta4j.ta4jcolumn])
   (:import [ta.indicator.ta4jcolumn Hello column])
  )
 

@@ -1,4 +1,4 @@
-(ns ta.indicator.ta4jcolumn
+(ns ta.indicator.ta4j.ta4jcolumn
   (:import 
    [org.ta4j.core.num DoubleNum DecimalNum]
    [org.ta4j.core.indicators AbstractIndicator] 

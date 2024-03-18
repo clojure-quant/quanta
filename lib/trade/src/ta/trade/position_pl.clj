@@ -51,9 +51,28 @@
     0.0))
 
 (defn position-pl [close position]
+  (println "POSITION PL close: " close "pos: " position)
   (let [close-f1  (into [] xf-future close)
+         _ (println "log ...")
         log-close (fun/log10 close)
         log-close-f1 (fun/log10 close-f1)
         d-log-c-f1 (fun/- log-close-f1 log-close)
+        _ (println "roundtrip - pl ...")
         pl-log (dtype/emap roundtrip-pl :float64 position d-log-c-f1)]
+    (println "posizion-pl done!")
+    (println "pl-log: " pl-log)
     pl-log))
+
+(comment 
+  (require '[tablecloth.api :as tc])
+  
+  (def pos-ds (tc/dataset {:close [1 2 3 4 5 6 7]
+                           :position [:long :short :flat :long :short :flat :flat]}))
+
+  (position-pl (:close pos-ds) (:position pos-ds))
+
+  
+  
+  
+ ; 
+  )

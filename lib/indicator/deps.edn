@@ -3,6 +3,7 @@
  {org.clojure/clojure    {:mvn/version "1.11.1"}
   scicloj/tablecloth {:mvn/version "7.021"} ; brings techml-dataset
   org.ta4j/ta4j-core     {:mvn/version "0.14"}   ; ta4j java technical indicator library
+  net.cgrand/xforms      {:mvn/version "0.19.2"} ; transducers for timeseries (ema sma)
   ;org.pinkgorilla/modular {:mvn/version "0.0.37"}
   ;ta/helper {:local/root "../helper" :deps/manifest :deps}
   }
