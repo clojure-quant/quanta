@@ -2,7 +2,7 @@
   (:require
    [tablecloth.api :as tc]
    [ta.trade.metrics.roundtrip :refer [calc-roundtrip-stats]]
-   [ta.trade.nav.realized :refer [nav]]
+   [ta.trade.roundtrip-backtest.nav-realized :refer [nav]]
    [ta.helper.print :refer [print-all]]))
 
 ;; ROUNDTRIPS

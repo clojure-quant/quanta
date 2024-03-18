@@ -4,7 +4,7 @@
    [tablecloth.api :as tc]
    [ta.algo.buy-hold :refer [buy-hold-signal]]
    [ta.trade.signal :refer [trade-signal]]
-   [ta.trade.roundtrip-backtest :refer [backtest-ds]]
+   [ta.trade.roundtrip-backtest.roundtrip-backtest :refer [backtest-ds]]
    [ta.trade.metrics.roundtrip-stats :refer [calc-roundtrip-stats position-stats]]))
 
 (def ds-bars

@@ -1,4 +1,4 @@
-(ns ta.trade.drawdown)
+(ns ta.indicator.drawdown)
 
 (defn xf-trailing-high [xf]
   (let [high-val (atom 0)]
@@ -39,15 +39,6 @@
     ;(println "dd: " dd-vec " max dd: " dd)
     dd))
 
-(comment
-  (def returns [1 1 3 1 -2 -1 1 3])
-  (def returns [-11.61, -2.824, 2.887, -7.174, 0.1188, 28.57, -2.951, 12.46, -1.684, 21.74])
-
-  (drawdowns returns)
-  (max-drawdown returns)
-
-;  
-  )
 
 (defn xf-trailing-sum [xf]
   (let [sum (atom 0)]
@@ -68,6 +59,14 @@
   (into [] xf-trailing-sum v))
 
 (comment
+  
+ (def returns [1 1 3 1 -2 -1 1 3])
+(def returns [-11.61, -2.824, 2.887, -7.174, 0.1188, 28.57, -2.951, 12.46, -1.684, 21.74])
+
+(drawdowns returns)
+(max-drawdown returns)
+
+
   (trailing-sum [1 1 1 1 1])
 
  ; 
