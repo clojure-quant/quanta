@@ -1,13 +1,31 @@
 (ns ta.viz.ds.metrics
   (:require
+   [taoensso.timbre :refer [trace debug info warn error]]
    [tech.v3.dataset :as tds]
-   [ta.trade.core :refer [trade-summary]]))
+   [de.otto.nom.core :as nom]
+   [ta.trade.core :refer [trade-summary]]
+   [ta.viz.error :refer [error-render-spec]]))
 
 (defn ds->map [ds]
   ;(tc/rows :as-maps) ; this does not work, type of it is a reified dataset. 
   ; this works in repl, but when sending data to the browser it fails.
   (into []
         (tds/mapseq-reader ds)))
+
+(defn trade-summary-safe [ds]
+  (try
+    (trade-summary ds)
+    (catch Exception ex
+      (error "exception in trade-summary calc: " ex)
+      (nom/fail ::viz-calc {:message "algo viz-calc exception!"
+                            :location :trade-summary}))))
+
+(defn metrics-render-spec-impl [{:keys [roundtrip-ds nav-ds metrics]}]
+  {:render-fn 'ta.viz.renderfn.metrics/metrics
+   :data {:roundtrips (ds->map roundtrip-ds)
+          :nav (ds->map nav-ds)
+          :metrics metrics}
+   :spec {}})
 
 (defn metrics-render-spec
   "returns a render specification {:render-fn :spec :data}. 
@@ -16,14 +34,7 @@
    plotted with a specified style/position, 
    created from the bar-algo-ds"
   [spec bar-signal-ds]
-  (let [{:keys [trade-ds roundtrip-ds nav-ds metrics]} (trade-summary bar-signal-ds) 
-        ]
-    ;(assert (chart-pane-spec? pane-spec) "please comply with chart-pane-spec")
-    {:render-fn 'ta.viz.renderfn.metrics/metrics
-     :data {:trades (ds->map trade-ds)
-            :roundtrips (ds->map roundtrip-ds)
-            :nav (ds->map nav-ds)
-            :metrics metrics}
-     :spec {}}))
-
-  
+  (let [summary (trade-summary-safe bar-signal-ds)]
+    (if (nom/anomaly? summary)
+      (error-render-spec summary)
+      (metrics-render-spec-impl summary))))

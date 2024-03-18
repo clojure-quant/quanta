@@ -1,7 +1,6 @@
 (ns ta.trade.roundtrip.create
   (:require
-   [tech.v3.datatype :as dtype]
-   [tablecloth.api :as api]
+   [tablecloth.api :as tc]
    [ta.indicator.helper :refer [indicator]]))
 
 (defn- new-signal [signal]
@@ -71,7 +70,6 @@
 (comment
 
   (require '[tick.core :as t])
-  (require '[tablecloth.api :as tc])
 
   (def ds (tc/dataset {:date [(t/instant "2020-01-01T00:00:00Z")
                               (t/instant "2020-01-02T00:00:00Z")

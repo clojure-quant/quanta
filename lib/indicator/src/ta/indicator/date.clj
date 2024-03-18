@@ -1,12 +1,12 @@
 (ns ta.indicator.date
-   (:require
-    [tech.v3.dataset :as tds]
-    [tech.v3.datatype :as dtype]
-    [tech.v3.datatype.functional :as dfn]
-    [tech.v3.datatype.datetime :as datetime]
-    [tablecloth.api :as tc]
-    [tick.core :as t]))
-  
+  (:require
+   [tech.v3.dataset :as tds]
+   [tech.v3.datatype :as dtype]
+   [tech.v3.datatype.functional :as fun]
+   [tech.v3.datatype.datetime :as datetime]
+   [tablecloth.api :as tc]
+   [tick.core :as t]))
+
 (defn year [v]
   (let [n (count v)]
     ;(println "year vec count: " n " v: " v)
@@ -31,6 +31,9 @@
 (defn add-month [ds]
   (tc/add-column ds :month (month (:date ds))))
 
+(defn add-year-month [ds]
+  (tc/add-column ds :year-month (fun/+ (fun/* 100 (year (:date ds)))
+                                       (month (:date ds)))))
 
 (defn day-of-month [v]
   (let [n (count v)]
@@ -44,6 +47,10 @@
 (defn add-day [ds]
   (tc/add-column ds :day (day-of-month (:date ds))))
 
+(defn add-year-month-day [ds]
+  (tc/add-column ds :year-month-day (fun/+ (fun/* 10000 (year (:date ds)))
+                                           (fun/* 100 (month (:date ds)))
+                                           (day-of-month (:date ds)))))
 
 (defn select-rows-since [ds date]
   (-> ds
@@ -60,15 +67,12 @@
                       (and (t/>= date date-start)
                            (t/<= date date-end))))))
 
-(comment 
+(comment
 
   (-> (tc/dataset {:date (t/instant)})
       add-year
       add-month
       add-day)
 
-
-  
-  
 ;  
   )

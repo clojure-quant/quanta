@@ -5,7 +5,7 @@
    [tech.v3.datatype :as dtype]
    [tablecloth.api :as tc]
    [ta.indicator.returns :refer [diff]]
-   [ta.trade.signal2 :refer [select-signal-is select-signal-has select-signal-contains]]
+   [ta.trade.signal :refer [select-signal-is select-signal-has select-signal-contains]]
    [ta.viz.chart-spec :refer [get-series]]))
 
 (defn- instant->epoch-millisecond [dt]

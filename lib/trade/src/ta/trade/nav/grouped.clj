@@ -23,10 +23,13 @@
         ;_ (println roundtrip-perf-ds)
         ds (-> roundtrip-perf-ds
                (tc/rename-columns {:exit-date :date})
-               dt/add-year
-               dt/add-month)
+               ;dt/add-year
+               ;dt/add-month
+               ;dt/add-year-month
+               dt/add-year-month-day
+               )
         ;_ (println "CALC NAV-STATS *************")
-        ds-by-month (aggregate-roundtrips ds [:year :month])
+        ds-by-month (aggregate-roundtrips ds [:year-month-day #_:year-month #_:year #_:month])
         ;_ (println "ds-grouped: " ds-by-month)
         ;_ (println "CALC trailing sum *************")
         cum-ret-log (trailing-sum (:ret-log ds-by-month))
@@ -38,7 +41,7 @@
           :nav nav-px
           :drawdown (drawdowns-from-value cum-ret-log)
           })
-        (tc/select-columns [:year :month
+        (tc/select-columns [:year-month-day ; :year-month ; :year :month
                             :ret-log :trades
                             :cum-ret-log :nav :drawdown ]))))
 

@@ -1,16 +1,7 @@
 (ns ta.trade.signal
   (:require
-   [tablecloth.api :as tc]
-   [ta.helper.ago :refer [xf-ago-pair]]))
-
-
-(defn buy-above [p o]
-  (if (and p o)
-    (cond
-      (> p o) :buy
-      (< p o) :flat
-      :else :hold)
-    :hold))
+   [tech.v3.datatype :as dtype]
+   [tablecloth.api :as tc]))
 
 (defn filter-signal [{:keys [signal of]
                       :or {of :signal}}
@@ -20,50 +11,46 @@
                     (let [cur-signal (of cols)]
                       (= cur-signal signal)))))
 
+(defn select-signal-contains [ds signal-col v]
+  (tc/select-rows ds
+                  (fn [row]
+                    (contains? v (signal-col row)))))
+
+(defn select-signal-is [ds signal-col v]
+  (tc/select-rows ds
+                  (fn [row]
+                    (= (signal-col row) v))))
+
+(defn select-signal-has [ds signal-col]
+  (tc/select-rows ds
+                  (fn [row]
+                    (signal-col row))))
+
+(defn signal-keyword->signal-double [signal]
+  (let [n (count signal)]
+    (dtype/make-reader
+     :float64 n
+     (let [s (signal idx)]
+       (cond
+         (= :buy s) 1.0
+         (= :long s) 1.0
+         (= :sell s) -1.0
+         (= :short s) -1.0
+         :else 0.0)))))
+
 (comment
 
-  (into [] xf-signal->position
-        [:none
-         :buy :buy :buy :none nil nil :buy :none :none
-         :sell :none])
 
-  (into [] (comp xf-ago-pair
-                 (map position-change->trade))
-        [:none :long :long :long :long :long :long :long :long :long :short :short])
+  (def ds
+    (tc/dataset [{:idx 1 :signal false :doji :buy}
+                 {:idx 2 :signal false :doji :flat}
+                 {:idx 3 :signal true :doji :sell}
+                 {:idx 4 :signal false :doji :long}]))
 
-  (into [] (comp
-            xf-signal->position
-            xf-ago-pair
-            (map position-change->trade))
-        [:none
-         :buy :buy :buy :none nil nil :buy :none :none
-         :sell :none])
+  (select-signal-is ds :signal true)
 
-  (signal->position [:none
-                     :buy :buy :buy :none :flat nil :buy :none :none
-                     :sell :none])
+  (:doji ds)
+  (signal-keyword->signal-double (:doji ds))
 
-  (let [s [:none
-           :buy :buy  :none nil
-           :flat :none
-           :buy :none
-           :flat :none]]
-    (tc/dataset {:signal s
-                 :position (signal->position s)
-                 :trade  (signal->trade s)}))
-
-  (-> [:none
-       :buy :buy :buy :none nil nil :buy :none :none
-       :sell :none]
-      signal->trade
-      trade->trade-no)
-
-  (-> (signal->trade [:none
-                      :buy :buy :buy :none nil nil :buy :none :none
-                      :sell :none])
-      trade->trade-no)
-
-  (signal->trade [:neutral :long :long])
-
-;  
+; 
   )

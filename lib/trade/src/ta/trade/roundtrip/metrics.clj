@@ -3,54 +3,46 @@
    [clojure.set]
    [tablecloth.api :as tc]
    [tech.v3.dataset :as tds]
-   [ta.math.stats :refer [mean]]
+   [tech.v3.datatype.functional :as fun]
    [ta.indicator.drawdown :refer [max-drawdown]]))
 
 (defn calc-roundtrip-stats [roundtrips-ds group-by]
   (-> roundtrips-ds
       (tc/group-by group-by)
       (tc/aggregate {:bars (fn [ds]
-                             (->> ds
-                                  :bars
-                                  (apply +)))
+                             (fun/sum (:bars ds)))
                      :trades (fn [ds]
                                (tc/row-count ds))
                      ; log
                      :pl-log-cum (fn [ds]
-                                   (->> ds
-                                        :ret-log
-                                        (apply +)))
+                                   (fun/sum (:ret-log ds)))
 
                      :pl-log-mean (fn [ds]
-                                    (->> ds
-                                         :ret-log
-                                         mean))
+                                    (fun/mean (:ret-log ds)))
 
                      :pl-log-max-dd (fn [ds]
                                       (-> ds
                                           (tc/->array :ret-log)
-                                          max-drawdown))} {:drop-missing? false})
+                                          max-drawdown))}
+                    {:drop-missing? false})
       (tc/set-dataset-name (tc/dataset-name roundtrips-ds))))
 
-(defn side-stats [roundtrips-ds]
-  (as-> roundtrips-ds x
-    (calc-roundtrip-stats x [:side])
-    (tds/mapseq-reader x)
-    (map (juxt :side identity) x)
-    (into {} x)))
+(defn side-stats [roundtrip-ds]
+  (calc-roundtrip-stats roundtrip-ds [:side]))
 
 (defn win-loss-stats [roundtrips-ds]
-  (as-> roundtrips-ds x
-    (calc-roundtrip-stats x [:win?])
-    (tds/mapseq-reader x)
-    (map (juxt :win? identity) x)
-    (into {} x)
-    (clojure.set/rename-keys x {true :win
-                                false :loss})))
+  (calc-roundtrip-stats roundtrips-ds [:win?]))
+
+(defn get-group-of [ds group-col group-val]
+  (let [ds-filtered  (tc/select-rows ds  (fn [ds]
+                                           (= group-val (group-col ds))))
+        vec (into [] (tds/mapseq-reader ds-filtered))
+        row (first vec)]
+    row))
 
 (defn win-loss-performance-metrics [win-loss-stats]
-  (let [win (:win win-loss-stats)
-        loss (:loss win-loss-stats)
+  (let [win (get-group-of win-loss-stats :win? true)
+        loss (get-group-of win-loss-stats :win? false)
         pl-log-cum (+ (:pl-log-cum win)
                       (:pl-log-cum loss)) ; loss is negative, so add
         trade-count-all (+ (:trades win) (:trades loss))
@@ -76,6 +68,7 @@
   (assert (:bars  roundtrips-ds) "to calc metrics :bars column needs to be present!")
   (assert (:win?  roundtrips-ds) "to calc metrics :win? column needs to be present!")
   ;(println (tc/select-columns roundtrips-ds [:win? :ret-log :bars]))
+  (println "calc-roundtrip-metrics " roundtrips-ds)
   (let [wl-stats (win-loss-stats roundtrips-ds)
         metrics (win-loss-performance-metrics wl-stats)]
     metrics))
@@ -92,7 +85,7 @@
 ;; used in trateg.demo:
 
 (defn backtests->performance-metrics [backtest-results]
-  (as-> (map roundtrip-metrics backtest-results) x
+  (as-> (map calc-roundtrip-metrics backtest-results) x
     (apply tc/concat x)
     (tc/select-columns x cols-rt-stats)
        ;(reduce tc/append (tc/dataset {}))
@@ -105,11 +98,41 @@
       :win? [true false true false]
       :bars [1 1 1 1]}))
 
+  (calc-roundtrip-stats ds [:win?])
+   ;; => _unnamed [2 6]:
+   ;;    
+   ;;    | :win? | :bars | :trades | :pl-log-cum | :pl-log-mean | :pl-log-max-dd |
+   ;;    |-------|------:|--------:|------------:|-------------:|---------------:|
+   ;;    |  true |   2.0 |       2 | -0.42596874 |  -0.21298437 |     0.42596874 |
+   ;;    | false |   2.0 |       2 |  0.27300127 |   0.13650064 |     0.00000000 |
+
   (win-loss-stats ds)
-    ;; => {:win? {:win? true, :bars 2, :trades 2, :pl-log-cum -0.42596874, :pl-log-mean -0.21298437, :pl-log-max-dd 0.42596874},
-    ;;     :loss {:win? false, :bars 2, :trades 2, :pl-log-cum 0.27300127, :pl-log-mean 0.136500635, :pl-log-max-dd 0.0}}
+  ;; => _unnamed [2 6]:
+  ;;    
+  ;;    | :win? | :bars | :trades | :pl-log-cum | :pl-log-mean | :pl-log-max-dd |
+  ;;    |-------|------:|--------:|------------:|-------------:|---------------:|
+  ;;    |  true |   2.0 |       2 | -0.42596874 |  -0.21298437 |     0.42596874 |
+  ;;    | false |   2.0 |       2 |  0.27300127 |   0.13650064 |     0.00000000 |
 
   (side-stats ds)
+  ;; => _unnamed [2 6]:
+  ;;    
+  ;;    |  :side | :bars | :trades | :pl-log-cum | :pl-log-mean | :pl-log-max-dd |
+  ;;    |--------|------:|--------:|------------:|-------------:|---------------:|
+  ;;    |  :long |   2.0 |       2 | -0.42596874 |  -0.21298437 |     0.42596874 |
+  ;;    | :short |   2.0 |       2 |  0.27300127 |   0.13650064 |     0.00000000 |
+
+  (def side-s (side-stats ds))
+
+  side-s
+
+  
+
+  (get-group-of side-s :side :long)
+  (get-group-of side-s :side :short)
+  (get-group-of side-s :side :parrot)
+
+
   (calc-roundtrip-metrics ds)
    ;;    
    ;;    entry-price | :exit-price | :ret-abs |    :ret-prct |    :ret-log | :win? | :bars | :cum-ret-log |       :nav |
