@@ -1,12 +1,12 @@
-(ns ta.indicator.ma-test
+(ns ta.indicator.momentum-test
   (:require [clojure.test :refer :all]
             [ta.indicator.test-helper :refer [all-fuzzy=]]
             [tick.core :as tick]
             [tablecloth.api :as tc]
-            [ta.indicator :refer [sma wma ema mma]]
-            [ta.indicator.ta4j.ta4j :refer [ind ind-values ds->ta4j-close]]
-            [tech.v3.datatype.statistics :as stats]
-            ))
+            [ta.indicator :refer [macd rsi]]
+            [ta.indicator.signal :refer [upward-change downward-change]]
+            [ta.indicator.ta4j.ta4j :refer [ind ind-values ds->ta4j-close]]))
+
 
 ;; init
 
@@ -28,73 +28,41 @@
                {:date (tick/instant "2019-11-15T00:00:00.000Z") :open 100 :high 120 :low 90 :close 110 :volume 11000}]))
 
 
-(defn sma-ta4j [len ds]
+(defn macd-ta4j [n m ds]
   (let [close (ds->ta4j-close ds)]
-    (ind :SMA close len)))
+    (ind :MACD close n m)))
 
-(defn wma-ta4j [len ds]
+(defn rsi-ta4j [n ds]
   (let [close (ds->ta4j-close ds)]
-    (ind :WMA close len)))
-
-(defn ema-ta4j [len ds]
-  (let [close (ds->ta4j-close ds)]
-    (ind :EMA close len)))
-
-(defn mma-ta4j [len ds]
-  (let [close (ds->ta4j-close ds)]
-    (ind :MMA close len)))
+    (ind :RSI close n)))
 
 
 ;; TESTS
 
-(deftest sma-test
-  (let [sma-ds (vec (sma {:n 2} ds))
-        sma-ta4j (-> (sma-ta4j 2 ds)
-                     (ind-values)
-                     (vec))]
-    (is (all-fuzzy= sma-ds sma-ta4j))))
+(deftest macd-test
+  (let [macd-ds (map double (macd 12 26 :close ds))
+        macd-ta4j (-> (macd-ta4j 12 26 ds)
+                      (ind-values))]
+    (is (all-fuzzy= macd-ds macd-ta4j))))
 
-(deftest wma-test
-  (let [wma-ds (vec (wma 2 :close ds))
-        wma-ta4j (-> (wma-ta4j 2 ds)
-                     (ind-values)
-                     (vec))]
-    (is (all-fuzzy= wma-ds wma-ta4j))))
-
-(deftest ema-test
-  (let [ema-ds (->> (ema 2 :close ds)
-                    (map double)
-                    (vec))
-        ema-ta4j (-> (ema-ta4j 2 ds)
-                     (ind-values)
-                     (vec))]
-    (is (all-fuzzy= ema-ds ema-ta4j))))
-
-(deftest mma-test
-  (let [mma-ds (->> (mma 2 :close ds)
-                    (map double)
-                    (vec))
-        mma-ta4j (-> (mma-ta4j 2 ds)
-                     (ind-values)
-                     (vec))]
-    (is (all-fuzzy= mma-ds mma-ta4j))))
+(deftest rsi-test
+  (let [rsi-ds (map double (rsi 2 :close ds))
+        rsi-ta4j (-> (rsi-ta4j 2 ds)
+                      (ind-values))]
+    (is (all-fuzzy= rsi-ds rsi-ta4j))))
 
 
 (comment
-  (vec (ind-values (sma-ta4j 2 ds)))
-  (vec (ind-values (wma-ta4j 2 ds)))
-  (vec (ind-values (ema-ta4j 2 ds)))
-  (vec (ind-values (mma-ta4j 2 ds)))
+  (-> (macd-ta4j 12 26 ds)
+      (ind-values))
 
-  (vec (sma {:n 2} ds))
-  (vec (wma 2 :close ds))
+  (-> (rsi-ta4j 2 ds)
+      (ind-values))
 
+  (map double (macd :close ds))
 
-  (all-fuzzy= [1.0 1.0 1.0] [1.0 1.0 1.00000000005])
-  (all-fuzzy= [1.0 1.0 1.0] [1.0 1.0 1.0000000005])
+  (upward-change (:close ds))
+  (downward-change (:close ds))
 
-  (stats/mean [1 2 3 4 5 6 7 8])
-
-  (map double (ema 2 :close ds))
-  (map double (mma 2 :close ds))
+  (rsi 2 :close ds)
   )
