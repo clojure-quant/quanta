@@ -14,7 +14,6 @@
 
 
 (defn cross-up [price indicator]
-  (println "cross up running! " price indicator)
   (let [n (count price)]
     (dtype/make-reader
      :bool n
@@ -23,7 +22,7 @@
        false
        (and (> (price idx)
                (indicator idx))
-            (< (price (dec idx))
+            (<= (price (dec idx))
                (indicator (dec idx))))))))
 
 (defn cross-down [price indicator]
@@ -35,7 +34,7 @@
        false
        (and (< (price idx)
                (indicator idx))
-            (> (price (dec idx))
+            (>= (price (dec idx))
                (indicator (dec idx))))))))
 
 (defn buy-above [p o]
