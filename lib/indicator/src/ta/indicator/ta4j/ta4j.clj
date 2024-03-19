@@ -66,9 +66,6 @@
         (.addPrice series data))
     series))
 
-(def x (:close ds))
-x
-(get-column ds :close)
 
 (comment
   (require '[ta.helper.date-ds  :refer [days-ago]])
@@ -82,7 +79,11 @@ x
          :date [(days-ago 3) (days-ago 2) (days-ago 1)]}
         tc/dataset))
   ds
-  
+
+  (def x (:close ds))
+  x
+  (get-column ds :close)
+
   
   (-> (ds->ta4j-close ds)
       (ind-values)

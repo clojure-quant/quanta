@@ -1,4 +1,4 @@
-(ns ta.core-test
+(ns ta.indicator.core-test
   (:require
    [clojure.test :refer :all]
    [ta.data.csv :refer [load-csv-bars-trateg]]
