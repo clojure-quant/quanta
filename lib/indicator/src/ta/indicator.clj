@@ -1,9 +1,12 @@
 (ns ta.indicator
   (:require
-   [tech.v3.datatype.functional :as fun]
-   [tech.v3.dataset.rolling :as r :refer [rolling mean]]
-   [tablecloth.api :as tc]
-   [ta.helper.ds :refer [has-col]]))
+    [tech.v3.datatype :as dtype]
+    [tech.v3.datatype.functional :as fun]
+    [tech.v3.datatype.statistics :as stats]
+    [tech.v3.dataset.rolling :as r :refer [rolling mean]]
+    [tablecloth.api :as tc]
+    [ta.helper.ds :refer [has-col]]
+    [ta.math.series :refer [gauss-summation]]))
 
 (defn prior [{:keys [of]
               :or {of :close}}
@@ -20,6 +23,55 @@
   (:sma (rolling bar-ds {:window-size n
                      :relative-window-position :left}
                  {:sma (mean of)})))
+
+;; https://www.investopedia.com/ask/answers/071414/whats-difference-between-moving-average-and-weighted-moving-average.asp
+(defn wma-f [series len & [norm]]
+  "series with asc index order (not reversed like in pine script)"
+  (let [sum (reduce + (for [i (range len)] (* (nth series i) (+ i 1))))
+        norm (if norm norm (gauss-summation len))]
+    (double (/ sum norm))))
+
+(defn wma [n of ds]
+  (let [norm (gauss-summation n)]
+    (:wma (r/rolling ds {:window-type :fixed
+                         :window-size n
+                         :relative-window-position :left}
+                     {:wma {:column-name [of]
+                            :reducer (fn [window]
+                                       (wma-f window n norm))}}))))
+
+; TODO:
+(defn ema-reader [price indicator]
+  (let [n (count price)
+        k (/ 2 (+ n 1))]
+    (dtype/make-reader
+      :float64 n
+      (if (= idx 0)
+        (stats/mean price)  ; SMA
+        (+ (* k
+              (- (price idx) (indicator (dec idx))))
+           (indicator (dec idx)))))))
+
+(defn ema [n of ds]
+  ; 1) EMA initial value = SMA initial
+  ; 2) k = (/ 2 (+ n 1))
+  ; 3) EMA-next = (cur-close-price - prev-ema) * k + prev-ema
+  ;
+  ; Formula transformations:
+  ;(cur-p - prev-ema) * k + prev-ema
+  ;=> cur-p * k - prev-ema * k + prev-ema
+  ;=> cur-p * k + prev-ema * (1 - k)
+
+  ; TODO:
+  (let [prev (sma {:n n} ds)
+        k (/ 2 (+ n 1))]
+    (:ema (r/rolling ds {:window-type :fixed
+                         :window-size n
+                         :relative-window-position :left}
+                     {:ema {:column-name [of]
+                            :reducer (fn [window]
+                                       (ema-reader of window))}}))))
+
 
 
 (defn tr [bar-ds]
