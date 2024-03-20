@@ -14,7 +14,6 @@
 
 
 (defn cross-up [price indicator]
-  (println "cross up running! " price indicator)
   (let [n (count price)]
     (dtype/make-reader
      :bool n
@@ -23,7 +22,7 @@
        false
        (and (> (price idx)
                (indicator idx))
-            (< (price (dec idx))
+            (<= (price (dec idx))
                (indicator (dec idx))))))))
 
 (defn cross-down [price indicator]
@@ -35,7 +34,7 @@
        false
        (and (< (price idx)
                (indicator idx))
-            (> (price (dec idx))
+            (>= (price (dec idx))
                (indicator (dec idx))))))))
 
 (defn buy-above [p o]
@@ -62,6 +61,30 @@
      (if (>= idx n-ago)
        (price (- idx n-ago))
        0))))
+
+(defn upward-change
+  "returns the diff if cur value is >= prev value else 0"
+  [price]
+  (let [n (count price)]
+    (dtype/make-reader
+      :float64 n
+      (if (= idx 0)
+        0
+        (if (>= (price idx) (price (dec idx)))
+          (- (price idx) (price (dec idx)))
+          0)))))
+
+(defn downward-change
+  "returns the diff if cur value is <= prev value else 0"
+  [price]
+  (let [n (count price)]
+    (dtype/make-reader
+      :float64 n
+      (if (= idx 0)
+        0
+        (if (<= (price idx) (price (dec idx)))
+          (- (price (dec idx)) (price idx))
+          0)))))
 
 
 (comment 

@@ -5,6 +5,8 @@
     [tech.v3.datatype.statistics :as stats]
     [tech.v3.dataset.rolling :as r :refer [rolling mean]]
     [tablecloth.api :as tc]
+    [ta.indicator.helper :refer [indicator]]
+    [ta.indicator.signal :refer [upward-change downward-change]]
     [ta.helper.ds :refer [has-col]]
     [ta.math.series :refer [gauss-summation]]))
 
@@ -16,7 +18,9 @@
                  {:prior (r/last of)})))
 
 
-(defn sma [{:keys [n of]
+(defn sma
+  "Simple moving average"
+  [{:keys [n of]
             :or {of :close
                  n 100}}
            bar-ds]
@@ -25,13 +29,20 @@
                  {:sma (mean of)})))
 
 ;; https://www.investopedia.com/ask/answers/071414/whats-difference-between-moving-average-and-weighted-moving-average.asp
-(defn wma-f [series len & [norm]]
+(defn wma-f [series len norm]
   "series with asc index order (not reversed like in pine script)"
-  (let [sum (reduce + (for [i (range len)] (* (nth series i) (+ i 1))))
-        norm (if norm norm (gauss-summation len))]
+  (let [
+        sum (reduce + (for [i (range len)] (* (nth series i) (+ i 1))))
+        ; TODO use vector functions. fix reify
+        ;sum (fun/+
+        ;      (fun/* series
+        ;             (range 1 (inc (count series)))))
+        ]
     (double (/ sum norm))))
 
-(defn wma [n of ds]
+(defn wma
+  "Weighted moving average"
+  [n of ds]
   (let [norm (gauss-summation n)]
     (:wma (r/rolling ds {:window-type :fixed
                          :window-size n
@@ -40,39 +51,55 @@
                             :reducer (fn [window]
                                        (wma-f window n norm))}}))))
 
-; TODO:
-(defn ema-reader [price indicator]
-  (let [n (count price)
-        k (/ 2 (+ n 1))]
+(defn- calc-ema-idx
+  "EMA-next = (cur-close-price - prev-ema) * alpha + prev-ema"
+  [alpha]
+  (indicator [prev-ema (volatile! nil)]
+             (fn [x]
+               (let [r (if @prev-ema
+                         (-> (- x @prev-ema)
+                             (* alpha)
+                             (+ @prev-ema))
+                         x)]
+                 (vreset! prev-ema r)
+                 r))))
+
+(defn ema
+  "Exponential moving average"
+  [n of ds]
+  (let [alpha (/ 2 (inc n))
+        series (of ds)]
+    (into [] (calc-ema-idx alpha) series)))
+
+(defn mma
+  "Modified moving average"
+  [n of ds]
+  (let [alpha (/ 1 n)
+        series (of ds)]
+    (into [] (calc-ema-idx alpha) series)))
+
+(defn macd
+  ([of ds] (macd 12 26 of ds))
+  ([n m of ds]
+   (let [ema-short (ema n of ds)
+         ema-long (ema m of ds)]
+     (fun/- ema-short ema-long))))
+
+(defn rsi
+  "Relative strength index"
+  [n of ds]
+  (let [gain (upward-change (of ds))
+        loss (downward-change (of ds))
+        mma-gain (mma n of (tc/dataset {of gain}))
+        mma-loss (mma n of (tc/dataset {of loss}))
+        len (count gain)]
     (dtype/make-reader
-      :float64 n
-      (if (= idx 0)
-        (stats/mean price)  ; SMA
-        (+ (* k
-              (- (price idx) (indicator (dec idx))))
-           (indicator (dec idx)))))))
-
-(defn ema [n of ds]
-  ; 1) EMA initial value = SMA initial
-  ; 2) k = (/ 2 (+ n 1))
-  ; 3) EMA-next = (cur-close-price - prev-ema) * k + prev-ema
-  ;
-  ; Formula transformations:
-  ;(cur-p - prev-ema) * k + prev-ema
-  ;=> cur-p * k - prev-ema * k + prev-ema
-  ;=> cur-p * k + prev-ema * (1 - k)
-
-  ; TODO:
-  (let [prev (sma {:n n} ds)
-        k (/ 2 (+ n 1))]
-    (:ema (r/rolling ds {:window-type :fixed
-                         :window-size n
-                         :relative-window-position :left}
-                     {:ema {:column-name [of]
-                            :reducer (fn [window]
-                                       (ema-reader of window))}}))))
-
-
+      :float64 len
+      (if (= 0.0 (mma-loss idx))
+        (if (= 0.0 (mma-gain idx)) 0 100)
+        (- 100 (/ 100
+                  (+ 1 (/ (mma-gain idx)
+                          (mma-loss idx)))))))))
 
 (defn tr [bar-ds]
   (assert (has-col bar-ds :low) "tr needs :low column in bar-ds")
