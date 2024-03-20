@@ -48,21 +48,21 @@
 ;; TESTS
 
 (deftest sma-test
-  (let [sma-ds (vec (sma {:n 2} ds))
+  (let [sma-ds (vec (sma {:n 2} (:close ds)))
         sma-ta4j (-> (sma-ta4j 2 ds)
                      (ind-values)
                      (vec))]
     (is (all-fuzzy= sma-ds sma-ta4j))))
 
 (deftest wma-test
-  (let [wma-ds (vec (wma 2 :close ds))
+  (let [wma-ds (vec (wma 2 (:close ds)))
         wma-ta4j (-> (wma-ta4j 2 ds)
                      (ind-values)
                      (vec))]
     (is (all-fuzzy= wma-ds wma-ta4j))))
 
 (deftest ema-test
-  (let [ema-ds (->> (ema 2 :close ds)
+  (let [ema-ds (->> (ema 2 (:close ds))
                     (map double)
                     (vec))
         ema-ta4j (-> (ema-ta4j 2 ds)
@@ -71,7 +71,7 @@
     (is (all-fuzzy= ema-ds ema-ta4j))))
 
 (deftest mma-test
-  (let [mma-ds (->> (mma 2 :close ds)
+  (let [mma-ds (->> (mma 2 (:close ds))
                     (map double)
                     (vec))
         mma-ta4j (-> (mma-ta4j 2 ds)
@@ -86,8 +86,8 @@
   (vec (ind-values (ema-ta4j 2 ds)))
   (vec (ind-values (mma-ta4j 2 ds)))
 
-  (vec (sma {:n 2} ds))
-  (vec (wma 2 :close ds))
+  (vec (sma {:n 2} (:close ds)))
+  (vec (wma 2 (:close ds)))
 
 
   (all-fuzzy= [1.0 1.0 1.0] [1.0 1.0 1.00000000005])
@@ -95,6 +95,6 @@
 
   (stats/mean [1 2 3 4 5 6 7 8])
 
-  (map double (ema 2 :close ds))
-  (map double (mma 2 :close ds))
+  (map double (ema 2 (:close ds)))
+  (map double (mma 2 (:close ds)))
   )
