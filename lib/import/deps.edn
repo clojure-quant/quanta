@@ -9,6 +9,7 @@
         babashka/fs {:mvn/version "0.4.19"} ; create dirs
         babashka/process {:mvn/version "0.5.21"} ; shell to other apps
         de.otto/nom {:mvn/version "0.3.0"}
+        org.clj-commons/hickory {:mvn/version "0.7.4"}
         io.replikativ/datahike {:mvn/version "0.6.1542"
                                   ;:exclusions [[org.clojure/clojurescript]]
                                 }
