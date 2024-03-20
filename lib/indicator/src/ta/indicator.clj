@@ -1,38 +1,35 @@
 (ns ta.indicator
   (:require
-    [tech.v3.datatype :as dtype]
-    [tech.v3.datatype.functional :as fun]
-    [tech.v3.datatype.statistics :as stats]
-    [tech.v3.dataset.rolling :as r :refer [rolling mean]]
-    [tablecloth.api :as tc]
-    [ta.indicator.helper :refer [indicator]]
-    [ta.indicator.signal :refer [upward-change downward-change]]
-    [ta.helper.ds :refer [has-col]]
-    [ta.math.series :refer [gauss-summation]]))
+   [tech.v3.datatype :as dtype]
+   [tech.v3.datatype.functional :as fun]
+   [tech.v3.datatype.statistics :as stats]
+   [tech.v3.dataset.rolling :as r :refer [rolling mean]]
+   [tablecloth.api :as tc]
+   [ta.indicator.helper :refer [indicator]]
+   [ta.indicator.signal :refer [upward-change downward-change]]
+   [ta.helper.ds :refer [has-col]]
+   [ta.math.series :refer [gauss-summation]]))
 
-(defn prior [{:keys [of]
-              :or {of :close}}
-             bar-ds]
-  (:prior (rolling bar-ds {:window-size 1
-                     :relative-window-position :left}
-                 {:prior (r/last of)})))
-
+(defn prior [col]
+  (let [ds (tc/dataset {:col col})]
+    (:prior (rolling ds {:window-size 1
+                         :relative-window-position :left}
+                     {:prior (r/last :col)}))))
 
 (defn sma
   "Simple moving average"
-  [{:keys [n of]
-            :or {of :close
-                 n 100}}
-           bar-ds]
-  (:sma (rolling bar-ds {:window-size n
-                     :relative-window-position :left}
-                 {:sma (mean of)})))
+  [{:keys [n]
+    :or {n 100}}
+   col]
+  (let [ds (tc/dataset {:col col})]
+    (:sma (rolling ds {:window-size n
+                       :relative-window-position :left}
+                   {:sma (mean :col)}))))
 
 ;; https://www.investopedia.com/ask/answers/071414/whats-difference-between-moving-average-and-weighted-moving-average.asp
-(defn wma-f [series len norm]
+(defn- wma-f [series len norm]
   "series with asc index order (not reversed like in pine script)"
-  (let [
-        sum (reduce + (for [i (range len)] (* (nth series i) (+ i 1))))
+  (let [sum (reduce + (for [i (range len)] (* (nth series i) (+ i 1))))
         ; TODO use vector functions. fix reify
         ;sum (fun/+
         ;      (fun/* series
@@ -42,64 +39,64 @@
 
 (defn wma
   "Weighted moving average"
-  [n of ds]
-  (let [norm (gauss-summation n)]
+  [n col]
+  (let [ds (tc/dataset {:col col})
+        norm (gauss-summation n)]
     (:wma (r/rolling ds {:window-type :fixed
                          :window-size n
                          :relative-window-position :left}
-                     {:wma {:column-name [of]
+                     {:wma {:column-name [:col]
                             :reducer (fn [window]
                                        (wma-f window n norm))}}))))
 
 (defn- calc-ema-idx
   "EMA-next = (cur-close-price - prev-ema) * alpha + prev-ema"
   [alpha]
-  (indicator [prev-ema (volatile! nil)]
-             (fn [x]
-               (let [r (if @prev-ema
-                         (-> (- x @prev-ema)
-                             (* alpha)
-                             (+ @prev-ema))
-                         x)]
-                 (vreset! prev-ema r)
-                 r))))
+  (indicator
+   [prev-ema (volatile! nil)]
+   (fn [x]
+     (let [r (if @prev-ema
+               (-> (- x @prev-ema)
+                   (* alpha)
+                   (+ @prev-ema))
+               x)]
+       (vreset! prev-ema r)
+       r))))
 
 (defn ema
   "Exponential moving average"
-  [n of ds]
-  (let [alpha (/ 2 (inc n))
-        series (of ds)]
-    (into [] (calc-ema-idx alpha) series)))
+  [n col]
+  (let [alpha (/ 2 (inc n))]
+    (into [] (calc-ema-idx alpha) col)))
 
 (defn mma
   "Modified moving average"
-  [n of ds]
-  (let [alpha (/ 1 n)
-        series (of ds)]
-    (into [] (calc-ema-idx alpha) series)))
+  [n col]
+  (let [alpha (/ 1 n)]
+    (into [] (calc-ema-idx alpha) col)))
 
 (defn macd
-  ([of ds] (macd 12 26 of ds))
-  ([n m of ds]
-   (let [ema-short (ema n of ds)
-         ema-long (ema m of ds)]
+  ([col] (macd {:n 12 :m 26} col))
+  ([{:keys [n m]} col]
+   (let [ema-short (ema n col)
+         ema-long (ema m col)]
      (fun/- ema-short ema-long))))
 
 (defn rsi
   "Relative strength index"
-  [n of ds]
-  (let [gain (upward-change (of ds))
-        loss (downward-change (of ds))
-        mma-gain (mma n of (tc/dataset {of gain}))
-        mma-loss (mma n of (tc/dataset {of loss}))
+  [n col]
+  (let [gain (upward-change col)
+        loss (downward-change col)
+        mma-gain (mma n gain)
+        mma-loss (mma n loss)
         len (count gain)]
     (dtype/make-reader
-      :float64 len
-      (if (= 0.0 (mma-loss idx))
-        (if (= 0.0 (mma-gain idx)) 0 100)
-        (- 100 (/ 100
-                  (+ 1 (/ (mma-gain idx)
-                          (mma-loss idx)))))))))
+     :float64 len
+     (if (= 0.0 (mma-loss idx))
+       (if (= 0.0 (mma-gain idx)) 0 100)
+       (- 100 (/ 100
+                 (+ 1 (/ (mma-gain idx)
+                         (mma-loss idx)))))))))
 
 (defn hlc3 [bar-ds]
   (assert (has-col bar-ds :low) "hlc3 needs :low column in bar-ds")
@@ -134,7 +131,7 @@
   (assert atr-m "atr-band needs :atr-m option")
   (let [atr-vec (atr {:n atr-n} bar-ds)
         atr-band (fun/* atr-vec atr-m)
-        band-mid (prior {:of :close} bar-ds)
+        band-mid (prior (:close bar-ds))
         band-upper (fun/+ band-mid atr-band)
         band-lower (fun/- band-mid atr-band)]
     {:atr-band-atr atr-vec
@@ -165,8 +162,7 @@
 
   (sma {:n 2} ds)
 
-
- ; 
+; 
   )
 
 
