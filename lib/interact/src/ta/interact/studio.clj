@@ -7,9 +7,9 @@
 (defn add-templates [exts]
   (let [template-symbols (ext/get-extensions-for exts :quanta/template concat [] [])
         template-vars (map requiring-resolve template-symbols)
-        ;template-vals (map get-val template-fns)
+        template-vals (map var-get template-vars)
         ]
-    (doall (map template/add template-vars))))
+    (doall (map template/add template-vals))))
 
 
 (defn start-studio []
