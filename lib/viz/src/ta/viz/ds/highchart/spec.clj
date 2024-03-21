@@ -3,16 +3,13 @@
    [ta.viz.chart-spec :refer [chart->series axes-count]]
    [ta.viz.ds.highchart.spec.default :refer [chart-default]]
    [ta.viz.ds.highchart.spec.axes :refer [y-axis]]
-   [ta.viz.ds.highchart.spec.series :refer [series]]
-   ))
+   [ta.viz.ds.highchart.spec.series :refer [series]]))
 
 ; todo:
 ; 1. pivot-points
 ;    https://www.highcharts.com/demo/stock/macd-pivot-points
 ; 2. vector (arrow links)
 ;    https://api.highcharts.com/highstock/series.vector
-
-
 
 ;  grouping {:units [["week" [1]] ; // unit name - allowed multiples
 ;                  ["month" [1, 2, 3, 4, 6]]]}

@@ -62,7 +62,6 @@
     {:options options
      :current (get-default-values template options)}))
 
-
 (defn apply-options [template options]
   ; if all paths are keys, this is really simple.
   ; (update template :algo merge options)
@@ -79,7 +78,6 @@
               (specter/setval path v r)))
           (:algo template)
           options)))
-
 
 (defn load-with-options [template-id options]
   (warn "applying options to template: " template-id " options: " options)
@@ -117,7 +115,6 @@
 
   (specter/setval [:a specter/ALL] 4 data)
 
-
   (specter/transform [0 :b :c]
                      specter/NONE
                      data)
@@ -128,10 +125,8 @@
 
   (load-with-options :juan-fx {[1 :atr-n] 20})
 
-
   (assoc-in template [:algo 1 :atr-n] 50)
   (assoc-in template [:algo 1 :atr-n] 50)
-
 
   {:asset "ETHUSDT",
    [1 :atr-n] 30,
@@ -146,10 +141,7 @@
                    :signal {:formula [:day :minute], :spike-atr-prct-min 0.5, :pivot-max-diff 0.001,
                             :algo 'juan.algo.combined/daily-intraday-combined}])
 
-
-
-
- ; 
+; 
   )
 
 

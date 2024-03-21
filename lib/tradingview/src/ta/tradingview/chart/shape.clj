@@ -24,9 +24,6 @@
               ;textcolor=color.new(color.white, 0)
               ;:size size.auto
               }})
-
-
-
 (defn line-horizontal [price]
   {:points [{:price price}]
    :override {:shape "horizontal_line"
@@ -93,22 +90,21 @@
                  :showMiddlePoint false,
                  :font "Verdana",
                  :textcolor "#787878"
-                  :linestyle 0,
-                  :fontsize 14,
-                  :vertLabelsAlign "bottom",
-                  :italic false,
-                  :frozen false,
-                  :showDateTimeRange false,
-                  :text ""
-                  :overrides {:showLabel true}
-                 }
+                 :linestyle 0,
+                 :fontsize 14,
+                 :vertLabelsAlign "bottom",
+                 :italic false,
+                 :frozen false,
+                 :showDateTimeRange false,
+                 :text ""
+                 :overrides {:showLabel true}}
    "vertical_line" {:bold	false
                     :extendLeft false
                     :extendRight false
                     :linewidth 1,
                     :linecolor "#2962FF",
                     :showMiddlePoint false,
-                    
+
                     :font "Verdana",
                     :textcolor "#787878"
                     :linestyle 0,
@@ -120,11 +116,7 @@
                     :overrides {:showLabel true,
                                 :textOrientation "vertical",
                                 :horzLabelsAlign "right",
-                                :vertLabelsAlign "top"}
-                     }
-
-   })
-
+                                :vertLabelsAlign "top"}}})
 
 (defn sanitize-point [{:keys [time price] :as point}]
   (if (and time (not (number? time)))
@@ -135,51 +127,47 @@
   (->> (map sanitize-point points)
        (into [])))
 
-(comment 
-(sanitize-point {:time (parse-date "2023-01-30") :price 5})
-(sanitize-points [{:time (parse-date "2022-01-30") :price 50}
-                  {:time (parse-date "2023-01-30") :price 100}])
+(comment
+  (sanitize-point {:time (parse-date "2023-01-30") :price 5})
+  (sanitize-points [{:time (parse-date "2022-01-30") :price 50}
+                    {:time (parse-date "2023-01-30") :price 100}])
   ;
   )
-
-
 (defn- plot-shape [type points user-style]
   ; helper function to apply default styles to a shape
-  (let [default-style(get shapes type)]
+  (let [default-style (get shapes type)]
     {:points (sanitize-points points)
-     :shape  (merge 
+     :shape  (merge
               {:overrides (merge default-style user-style)}
               #_{:disableSave true
                  :lock true
-                 :frozen false 
+                 :frozen false
                  :showInObjectsTree false}
               user-style
               {:shape type})}))
 
-
-(def arrow-directions 
+(def arrow-directions
   {:up "arrow_up"
    :down "arrow_down"
    :right "arrow_right"
    :left "arrow_left"})
 
-(defn arrow 
+(defn arrow
   ([direction point]
    (arrow direction point {}))
   ([direction point user-style]
    (plot-shape (get arrow-directions direction) [point] user-style)))
-   
+
 (defn trend-line
   ([point1 point2]
    (trend-line point1 point2 {}))
   ([point1 point2 user-style]
    (plot-shape "trend_line" [point1 point2] user-style)))
 
-
-(defn line-vertical 
+(defn line-vertical
   ([time]
-    (line-vertical time {}))
+   (line-vertical time {}))
   ([time user-style]
-    (plot-shape "vertical_line" [{:time time}] user-style)))
-  
-  
+   (plot-shape "vertical_line" [{:time time}] user-style)))
+
+

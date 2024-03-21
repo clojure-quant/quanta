@@ -1,6 +1,6 @@
 (ns ta.tradingview.handler.marks
   (:require
-  [ring.util.response :as res]))
+   [ring.util.response :as res]))
 
 (def demo-marks
   {:id [0 1 2 3 4 5]

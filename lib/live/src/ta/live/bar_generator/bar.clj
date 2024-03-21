@@ -4,7 +4,7 @@
   (not open))
 
 (defn switch [bar]
-  (-> bar 
+  (-> bar
       (dissoc :open :high :low :close :volume :ticks)
       (update :epoch inc)))
 

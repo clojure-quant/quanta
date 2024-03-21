@@ -1,6 +1,5 @@
 (ns ta.viz.ds.hiccup)
 
-
 (defn hiccup-render-spec
   "returns a render specification {:render-fn :spec :data} . 
    for hiccup"

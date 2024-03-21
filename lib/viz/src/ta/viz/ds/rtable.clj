@@ -41,11 +41,9 @@
    plotted with a specified style/position, 
    created from the bar-algo-ds"
   [spec bar-signal-ds]
-    (if (nom/anomaly? bar-signal-ds)
-      (error-render-spec bar-signal-ds)
-      (rtable-render-spec-impl spec bar-signal-ds)))
-
- 
+  (if (nom/anomaly? bar-signal-ds)
+    (error-render-spec bar-signal-ds)
+    (rtable-render-spec-impl spec bar-signal-ds)))
 
 (comment
 

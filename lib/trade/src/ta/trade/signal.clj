@@ -40,7 +40,6 @@
 
 (comment
 
-
   (def ds
     (tc/dataset [{:idx 1 :signal false :doji :buy}
                  {:idx 2 :signal false :doji :flat}
@@ -49,12 +48,9 @@
 
   (select-signal-is ds :signal true)
 
-
   (select-signal-contains ds :doji #{:buy :sell})
   (select-signal-contains ds :doji #{:buy :sell :flat})
   (select-signal-contains ds :doji #{:buy :long})
-
-
 
   (:doji ds)
   (signal-keyword->signal-double (:doji ds))

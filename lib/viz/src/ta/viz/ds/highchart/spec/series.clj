@@ -32,8 +32,8 @@
 
 (defn add-extra-opts-point [series]
   (assoc series
-         :lineWidth 0 
-         :marker {:enabled true 
+         :lineWidth 0
+         :marker {:enabled true
                   :radius 2}))
 
 ;; ADD-TYPE
@@ -43,47 +43,34 @@
     t
     (name t)))
 
-(defn add-type [series type]
-  (assoc series
-         :type (type->str type)))
-
-
-(defn one-series [{:keys [column type axis color title]
+(defn one-series [{:keys [type column axis color title]
                    :or {color "blue"
                         title (str column)}}]
-  (let [series {:id (str column)
+  (let [series {:type (type->str type)
+                :id (str column)
                 :name title
                 :yAxis axis
                 :zIndex 1000
                 :dataGrouping {:enabled false}
                 :color color}
-        series (cond 
-                  (= type :flags)
-                  (add-extra-opts-flags series)
-                 
-                  (= type :step)
-                  (add-extra-opts-step series)
-                 
-                  (= type :point)
-                  (add-extra-opts-point series)
-                 
-                  (= type :ohlc)
-                  (add-type series type)
+        series (cond
+                 (= type :flags)
+                 (add-extra-opts-flags series)
 
-                  (= type :candlestick)
-                  (add-type series type)
-                 
-                  (= type :hollowcandlestick)
-                  (add-type series type)
-                 
-                  (= type :column)
-                  (add-type series type)
+                 (= type :step)
+                 (add-extra-opts-step series)
 
-                  (= type :range)
-                  (add-type series :arearange)
-                 
-                  :else
-                  series)]
+                 (= type :point)
+                 (add-extra-opts-point series)
+
+                  ;(= type :ohlc)
+                  ;(= type :candlestick)
+                  ;(= type :hollowcandlestick)
+                  ;(= type :column)
+                  ;(= type :range)
+
+                 :else
+                 series)]
     series))
 
 (defn series [panes]
@@ -91,16 +78,15 @@
     (->> (map one-series series-seq)
          (into []))))
 
+(comment
 
-(comment 
-   
-   (series [{:open :line}])
-   (series [{:open :step}])
-   (series [{:open :point}])
-   (series [{[:low :high] :range}])
-   (series [{[:low :high] :candlestick}])
+  (series [{:open :line}])
+  (series [{:open :step}])
+  (series [{:open :point}])
+  (series [{[:low :high] :range}])
+  (series [{[:low :high] :candlestick}])
 
-   (str [:low :high])
-  
+  (str [:low :high])
+
  ; 
   )

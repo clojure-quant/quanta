@@ -24,7 +24,6 @@
 (def wrapped-delete-chart-handler (wrap-api-handler delete-chart-handler))
 (def wrapped-load-chart-handler (wrap-api-handler load-chart-handler))
 
-
 (def wrapped-load-template-handler (wrap-api-handler load-template-handler))
 (def wrapped-save-template-handler (wrap-multipart-params (wrap-api-handler save-template-handler)))
 

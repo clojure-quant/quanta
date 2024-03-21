@@ -2,7 +2,6 @@
   (:require
    [modular.system]))
 
-
 (defn get-bar-db []
   (modular.system/system :bardb-dynamic))
 
@@ -12,8 +11,7 @@
 
 (def marks-path "../../data/")
 
-
 (defn import-for-exchange [exchange]
- (cond 
-   (= exchange :crypto) {:import :bybit}
-   :else {:import :kibot}))
+  (cond
+    (= exchange :crypto) {:import :bybit}
+    :else {:import :kibot}))

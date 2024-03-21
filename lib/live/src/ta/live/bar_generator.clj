@@ -28,7 +28,7 @@
   (swap! bar-a bar/switch))
 
 (defn switch-bars [calendar time bar-a-seq]
-  (warn "switching calendar " calendar "# bars: "(count bar-a-seq) " time: " time)
+  (warn "switching calendar " calendar "# bars: " (count bar-a-seq) " time: " time)
   (doall (map switch-bar bar-a-seq)))
 
 (defn finish-bar [state {:keys [calendar time]}]

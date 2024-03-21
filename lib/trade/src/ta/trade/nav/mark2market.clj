@@ -235,7 +235,7 @@
 
   (require '[modular.system])
   (def bardb (modular.system/system :duckdb ;:bardb-dynamic
-                                   ))
+                                    ))
   bardb
 
   (require '[ta.db.bars.protocol :as b])
@@ -249,9 +249,9 @@
        true
        trades-test)
       :eff)
-   
+
   (trade-effect eurusd true trade1)
-  
+
   (effects-sum [(trade-effect eurusd true trade1)
                 (trade-effect eurusd true trade1)])
 

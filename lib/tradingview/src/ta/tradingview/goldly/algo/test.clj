@@ -1,5 +1,5 @@
 (ns ta.tradingview.goldly.algo.test
-  (:require 
+  (:require
    [ta.tradingview.goldly.algo.context :as c]
    [ta.tradingview.goldly.algo.indicator :as i]
    [ta.algo.manager :as am :refer [algo-run-browser]]))
@@ -39,7 +39,6 @@ ctx
 (-> ctx c/get-chart-series last)
 ;:epoch 1692921600
 
-
 (-> (c/get-chart-series-window ctx 1652921600 1692921600)
     count)
 
@@ -47,7 +46,7 @@ ctx
 
 ; studies - this gets used in tradingview custom-indicator-getter
 
-(def studies 
+(def studies
   (i/study-chart-studies ctx PineJS))
 
 (-> studies count)

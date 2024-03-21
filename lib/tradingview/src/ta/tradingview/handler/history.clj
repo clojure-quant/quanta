@@ -4,14 +4,12 @@
    [ring.util.response :as res]
    [ta.tradingview.db.bars :refer [load-series]]))
 
-
 (defn history-handler [{:keys [query-params] :as req}]
   (let [{:keys [symbol resolution from to]} (clojure.walk/keywordize-keys query-params)
-        from (Long/parseLong from ) ;(Integer/parseInt from)
+        from (Long/parseLong from) ;(Integer/parseInt from)
         to (Long/parseLong to) ; (Integer/parseInt to)
         series (load-series symbol resolution from to)]
     (res/response series)))
-
 
 (comment
 

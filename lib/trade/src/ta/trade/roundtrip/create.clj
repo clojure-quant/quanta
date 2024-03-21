@@ -17,8 +17,7 @@
     id (volatile! 0)
     entry (volatile! {:side :flat
                       :entry-idx 0
-                      :id 1
-                      })]
+                      :id 1})]
    (fn [[signal date price]]
      (let [prior-position @position
            new-position (or (new-signal signal) prior-position)
@@ -31,24 +30,21 @@
                               :exit-price price
                               :exit-date date))
            #_result  #_{:signal signal
-                    :entry? entry?
-                    :exit? exit?
-                    :position new-position
-                    :roundtrip roundtrip}
-           result roundtrip
-           ]
+                        :entry? entry?
+                        :exit? exit?
+                        :position new-position
+                        :roundtrip roundtrip}
+           result roundtrip]
        (when entry?
          (vswap! id inc)
          (vreset! entry {:id @id
                          :entry-idx @idx
                          :side new-position
                          :entry-date date
-                         :entry-price price
-                         }))
+                         :entry-price price}))
        (vswap! idx inc)
        (vreset! position new-position)
        result))))
-
 
 (defn signal->roundtrips [signal-ds]
   (assert (:signal signal-ds) "to create roundtrips :signal column needs to be present!")
@@ -60,12 +56,10 @@
         date (:date signal-ds)
         close (:close signal-ds)
         vec (fn [idx]
-                    [(signal idx) (date idx) (close idx)])
+              [(signal idx) (date idx) (close idx)])
         map-of-vecs (map vec (range n))
-        roundtrips (into [] fun map-of-vecs)
-        ]
-    (tc/dataset roundtrips)
-    ))
+        roundtrips (into [] fun map-of-vecs)]
+    (tc/dataset roundtrips)))
 
 (comment
 
@@ -81,13 +75,12 @@
                               (t/instant "2020-01-08T00:00:00Z")
                               (t/instant "2020-01-09T00:00:00Z")
                               (t/instant "2020-01-10T00:00:00Z")
-                              (t/instant "2020-01-11T00:00:00Z")
-                              ]
+                              (t/instant "2020-01-11T00:00:00Z")]
                        :close [1 2 3 4 5 6 7 8 9 10 11]
                        :signal  [:long :hold :long :flat
-                                :flat
-                                :short :flat :flat
-                                :long :short :flat]}))
+                                 :flat
+                                 :short :flat :flat
+                                 :long :short :flat]}))
   ds
   ;; => _unnamed [11 3]:
   ;;    

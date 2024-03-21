@@ -48,8 +48,6 @@
         (res/response {:status "ok" :data chart-list})
         (res/response {:status "error" :error "chart-list for user failed."})))))
 
-
-
 (comment
   {"status" "ok"
    "data" [{"id" 888

@@ -4,8 +4,7 @@
    [tablecloth.api :as tc]
    [tech.v3.datatype.functional :as fun]
    [ta.indicator.date :as dt]
-   [ta.indicator.drawdown :refer [trailing-sum drawdowns-from-value]]
- ))
+   [ta.indicator.drawdown :refer [trailing-sum drawdowns-from-value]]))
 
 (defn- aggregate-roundtrips [ds-study group-by]
   (-> ds-study
@@ -26,8 +25,7 @@
                ;dt/add-year
                ;dt/add-month
                ;dt/add-year-month
-               dt/add-year-month-day
-               )
+               dt/add-year-month-day)
         ;_ (println "CALC NAV-STATS *************")
         ds-by-month (aggregate-roundtrips ds [:year-month-day #_:year-month #_:year #_:month])
         ;_ (println "ds-grouped: " ds-by-month)
@@ -39,9 +37,8 @@
         (tc/add-columns
          {:cum-ret-log cum-ret-log
           :nav nav-px
-          :drawdown (drawdowns-from-value cum-ret-log)
-          })
+          :drawdown (drawdowns-from-value cum-ret-log)})
         (tc/select-columns [:year-month-day ; :year-month ; :year :month
                             :ret-log :trades
-                            :cum-ret-log :nav :drawdown ]))))
+                            :cum-ret-log :nav :drawdown]))))
 

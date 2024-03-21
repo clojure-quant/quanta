@@ -47,8 +47,14 @@
                "./lib/helper/src"
                "./lib/import/src"
                "./lib/indicator/src"
-               
-               ]}
+
+                "./lib/interact/src"
+                "./lib/live/src"
+                "./lib/math/src"
+                "./lib/quote/src"
+                "./lib/trade/src"
+                "./lib/tradingview/src"
+                "./lib/viz/src"]}
   
  :cljfmt-fix
 {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
@@ -61,7 +67,14 @@
              "./lib/engine/src"
              "./lib/helper/src"
              "./lib/import/src"
-             "./lib/indicator/src"]}
+             "./lib/indicator/src"
+             "./lib/interact/src"
+             "./lib/live/src"
+             "./lib/math/src"
+             "./lib/quote/src"
+             "./lib/trade/src"
+             "./lib/tradingview/src"
+             "./lib/viz/src"]}
 
 
  ; https://github.com/clj-kondo/clj-kondo/blob/master/doc/jvm.md

@@ -25,15 +25,11 @@
   (let [c (:category i)]
     (or (get category-names c) "Equity")))
 
-
 (defn category-name->category [c]
   (or (get category-names c) :equity))
 
-
-
 (defn get-asset-exchange [asset]
   (-> asset instrument-details :exchange))
-
 
 (defn symbol-info
   "Converts instrument [from db] to tradingview symbol-information
@@ -66,8 +62,6 @@
      ; :expired true ; whether this symbol is an expired futures contract or not.
      ; :expiration_date  (to-epoch-no-ms- (-> 1 t/hours t/ago))
      }))
-
-
 (defn instrument->tradingview [{:keys [symbol name] :as i}]
   {:ticker symbol
    :symbol symbol ; OUR SYMBOL FORMAT. TV uses exchange:symbol
@@ -76,13 +70,12 @@
    :exchange (:exchange i)
    :type (inst-type i)})
 
-
 (defn symbol-search [query category exchange limit]
-  (let [category (when (and type (string? category) 
-                          (not (str/blank? category)))
+  (let [category (when (and type (string? category)
+                            (not (str/blank? category)))
                    (keyword category))
-        exchange (when (and type (string? exchange) 
-                          (not (str/blank? exchange)))
+        exchange (when (and type (string? exchange)
+                            (not (str/blank? exchange)))
                    (keyword exchange))
         result (search query category exchange)
         result (take limit result)

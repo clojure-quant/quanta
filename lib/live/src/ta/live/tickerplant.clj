@@ -24,12 +24,12 @@
        ; first the bar-generator has to finish the bars.
        ; then the algo-env can do the calculations (so they will get up to date bars)
        (warn "finishing bars for: " calendar-time)
-       (try 
+       (try
          (bg/finish-bar b calendar-time)
          (catch Exception ex
            (error "exception in finishing bars " calendar-time)))
-       (try 
-         (engine/set-calendar! eng calendar-time)  
+       (try
+         (engine/set-calendar! eng calendar-time)
          (catch Exception ex
            (error "exception in setting calendar time: " calendar-time))))
      (ct/get-time-stream t))

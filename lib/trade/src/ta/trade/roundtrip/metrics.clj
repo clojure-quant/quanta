@@ -126,12 +126,9 @@
 
   side-s
 
-  
-
   (get-group-of side-s :side :long)
   (get-group-of side-s :side :short)
   (get-group-of side-s :side :parrot)
-
 
   (calc-roundtrip-metrics ds)
    ;;    

@@ -11,14 +11,14 @@
 
 (defn- ensure-type-keyword [{:keys [type] :as opts}]
   (if (string? type)
-     (assoc opts :type (keyword type))
+    (assoc opts :type (keyword type))
     opts))
 
 (defn pane->series [idx pane]
   (map (fn [[col type]]
-         (cond 
+         (cond
            (map? type)
-           (merge {:axis idx :column col } (ensure-type-keyword type))
+           (merge {:axis idx :column col} (ensure-type-keyword type))
 
            (string? type)
            {:axis idx :column col :type (keyword type)}

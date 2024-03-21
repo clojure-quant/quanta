@@ -11,8 +11,7 @@
    [babashka.fs :refer [create-dirs]]
    [modular.persist.protocol :refer [save loadr]]
    [modular.helper.id :refer [guuid-str]]
-   [ta.tradingview.db.clip :refer [charts-path template-path marks-path]]
-   ))
+   [ta.tradingview.db.clip :refer [charts-path template-path marks-path]]))
 
 (defn now-epoch []
   (-> (tick/now)
@@ -37,7 +36,6 @@
            chart-meta
            {:legs legs-unboxed}
            content-unboxed)))
-
 
 (defn chart-box [{:keys [id name timestamp layout charts legs] :as data}]
   (let [chart {:layout layout

@@ -1,7 +1,7 @@
 (ns ta.tradingview.handler.time
-  (:require 
-    [tick.core :as t]
-    [ring.util.response :as res]))
+  (:require
+   [tick.core :as t]
+   [ring.util.response :as res]))
 
 (defn server-time []
   (-> (t/instant) (t/long)))

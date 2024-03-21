@@ -14,7 +14,6 @@
         series (into [] series)]
     (assoc spec :series series)))
 
-
 (def spec {:title {:text "Demo - Annotations"}
            :xAxis {:categories ["Jan" "Feb" "Mar"
                                 "Apr" "May" "Jun"

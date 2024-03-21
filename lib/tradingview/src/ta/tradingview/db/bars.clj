@@ -75,7 +75,6 @@
      :v (col :volume)
      :s "ok"}))
 
-
 (defn load-series [asset resolution from to]
   (let [bar-db (clip/get-bar-db)
         exchange (get-asset-exchange asset)
@@ -91,17 +90,13 @@
       tv-no-data-response
       (tv-response bar-ds))))
 
-
 (comment
   (-> (t/instant)
       (t/long)
       ;(t/instant)
       )
   ;; => 
-(of-epoch-milli (* 1000 1710101243))
-  
+  (of-epoch-milli (* 1000 1710101243))
 
-
-
- ; 
+; 
   )

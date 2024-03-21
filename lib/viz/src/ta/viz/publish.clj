@@ -17,7 +17,7 @@
     v))
 
 (defn publish [env spec render-spec]
-  (when render-spec 
+  (when render-spec
     (let [topic (:topic spec)]
       (assert topic "publish needs to have :topic spec")
       (info "publishing topic: " topic)
@@ -28,7 +28,7 @@
   "publishes a dataset, the columns that will be displayed, 
    and its formatting depend on the spec."
   [env spec ds]
-  (when ds 
+  (when ds
     (let [cols (:columns spec)]
       (assert cols "publish-dataset needs to have :columns spec")
       (publish env spec (rtable-render-spec spec ds)))))
