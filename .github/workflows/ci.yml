@@ -40,7 +40,7 @@ jobs:
     - name: test-clj
       run: |
         cd lib/indicator && clojure -X:test-ind
-        cd lib/calendar && clojure -X:test
+        cd ../calendar && clojure -X:test
     #- name: cloverage
     #  run: clojure -M:cloverage
     - name: Release
