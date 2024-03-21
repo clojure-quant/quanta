@@ -33,14 +33,14 @@ jobs:
       shell: bash
     - name: clj-fmt
       if: ${{ matrix.os != 'windows-latest' }}
-      run: clojure -M:cljfmt
+      run: clojure -M:cljfmt fix
       shell: bash
     #- name: clj-kondo
     #  run: clojure -M:lint
     - name: test-clj
       run: |
-        cd lib/indicator && clj -X:test-ind
-        cd lib/calendar && clj -X:test
+        cd lib/indicator && clojure -X:test-ind
+        cd lib/calendar && clojure -X:test
     #- name: cloverage
     #  run: clojure -M:cloverage
     - name: Release
