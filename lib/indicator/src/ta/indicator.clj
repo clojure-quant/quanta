@@ -98,7 +98,10 @@
                  (+ 1 (/ (mma-gain idx)
                          (mma-loss idx)))))))))
 
-(defn hlc3 [bar-ds]
+(defn hlc3 
+  "input: bar-ds with (:close :high :low) columns
+   output: (high+low+close) / 3"
+  [bar-ds]
   (assert (has-col bar-ds :low) "hlc3 needs :low column in bar-ds")
   (assert (has-col bar-ds :high) "hlc3 needs :high column in bar-ds")
   (assert (has-col bar-ds :close) "hlc3 needs :close column in bar-ds")
@@ -108,7 +111,10 @@
         hlc3 (fun// (fun/+ low high close) 3.0)]
     hlc3))
 
-(defn tr [bar-ds]
+(defn tr 
+  "input: bar-ds with (:low :high) columns
+   output: (high-low)"
+  [bar-ds]
   (assert (has-col bar-ds :low) "tr needs :low column in bar-ds")
   (assert (has-col bar-ds :high) "tr needs :high column in bar-ds")
   (let [low (:low bar-ds)
