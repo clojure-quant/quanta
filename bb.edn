@@ -72,14 +72,7 @@
                        :task (shell "echo" "all good - you can push to github")}
 
 ;; demo
-
-
-         notebook-eval  {:doc "evaluates notebook collections"
-                         :task (webly/clojure "app/demo" "-X:run" ":task" ":nbeval")}
-
-         goldly-docs {:doc "goldly docs ui"
-                      :task (webly/clojure "app/demo" "-X:docs")}
-
+    
          goldly-cert {:doc "Creates ssl certificate for quant.hoertlehner.com"
                       :task (do (shell {:dir "app/demo"} "mkdir" "-p" "certs")
                                 (shell {:dir "app/demo"}
@@ -102,12 +95,6 @@
                                        "-name" "quant")
                                 (shell {:dir "app/demo/certs"}
                                        "chmod" "a+r" "./keystore.p12"))}
-
-         gann-tvcharts  {:doc "create gann tradingview-charts"
-                         :task (webly/clojure "app/demo" "-X:run" ":task" ":gann")}
-
-         astro  {:doc "calculate aspects"
-                 :task (webly/clojure "lib/astro" "-X:astro-test")}
 
 
  ;

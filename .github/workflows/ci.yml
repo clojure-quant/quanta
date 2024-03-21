@@ -37,8 +37,10 @@ jobs:
       shell: bash
     #- name: clj-kondo
     #  run: clojure -M:lint
-    #- name: test-clj
-    #  run: clojure -M:test-clj
+    - name: test-clj
+      run: |
+        cd lib/indicator && clj -X:test-ind
+        cd lib/calendar && clj -X:test
     #- name: cloverage
     #  run: clojure -M:cloverage
     - name: Release
