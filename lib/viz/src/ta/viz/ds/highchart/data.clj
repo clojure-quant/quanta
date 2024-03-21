@@ -63,13 +63,18 @@
    :shape (get v2style (col row))
    :text (str "col: " col "val: " (col row))})
 
+(def default-flag-styles
+  {;:long "square"
+   :long "url(/r/quanta/arrow-up.svg)"
+   true "flags"
+   ;:short "circle"
+   :short "url(/r/quanta/arrow-down.svg)"})
+
 (defn series-flags
   "extracts one column from ds in format needed by highchart
    for signal plot"
   [bar-study-epoch-ds {:keys [v2style column]
-                       :or {v2style {:long "square"
-                                     true "flags"
-                                     :short "circle"}}}]
+                       :or {v2style default-flag-styles}}]
   ;(println "Series flags col:" col)
   (let [signal-set (-> v2style keys set)
         ; (tc/select-rows bar-ds (contains? v2style (:signal bar-ds)))
