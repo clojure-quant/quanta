@@ -10,7 +10,9 @@
    [ta.helper.ds :refer [has-col]]
    [ta.math.series :refer [gauss-summation]]))
 
-(defn prior [col]
+(defn prior
+  "this does not work, as it always returns the current value."
+  [col]
   (let [ds (tc/dataset {:col col})]
     (:prior (rolling ds {:window-size 1
                          :relative-window-position :left}
@@ -98,7 +100,7 @@
                  (+ 1 (/ (mma-gain idx)
                          (mma-loss idx)))))))))
 
-(defn hlc3 
+(defn hlc3
   "input: bar-ds with (:close :high :low) columns
    output: (high+low+close) / 3"
   [bar-ds]
@@ -111,7 +113,7 @@
         hlc3 (fun// (fun/+ low high close) 3.0)]
     hlc3))
 
-(defn tr 
+(defn tr
   "input: bar-ds with (:low :high) columns
    output: (high-low)"
   [bar-ds]
