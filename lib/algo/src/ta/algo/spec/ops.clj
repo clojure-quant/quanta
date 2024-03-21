@@ -20,18 +20,18 @@
 (defn spec->ops [env spec]
   (if (map? spec)
     [[1 (spec->op env spec)]]
-    (let [global-opts? (and (odd? (count spec)) 
+    (let [global-opts? (and (odd? (count spec))
                             (map? (first spec)))
           [global-opts spec] (if global-opts?
-                                 [(first spec) (rest spec)]
-                                 [{} spec])]
+                               [(first spec) (rest spec)]
+                               [{} spec])]
       (warn "global-opts: " global-opts)
-    (->> (map (fn [[id spec]]
-                (let [spec (merge global-opts spec)]
-                  (warn "merged spec: " spec)
-                [id (spec->op env spec)]))
-              (partition 2 spec))
-         (into [])))))
+      (->> (map (fn [[id spec]]
+                  (let [spec (merge global-opts spec)]
+                    (warn "merged spec: " spec)
+                    [id (spec->op env spec)]))
+                (partition 2 spec))
+           (into [])))))
 
 (comment
   (require '[algo.env :as algo-env])

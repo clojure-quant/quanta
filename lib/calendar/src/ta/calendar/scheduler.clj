@@ -15,10 +15,10 @@
 (defn start [[calendar-kw interval-kw] f]
   (info "scheduler start: " calendar-kw interval-kw)
   (let [date-seq (calendar-seq-instant [calendar-kw interval-kw])]
-    (chime/chime-at 
-      date-seq f
-      {:on-finished log-finished 
-       :error-handler log-error})))
+    (chime/chime-at
+     date-seq f
+     {:on-finished log-finished
+      :error-handler log-error})))
 
 (def scheduler-state
   (atom {}))
@@ -49,38 +49,36 @@
   )
 
 (defn run-fn-safe [time scheduled-fn]
-    (try
-      (scheduled-fn time)
-      (catch Exception ex
-        (error "scheduled time: " time "exception: " ex))))
-   
+  (try
+    (scheduled-fn time)
+    (catch Exception ex
+      (error "scheduled time: " time "exception: " ex))))
 
 (defn execute-category [category time]
   (when-let [category-data (get @scheduler-state category)]
     (doall (map (partial run-fn-safe time) category-data))))
 
-
 (defn schedule-fn [category scheduled-fn]
-    (when-not (has-category? category)
-      (create-category category)
-      (start category (partial execute-category category)))
-    (add-fn-to-category category scheduled-fn))
+  (when-not (has-category? category)
+    (create-category category)
+    (start category (partial execute-category category)))
+  (add-fn-to-category category scheduled-fn))
 
-(comment 
-   (defn print [title] 
-     (fn [dt]
-       (info "calendar event " title  " @: " dt)))
- 
-    (start [:us :m] (print "*minute*"))
-    (start [:us :h] (print "*hour*"))
-    (start [:us :day] (print "*day*"))
- 
-    (defn print-time [time]
-      (info "scheduled fn: print time: **** " time " *** "))
-    
-    (schedule-fn [:us :m] print-time)
+(comment
+  (defn print [title]
+    (fn [dt]
+      (info "calendar event " title  " @: " dt)))
 
-    (schedule-fn [:us :h] print-time)
-    
+  (start [:us :m] (print "*minute*"))
+  (start [:us :h] (print "*hour*"))
+  (start [:us :day] (print "*day*"))
+
+  (defn print-time [time]
+    (info "scheduled fn: print time: **** " time " *** "))
+
+  (schedule-fn [:us :m] print-time)
+
+  (schedule-fn [:us :h] print-time)
+
  ; 
   )

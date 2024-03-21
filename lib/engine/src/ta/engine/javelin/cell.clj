@@ -13,7 +13,6 @@
         c (cell= (time-fn time-c))] ; nom/execute
     c))
 
-
 (defn formula-cell
   "returns a cell that calculates the strategy
    throws once if required parameters are missing"
@@ -32,4 +31,4 @@
     c))
 
 (defn destroy-cell [eng c]
- (destroy-cell! c))
+  (destroy-cell! c))

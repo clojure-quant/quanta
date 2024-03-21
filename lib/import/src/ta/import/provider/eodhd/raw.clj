@@ -29,7 +29,7 @@
                                      :api_token api-token
                                      :fmt "json")
                  result (http-get (str base-url endpoint) query-params)
-                 _ (warn "eodhd response status: " (:status result))    
+                 _ (warn "eodhd response status: " (:status result))
                  _ (warn "eodhd response: "  result)
                  body-json (:body result)
                  body (cheshire/parse-string body-json true)]
@@ -38,20 +38,18 @@
 (defn get-bars [api-token asset start-str end-str]
   (warn "getting bars asset: " asset "from: " start-str " to: " end-str)
   (let [endpoint (str "eod/" asset)]
-  (make-request
-   api-token
-   endpoint {:order "a"
-          :period "d"
-          :from start-str
-          :to end-str})))
-
+    (make-request
+     api-token
+     endpoint {:order "a"
+               :period "d"
+               :from start-str
+               :to end-str})))
 
 (defn get-exchanges [api-token]
   (make-request api-token "exchanges-list/" {}))
 
 (defn get-exchange-tickers [api-token exchange-code]
   (make-request api-token (str "exchange-symbol-list/" exchange-code) {}))
-
 
 (comment
   (def d (get-bars "65f0ad82c56400.56029279"

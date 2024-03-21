@@ -48,19 +48,16 @@
                  body (:body result)
                  kibot-error (extract-error body)]
      ;(info "kibot response status: " (:status result))           
-      body))
-  
+                body))
 
 ; http://api.kibot.com?action=login&user=guest&password=guest
-
-
 
 (defn login []
   (let [{:keys [user password]} @api-key]
     (info "login user: " user)
     (make-request  {:action "login"
-                   :user user
-                   :password password})))
+                    :user user
+                    :password password})))
 
 (defn status []
   (make-request {:action "status"}))
@@ -75,7 +72,7 @@
                     :password password}
                    opts))))
 
-(defn splits 
+(defn splits
   [opts]
   (let [{:keys [user password]} @api-key]
     ;(info "login user: " user "pwd: " password)
@@ -114,12 +111,11 @@
                       "For more information, please visit "
                       "http://"
                       "www.kibot.com/api/\r\n\r\n"
-                      "Please visit http://www.kibot.com/updates.aspx to see how to subscribe."
-                      ))
+                      "Please visit http://www.kibot.com/updates.aspx to see how to subscribe."))
 
   (extract-error "497 Not Allowed.\r\nYour account does not have full access to the API.\r\n")
 
-  (extract-error "400 Bad Request. Invalid Interval.") 
+  (extract-error "400 Bad Request. Invalid Interval.")
 
   (login)
   (status)
@@ -212,7 +208,7 @@
       count)
    ;; => 83
 
-   (splits {:symbol "MSFT"})
+  (splits {:symbol "MSFT"})
 
 ;  
   )

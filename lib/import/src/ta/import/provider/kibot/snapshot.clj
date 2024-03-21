@@ -50,8 +50,5 @@
   (symbol->provider "EURUSD")
   (symbol->provider "IJH")
 
-
-
-
 ;
   )

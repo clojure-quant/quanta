@@ -49,11 +49,9 @@
 (defn parse-date-only [s]
   (try
     (-> s
-        (ld/parse date-fmt)
-        )
+        (ld/parse date-fmt))
     (catch Exception _
       nil)))
-
 
 (defn parse-date [s]
   (try
@@ -69,14 +67,12 @@
     (catch Exception _
       nil)))
 
-(comment 
-   (require '[tick.core :as tick])
-   (tick/format (tick/formatter "yyyy-MM-dd")
-               (parse-date "2013-01-08"))  
+(comment
+  (require '[tick.core :as tick])
+  (tick/format (tick/formatter "yyyy-MM-dd")
+               (parse-date "2013-01-08"))
   ;
   )
-
-
 ;; epoch conversion
 
 (defn datetime->epoch-second [dt]
@@ -86,7 +82,7 @@
   (-> dt
       (t/at (t/time "13:00:06"))
       datetime->epoch-second))
-      (t/epoch)
+(t/epoch)
 
  ;(tick/at (tick/date "2021-06-20") (tick/time "13:00:06"))
 (defn ->epoch-second [dt]
@@ -97,8 +93,6 @@
       (= t java.time.LocalDateTime)  (datetime->epoch-second dt)
       (= t java.time.Instant) (ti/get-epoch-second dt)
       :else  99)))
-
-
 
 (defn epoch-second->datetime [es]
   (-> es (ldt/of-epoch-second 1 utc)))
@@ -148,42 +142,39 @@
          rounded (if value
                    (- value (mod value n)))]
      (if rounded
-         (adjust-field dt unit rounded))))
+       (adjust-field dt unit rounded))))
    ;(round-down dt unit n 0))
   ([dt unit n offset]
-    (let [value (extract-field dt unit)
-          rest-o (mod offset n)
-          rest-n (mod (- value rest-o) n)
-          rounded (if value
-                    (- value rest-n))]
-      (if rounded
-        (if (and (= rounded 0) (date-unit? unit))
-          (adjust-field dt unit 1)  ; fallback for zero date field values
-          (adjust-field dt unit rounded))))))
+   (let [value (extract-field dt unit)
+         rest-o (mod offset n)
+         rest-n (mod (- value rest-o) n)
+         rounded (if value
+                   (- value rest-n))]
+     (if rounded
+       (if (and (= rounded 0) (date-unit? unit))
+         (adjust-field dt unit 1)  ; fallback for zero date field values
+         (adjust-field dt unit rounded))))))
 
-(comment 
+(comment
   ;FEED [QQQ|1D]: Requesting data: [1960-10-20T00:00:00.000Z ... 1961-12-14T00:00:00.000Z, 300 bars]
-   {:from -290304000, :to -254016000, :count-back 300, :first-request? false}
+  {:from -290304000, :to -254016000, :count-back 300, :first-request? false}
   (epoch-second->datetime -290304000)
   (epoch-second->datetime -254016000)
   (epoch-second->datetime 941414400)
-  
+
   ; tradingview bar-chart is using 9:00 as time for each bar.
   (epoch-second->datetime 1692262800)
   (epoch-second->datetime 1689930000)
   (epoch-second->datetime 1692954000)
-  
+
   ; we return time 00:00
   (epoch-second->datetime 1692316800)
   (epoch-second->datetime 1692921600)
 
   (- 1692954000 1692921600)
   ;; => 32400
- (* 60 60 9)
-  (epoch-second->datetime 1692953967)
-
-
-  )
+  (* 60 60 9)
+  (epoch-second->datetime 1692953967))
 
 ;; ago
 

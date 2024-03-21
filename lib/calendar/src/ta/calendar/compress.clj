@@ -6,22 +6,22 @@
    [tablecloth.api :as tc]
    [ta.helper.date-ds :as h]))
 
- (def midnight (t/time "00:00:00"))
- 
+(def midnight (t/time "00:00:00"))
+
 ;; MONTH 
- 
+
 (defn- year-month->date [year month]
- (-> (t/new-date year month 1)
-     (.plusMonths 1)
-     (.plusDays -1)
-     (t/at midnight)
-     (t/in "UTC")))
-  
- (defn month-end-date [dt]
-   (let [y (-> dt t/year .getValue)
-         m (-> dt t/month .getValue)]
-     (year-month->date y m)))
- 
+  (-> (t/new-date year month 1)
+      (.plusMonths 1)
+      (.plusDays -1)
+      (t/at midnight)
+      (t/in "UTC")))
+
+(defn month-end-date [dt]
+  (let [y (-> dt t/year .getValue)
+        m (-> dt t/month .getValue)]
+    (year-month->date y m)))
+
 (defn add-date-group-month [ds]
   (let [date-group-col (dtype/emap month-end-date :zoned-date-time (:date ds))]
     (tc/add-column ds :date-group date-group-col)))
@@ -39,7 +39,7 @@
 (defn year-end-date [dt]
   (let [y (-> dt t/year .getValue)]
     (year->date y)))
- 
+
 (defn add-date-group-year [ds]
   (let [date-group-col (dtype/emap year-end-date :zoned-date-time (:date ds))]
     (tc/add-column ds :date-group date-group-col)))
@@ -59,15 +59,14 @@
   (let [date-group-col (dtype/emap year-end-date :zoned-date-time (:date ds))]
     (tc/add-column ds :date-group date-group-col)))
 
-
 ;; COMPRESS
 
-(defn compress-ds [grouped-ds] 
+(defn compress-ds [grouped-ds]
   (->
-    grouped-ds
+   grouped-ds
    (tc/group-by [:date-group])
    (tc/aggregate {:open (fn [ds]
-                          (-> ds :open first ))
+                          (-> ds :open first))
                   :high (fn [ds]
                           (->> ds
                                :high
@@ -77,21 +76,19 @@
                               :low
                               (apply min)))
                   :close (fn [ds]
-                          (-> ds :close last))
+                           (-> ds :close last))
                   :volume (fn [ds]
-                         (->> ds
-                              :volume
-                              (apply +)))
-                  :count (fn [ds]
                             (->> ds
-                                 :close
-                                 (count)))
-                  })
-     (tc/rename-columns {:date-group :date})             
-                  ))
+                                 :volume
+                                 (apply +)))
+                  :count (fn [ds]
+                           (->> ds
+                                :close
+                                (count)))})
+   (tc/rename-columns {:date-group :date})))
 
-(comment 
-  
+(comment
+
   (year-month->date 2021 04)
   (month-end-date (t/instant))
   (month-end-date (t/instant "2023-01-01T15:30:00Z"))
@@ -113,19 +110,17 @@
                         :high 121
                         :low 105
                         :close 116
-                        :volume 100}
-                       ]))
+                        :volume 100}]))
   ds
 
-  (-> ds 
+  (-> ds
       (add-date-group-year)
       (compress-ds))
-  
+
   (-> ds
       (add-date-group-month)
       (compress-ds))
 
-  
- ; 
-    )
+; 
+  )
 

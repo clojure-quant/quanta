@@ -70,10 +70,6 @@
                                    range-bybit))
        (bybit-result->dataset))))
 
-
-
-
-
 ;; PAGING REQUESTS
 
 (defn failed? [bar-ds]
@@ -107,7 +103,6 @@
       (when (more? start limit bar-ds)
         (assoc range :end end-instant)))))
 
-
 (defn all-ds-valid [datasets]
   (let [or-fn (fn [a b] (or a b))]
     (->> (map nom/anomaly? datasets)
@@ -122,7 +117,6 @@
     (nom/fail ::consolidate-datasets {:message "paged request failed!"
                                       :opts opts
                                       :range range})))
-
 
 (defn get-bars [{:keys [asset calendar] :as opts} {:keys [start end] :as window}]
   (info "get-bars: " opts range)
@@ -145,8 +139,7 @@
     (get-bars opts window)))
 
 (defn create-import-bybit []
- (import-bybit.))
-
+  (import-bybit.))
 
 (comment
   (bybit-frequency :d)
@@ -162,8 +155,6 @@
   (get-bars {:asset "BTCUSDT"
              :calendar [:crypto :d]}
             {:start (t/instant "2024-02-26T00:00:00Z")})
-
-
 
   (-> (get-bars-req
        {:asset "BTCUSDT"

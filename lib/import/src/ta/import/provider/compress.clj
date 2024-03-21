@@ -7,9 +7,8 @@
    [ta.calendar.compress :as compress]
    [ta.db.bars.protocol :refer [barsource] :as b]))
 
-
 (defn add-date-group [ds interval]
-  (case interval 
+  (case interval
     :month (compress/add-date-group-month ds)
     :year  (compress/add-date-group-year ds)
     :h (compress/add-date-group-hour)))
@@ -23,18 +22,16 @@
       (if generate?
         (let [calendar [exchange (get (:interval-config this) interval)]
               opts (assoc opts :calendar calendar)]
-           (warn "compressing bars. opts: " opts)
-        (-> (b/get-bars (:provider this) opts window)
-            (add-date-group interval)
-            (compress/compress-ds)))
-        (do 
-           (warn "forwarding request to import-provider: " opts window)
-           (b/get-bars (:provider this) opts window))
-        ))))
+          (warn "compressing bars. opts: " opts)
+          (-> (b/get-bars (:provider this) opts window)
+              (add-date-group interval)
+              (compress/compress-ds)))
+        (do
+          (warn "forwarding request to import-provider: " opts window)
+          (b/get-bars (:provider this) opts window))))))
 
 (defn start-compressing-provider  [provider interval-config]
   (compressing-provider. provider interval-config))
-
 
 (comment
   (def interval-config

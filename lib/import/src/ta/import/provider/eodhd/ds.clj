@@ -19,9 +19,9 @@
 
 (defn fmt-yyyymmdd [dt]
   (let [dt (if (t/instant? dt)
-               (t/zoned-date-time dt)
-               dt)]
-  (t/format yyyy-mm-dd-formatter dt)))
+             (t/zoned-date-time dt)
+             dt)]
+    (t/format yyyy-mm-dd-formatter dt)))
 
 (defn convert-date [dt-s]
   (-> (parse-date-only dt-s)

@@ -4,23 +4,16 @@
 
 (def log-a (atom []))
 
-
 (defn import-on-demand [opts window tasks]
   (when (not (empty? tasks))
-  (let [req (merge (select-keys opts [:asset :import :calendar])
-                   (select-keys window [:start :end]))
-        req (assoc req :tasks tasks)]
-    (swap! log-a conj req))))
+    (let [req (merge (select-keys opts [:asset :import :calendar])
+                     (select-keys window [:start :end]))
+          req (assoc req :tasks tasks)]
+      (swap! log-a conj req))))
 
-
-(comment 
+(comment
   (->> @log-a
-       (filter #(= :eodhd (:import %)))
-   )
-  
-  
-  
-  
-  
-  ;
+       (filter #(= :eodhd (:import %))))
+
+;
   )

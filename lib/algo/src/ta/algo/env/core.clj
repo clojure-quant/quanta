@@ -78,18 +78,17 @@
                    (-> (get-bars-aligned-filled env (assoc opts :asset asset) cal-seq)
                        (tc/add-column :asset asset)))
         asset-map-seq (map (fn [asset]
-                          {:asset asset
-                           :bars (get-bars asset)}) assets)
+                             {:asset asset
+                              :bars (get-bars asset)}) assets)
         assets-bad (->> (filter #(nom/anomaly? (:bars %)) asset-map-seq)
                         (map :asset))
         assets-good (->> (remove #(nom/anomaly? (:bars %)) asset-map-seq)
-                        (map :asset))
+                         (map :asset))
         bars-good (->> (remove #(nom/anomaly? (:bars %)) asset-map-seq)
-                        (map :bars))]
-      {:bad assets-bad
-       :good assets-good
-       :bars bars-good}))
-  
+                       (map :bars))]
+    {:bad assets-bad
+     :good assets-good
+     :bars bars-good}))
 
 (defn get-multiple-bars-trailing [env {:keys [calendar assets trailing-n] :as opts} end-dt]
   (let [cal-seq (trailing-window calendar trailing-n end-dt)]

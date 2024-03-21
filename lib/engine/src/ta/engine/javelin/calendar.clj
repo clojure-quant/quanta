@@ -1,7 +1,7 @@
 (ns ta.engine.javelin.calendar
   (:require
-    [taoensso.timbre :refer [trace debug info warn error]]
-    [javelin.core-clj :refer [cell cell=]]))
+   [taoensso.timbre :refer [trace debug info warn error]]
+   [javelin.core-clj :refer [cell cell=]]))
 
 (defn create-calendar [env calendar]
   (assert (vector? calendar) "calendar needs to be [:market :interval]")
@@ -44,10 +44,8 @@
   @(get-calendar env [:us :h])
   @(get-calendar env [:us :d])
 
-
   (create-calendar env nil)
 
-
- ; 
+; 
   )
 

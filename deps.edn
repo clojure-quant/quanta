@@ -38,7 +38,31 @@
   :cljfmt
   {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
    :main-opts ["-m" "cljfmt.main"
-               "--indents" "cljfmt.edn"]}
+               "--indents" "cljfmt.edn"
+               "check"
+               "./lib/algo/src"
+               "./lib/calendar/src"
+               "./lib/db/src"
+               "./lib/engine/src"
+               "./lib/helper/src"
+               "./lib/import/src"
+               "./lib/indicator/src"
+               
+               ]}
+  
+ :cljfmt-fix
+{:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
+ :main-opts ["-m" "cljfmt.main"
+             "--indents" "cljfmt.edn"
+             "fix"
+             "./lib/algo/src"
+             "./lib/calendar/src"
+             "./lib/db/src"
+             "./lib/engine/src"
+             "./lib/helper/src"
+             "./lib/import/src"
+             "./lib/indicator/src"]}
+
 
  ; https://github.com/clj-kondo/clj-kondo/blob/master/doc/jvm.md
   :lint

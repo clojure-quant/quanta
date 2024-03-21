@@ -22,8 +22,7 @@
   (-> ds
       (date-col-to-exchange-close :us))
 
-
-  ;
+;
   )
 
- 
+

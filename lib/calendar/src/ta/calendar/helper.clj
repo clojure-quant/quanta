@@ -1,7 +1,7 @@
 (ns ta.calendar.helper
   (:require
-    [tick.core :as t]
-    [ta.helper.date :refer [at-time]]))
+   [tick.core :as t]
+   [ta.helper.date :refer [at-time]]))
 
 (def day1 (t/new-duration 1 :days))
 
@@ -66,17 +66,17 @@
    (before-trading-hours? calendar dt open close false))
   ; base
   ([calendar dt open close include-open?]
-    (let [lt (if include-open? t/<= t/<)
-          time (t/time dt)]
-      (cond
-        (day-closed? calendar dt) false             ; no trading day
+   (let [lt (if include-open? t/<= t/<)
+         time (t/time dt)]
+     (cond
+       (day-closed? calendar dt) false             ; no trading day
         ;; |...[... day ...]...|
-        (intraday? calendar)  (lt time open)
+       (intraday? calendar)  (lt time open)
         ;; |... old day ...]...[... new day ...|    ; with previous and next trading day part
         ;; |...................[... new day ...|    ; no previous trading day part
-        (overnight? calendar) (let [day-after (t/>> dt (t/new-duration 1 :days))]
-                                (and (lt time open)
-                                     (day-open? calendar day-after)))))))
+       (overnight? calendar) (let [day-after (t/>> dt (t/new-duration 1 :days))]
+                               (and (lt time open)
+                                    (day-open? calendar day-after)))))))
 
 (defn after-trading-hours?
   "default behavoir: checks if dt > calendar close time inside the current trading day
@@ -94,17 +94,17 @@
    (after-trading-hours? calendar dt open close false))
   ; base
   ([calendar dt open close include-close?]
-    (let [gt (if include-close? t/>= t/>)
-          time (t/time dt)]
-      (cond
-        (day-closed? calendar dt) false             ; no trading day
+   (let [gt (if include-close? t/>= t/>)
+         time (t/time dt)]
+     (cond
+       (day-closed? calendar dt) false             ; no trading day
         ;; |...[... day ...]...|
-        (intraday? calendar) (gt time close)
+       (intraday? calendar) (gt time close)
         ;; |... old day ...]...[... new day ...|    ; with previous and next trading day part
         ;; |... old day ...]...................|    ; no next trading day part
-        (overnight? calendar) (let [day-before (t/<< dt (t/new-duration 1 :days))]
-                                (and (gt time close)
-                                     (day-open? calendar day-before)))))))
+       (overnight? calendar) (let [day-before (t/<< dt (t/new-duration 1 :days))]
+                               (and (gt time close)
+                                    (day-open? calendar day-before)))))))
 
 (defn day-has-prior-close? [calendar dt first-close]
   "overnight: if day-before is open then the day has a close on 00:00 (earliest time at a day) and should return always true"

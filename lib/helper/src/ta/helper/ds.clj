@@ -44,7 +44,6 @@
    ;   (has-col :close)
       :close
       meta
-      :datatype
-      )
+      :datatype)
 ;  
   )

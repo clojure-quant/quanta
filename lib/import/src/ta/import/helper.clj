@@ -6,7 +6,7 @@
    [clj-http.client :as http]
    [de.otto.nom.core :as nom]))
 
-(defn http-get 
+(defn http-get
   "same as clj-http/get, but:
    - json only
    - socket timeout (we dont want to wait forever!)
@@ -25,7 +25,7 @@
 
 (defn p-or-fail [p opts range err-message]
   (if p
-   p
+    p
     (nom/fail ::get-bars-req {:message err-message
                               :opts opts
                               :range range})))
@@ -34,7 +34,6 @@
   (if (nil? str)
     nil
     (Float/parseFloat str)))
-
 
 (defn str->double [str]
   (if (nil? str)
@@ -58,7 +57,6 @@
 (comment
   (-> "15.123" str->float type)
   (-> "15.123" str->double type)
-
 
   (remove-last-bar-if-timestamp-equals
    [{:date (t/instant "2000-12-31T00:00:00Z")}

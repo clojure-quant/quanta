@@ -41,7 +41,6 @@
                              :location :bar-strategy-load-bars
                              :spec spec}))))
 
-
 (defn create-trailing-barstrategy [{:keys [trailing-n asset algo] :as spec}]
   (assert trailing-n)
   (assert asset)

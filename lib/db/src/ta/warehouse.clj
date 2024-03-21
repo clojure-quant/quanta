@@ -15,11 +15,9 @@
   (let [p (get-in-config [:ta :warehouse :series w])]
     (str p symbol ".nippy.gz")))
 
-(defn save-ts [wkw ds name]
-  )
+(defn save-ts [wkw ds name])
 
-(defn load-ts [wkw name]
-  )
+(defn load-ts [wkw name])
 
 ; timeseries - symbol + frequency
 

@@ -1,6 +1,5 @@
 (ns ta.indicator.helper)
 
-
 (defmacro indicator
   "creates a mapping-transducer.
    If only trans-fn is supplied, then the mapping transducer is stateless.
@@ -19,22 +18,20 @@
                r# (xf# result# r#))
              result#)))))))
 
+(comment
 
-(comment 
-  
-(defn field-xf [f]
-  (indicator
-   []
-   (fn [x]
-     (f x))))
+  (defn field-xf [f]
+    (indicator
+     []
+     (fn [x]
+       (f x))))
 
-(defn multiple-xf [m]
-  (indicator
-   (fn [x]
-     (into {} (map (fn [[k v]]
-                     (println k "x: " x "v: " (v x))
-                     [k (v x)]) m)))))
-  
-  
- ; 
+  (defn multiple-xf [m]
+    (indicator
+     (fn [x]
+       (into {} (map (fn [[k v]]
+                       (println k "x: " x "v: " (v x))
+                       [k (v x)]) m)))))
+
+; 
   )

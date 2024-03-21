@@ -49,17 +49,17 @@
 (defn get-csv [{:keys [asset calendar] :as opts} range]
   (info "get-bars kibot-http " asset " " calendar " " range " ..")
   (let [{:keys [kibot-http]} (db/instrument-details asset)]
-    (if kibot-http 
+    (if kibot-http
       (do (login)
           (raw/download-link-csv kibot-http))
       (nom/fail ::get-bars-kibot {:message (str "no kibot-http link in asset db for asset: " asset)
-                                 :opts opts
-                                 :window range}))))
+                                  :opts opts
+                                  :window range}))))
 
 (defn get-bars [opts range]
   (nom/let-nom> [csv (get-csv opts range)]
-    (info "parsing csv...")
-    (kibot-result->dataset csv)))
+                (info "parsing csv...")
+                (kibot-result->dataset csv)))
 
 (defrecord import-kibot-http [api-key]
   barsource
@@ -69,7 +69,6 @@
 (defn create-import-kibot-http [api-key]
   (kibot/set-key! api-key)
   (import-kibot-http. api-key))
-
 
 (comment
   ; test importing previously imported csv files.

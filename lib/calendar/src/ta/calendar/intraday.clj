@@ -125,8 +125,7 @@
   ([calendar n unit] (current-open-dt calendar n unit (t/now)))
   ([calendar n unit dt] (prior-open-dt calendar n unit dt {:on-boundary-fn nil :in-interval-fn nil})))
 
-
-(comment 
+(comment
   (require '[ta.calendar.calendars :refer [calendars]])
   (def dt (t/at (t/new-date 2023 1 5) (t/new-time 18 30 1)))
   dt
@@ -143,7 +142,7 @@
   (next-open (:us calendars) dt2)
   (next-close-dt (:us calendars) 1 :hours dt2)
   (next-close-dt (:us calendars) 1 :minutes dt2)
- 
+
   (prior-close-dt (:us calendars) 1 :hours dt2)
   (prior-close-dt (:us calendars) 1 :minutes dt2)
 
@@ -155,8 +154,7 @@
 
   (current-close-dt (:us calendars) 15 :minutes
                     ;(t/zoned-date-time "2024-02-20T12:29:00Z[America/New_York]")
-                    (t/zoned-date-time "2024-02-20T12:30:00Z[America/New_York]")
-                    )
+                    (t/zoned-date-time "2024-02-20T12:30:00Z[America/New_York]"))
 
   (t/at (t/on (t/date-time)) (t/new-time 17 0 0))
 
@@ -170,15 +168,15 @@
                                  (t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]")
                                 ;(t/zoned-date-time "2024-02-09T12:29:00Z[America/New_York]")
                                 ;(t/zoned-date-time "2024-02-09T12:30:00Z[America/New_York]")
-                                ))
+                                 ))
        (take 5))
 
   (->> (iterate (partial prior-open-dt (:us calendars) 15 :minutes)
                 (current-open-dt (:us calendars) 15 :minutes
-                              (t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]")
+                                 (t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]")
                               ;(t/zoned-date-time "2024-02-09T12:29:00Z[America/New_York]")
                               ;(t/zoned-date-time "2024-02-09T12:30:00Z[America/New_York]")
-                              ))
+                                 ))
        (take 5))
 
   ;(prev-close-dt (:us calendars) 15 :minutes (t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]"))
@@ -190,29 +188,26 @@
                 (current-close-dt (:us calendars) 15 :minutes
                                ;(t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]")
                                ;(t/zoned-date-time "2024-02-09T12:29:00Z[America/New_York]")
-                               (t/zoned-date-time "2024-02-09T12:30:00Z[America/New_York]")
-                               ))
+                                  (t/zoned-date-time "2024-02-09T12:30:00Z[America/New_York]")))
        (take 5))
   (->> (iterate (partial prior-close-dt (:us calendars) 1 :days)
                 (current-close-dt (:us calendars) 1 :days
                                ;(t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]")
                                ;(t/zoned-date-time "2024-02-09T12:29:00Z[America/New_York]")
-                               (t/zoned-date-time "2024-02-09T12:30:00Z[America/New_York]")
-                               ))
+                                  (t/zoned-date-time "2024-02-09T12:30:00Z[America/New_York]")))
        (take 5))
 
   (next-close-dt (:forex calendars) 1 :minutes (t/in (t/date-time "2024-02-08T16:27:00") "America/New_York"))
   (next-close-dt (:us calendars) 15 :minutes (t/in (t/date-time "2024-02-09T06:00:00") "America/New_York"))
   (->> (iterate (partial next-close-dt (:us calendars) 15 :minutes)
                 (current-close-dt (:us calendars) 15 :minutes
-                               (t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]")
+                                  (t/zoned-date-time "2024-02-09T12:34:56Z[America/New_York]")
                                ;(t/zoned-date-time "2024-02-09T12:29:00Z[America/New_York]")
                                ;(t/zoned-date-time "2024-02-09T12:30:00Z[America/New_York]")
                                ;(t/zoned-date-time "2024-02-09T09:00:00Z[America/New_York]")
-                               ))
+                                  ))
        (take 5))
 
   (dt-base (:us calendars) 1 :days
            (t/in (t/date-time "2024-02-09T06:00:00") "America/New_York")
-           {:on-boundary-fn t/>> :in-interval-fn t/>>})
-  )
+           {:on-boundary-fn t/>> :in-interval-fn t/>>}))

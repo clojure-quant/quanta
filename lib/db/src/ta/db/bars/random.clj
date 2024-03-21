@@ -42,8 +42,8 @@
   (doall
    (map (fn [asset]
           (let [ds (random-dataset n)]
-            (b/append-bars db {:asset asset 
-                               :calendar calendar} 
+            (b/append-bars db {:asset asset
+                               :calendar calendar}
                            ds)))
         assets)))
 

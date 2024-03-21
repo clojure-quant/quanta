@@ -102,8 +102,6 @@
   (kibot/set-key! api-key)
   (import-kibot. api-key))
 
-
-
 (defn symbols->str [symbols]
   (->> (interpose "," symbols)
        (apply str)))
@@ -127,14 +125,12 @@
   (-> (kibot-result->dataset :us csv)
       (tc/info :columns))
 
-
   (db/instrument-details "EUR/USD")
 
   (symbol->provider "MES0")
   (symbol->provider "EUR/USD")
   ;; => {:type "futures", :symbol "ES"}
   (provider->symbol "ES")
-
 
   (symbols->str ["MSFT" "ORCL"])
   (symbols->str ["ES"])
@@ -161,13 +157,12 @@
   (get-bars {:asset "MSFT" ; stock
              :calendar [:us :d]}
             {:start dt})
-  
+
   (get-bars {:asset "MSFT"
              :calendar [:us :d]
              :import :kibot}
             {:start (t/instant "2020-01-01T00:00:00Z")
              :end (t/instant "2020-02-01T00:00:00Z")})
-
 
   (-> (get-bars {:asset "NG0" ; future
                  :calendar [:us :d]}
@@ -177,8 +172,7 @@
   (get-bars {:asset "EUR/USD" ; forex
              :calendar [:forex :d]}
             {:start (parse-date "2023-09-01")
-             :end (parse-date "2023-10-01")
-             })
+             :end (parse-date "2023-10-01")})
 
   (get-bars  {:asset "IJH" ; ETF
               :calendar [:etf :d]}

@@ -67,7 +67,6 @@
 (defn- end-dates [end-dt windows]
   (map #(cal/next-close (first %) (last %) end-dt) windows))
 
-
 (defn combined-event-seq
   [{:keys [start end]} windows]
   (let [windows (into [] windows) ; windows needs to be a vector
@@ -79,27 +78,22 @@
     (take-while not-end? seq)
      ;end-dt-max
     ))
-
-
 (comment
 
   ;; window
- (require '[ta.calendar.window :refer [recent-days-window]])
-  
+  (require '[ta.calendar.window :refer [recent-days-window]])
+
   (def r (cal/trailing-range [:us :d] 10))
   r
 
-
-  ;; reader
-
-  
+;; reader
 
   (def reader (calendar-seq-reader r [:us :d]))
   ; reader will return with each call the next date
   (reader)
 
   (def calendars [[:crypto :h]
-                [:crypto :m]])
+                  [:crypto :m]])
 
   (end-dates (:start days10) calendars)
   (combined-event-seq days10 calendars)
@@ -112,15 +106,13 @@
   (get-next-date readers 0)
   (get-next-date readers 1)
 
-
-  ;; combiner test 
+;; combiner test 
   (def state (create-initial-state readers))
   @state
 
   (get @state 0)
   (get @state 1)
   (get-next-index state)
-
 
   (get-next-date-state calendars readers state)
 
@@ -130,19 +122,15 @@
 
   (take 1 c)
 
-
   (require '[clojure.pprint :refer [print-table]])
   (->> (take 10 c)
        (print-table))
-
- 
 
   (combined-event-seq r calendars)
 
   (->> (combined-event-seq r calendars)
        (print-table))
-  
 
 ;  
-    )
+  )
 

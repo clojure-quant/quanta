@@ -185,8 +185,8 @@
         (keywordize-columns))))
 
 (defn ensure-instant [dt]
-  (when dt 
-    (if (t/zoned-date-time? dt) 
+  (when dt
+    (if (t/zoned-date-time? dt)
       (t/instant dt)
       dt)))
 
@@ -200,13 +200,13 @@
         bar-ds (cond
                  (and start end)
                  (get-bars-window session calendar asset start end)
-               
+
                  start
                  (get-bars-since session calendar asset start)
-               
+
                  :else
                  (get-bars-full session calendar asset))]
-    (cond 
+    (cond
       (or (nil? bar-ds)
           (= 0 (tc/row-count bar-ds)))
       (nom/fail ::get-bars-duckdb {:message (str "asset " asset " has no bars in duckdb!")})
@@ -224,9 +224,7 @@
    (:conn session)
    (sql-delete-bars-asset session calendar asset)))
 
-
-
- ;; CREATE INDEX s_idx ON films (revenue);
+;; CREATE INDEX s_idx ON films (revenue);
 
 (defn- now []
   (-> (t/now)
@@ -248,14 +246,14 @@
 
 (defn make-table-defs []
   (let [cals (get-calendar-list)
-        make-one-cal (fn [c] [ [c :d]
-                               [c :h]
-                               [c :m]])]
+        make-one-cal (fn [c] [[c :d]
+                              [c :h]
+                              [c :m]])]
     (->> (map make-one-cal cals)
          (apply concat)
          (into []))))
 
-(def fixed-table-defs 
+(def fixed-table-defs
   [[:us :m]
    [:us :h]
    [:us :d]
@@ -269,8 +267,7 @@
     (when (not exists?)
       (println "init duck-db tables")
       (doall (map (partial create-table session)
-                  (make-table-defs)
-                  )))))  
+                  (make-table-defs))))))
 
 (defrecord bardb-duck [db conn new?]
   barsource
@@ -290,7 +287,7 @@
   (duckdb-stop-impl state))
 
 (comment
-  
+
   (make-table-defs)
 
   (-> (now) type)

@@ -2,8 +2,6 @@
   (:require [net.cgrand.xforms :as x]
             [net.cgrand.xforms.rfs :as rfs]))
 
-
-
 ; stolen from: https://github.com/pangloss/transducers/blob/master/src/xn/transducers.cljc
 (defn multiplex
   "Allow a single chain of transducers to branch data out to be processed by multiple transducers, then merged back into a single one.

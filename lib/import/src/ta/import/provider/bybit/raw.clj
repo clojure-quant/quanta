@@ -38,7 +38,6 @@
                 (info "status:" status "headers: " headers)
                 (cheshire/parse-string body true)))
 
-
 (defn get-history-request
   "makes rest-call to binance to return bar-seq or nom-anomaly
    on error. 

@@ -45,19 +45,18 @@
        (xf))
      	;; PROCESS
       ([result input]
-         (when-not (nil? input)
-           (reset! last input))
-         (if @first
-           (do (reset! first false)
-               result) ; unchanged collection for first element
-           (xf result input) ; add current element thereafter
-           ))
+       (when-not (nil? input)
+         (reset! last input))
+       (if @first
+         (do (reset! first false)
+             result) ; unchanged collection for first element
+         (xf result input) ; add current element thereafter
+         ))
       ;; TEAR-DOWN
       ([result]
        (when-not @first
          (xf result @last))
-         (xf result)))))
-
+       (xf result)))))
 
 (comment
 

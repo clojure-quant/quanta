@@ -3,7 +3,7 @@
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as fun]))
 
-(defn diff 
+(defn diff
   "returns a vector of the difference between subsequent values.
    first value is 0, indicating no difference."
   [integrated-values]
@@ -37,17 +37,15 @@
        vec
        diff)
 
-   (->> [1 8 0 -9 1 4]
-        (reductions +)
-        vec
+  (->> [1 8 0 -9 1 4]
+       (reductions +)
+       vec
        (diff-n 2)
-        vec
-        )
+       vec)
    ;; => [1 9 9  0  1 5]
    ;; => [0 0 8 -9 -8 5]
 
-
-  ;; #array-buffer<float32> [6]
+;; #array-buffer<float32> [6]
   ;; [0.000, 8.000, 0.000, -9.000, 1.000, 4.000]
   )
 (defn log-return [price-vec]

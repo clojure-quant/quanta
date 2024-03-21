@@ -33,7 +33,7 @@ jobs:
       shell: bash
     - name: clj-fmt
       if: ${{ matrix.os != 'windows-latest' }}
-      run: clojure -M:cljfmt fix
+      run: clojure -M:cljfmt
       shell: bash
     #- name: clj-kondo
     #  run: clojure -M:lint

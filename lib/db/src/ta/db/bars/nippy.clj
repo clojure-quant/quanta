@@ -10,7 +10,6 @@
    [babashka.fs :refer [create-dirs]]
    [ta.db.bars.protocol :refer [bardb barsource]]))
 
-
 (defn save-ds [filename ds]
   (let [s (io/gzip-output-stream! filename)]
     (debug "saving series " filename " count: " (tc/row-count ds))
@@ -24,9 +23,8 @@
 
 (defn filename-asset [this {:keys [asset calendar]}]
   (let [[exchange interval] calendar
-        asset (str/replace asset #"/" "_")
-        ]
-  (str (:base-path this) asset "-" (name exchange) "-" (name interval) ".nippy.gz")))
+        asset (str/replace asset #"/" "_")]
+    (str (:base-path this) asset "-" (name exchange) "-" (name interval) ".nippy.gz")))
 
 (defn filter-range [ds-bars {:keys [start end]}]
   (tc/select-rows
@@ -46,7 +44,7 @@
 (defrecord bardb-nippy [base-path]
   barsource
   (get-bars [this opts window]
-     (get-bars-nippy this opts window))
+    (get-bars-nippy this opts window))
   bardb
   (append-bars [this opts ds-bars]
     ;(info "this: " this)

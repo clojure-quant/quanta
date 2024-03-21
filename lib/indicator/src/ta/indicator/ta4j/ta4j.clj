@@ -4,8 +4,7 @@
    [tick.core :as tick]
    [tech.v3.datatype :as dtype]
    [tech.v3.dataset :as tds])
-  (:import [org.ta4j.core.num DoubleNum DecimalNum])
-)
+  (:import [org.ta4j.core.num DoubleNum DecimalNum]))
 
 ; https://github.com/ta4j/ta4j/
 ; https://ta4j.github.io/ta4j-wiki/
@@ -63,9 +62,8 @@
   (let [series (org.ta4j.core.BaseBarSeries.)
         r  (dtype/->reader (ds col))]
     (doseq [data r]
-        (.addPrice series data))
+      (.addPrice series data))
     series))
-
 
 (comment
   (require '[ta.helper.date-ds  :refer [days-ago]])
@@ -84,16 +82,13 @@
   x
   (get-column ds :close)
 
-  
   (-> (ds->ta4j-close ds)
-      (ind-values)
-      )
+      (ind-values))
 
-   (ds->ta4j-ohlcv ds)
-      
+  (ds->ta4j-ohlcv ds)
+
   (:close ds)
-  
-  
+
   (def close  (ds->ta4j-close ds))
 
   (get-column ds :close)
@@ -103,140 +98,138 @@
 ; 
   )
 
-(def indicators [
-   :AbstractEMA
-   :Abstract
-   :AccelerationDeceleration 
-   :AccumulationDistribution
-   :ADX
-   :Amount
-   :AroonDown
-   :AroonOscillator
-   :AroonUp
-   :ATR
-   :AwesomeOscillator
-   :BearishEngulfing
-   :BearishHarami
-   :BollingerBandsLower
-   :BollingerBandsMiddle
-   :BollingerBandsUpper
-   :BollingerBandWidth
-   :BooleanTransform
-   :BullishEngulfing
-   :BullishHarami
-   :Cached
-   :CashFlow  ; misses Indicator
-   :CCI
-   :ChaikinMoneyFlow
-   :ChaikinOscillator
-   :ChandelierExitLong
-   :ChandelierExitShort
-   :Chop 
-   :CloseLocationValue
-   :ClosePrice
-   :CMO 
-   :Combine
-   :Constant
-   :ConvergenceDivergence
-   :CoppockCurve
-   :CorrelationCoefficienticator
-   :Covariance
-   :Cross
-   :DateTime
-   :DeMarkPivotPoint
-   :DeMarkReversal
-   :DifferencePercentage
-   :DistanceFromMA 
-   :Doji
-   :DoubleEMA
-   :DPO
-   :DX
-   :EMA
-   :FibonacciReversal
-   :Fisher
-   :FixedBoolean
-   :FixedDecimal
-   :Fixed
-   :Gain
-   :HighestValue
-   :HighPrice 
-   :HMA
-   :IchimokuChikouSpan
-   :IchimokuKijunSen
-   :IchimokuLine
-   :IchimokuSenkouSpanA
-   :IchimokuSenkouSpanB
-   :IchimokuTenkanSen
-   :III
-   :KAMA
-   :KeltnerChannelLower
-   :KeltnerChannelMiddle
-   :KeltnerChannelUpper
-   :KST 
-   :Loss
-   :LowerShadow
-   :LowestValue
-   :LowPrice
-   :LWMA
-   :MACD
-   :MassIndex
-   :MeanDeviation
-   :MedianPrice
-   :MinusDI
-   :MinusDM
-   :MMA 
-   :MVWAP
-   :Numeric
-   :NVII
-   :OnBalanceVolume
-   :OpenPrice
-   :ParabolicSar
-   :PearsonCorrelation
-   :PercentB
-   :PeriodicalGrowthRate
-   :PivotPoint
-   :PlusDI
-   :PlusDM
-   :PPO
-   :PreviousValue
-   :PriceVariation
-   :PVI
-   :PVO
-   :RAVI
-   :RealBody
-   :RecursiveCached
-   :Returns ; no Indicator
-   :ROC
-   :ROCV
-   :RSI
-   :RWIHigh
-   :RWILow
-   :Sigma
-   :SimpleLinearRegression
-   :SMA
-   :StandardDeviation
-   :StandardError
-   :StandardReversal
-   :StochasticOscillatorD
-   :StochasticOscillatorK
-   :StochasticRSI
-   :Sum
-   :ThreeBlackCrows
-   :ThreeWhiteSoldiers
-   :TradeCount
-   :Transform
-   :TR
-   :TripleEMA
-   :TypicalPrice
-   :UlcerIndex
-   :Unstable
-   :UpperShadow
-   :Variance
-   :Volume
-   :VWAP
-   :WilliamsR
-   :WMA
-   :ZLEMA
-   ])
-  
-  
+(def indicators [:AbstractEMA
+                 :Abstract
+                 :AccelerationDeceleration
+                 :AccumulationDistribution
+                 :ADX
+                 :Amount
+                 :AroonDown
+                 :AroonOscillator
+                 :AroonUp
+                 :ATR
+                 :AwesomeOscillator
+                 :BearishEngulfing
+                 :BearishHarami
+                 :BollingerBandsLower
+                 :BollingerBandsMiddle
+                 :BollingerBandsUpper
+                 :BollingerBandWidth
+                 :BooleanTransform
+                 :BullishEngulfing
+                 :BullishHarami
+                 :Cached
+                 :CashFlow  ; misses Indicator
+                 :CCI
+                 :ChaikinMoneyFlow
+                 :ChaikinOscillator
+                 :ChandelierExitLong
+                 :ChandelierExitShort
+                 :Chop
+                 :CloseLocationValue
+                 :ClosePrice
+                 :CMO
+                 :Combine
+                 :Constant
+                 :ConvergenceDivergence
+                 :CoppockCurve
+                 :CorrelationCoefficienticator
+                 :Covariance
+                 :Cross
+                 :DateTime
+                 :DeMarkPivotPoint
+                 :DeMarkReversal
+                 :DifferencePercentage
+                 :DistanceFromMA
+                 :Doji
+                 :DoubleEMA
+                 :DPO
+                 :DX
+                 :EMA
+                 :FibonacciReversal
+                 :Fisher
+                 :FixedBoolean
+                 :FixedDecimal
+                 :Fixed
+                 :Gain
+                 :HighestValue
+                 :HighPrice
+                 :HMA
+                 :IchimokuChikouSpan
+                 :IchimokuKijunSen
+                 :IchimokuLine
+                 :IchimokuSenkouSpanA
+                 :IchimokuSenkouSpanB
+                 :IchimokuTenkanSen
+                 :III
+                 :KAMA
+                 :KeltnerChannelLower
+                 :KeltnerChannelMiddle
+                 :KeltnerChannelUpper
+                 :KST
+                 :Loss
+                 :LowerShadow
+                 :LowestValue
+                 :LowPrice
+                 :LWMA
+                 :MACD
+                 :MassIndex
+                 :MeanDeviation
+                 :MedianPrice
+                 :MinusDI
+                 :MinusDM
+                 :MMA
+                 :MVWAP
+                 :Numeric
+                 :NVII
+                 :OnBalanceVolume
+                 :OpenPrice
+                 :ParabolicSar
+                 :PearsonCorrelation
+                 :PercentB
+                 :PeriodicalGrowthRate
+                 :PivotPoint
+                 :PlusDI
+                 :PlusDM
+                 :PPO
+                 :PreviousValue
+                 :PriceVariation
+                 :PVI
+                 :PVO
+                 :RAVI
+                 :RealBody
+                 :RecursiveCached
+                 :Returns ; no Indicator
+                 :ROC
+                 :ROCV
+                 :RSI
+                 :RWIHigh
+                 :RWILow
+                 :Sigma
+                 :SimpleLinearRegression
+                 :SMA
+                 :StandardDeviation
+                 :StandardError
+                 :StandardReversal
+                 :StochasticOscillatorD
+                 :StochasticOscillatorK
+                 :StochasticRSI
+                 :Sum
+                 :ThreeBlackCrows
+                 :ThreeWhiteSoldiers
+                 :TradeCount
+                 :Transform
+                 :TR
+                 :TripleEMA
+                 :TypicalPrice
+                 :UlcerIndex
+                 :Unstable
+                 :UpperShadow
+                 :Variance
+                 :Volume
+                 :VWAP
+                 :WilliamsR
+                 :WMA
+                 :ZLEMA])
+
+

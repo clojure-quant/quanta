@@ -46,9 +46,9 @@
    (let [cur-dt (current-close calendar-kw interval-kw)]
      (calendar-seq calendar-kw interval-kw cur-dt)))
   ([calendar-kw interval-kw dt]
-    (let [cur-dt (current-close calendar-kw interval-kw dt)
-          next-dt (partial next-close calendar-kw interval-kw)]
-      (iterate next-dt cur-dt))))
+   (let [cur-dt (current-close calendar-kw interval-kw dt)
+         next-dt (partial next-close calendar-kw interval-kw)]
+     (iterate next-dt cur-dt))))
 
 (defn calendar-seq-instant [[calendar-kw interval-kw]]
   (->> (calendar-seq calendar-kw interval-kw)
@@ -59,16 +59,13 @@
         prior-fn (partial prior-close calendar-kw interval-kw)]
     (iterate prior-fn cur-dt)))
 
-
-
-
 (defn trailing-window
   "returns a calendar-seq for a calendar of n rows
    if end-dt specified then last date equals end-date,
    otherwise end-dt is equal to the most-recent close of the calendar"
   ([calendar n end-dt]
-    (let [[calendar-kw interval-kw] calendar]
-      (take n (calendar-seq-prior calendar-kw interval-kw end-dt))))
+   (let [[calendar-kw interval-kw] calendar]
+     (take n (calendar-seq-prior calendar-kw interval-kw end-dt))))
   ([calendar n]
    (let [[calendar-kw interval-kw] calendar
          cur-dt (current-close calendar-kw interval-kw)]
@@ -97,7 +94,6 @@
   {:start (last cal-seq)
    :end  (first cal-seq)})
 
-
 (defn get-bar-window [[calendar-kw interval-kw] bar-end-dt]
    ; TODO: improve
    ; for intraday bars this works fine
@@ -115,7 +111,6 @@
     ;:W
     :d (get-calendar-day-duration calendar-kw)
     (get-in intervals [interval-kw :duration])))
-
 
 (comment
   (now-calendar :us)
@@ -147,7 +142,6 @@
   (trailing-window [:us :d] 10)
   (trailing-window [:us :h] 5)
 
-
   (get-bar-duration [:us :d])
   (get-bar-duration [:us :m])
 
@@ -158,11 +152,8 @@
   (-> (trailing-window :us :d 5)
       calendar-seq->range)
 
-
   (trailing-range [:us :d] 2)
   (trailing-range [:us :m] 10 (t/in (t/date-time "2023-02-01T12:00:00") "America/New_York"))
 
-
-
- ; 
+; 
   )

@@ -26,9 +26,9 @@
 
 (defn prior-close [calendar dt]
   (let [last-day-of-week (last (:week calendar))]
-      (->> (prior-day-of-week-iter calendar dt)
-           (drop-while #(not= last-day-of-week (t/day-of-week %)))
-           (first))))
+    (->> (prior-day-of-week-iter calendar dt)
+         (drop-while #(not= last-day-of-week (t/day-of-week %)))
+         (first))))
 
 (defn current-close [calendar dt]
   (let [cur-dt (day/current-close calendar dt)
@@ -37,7 +37,6 @@
              (t/= (t/date cur-dt) (t/date dt)))
       cur-dt
       (prior-close calendar dt))))
-
 
 (comment
   (require '[ta.calendar.calendars :as cal])
@@ -68,5 +67,4 @@
 
   (last (:week us))
 
-  (= t/FRIDAY t/FRIDAY)
-  )
+  (= t/FRIDAY t/FRIDAY))

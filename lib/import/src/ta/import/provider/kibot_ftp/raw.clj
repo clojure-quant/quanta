@@ -17,7 +17,6 @@
 ;; guix install unrar
 ;; rar file contains a lot of txt files
 
-
 (def config
   {:local-dir "/home/florian/repo/clojure-quant/trateg/output/kibot-incremental/"})
 

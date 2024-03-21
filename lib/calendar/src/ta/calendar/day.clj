@@ -27,7 +27,6 @@
       (at-time next-day close timezone)
       (next-close calendar next-dt))))
 
-
 ; prior
 
 (defn prior-open [{:keys [open timezone] :as calendar} dt]
@@ -45,7 +44,6 @@
     (if (day-with-close? calendar prior-dt)
       (at-time prior-day close timezone)
       (prior-close calendar prior-dt))))
-
 
 ; close
 
@@ -94,8 +92,7 @@
 ;    (trading-open-time calendar (t/date dt))
 ;    (next-open calendar dt)))
 
-
-(comment 
+(comment
   (require '[ta.calendar.calendars :refer [calendars]])
   (def us (:us calendars))
   us

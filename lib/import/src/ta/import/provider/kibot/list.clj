@@ -4,8 +4,7 @@
    [tech.v3.datatype.argops :as argops]
    [tablecloth.api :as tc]
    [ta.import.provider.kibot.raw :as kibot]
-   [ta.import.provider.kibot.ds :refer [string->stream]]
-   ))
+   [ta.import.provider.kibot.ds :refer [string->stream]]))
 
 ;; symbollist 
 

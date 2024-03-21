@@ -1,12 +1,12 @@
 (ns ta.algo.spec.inspect)
 
 #_(defn- specs [spec]
-  (if (map? spec)
-    [(assoc spec :id :0)]
-    (->> (map (fn [[id spec]]
-                (assoc spec :id id))
-              (partition 2 spec))
-         (into []))))
+    (if (map? spec)
+      [(assoc spec :id :0)]
+      (->> (map (fn [[id spec]]
+                  (assoc spec :id id))
+                (partition 2 spec))
+           (into []))))
 
 (defn- specs [spec]
   (if (map? spec)
@@ -51,7 +51,6 @@
   (let [spec-vec (specs spec)]
     (->> (filter time? spec-vec)
          (map #(select-keys % [:calendar])))))
-
 
 (comment
   (def algo-spec

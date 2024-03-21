@@ -54,7 +54,6 @@
         (alphavantage-result->dataset)
         (filter-rows-after-date (:start range)))))
 
-
 (defrecord import-alphavantage [api-key]
   barsource
   (get-bars [this opts window]
@@ -63,9 +62,6 @@
 (defn create-import-alphavantage [api-key]
   (av/set-key! api-key)
   (import-alphavantage. api-key))
-
-
-
 
 (comment
   (require '[ta.helper.date :refer [parse-date]])

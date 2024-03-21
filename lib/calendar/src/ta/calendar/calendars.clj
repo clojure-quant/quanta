@@ -4,24 +4,23 @@
 
 (def week-5
   (sorted-set
-    t/MONDAY t/TUESDAY t/WEDNESDAY
-    t/THURSDAY t/FRIDAY))
+   t/MONDAY t/TUESDAY t/WEDNESDAY
+   t/THURSDAY t/FRIDAY))
 
 (def week-6
   (sorted-set
-    t/MONDAY t/TUESDAY t/WEDNESDAY
-    t/THURSDAY t/FRIDAY t/SATURDAY))
+   t/MONDAY t/TUESDAY t/WEDNESDAY
+   t/THURSDAY t/FRIDAY t/SATURDAY))
 
 (def week-6-sunday
   (sorted-set
-    t/SUNDAY t/MONDAY t/TUESDAY
-    t/WEDNESDAY t/THURSDAY t/FRIDAY))
+   t/SUNDAY t/MONDAY t/TUESDAY
+   t/WEDNESDAY t/THURSDAY t/FRIDAY))
 
 (def week-7
   (sorted-set
-    t/MONDAY t/TUESDAY t/WEDNESDAY
-    t/THURSDAY t/FRIDAY t/SATURDAY t/SUNDAY))
-
+   t/MONDAY t/TUESDAY t/WEDNESDAY
+   t/THURSDAY t/FRIDAY t/SATURDAY t/SUNDAY))
 
 (def calendars
   {:forex {:open (t/new-time 17 0 0)
@@ -60,7 +59,6 @@
                 :week week-5
                 :timezone "Asia/Tokyo"}})
 
-
 (defn calendar-exists? [calendar-kw]
   (contains? calendars calendar-kw))
 
@@ -69,8 +67,6 @@
 
 (defn get-calendar-list []
   (keys calendars))
-
-
 
 (comment
   (contains? week-5 t/MONDAY)

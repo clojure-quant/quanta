@@ -25,8 +25,6 @@
 (defn ds-epoch [ds]
   (tds/column-map ds :epoch #(* 1000 (dt/->epoch-second %)) [:date]))
 
-
-
 (defn add-year-and-month-date-as-local-date [ds]
   (-> ds
       (tc/add-columns

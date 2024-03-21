@@ -51,8 +51,6 @@
       month-close-dt
       (prior-month-close calendar zoned-date))))
 
-
-
 (comment
   (require '[ta.calendar.calendars :as cal])
 
@@ -74,5 +72,4 @@
   (t/last-day-of-month (t/date "2024-03-04"))
   (t/<< (t/date-time "2024-03-04T00:00:00") (t/new-duration 1 :days))
   (t/at (t/date "2024-03-04") "00:00:00")
-  (prev-month (t/date "2024-03-04"))
-  )
+  (prev-month (t/date "2024-03-04")))

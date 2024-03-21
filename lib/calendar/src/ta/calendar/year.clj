@@ -51,7 +51,6 @@
       year-close-dt
       (prior-year-close calendar zoned-date))))
 
-
 (comment
   (require '[ta.calendar.calendars :as cal])
 
@@ -64,6 +63,4 @@
 
   (current-close (:us cal/calendars) (t/in (t/date-time "2024-03-04T12:00:00") "America/New_York"))
   (current-close (:us cal/calendars) (t/in (t/date-time "2024-12-31T17:00:00") "America/New_York"))
-  (current-close (:us cal/calendars) (t/in (t/date-time "2024-12-31T17:01:00") "America/New_York"))
-
-  )
+  (current-close (:us cal/calendars) (t/in (t/date-time "2024-12-31T17:01:00") "America/New_York")))

@@ -45,8 +45,7 @@
       (nom/fail ::get-bars-safe {:message "import-provider get-bars has thrown an exception"
                                  :opts opts
                                  :task task
-                                 :ex (ex-cause ex)})
-      )))
+                                 :ex (ex-cause ex)}))))
 
 (defn append-bars-safe [state opts task bar-ds]
   (try
@@ -62,8 +61,7 @@
   (let [bar-ds (get-bars-safe state opts task)]
     (if (and bar-ds (not (nom/anomaly? bar-ds)))
       (append-bars-safe state opts task bar-ds)
-      (error "run-import-task " opts "error: " bar-ds)
-      )))
+      (error "run-import-task " opts "error: " bar-ds))))
 
 (defn run-import-tasks [state opts tasks]
   (doall (map #(run-import-task state opts %) tasks)))

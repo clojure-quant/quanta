@@ -30,8 +30,6 @@
                                                   :us)
                                                 exchange))))
 
-
-
 (defn instrument-details [s]
   (if-let [f (is-future? s)]
     (let [data (get @db (:symbol-root f))]
@@ -49,7 +47,6 @@
   (let [old (instrument-details symbol)
         merged (merge old instrument)]
     (swap! db assoc symbol merged)))
-
 
 (defn get-instruments []
   (-> @db vals))
@@ -106,9 +103,8 @@
               instrument)))
         (vals @db)))
 
-
 (comment
-  
+
   (sanitize-name {:symbol "a"})
   (sanitize-name {:symbol "a" :name nil})
   (sanitize-name {:symbol "a" :name ""})
@@ -118,7 +114,6 @@
   (sanitize-exchange {:symbol "a" :exchange "VI"})
   (sanitize-exchange {:symbol "a" :category :stocks})
   (sanitize-exchange {:symbol "a" :category :crypto})
-
 
   (add {:symbol "MSFT" :name "Microsoft"})
   (add {:symbol "IBM" :name "IBM"})

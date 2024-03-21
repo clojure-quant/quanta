@@ -7,8 +7,8 @@
 (defonce log-a (atom []))
 
 (defn add [import asset calendar window series-ds]
-  (let [series (if (nom/anomaly? series-ds) 
-                 nil 
+  (let [series (if (nom/anomaly? series-ds)
+                 nil
                  (tc/row-count series-ds))]
     (swap! log-a conj {:import import
                        :asset asset

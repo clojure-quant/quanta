@@ -37,27 +37,26 @@
 (defn gen-intraday-step-fn [n unit]
   ; close
   {:next-close     (fn ([calendar] (intraday/next-close-dt calendar n unit))
-                       ([calendar dt] (intraday/next-close-dt calendar n unit dt)))
+                     ([calendar dt] (intraday/next-close-dt calendar n unit dt)))
 
    :prior-close    (fn ([calendar] (intraday/prior-close-dt calendar n unit))
-                       ([calendar dt] (intraday/prior-close-dt calendar n unit dt)))
+                     ([calendar dt] (intraday/prior-close-dt calendar n unit dt)))
 
    :current-close  (fn ([calendar] (intraday/current-close-dt calendar n unit))
-                       ([calendar dt] (intraday/current-close-dt calendar n unit dt)))
+                     ([calendar dt] (intraday/current-close-dt calendar n unit dt)))
 
    ; open
    :next-open      (fn ([calendar] (intraday/next-open-dt calendar n unit))
-                       ([calendar dt] (intraday/next-open-dt calendar n unit dt)))
+                     ([calendar dt] (intraday/next-open-dt calendar n unit dt)))
 
    :prior-open     (fn ([calendar] (intraday/prior-open-dt calendar n unit))
-                       ([calendar dt] (intraday/prior-open-dt calendar n unit dt)))
+                     ([calendar dt] (intraday/prior-open-dt calendar n unit dt)))
 
    :current-open   (fn ([calendar] (intraday/current-open-dt calendar n unit))
-                       ([calendar dt] (intraday/current-open-dt calendar n unit dt)))
+                     ([calendar dt] (intraday/current-open-dt calendar n unit dt)))
 
    ; duration
-   :duration       (t/divide (t/new-duration n unit) (t/new-duration 1 :seconds))
-   })
+   :duration       (t/divide (t/new-duration n unit) (t/new-duration 1 :seconds))})
 
 (def intervals
   {:Y   {:next-close    year/next-close
@@ -79,13 +78,10 @@
    :h   (gen-intraday-step-fn 1 :hours)
    :m   (gen-intraday-step-fn 1 :minutes)
    :m15 (gen-intraday-step-fn 15 :minutes)
-   :m30 (gen-intraday-step-fn 30 :minutes)
-   })
+   :m30 (gen-intraday-step-fn 30 :minutes)})
 
-
-  (defn interval-exists? [interval-kw]
-    (contains? intervals interval-kw))
-
+(defn interval-exists? [interval-kw]
+  (contains? intervals interval-kw))
 
 (comment
   (now-in-zone "Europe/Paris")
@@ -101,7 +97,7 @@
        (map str)
        (sort)
        println)
-  
+
   (:h intervals)
   (gen-current-close align-d day/next-close)
 
@@ -117,7 +113,7 @@
   (next-close-day us (now-calendar us))
   (def next-close-hour (:next-close hour))
   (next-close-hour us (now-calendar us))
-  
+
   (def current-close-day (:current-close day))
   (current-close-day us)
 
