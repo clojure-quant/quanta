@@ -8,7 +8,8 @@
    [ta.indicator.helper :refer [indicator]]
    [ta.indicator.signal :refer [upward-change downward-change]]
    [ta.helper.ds :refer [has-col]]
-   [ta.math.series :refer [gauss-summation]]))
+   [ta.math.series :refer [gauss-summation]])
+  (:import [clojure.lang PersistentQueue]))
 
 (defn prior
   "this does not work, as it always returns the current value."
@@ -27,6 +28,22 @@
     (:sma (rolling ds {:window-size n
                        :relative-window-position :left}
                    {:sma (mean :col)}))))
+
+(defn sma2
+  "sma indicator, that does not produce any value until
+   minimum p bars are present."
+  [p]
+  (indicator
+   [values (volatile! PersistentQueue/EMPTY)
+    sum (volatile! 0.0)]
+   (fn [x]
+     (vswap! sum + x)
+     (vswap! values conj x)
+     (when (> (count @values) p)
+       (vswap! sum - (first @values))
+       (vswap! values pop))
+     (when (= (count @values) p)
+       (/ @sum p)))))
 
 ;; https://www.investopedia.com/ask/answers/071414/whats-difference-between-moving-average-and-weighted-moving-average.asp
 (defn- wma-f [series len norm]
@@ -160,6 +177,8 @@
                  {:open 100 :high 160 :low 90 :close 106}
                  {:open 100 :high 160 :low 90 :close 107}
                  {:open 100 :high 160 :low 90 :close 110}]))
+
+  (into [] sma2 [4 5 6 7 8 6 5 4 3])
 
   (tr ds)
 

@@ -18,6 +18,25 @@
                r# (xf# result# r#))
              result#)))))))
 
+;; 2024 03 21 awb99: no clue what this does, but 
+;; seems to work together with indicator macro.
+
+(defn hcomp [& xfs]
+  (indicator
+   [ixf (fn [_ input] input)
+    ts (mapv #(% ixf) xfs)]
+   (fn [x]
+     (mapv #(% nil x) ts))))
+
+(defn align []
+  (indicator
+   (fn [x]
+     (when (every? some? x) x))))
+
+(defn ahcomp [& xfs]
+  (comp (apply hcomp xfs)
+        (align)))
+
 (comment
 
   (defn field-xf [f]
