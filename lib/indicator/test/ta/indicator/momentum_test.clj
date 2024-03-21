@@ -40,13 +40,13 @@
 ;; TESTS
 
 (deftest macd-test
-  (let [macd-ds (map double (macd 12 26 :close ds))
+  (let [macd-ds (map double (macd {:n 12 :m 26} (:close ds)))
         macd-ta4j (-> (macd-ta4j 12 26 ds)
                       (ind-values))]
     (is (all-fuzzy= macd-ds macd-ta4j))))
 
 (deftest rsi-test
-  (let [rsi-ds (map double (rsi 2 :close ds))
+  (let [rsi-ds (map double (rsi 2 (:close ds)))
         rsi-ta4j (-> (rsi-ta4j 2 ds)
                       (ind-values))]
     (is (all-fuzzy= rsi-ds rsi-ta4j))))
@@ -59,10 +59,10 @@
   (-> (rsi-ta4j 2 ds)
       (ind-values))
 
-  (map double (macd :close ds))
+  (map double (macd (:close ds)))
 
   (upward-change (:close ds))
   (downward-change (:close ds))
 
-  (rsi 2 :close ds)
+  (rsi 2 (:close ds))
   )
