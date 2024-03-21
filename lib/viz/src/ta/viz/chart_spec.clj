@@ -9,11 +9,22 @@
 (defn get-chart [spec idx]
   (get spec idx))
 
+(defn- ensure-type-keyword [{:keys [type] :as opts}]
+  (if (string? type)
+     (assoc opts :type (keyword type))
+    opts))
+
 (defn pane->series [idx pane]
   (map (fn [[col type]]
-         (if (map? type)
-           (merge {:axis idx :column col } type)
-           {:axis idx :column col :type type })) pane))
+         (cond 
+           (map? type)
+           (merge {:axis idx :column col } (ensure-type-keyword type))
+
+           (string? type)
+           {:axis idx :column col :type (keyword type)}
+
+           (keyword type)
+           {:axis idx :column col :type type})) pane))
 
 (defn chart->series [chart]
   (->> (map-indexed pane->series chart)

@@ -12,13 +12,15 @@
               ;:categories (:labels data)  
               }
    ;:title {:text title}
-   :navigator     {:enabled false}
+   :navigator false
+   ;:navigator  {:enabled false}
    :tooltip {:style {:width "200px"}
              :valueDecimals 4
              ;:valueSuffix " %"
              :shared true}
    ; webgl boost enabled by default
-   :boost {:useGPUTranslations true
+   :boost false
+   #_:boost #_{:useGPUTranslations true
            :seriesThreshold 5 ; Chart-level boost when there are more than 5 series in the chart
            :debug {:timeSetup true 
                    :timeSeriesProcessing true
@@ -26,9 +28,11 @@
                    :timeBufferCopy  true
                    :timeRendering true}}
    :chart {:height 1000} ; this gets overwritten by set-chart-height
-   :rangeSelector {; timeframe selector on the top
+
+   :rangeSelector false
+   #_:rangeSelector #_{; timeframe selector on the top
                    :verticalAlign "top"
-                                     ;:selected 1   
+                   ;:selected 1   
                    :x 0
                    :y 0}
    :plotOptions {:series {:animation 0

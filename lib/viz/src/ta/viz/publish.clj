@@ -31,7 +31,7 @@
   (when ds 
     (let [cols (:columns spec)]
       (assert cols "publish-dataset needs to have :columns spec")
-      (publish env spec (rtable-render-spec env spec ds)))))
+      (publish env spec (rtable-render-spec spec ds)))))
 
 (defn publish-ds->highstock [env spec ds]
   (when ds

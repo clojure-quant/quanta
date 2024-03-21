@@ -32,9 +32,9 @@
     (requiring-resolve fun)
     fun))
 
-(defn create-viz-fn [e {:keys [id chart metrics]} mode]
+(defn create-viz-fn [e {:keys [id] :as template} mode]
   ;(info "create-viz-fn: " viz)
-  (let [{:keys [viz viz-options]} (if (= mode :chart) chart metrics)
+  (let [{:keys [viz viz-options]} (get template mode)
         viz-fn (get-fn viz)]
     (when viz-fn
       (fn [result]
