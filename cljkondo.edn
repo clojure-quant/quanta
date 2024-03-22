@@ -1,10 +1,39 @@
-{:linters
- {; see here for all options 
+{; see here for all options 
   ;https://github.com/clj-kondo/clj-kondo/blob/master/src/clj_kondo/impl/config.clj
 
-  ;:lint-as 
-  ;{org.httpkit.server/with-channel clj-kondo.lint-as/def-catch-all}
+ ; config for linitng inside of comments
+ ; we deactivate all linting.
+ ; all linters see here: https://github.com/clj-kondo/clj-kondo/blob/master/doc/linters.md#type-mismatch
+ ; awb99. the meta info replace should allow us not to disable all linters 
+ ; one by one; however I couldnt get it to work.
+ :config-in-comment
+ ^:replace
+ {:linters
+  {:unresolved-symbol {:level :off}
+   :unused-namespace {:level :off}
+   :unused-binding {:level :off}
+   :unused-referred-var {:level :off :exclude {}}
+   :unused-private-var {:level :off}
+   :redundant-do {:level :off}
+   :unresolved-var  {:level :off}
+   :aliased-namespace-symbol {:level :off}
+   :aliased-namespace-var-usage {:level :off}
+   :type-mismatch {:level :off}
+   :unbound-destructuring-default {:level :off}
+   :unresolved-namespace {:level :off}
+   :invalid-arity {:level :off}
+   :conflicting-fn-arity {:level :off}}}
 
+ :linters
+ {; make sure certain macros do not cause errors in the linting.
+  :lint-as {promesa.core/let clojure.core/let
+            de.otto.nom.core/nom clojure.core/let
+            de.otto.nom.core/with-nom clojure.core/let
+            de.otto.nom.core/let-nom clojure.core/let
+            de.otto.nom.core/let-nom> clojure.core/let}
+
+  :consistent-alias {:aliases {tablecloth.api tc
+                               tech.v3.datatype.functional fun}}
 
 ; namespaces in this list are those we get for side-effects.
   ; it is also possible to do regex search here:
@@ -13,7 +42,9 @@
                      :exclude [clojure.core.async
                                cljs.core.async
                                cljs.core.async.macros]}
+
   :unused-binding {:level :off}
+  ; warning: #'taoensso.timbre/warn is referred but never used
 
   :unused-referred-var {:level :off
                         :exclude {taoensso.timbre [trace tracef ; dont be strict in referring to logging functions 
@@ -25,8 +56,6 @@
                                   cljs.core.async  [<! <!! >! >!! put! chan go go-loop]
                                   cljs.core.async.macros [go go-loop]
                                   re-frame.core [reg-event-db dispatch]}}
-
-
 
   :unused-private-var {:level :info}
 
@@ -58,10 +87,10 @@
           :progress false
           ;; output can be filtered and removed by regex on filename. empty options leave the output untouched.
           :include-files [] #_["^src" "^test"]
-          :exclude-files [".*cljs"
-                          "src/demo/goldly.*" 
-                             ;"^cljs/core"
-                             ; "profiles/test/src/demo/cljs.*"
+          :exclude-files [;".*cljs"
+                          ;"src/demo/goldly.*" 
+                          ;"^cljs/core"
+                         ; "profiles/test/src/demo/cljs.*"
                           ]
              ;; the output pattern can be altered using a template. use {{LEVEL}} to print the level in capitals.
              ;; the default template looks like this:

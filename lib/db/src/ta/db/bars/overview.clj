@@ -65,10 +65,6 @@
 ;    m))
 
 (comment
-
-  (wh/symbols-available :stocks "D")
-  (wh/symbols-available :crypto "D")
-
   (load-datasets :crypto "D" (wh/symbols-available :crypto "D"))
   (load-datasets :stocks "D" (wh/symbols-available :stocks "D"))
 

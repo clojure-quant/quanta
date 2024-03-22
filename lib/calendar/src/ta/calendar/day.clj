@@ -11,16 +11,18 @@
 
 ; next
 
-(defn next-open [{:keys [open timezone] :as calendar} dt]
+(defn next-open 
   "returns the next open day at open time"
+  [{:keys [open timezone] :as calendar} dt]
   (let [next-dt (t/>> dt day1)
         next-day (t/date next-dt)]
     (if (day-with-open? calendar next-dt)
       (at-time next-day open timezone)
       (next-open calendar next-dt))))
 
-(defn next-close [{:keys [close timezone] :as calendar} dt]
+(defn next-close 
   "returns the next open day at close time"
+  [{:keys [close timezone] :as calendar} dt]
   (let [next-dt (t/>> dt day1)
         next-day (t/date next-dt)]
     (if (day-with-close? calendar next-dt)
@@ -29,16 +31,18 @@
 
 ; prior
 
-(defn prior-open [{:keys [open timezone] :as calendar} dt]
+(defn prior-open 
   "returns the prior open day at open time"
+  [{:keys [open timezone] :as calendar} dt]
   (let [prior-dt (t/<< dt day1)
         prior-day (t/date prior-dt)]
     (if (day-with-open? calendar prior-dt)
       (at-time prior-day open timezone)
       (prior-open calendar prior-dt))))
 
-(defn prior-close [{:keys [close timezone] :as calendar} dt]
-  "returns the prior open day at close time"
+(defn prior-close 
+  "returns the prior open day at close time"  
+  [{:keys [close timezone] :as calendar} dt]
   (let [prior-dt (t/<< dt day1)
         prior-day (t/date prior-dt)]
     (if (day-with-close? calendar prior-dt)
@@ -47,30 +51,34 @@
 
 ; close
 
-(defn next-close-dt [calendar dt]
+(defn next-close-dt 
   "like next-close, but also can return the close time of the same day when dt is before close time.
    (excluding the close interval boundary)"
+  [calendar dt]
   (if (and (day-open? calendar dt) (not (after-trading-hours? calendar dt true)))
     (trading-close-time calendar (t/date dt))
     (next-close calendar dt)))
 
-(defn prior-close-dt [calendar dt]
+(defn prior-close-dt 
   "like prior-close, but also can return the close time of the same day when dt is after trading-hours.
-   (excluding the close interval boundary)"
+  (excluding the close interval boundary)"
+  [calendar dt] 
   (if (and (day-open? calendar dt) (after-trading-hours? calendar dt))
     (trading-close-time calendar (t/date dt))
     (prior-close calendar dt)))
 
-(defn current-close [calendar dt]
+(defn current-close 
   "current close (including the close interval boundary)"
+  [calendar dt]
   (if (after-trading-hours? calendar dt true)
     (trading-close-time calendar (t/date dt))
     (prior-close calendar dt)))
 
 ; open
 
-(defn current-open [calendar dt]
+(defn current-open 
   "current open (including the open interval boundary)"
+  [calendar dt]
   (if (before-trading-hours? calendar dt true)
     (trading-open-time calendar (t/date dt))
     (->> (prior-close calendar dt)

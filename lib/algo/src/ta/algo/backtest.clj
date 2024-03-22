@@ -57,7 +57,7 @@
   (require '[javelin.core-clj :refer [cell cell=]])
   (require '[ta.env.tools.window :as tw])
 
-  (require '[modular.system])
+  ;(require '[modular.system])
   (def duckdb (:duckdb modular.system/system))
 
   (defn demo-backtest []

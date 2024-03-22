@@ -42,6 +42,8 @@ spx-bars
                 enforce-single-position
                 enforce-no-entry-on-exit-bar
                 execute-pending))
+
+
 (def results1 (run-strat BARS STRAT))
 
 (def trades1 (:trades results1))

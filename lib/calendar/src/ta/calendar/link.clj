@@ -52,8 +52,9 @@
    EQUAL TO link-bars, BUT THIS VERSION WORKS WITH BIG DATASETS."
   [bar-ds remote-ds remote-col nil-val]
   (let [align (make-aligner remote-ds remote-col nil-val)
-        t (col-type remote-ds remote-col)
-        local-date (:date bar-ds)]
+        ;t (col-type remote-ds remote-col)
+        ;local-date (:date bar-ds)
+        ]
       ;(println "link-bars type: " t)
     ;(info "remote type: " t)
     ;(info "bar-ds sorted: " (is-ds-sorted? bar-ds))
@@ -141,7 +142,7 @@
     ;;    2024-03-08T23:38:39.055Z nuc12 INFO [ta.calendar.link:29] - move next..
     ;;    (3 3 4 4 4 5)
 
-  (link-bars hour-ds daily-ds :date (t/date-time "2000-01-01T15:00:00"))
+  (link-bars2 hour-ds daily-ds :date (t/date-time "2000-01-01T15:00:00"))
 
   (-> daily-ds tc/info)
 
@@ -150,7 +151,7 @@
                              {:date (t/date-time "2024-01-02T17:00:00")} ; 2
                              ]))
 
-  (link-bars hour2-ds daily-ds :date (t/date-time "2000-01-01T15:00:00"))
+  (link-bars2 hour2-ds daily-ds :date (t/date-time "2000-01-01T15:00:00"))
 
   (def daily-inst-ds (tc/dataset [{:date (-> (t/date-time "2024-01-01T17:00:00") t/inst) :a 1}
                                   {:date (-> (t/date-time "2024-01-02T17:00:00") t/inst) :a 2}
@@ -164,7 +165,7 @@
                                  {:date (-> (t/date-time "2024-01-02T17:00:00") t/inst)} ; 2
                                  ]))
 
-  (link-bars hour-inst-ds daily-inst-ds :date (t/date-time "2000-01-01T15:00:00"))
+  (link-bars2 hour-inst-ds daily-inst-ds :date (t/date-time "2000-01-01T15:00:00"))
 
   ; 
   )

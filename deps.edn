@@ -26,8 +26,7 @@
   ta/live {:local/root "./lib/live" :deps/manifest :deps}
   ta/viz {:local/root "./lib/viz" :deps/manifest :deps}
   ta/interact {:local/root "./lib/interact" :deps/manifest :deps}
-  ta/tradingview {:local/root "./lib/tradingview" :deps/manifest :deps}
-  }
+  ta/tradingview {:local/root "./lib/tradingview" :deps/manifest :deps}}
  :aliases
  {;https://github.com/applied-science/deps-library
   :release
@@ -48,41 +47,54 @@
                "./lib/import/src"
                "./lib/indicator/src"
 
-                "./lib/interact/src"
-                "./lib/live/src"
-                "./lib/math/src"
-                "./lib/quote/src"
-                "./lib/trade/src"
-                "./lib/tradingview/src"
-                "./lib/viz/src"]}
-  
- :cljfmt-fix
-{:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
- :main-opts ["-m" "cljfmt.main"
-             "--indents" "cljfmt.edn"
-             "fix"
-             "./lib/algo/src"
-             "./lib/calendar/src"
-             "./lib/db/src"
-             "./lib/engine/src"
-             "./lib/helper/src"
-             "./lib/import/src"
-             "./lib/indicator/src"
-             "./lib/interact/src"
-             "./lib/live/src"
-             "./lib/math/src"
-             "./lib/quote/src"
-             "./lib/trade/src"
-             "./lib/tradingview/src"
-             "./lib/viz/src"]}
+               "./lib/interact/src"
+               "./lib/live/src"
+               "./lib/math/src"
+               "./lib/quote/src"
+               "./lib/trade/src"
+               "./lib/tradingview/src"
+               "./lib/viz/src"]}
 
+  :cljfmt-fix
+  {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
+   :main-opts ["-m" "cljfmt.main"
+               "--indents" "cljfmt.edn"
+               "fix"
+               "./lib/algo/src"
+               "./lib/calendar/src"
+               "./lib/db/src"
+               "./lib/engine/src"
+               "./lib/helper/src"
+               "./lib/import/src"
+               "./lib/indicator/src"
+               "./lib/interact/src"
+               "./lib/live/src"
+               "./lib/math/src"
+               "./lib/quote/src"
+               "./lib/trade/src"
+               "./lib/tradingview/src"
+               "./lib/viz/src"]}
 
- ; https://github.com/clj-kondo/clj-kondo/blob/master/doc/jvm.md
+; https://github.com/clj-kondo/clj-kondo/blob/master/doc/jvm.md
   :lint
-  {:extra-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}
+  {:extra-deps {clj-kondo/clj-kondo {:mvn/version "2024.03.13"}}
    :main-opts ["-m" "clj-kondo.main"
                "--config" "cljkondo.edn"
-               "--lint"]}
+               "--lint"
+               "./lib/algo/src"
+               "./lib/calendar/src"
+               "./lib/db/src"
+               "./lib/engine/src"
+               "./lib/helper/src"
+               "./lib/import/src"
+               "./lib/indicator/src"
+               "./lib/interact/src"
+               "./lib/live/src"
+               "./lib/math/src"
+               "./lib/quote/src"
+               "./lib/trade/src"
+               ;"./lib/tradingview/src"
+               "./lib/viz/src"]}
 
   :cloverage
   {:extra-paths ["test"]
@@ -110,7 +122,6 @@
                   ;rewrite-clj/rewrite-clj {:mvn/version "1.0.699-alpha"}
                  babashka/fs {:mvn/version "0.0.5"}}
           :ns-default build}
-
 
 ;
   }}
