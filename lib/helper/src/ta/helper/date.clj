@@ -120,13 +120,15 @@
 (defn date-unit? [unit]
   (some #(= unit %) [:days :months :years]))
 
-(defn adjust-field [dt unit n]
+(defn adjust-field
   "modifies the target field"
+  [dt unit n]
   (let [field-kw (unit->field-kw unit)]
     (t/with dt field-kw n)))
 
-(defn align-field [dt unit]
+(defn align-field
   "zeroes the subordinate time fields of the unit"
+  [dt unit]
   (t/truncate dt unit))
 
 (defn round-down

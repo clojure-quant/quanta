@@ -23,14 +23,14 @@
    :unresolved-namespace {:level :off}
    :invalid-arity {:level :off}
    :conflicting-fn-arity {:level :off}}}
-
- :linters
- {; make sure certain macros do not cause errors in the linting.
+; make sure certain macros do not cause errors in the linting.
   :lint-as {promesa.core/let clojure.core/let
             de.otto.nom.core/nom clojure.core/let
             de.otto.nom.core/with-nom clojure.core/let
             de.otto.nom.core/let-nom clojure.core/let
             de.otto.nom.core/let-nom> clojure.core/let}
+ :linters
+ {
 
   :consistent-alias {:aliases {tablecloth.api tc
                                tech.v3.datatype.functional fun}}
@@ -60,12 +60,8 @@
   :unused-private-var {:level :info}
 
   :unresolved-symbol {:level :info
-   ;:creates-vars {org.httpkit.server/with-channel [con]}
-   ;:exclude [; needed for: pinkgorilla/routes.cljs app-routes
-             ;(secretary.core/defroute [query-params projects-path renderer-path])
-    ;         (org.httpkit.server/with-channel [con])
-     ;        (pinkgorilla.nrepl.ws.httpkit-ws-relay [con])
-      ;       ]
+                      :exclude-patterns ["idx"]
+                       ;:creates-vars {org.httpkit.server/with-channel [con]}
                       }
 
   ;:redundant-let
@@ -88,6 +84,8 @@
           ;; output can be filtered and removed by regex on filename. empty options leave the output untouched.
           :include-files [] #_["^src" "^test"]
           :exclude-files [;".*cljs"
+                          "./lib/indicator/src/ta/indicator/trade.*"
+                          "./lib/viz/src/ta/viz/notebook.*"
                           ;"src/demo/goldly.*" 
                           ;"^cljs/core"
                          ; "profiles/test/src/demo/cljs.*"

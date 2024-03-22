@@ -46,8 +46,9 @@
        (/ @sum p)))))
 
 ;; https://www.investopedia.com/ask/answers/071414/whats-difference-between-moving-average-and-weighted-moving-average.asp
-(defn- wma-f [series len norm]
+(defn- wma-f 
   "series with asc index order (not reversed like in pine script)"
+  [series len norm] 
   (let [sum (reduce + (for [i (range len)] (* (nth series i) (+ i 1))))
         ; TODO use vector functions. fix reify
         ;sum (fun/+
