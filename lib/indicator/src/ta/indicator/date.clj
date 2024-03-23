@@ -2,7 +2,7 @@
   (:require
    [tech.v3.dataset :as tds]
    [tech.v3.datatype :as dtype]
-   [tech.v3.datatype.functional :as fun]
+   [tech.v3.datatype.functional :as dfn]
    [tech.v3.datatype.datetime :as datetime]
    [tablecloth.api :as tc]
    [tick.core :as t]))
@@ -32,7 +32,7 @@
   (tc/add-column ds :month (month (:date ds))))
 
 (defn add-year-month [ds]
-  (tc/add-column ds :year-month (fun/+ (fun/* 100 (year (:date ds)))
+  (tc/add-column ds :year-month (dfn/+ (dfn/* 100 (year (:date ds)))
                                        (month (:date ds)))))
 
 (defn day-of-month [v]
@@ -48,8 +48,8 @@
   (tc/add-column ds :day (day-of-month (:date ds))))
 
 (defn add-year-month-day [ds]
-  (tc/add-column ds :year-month-day (fun/+ (fun/* 10000 (year (:date ds)))
-                                           (fun/* 100 (month (:date ds)))
+  (tc/add-column ds :year-month-day (dfn/+ (dfn/* 10000 (year (:date ds)))
+                                           (dfn/* 100 (month (:date ds)))
                                            (day-of-month (:date ds)))))
 
 (defn select-rows-since [ds date]

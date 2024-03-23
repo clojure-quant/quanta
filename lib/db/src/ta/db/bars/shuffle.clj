@@ -1,20 +1,20 @@
 
 (ns ta.db.bars.shuffle
   (:require
-   [tech.v3.datatype.functional :as fun]
+   [tech.v3.datatype.functional :as dfn]
    [tablecloth.api :as tc]
    [ta.indicator.returns :refer [forward-shift-col]]))
 
 (defn shuffle-bar-series [ds]
-  (let [open  (-> ds :open fun/log)
-        close (-> ds :close fun/log)
-        high (-> ds :high fun/log)
-        low (-> ds :low fun/log)
+  (let [open  (-> ds :open dfn/log)
+        close (-> ds :close dfn/log)
+        high (-> ds :high dfn/log)
+        low (-> ds :low dfn/log)
         open-1 (forward-shift-col open 1)
-        open-chg (fun/- open open-1)
-        close-chg (fun/- close open)
-        high-chg (fun/- high open)
-        low-chg (fun/- low open)
+        open-chg (dfn/- open open-1)
+        close-chg (dfn/- close open)
+        high-chg (dfn/- high open)
+        low-chg (dfn/- low open)
         ds-log (tc/add-columns ds {:open open
                                    :open-1 open-1
                                    :close close
@@ -30,13 +30,13 @@
         open-log-0 (-> ds-log-first :open first)
         ds-shuffled (tc/concat ds-log-first ds-log-rest)
         open-s  (reductions + open-log-0 (:open-chg ds-log-rest))
-        close-s (fun/+ (:close-chg ds-shuffled) open-s)
-        high-s (fun/+ (:high-chg ds-shuffled) open-s)
-        low-s (fun/+ (:low-chg ds-shuffled) open-s)
-        open-p (fun/exp open-s)
-        close-p (fun/exp close-s)
-        high-p (fun/exp high-s)
-        low-p (fun/exp low-s)]
+        close-s (dfn/+ (:close-chg ds-shuffled) open-s)
+        high-s (dfn/+ (:high-chg ds-shuffled) open-s)
+        low-s (dfn/+ (:low-chg ds-shuffled) open-s)
+        open-p (dfn/exp open-s)
+        close-p (dfn/exp close-s)
+        high-p (dfn/exp high-s)
+        low-p (dfn/exp low-s)]
     ;(println ds-log-first)
     (-> ds-shuffled
         (tc/add-columns {:open-s open-s

@@ -28,12 +28,15 @@
             de.otto.nom.core/nom clojure.core/let
             de.otto.nom.core/with-nom clojure.core/let
             de.otto.nom.core/let-nom clojure.core/let
-            de.otto.nom.core/let-nom> clojure.core/let}
+            de.otto.nom.core/let-nom> clojure.core/let
+            ta.indicator.helper/indicator clojure.core/let
+            }
  :linters
  {
 
   :consistent-alias {:aliases {tablecloth.api tc
-                               tech.v3.datatype.functional fun}}
+                               tech.v3.dataset tds
+                               tech.v3.datatype.functional dfn}}
 
 ; namespaces in this list are those we get for side-effects.
   ; it is also possible to do regex search here:

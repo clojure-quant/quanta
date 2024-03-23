@@ -1,7 +1,7 @@
 (ns ta.indicator
   (:require
    [tech.v3.datatype :as dtype]
-   [tech.v3.datatype.functional :as fun]
+   [tech.v3.datatype.functional :as dfn]
    [tech.v3.datatype.statistics :as stats]
    [tech.v3.dataset.rolling :as r :refer [rolling mean]]
    [tablecloth.api :as tc]
@@ -46,13 +46,13 @@
        (/ @sum p)))))
 
 ;; https://www.investopedia.com/ask/answers/071414/whats-difference-between-moving-average-and-weighted-moving-average.asp
-(defn- wma-f 
+(defn- wma-f
   "series with asc index order (not reversed like in pine script)"
-  [series len norm] 
+  [series len norm]
   (let [sum (reduce + (for [i (range len)] (* (nth series i) (+ i 1))))
         ; TODO use vector functions. fix reify
-        ;sum (fun/+
-        ;      (fun/* series
+        ;sum (dfn/+
+        ;      (dfn/* series
         ;             (range 1 (inc (count series)))))
         ]
     (double (/ sum norm))))
@@ -100,7 +100,7 @@
   ([{:keys [n m]} col]
    (let [ema-short (ema n col)
          ema-long (ema m col)]
-     (fun/- ema-short ema-long))))
+     (dfn/- ema-short ema-long))))
 
 (defn rsi
   "Relative strength index"
@@ -128,7 +128,7 @@
   (let [low (:low bar-ds)
         high (:high bar-ds)
         close (:close bar-ds)
-        hlc3 (fun// (fun/+ low high close) 3.0)]
+        hlc3 (dfn// (dfn/+ low high close) 3.0)]
     hlc3))
 
 (defn tr
@@ -139,7 +139,7 @@
   (assert (has-col bar-ds :high) "tr needs :high column in bar-ds")
   (let [low (:low bar-ds)
         high (:high bar-ds)
-        hl (fun/- high low)]
+        hl (dfn/- high low)]
     hl))
 
 (defn atr [{:keys [n]} bar-ds]
@@ -156,10 +156,10 @@
   (assert atr-n "atr-band needs :atr-n option")
   (assert atr-m "atr-band needs :atr-m option")
   (let [atr-vec (atr {:n atr-n} bar-ds)
-        atr-band (fun/* atr-vec atr-m)
+        atr-band (dfn/* atr-vec atr-m)
         band-mid (prior (:close bar-ds))
-        band-upper (fun/+ band-mid atr-band)
-        band-lower (fun/- band-mid atr-band)]
+        band-upper (dfn/+ band-mid atr-band)
+        band-lower (dfn/- band-mid atr-band)]
     {:atr-band-atr atr-vec
      :atr-band-mid band-mid
      :atr-band-upper band-upper

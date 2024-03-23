@@ -1,6 +1,6 @@
 (ns ta.helper.print
   (:require
-   [tech.v3.dataset :as dataset]
+   [tech.v3.dataset :as tds]
   ; [tech.v3.datatype.functional :as fun]
   ; [tech.v3.datatype :as dtype]
    [tech.v3.dataset.print :refer [print-range]]
@@ -43,7 +43,7 @@ user> (take 5 (ds/rows stocks))
   \"price\" 25.45})
 ```"
   [ds]
-  (dataset/mapseq-reader ds))
+  (tds/mapseq-reader ds))
 
 (defn row-at
   "Get the row at an individual index.  If indexes are negative then the dataset

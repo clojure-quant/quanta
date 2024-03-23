@@ -3,22 +3,22 @@
    [clojure.set]
    [tablecloth.api :as tc]
    [tech.v3.dataset :as tds]
-   [tech.v3.datatype.functional :as fun]
+   [tech.v3.datatype.functional :as dfn]
    [ta.indicator.drawdown :refer [max-drawdown]]))
 
 (defn calc-roundtrip-stats [roundtrips-ds group-by]
   (-> roundtrips-ds
       (tc/group-by group-by)
       (tc/aggregate {:bars (fn [ds]
-                             (fun/sum (:bars ds)))
+                             (dfn/sum (:bars ds)))
                      :trades (fn [ds]
                                (tc/row-count ds))
                      ; log
                      :pl-log-cum (fn [ds]
-                                   (fun/sum (:ret-log ds)))
+                                   (dfn/sum (:ret-log ds)))
 
                      :pl-log-mean (fn [ds]
-                                    (fun/mean (:ret-log ds)))
+                                    (dfn/mean (:ret-log ds)))
 
                      :pl-log-max-dd (fn [ds]
                                       (-> ds

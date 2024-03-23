@@ -2,7 +2,7 @@
   (:require
    [clojure.set]
    [tablecloth.api :as tc]
-   [tech.v3.datatype.functional :as fun]
+   [tech.v3.datatype.functional :as dfn]
    [ta.indicator.date :as dt]
    [ta.indicator.drawdown :refer [trailing-sum drawdowns-from-value]]))
 
@@ -12,7 +12,7 @@
       (tc/aggregate {:trades (fn [ds]
                                (tc/row-count ds))
                      :ret-log (fn [ds]
-                                (fun/sum (:ret-log ds)))})))
+                                (dfn/sum (:ret-log ds)))})))
 
 (defn grouped-nav [roundtrip-perf-ds]
   (assert (:ret-log roundtrip-perf-ds) "to calc grouped-nav :ret-log column needs to be present!")
@@ -31,8 +31,8 @@
         ;_ (println "ds-grouped: " ds-by-month)
         ;_ (println "CALC trailing sum *************")
         cum-ret-log (trailing-sum (:ret-log ds-by-month))
-        nav (fun/+ cum-ret-log 2.0)
-        nav-px (fun/pow 10 nav)]
+        nav (dfn/+ cum-ret-log 2.0)
+        nav-px (dfn/pow 10 nav)]
     (-> ds-by-month
         (tc/add-columns
          {:cum-ret-log cum-ret-log

@@ -1,7 +1,7 @@
 (ns ta.indicator.returns
   (:require
    [tech.v3.datatype :as dtype]
-   [tech.v3.datatype.functional :as fun]))
+   [tech.v3.datatype.functional :as dfn]))
 
 (defn diff
   "returns a vector of the difference between subsequent values.
@@ -49,7 +49,7 @@
   ;; [0.000, 8.000, 0.000, -9.000, 1.000, 4.000]
   )
 (defn log-return [price-vec]
-  (let [log-price (fun/log10 price-vec)]
+  (let [log-price (dfn/log10 price-vec)]
     (diff log-price)))
 
 (defn forward-shift-col [col offset]

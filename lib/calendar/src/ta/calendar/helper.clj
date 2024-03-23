@@ -32,7 +32,7 @@
 (defn time-closed? [calendar dt]
   (not (time-open? calendar dt)))
 
-(defn day-with-close? 
+(defn day-with-close?
   "checks if the given day closes"
   [calendar dt]
   (if (intraday? calendar)
@@ -42,7 +42,7 @@
       (and (day-open? calendar dt)
            (day-open? calendar day-before)))))
 
-(defn day-with-open? 
+(defn day-with-open?
   "checks if the given day opens"
   [calendar dt]
   (if (intraday? calendar)
@@ -108,9 +108,9 @@
                                (and (gt time close)
                                     (day-open? calendar day-before)))))))
 
-(defn day-has-prior-close? 
+(defn day-has-prior-close?
   "overnight: if day-before is open then the day has a close on 00:00 (earliest time at a day) and should return always true"
-  [calendar dt first-close] 
+  [calendar dt first-close]
   (let [time (t/time dt)]
     (cond
       (day-closed? calendar dt) false
@@ -121,7 +121,7 @@
                                   (and (t/>= time first-close)
                                        (day-open? calendar day-after)))))))
 
-(defn day-has-next-close? 
+(defn day-has-next-close?
   "NOTE: dt has to be valid (aligned to interval)"
   [calendar dt first-close close]
   (let [time (t/time dt)]
@@ -135,9 +135,9 @@
                                   (and (t/<= time close)
                                        (day-open? calendar day-before)))))))
 ;
-(defn inside-overnight-gap? 
+(defn inside-overnight-gap?
   "only true if the day has an open and close part and dt is between"
-  [calendar dt first-close close] 
+  [calendar dt first-close close]
   (if (overnight? calendar)
     (let [time (t/time dt)
           day-before (t/<< dt (t/new-duration 1 :days))
