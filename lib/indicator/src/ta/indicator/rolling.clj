@@ -1,7 +1,8 @@
 (ns ta.indicator.rolling
   (:require
    [tech.v3.dataset.rolling :as r]
-   [tablecloth.api :as tc]))
+   [tablecloth.api :as tc]
+   [ta.indicator.returns :as ret]))
 
 (defn rolling-window-reduce [rf n vec]
   (let [ds (tc/dataset {:in vec})]
@@ -23,6 +24,17 @@
   [n v]
   (rolling-window-reduce r/min n v))
 
+(defn trailing-return-stddev
+  "returns the trailing-stddev over n bars of column v.
+   the current row is included in the window."
+  [n bar-ds]
+  (rolling-window-reduce (fn [col-name]
+                           (println "col: " col-name)
+                           {:column-name col-name
+                            :reducer ret/return-stddev
+                            :datatype :float64})
+                         n (:close bar-ds)))
+
 (defn prior-window
   "this does not work!"
   [ds]
@@ -43,8 +55,8 @@
 
 (comment
   (def ds
-    (tc/dataset {:price [1 2 3 4 5 6 7]}))
-  (def price (:price ds))
+    (tc/dataset {:close [1.1 2.2 3.3 4.4 5.5 6.6 7.7]}))
+  (def price (:close ds))
 
   price
   ;; => #tech.v3.dataset.column<int64>[7]
@@ -60,6 +72,8 @@
   ;; => #tech.v3.dataset.column<float64>[7]
   ;;    :out
   ;;    [1.000, 1.000, 1.000, 2.000, 3.000, 4.000, 5.000]
+
+  (trailing-return-stddev 3 ds)
 
 ; 
   )

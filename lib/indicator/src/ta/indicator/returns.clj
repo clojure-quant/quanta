@@ -31,7 +31,21 @@
         (- (integrated-values idx)
            (integrated-values (- idx n))))))))
 
+(defn return-stddev [price]
+  (let [d (diff price)]
+    (dfn/standard-deviation d)))
+
+(defn log-return [price-vec]
+  (let [log-price (dfn/log10 price-vec)]
+    (diff log-price)))
+
+(defn forward-shift-col [col offset]
+  (dtype/make-reader :float64 (count col) (if (>= idx offset)
+                                            (col (- idx offset))
+                                            0)))
+
 (comment
+
   (->> [1 8 0 -9 1 4]
        (reductions +)
        vec
@@ -44,22 +58,17 @@
        vec)
    ;; => [1 9 9  0  1 5]
    ;; => [0 0 8 -9 -8 5]
+  (require '[tablecloth.api :as tc])
 
-;; #array-buffer<float32> [6]
-  ;; [0.000, 8.000, 0.000, -9.000, 1.000, 4.000]
-  )
-(defn log-return [price-vec]
-  (let [log-price (dfn/log10 price-vec)]
-    (diff log-price)))
+  (def ds (tc/dataset {:close [1.0 1.1 1.2 1.3 1.4 2.0 3.0]}))
+  ds
 
-(defn forward-shift-col [col offset]
-  (dtype/make-reader :float64 (count col) (if (>= idx offset)
-                                            (col (- idx offset))
-                                            0)))
+  (-> (:close ds)
+      (diff)
+      (dfn/standard-deviation))
 
-(comment
+  (return-stddev (:close ds))
 
-  (require '[tech.v3.dataset :as tds])
   (def d (tds/->dataset {:a [1.0 2.0 3.0 4.0 5.0]
                          :b [1.0 2.0 3.0 4.0 5.0]
                          :c [1.0 2.0 3.0 4.0 100.0]}))
