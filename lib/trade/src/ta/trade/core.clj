@@ -1,20 +1,11 @@
 (ns ta.trade.core
   (:require
-   [ta.trade.roundtrip.create :refer [signal->roundtrips]]
-   [ta.trade.roundtrip.performance :refer [add-performance]]
-   [ta.trade.roundtrip.metrics :refer [calc-roundtrip-metrics]]
-   [ta.trade.nav.metrics :refer [calc-nav-metrics]]
-   [ta.trade.nav.grouped :refer [grouped-nav]]))
+   [ta.trade.metrics :as m]
+   [ta.trade.position :refer [signal->roundtrips]]))
 
 (defn trade-summary [bar-signal-ds]
-  (let [roundtrip-ds (-> bar-signal-ds signal->roundtrips add-performance)
-        rt-metrics (calc-roundtrip-metrics roundtrip-ds)
-        nav-metrics (calc-nav-metrics roundtrip-ds)
-        nav-ds (grouped-nav roundtrip-ds)]
-    {:roundtrip-ds roundtrip-ds
-     :metrics {:roundtrip rt-metrics
-               :nav nav-metrics}
-     :nav-ds nav-ds}))
+  (let [roundtrip-ds (signal->roundtrips bar-signal-ds)]
+    (m/metrics roundtrip-ds)))
 
 (comment
   (require '[tick.core :as t])
@@ -27,11 +18,13 @@
                                      (t/instant "2020-03-05T00:00:00Z")
                                      (t/instant "2020-04-06T00:00:00Z")
                                      (t/instant "2020-05-07T00:00:00Z")]
-                              :close [1 2 3 4 5 6 7]
+                              :close [1.0 2.0 3.0 4.0 5.0 6.0 7.0]
                               :signal [:long :hold :flat ;rt1 
                                        :short :hold :hold :flat ; rt2
                                        ]}))
   signal-ds
+
+  (signal->roundtrips signal-ds)
 
   (def r (trade-summary signal-ds))
 

@@ -1,4 +1,4 @@
-(ns ta.trade.roundtrip.create
+(ns ta.trade.position
   (:require
    [tablecloth.api :as tc]
    [ta.indicator.helper :refer [indicator]]))
