@@ -3,9 +3,12 @@
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as dfn]))
 
+(defn- nil-or-nan? [n]
+  (or (nil? n) (NaN? n)))
+
 (defn diff
   "returns a vector of the difference between subsequent values.
-   first value is 0, indicating no difference."
+   returns NaN if diff cannot be calculated."
   [integrated-values]
   (let [n (count integrated-values)]
     (dtype/clone
@@ -13,9 +16,13 @@
       :float32
       n
       (if (= idx 0)
-        0
-        (- (integrated-values idx)
-           (integrated-values (dec idx))))))))
+        Double/NaN
+        (let [c (integrated-values idx)
+              p (integrated-values (dec idx))
+              invalid (or (nil-or-nan? c) (nil-or-nan? p))]
+          (if invalid
+            Double/NaN
+            (- c p))))))))
 
 (defn diff-n
   "returns a vector of the difference between subsequent values.
@@ -50,6 +57,18 @@
        (reductions +)
        vec
        diff)
+
+  (->> [10 18 20 Double/NaN 24 30]
+       diff)
+
+  (def data [10 18 20 Double/NaN 24 30])
+
+  (require '[tablecloth.api :as tc])
+  (-> (tc/dataset {:data data
+                   :chg (diff data)})
+      ;(:chg)
+      (tc/select-rows (fn [row]
+                        (not (nil-or-nan? (:chg row))))))
 
   (->> [1 8 0 -9 1 4]
        (reductions +)

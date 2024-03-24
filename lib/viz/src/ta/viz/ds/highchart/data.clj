@@ -89,6 +89,9 @@
 ;; therefore we can filter out unchanged values;
 ;; this can be a huge compression!
 
+(defn- nil-or-nan? [n]
+  (or (nil? n) (NaN? n)))
+
 (defn- select-col-steps [bar-epoch-ds col]
   (let [price (col bar-epoch-ds)
         chg (diff price)
@@ -98,7 +101,7 @@
     (-> (tc/dataset {:epoch date
                      col price
                      :chg chg})
-        (tc/select-rows #(not (= 0.0 (:chg %))))
+        (tc/select-rows #(not (nil-or-nan? (:chg %))))
         (tc/select-columns [:epoch col]))))
 
 (defn- series-step [bar-epoch-ds col]

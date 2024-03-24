@@ -26,12 +26,14 @@
 
 (defn add-extra-opts-step [series]
   (assoc series
+         :type "line" ; step plot is a line plot
          :step true))
 
 ;; POINT
 
 (defn add-extra-opts-point [series]
   (assoc series
+         :type "line" ; step plot is a line plot
          :lineWidth 0
          :marker {:enabled true
                   :radius 2}))
@@ -51,6 +53,11 @@
                 :name title
                 :yAxis axis
                 :zIndex 1000
+                ; zoom/pan
+                :panKey "ctrl" ; "alt"" "shift"  "meta"
+                :panning true
+                :zoomType "xy"
+                ; 
                 :dataGrouping {:enabled false}
                 :color color}
         series (cond
