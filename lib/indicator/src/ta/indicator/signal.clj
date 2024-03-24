@@ -54,7 +54,10 @@
          or-value
          (signal idx))))))
 
-(defn price-when [price signal]
+(defn price-when
+  "returns the price, when the signal is true.
+   otherwise 0.0 (better: nil?)"
+  [price signal]
   (let [n (count price)]
     (dtype/make-reader
      :float32 n
@@ -94,6 +97,29 @@
          (- (price (dec idx)) (price idx))
          0)))))
 
+(defn barcount-while
+  "while signal is true, returns # bars since
+   signal changed to true. otherwise nil."
+  [signal]
+  (let [prior (volatile! 0)
+        n (count signal)]
+    (dtype/make-reader
+     :int64 n
+     (cond
+
+       (= idx 0) ; no prior for idx 0
+       0
+
+       (not (signal idx)) ; 0 when-not signal
+       0
+
+       ; here it is guaranteed that signal is true.
+       (signal (dec idx)) ; count if prior signal also true.
+       (vswap! prior inc)
+
+       :else ; prior=false signal=true => reset to 0.
+       (vreset! prior 0)))))
+
 (comment
 
   (buyhold-signal-bar-length 5)
@@ -122,6 +148,17 @@
   (cross-down px-d ind)
   (->> (cross-down px-d ind)
        (price-when px-d))
+
+  (def ds (tc/dataset {:signal
+                       [true  true  true true false
+                        false true true false false]}))
+
+  ds
+
+  (barcount-while (:signal ds))
+
+  (barcount-while [true  true  true true false
+                   false true true false false])
 
   ;
   )
