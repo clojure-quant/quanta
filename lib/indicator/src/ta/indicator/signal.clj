@@ -60,10 +60,10 @@
   [price signal]
   (let [n (count price)]
     (dtype/make-reader
-     :float32 n
+     :float64 n
      (if (signal idx)
        (price idx)
-       0.0))))
+       Double/NaN))))
 
 (defn prior-int [price n-ago]
   (let [l (count price)]
