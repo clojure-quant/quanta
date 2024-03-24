@@ -4,17 +4,15 @@
 
 Quanta is a technical analysis datascience platform written in Clojure.
 
+- Quanta works predominantly with vectors. It uses [TechML Dataset](https://github.com/techascent/tech.ml.dataset) to be fast. A similar python project is [vectorbt] (https://github.com/polakowo/vectorbt).
+
+
 - Ease of Use: TA tries to get out of your way so that you can focus on algorithm development. See below for a code example.
 
 - "Batteries Included": many common statistics like moving average and linear regression can be readily accessed from within a user-written algorithm.
 
-- TechML Dataset Integration: Input of historical data and output of performance statistics are based on TechML DataSet.
-
 - Statistics and Machine Learning Libraries: 
 You can use libraries similar to matplotlib, scipy, statsmodels, and sklearn to support development, analysis, and visualization of state-of-the-art trading systems.
-
-
-## symbol-lists
 
 
 
