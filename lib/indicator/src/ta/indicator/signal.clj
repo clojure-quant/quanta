@@ -74,7 +74,11 @@
        0))))
 
 (defn upward-change
-  "returns the diff if cur value is >= prev value else 0"
+  "returns the diff if cur value is >= prev value else 0
+   awb99:
+     1. this can be solved with price-when and condition: (dfn/>= )
+        (-> (diff price) (dtype/min 0.0)))
+   "
   [price]
   (let [n (count price)]
     (dtype/make-reader
