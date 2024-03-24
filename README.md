@@ -78,6 +78,10 @@ The charts can be loaded via the tradingview page.
 *warehouse io-performance speed test* `bb performance-test`
 
 
+## Algo template spec
+[Template spec](docs/template-spec.md)
+
+
 
 
 
