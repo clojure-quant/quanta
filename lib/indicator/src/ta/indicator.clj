@@ -168,6 +168,18 @@
 (defn add-atr-band [opts bar-ds]
   (tc/add-columns bar-ds (atr-band opts bar-ds)))
 
+(defn carry-forward
+  "carries forward the last non-nil-non-nan value of vector x."
+  [x]
+  (let [p (volatile! Double/NaN); 
+        n (count x)]
+    (dtype/make-reader
+     :float64 n
+     (let [v (x idx)]
+       (if (or (not v) (NaN? v))
+         @p
+         (vreset! p v))))))
+
 (comment
   (def ds
     (tc/dataset [{:open 100 :high 120 :low 90 :close 100}
@@ -189,6 +201,8 @@
   (add-atr-band {:atr-n 5 :atr-m 2.0} ds)
 
   (sma {:n 2} ds)
+
+  (carry-forward [nil Double/NaN 1.0 nil nil -1.0 2.0 nil])
 
 ; 
   )
