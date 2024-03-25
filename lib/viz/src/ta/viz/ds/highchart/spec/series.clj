@@ -53,11 +53,6 @@
                 :name title
                 :yAxis axis
                 :zIndex 1000
-                ; zoom/pan
-                :panKey "ctrl" ; "alt"" "shift"  "meta"
-                :panning true
-                :zoomType "xy"
-                ; 
                 :dataGrouping {:enabled false}
                 :color color}
         series (cond

@@ -13,7 +13,7 @@
    plotted with a specified style/position, 
    created from the bar-algo-ds"
   [spec bar-algo-ds]
-  (let [chart-spec (:chart spec)
+  (let [chart-spec (or (:chart spec) {})
         pane-spec (:charts spec)]
     (assert (chart-pane-spec? pane-spec) "please comply with chart-pane-spec")
     {:render-fn 'ta.viz.renderfn.highcharts/highstock

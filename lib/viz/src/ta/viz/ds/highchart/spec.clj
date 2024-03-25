@@ -1,7 +1,7 @@
 (ns ta.viz.ds.highchart.spec
   (:require
    [ta.viz.chart-spec :refer [chart->series axes-count]]
-   [ta.viz.ds.highchart.spec.default :refer [chart-default]]
+   [ta.viz.ds.highchart.spec.chart :refer [chart-default]]
    [ta.viz.ds.highchart.spec.axes :refer [y-axis]]
    [ta.viz.ds.highchart.spec.series :refer [series]]))
 
