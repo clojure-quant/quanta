@@ -21,6 +21,12 @@
   (into []
         (tds/mapseq-reader ds)))
 
+(def default-spec
+  {:class "table-head-fixed padding-sm table-blue table-striped table-hover"
+   :style {:width "100%"
+           :height "100%"
+           :border "1px solid blue"}})
+
 (defn rtable-render-spec-impl
   "returns a render specification {:render-fn :spec :data}. 
    spec must follow r-table spec format.
@@ -32,7 +38,7 @@
    :data (-> bar-algo-ds
              (tc/select-columns (rtable-cols spec))
              ds->map)
-   :spec spec})
+   :spec (merge default-spec spec)})
 
 (defn rtable-render-spec
   "returns a render specification {:render-fn :spec :data}. 
