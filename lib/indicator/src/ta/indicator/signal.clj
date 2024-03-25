@@ -15,7 +15,7 @@
 (defn cross-up [price indicator]
   (let [n (count price)]
     (dtype/make-reader
-     :bool n
+     :boolean n
      (if
       (= idx 0)
        false
@@ -27,7 +27,7 @@
 (defn cross-down [price indicator]
   (let [n (count price)]
     (dtype/make-reader
-     :bool n
+     :boolean n
      (if
       (= idx 0)
        false
