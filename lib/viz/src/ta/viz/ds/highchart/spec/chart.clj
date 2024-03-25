@@ -46,6 +46,8 @@
 
    :credits {:enabled false}
 
+   :accessibility {:enabled false}
+
    ;; highstock specific starting here: *************************
 
     ; The navigator is a small series below the main series, displaying a view of the entire data set.
