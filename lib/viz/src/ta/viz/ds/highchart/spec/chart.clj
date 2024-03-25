@@ -37,12 +37,18 @@
                      :type "x" ; "xy"
                      }
            :panKey "ctrl" ; "alt"" "shift"  "meta"
-           ;:zoomType "x" ; depreciated, moved to :zooming
-           }
+           ; animation
+           :animation false}
    :plotOptions {:series {:animation 0
                             ;:label {;:pointStart 2010
                             ;        :connectorAllowed false}
-                          }}
+                          }
+                 :candlestick {; down
+                               :color "red"
+                               :lineColor "red"
+                               ; up
+                               :upColor "blue"
+                               :upLineColor "blue"}}
 
    :credits {:enabled false}
 

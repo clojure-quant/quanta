@@ -20,23 +20,10 @@
          ;:selected true 
          :allowOverlapX true ; https://stackoverflow.com/questions/53437956/highcharts-highstock-flags-series-issue#:~:text=All%20flags%20are%20not%20presented,set%20to%20false%20by%20default.
          :zIndex 9999
-         :onSeries ":close"))
-
-;; STEP
-
-(defn add-extra-opts-step [series]
-  (assoc series
-         :type "line" ; step plot is a line plot
-         :step true))
-
-;; POINT
-
-(defn add-extra-opts-point [series]
-  (assoc series
-         :type "line" ; step plot is a line plot
-         :lineWidth 0
-         :marker {:enabled true
-                  :radius 2}))
+         ; default placement: close on :bar series.
+         ;:onSeries ":close"
+         :onSeries ":bar"
+         :onKey "close"))
 
 ;; ADD-TYPE
 
@@ -53,23 +40,40 @@
                 :name title
                 :yAxis axis
                 :zIndex 1000
-                :dataGrouping {:enabled false}
-                :color color}
+                :animation false
+                :dataGrouping {:enabled false}}
         series (cond
                  (= type :flags)
                  (add-extra-opts-flags series)
 
                  (= type :step)
-                 (add-extra-opts-step series)
+                 (assoc series :type "line" ; step plot is a line plot
+                        :animation false
+                        :step true
+                        :color color)
 
                  (= type :point)
-                 (add-extra-opts-point series)
+                 (assoc series  :type "scatter" ; https://api.highcharts.com/highcharts/series.scatter
+                                ;:lineWidth 0
+                        :animation false
+                        :marker {:enabled true
+                                 :symbol "circle" ; ; "triangle" "square"
+                                 :radius 2
+                                 :color color})
 
-                  ;(= type :ohlc)
-                  ;(= type :candlestick)
-                  ;(= type :hollowcandlestick)
-                  ;(= type :column)
-                  ;(= type :range)
+                 (= type :line)
+                 (assoc series :color color :animation false)
+
+                 (= type :column)
+                 (assoc series :color color :animation false)
+
+                 (= type :range)
+                 (assoc series :type "arearange"
+                        :color color
+                        :animation false)
+
+                 (or (= type :ohlc) (= type :candlestick) (= type :hollowcandlestick))
+                 (assoc series :animation false)
 
                  :else
                  series)]
