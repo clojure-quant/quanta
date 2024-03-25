@@ -84,7 +84,7 @@
 
 (defn month-begin? [date-vec]
   (let [l (count date-vec)]
-    (dtype/make-reader :bool l
+    (dtype/make-reader :boolean l
                        (if (> idx 0)
                          (let [m-cur (-> (date-vec idx) month-as-int)
                                m-prior (-> (date-vec (dec idx)) month-as-int)]
@@ -94,7 +94,7 @@
 (defn month-end? [date-vec]
   (let [l (count date-vec)
         idx-max (dec l)]
-    (dtype/make-reader :bool l
+    (dtype/make-reader :boolean l
                        (if (< idx idx-max)
                          (let [m-cur (-> (date-vec idx) month-as-int)
                                m-next (-> (date-vec (inc idx)) month-as-int)]
