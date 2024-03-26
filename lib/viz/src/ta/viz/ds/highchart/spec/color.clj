@@ -100,7 +100,7 @@
    "amber-5" "#f59e0b"
    "amber-6" "#d97706"
    "amber-7" "#b45309"
-   "amber-8" "#924e"
+   "amber-8" "#92400e"
    "amber-9" "#78350f"
    "amber-95" "#451a03"
 
@@ -113,7 +113,7 @@
    "yellow-7" "#a16207"
    "yellow-8" "#854d0e"
    "yellow-9" "#713f12"
-   "yellow-95" "#4226"
+   "yellow-95" "#422006"
 
    "lime-1" "#ecfccb"
    "lime-2" "#d9f99d"
@@ -234,7 +234,7 @@
    "pink-7" "#be185d"
    "pink-8" "#9d174d"
    "pink-9" "#831843"
-   "pink-95" "#5724"
+   "pink-95" "#500724"
 
    "rose-1" "#ffe4e6"
    "rose-2" "#fecdd3"
