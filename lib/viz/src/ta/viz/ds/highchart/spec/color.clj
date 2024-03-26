@@ -26,7 +26,7 @@
    "slate-8" "#1e293b"
    "slate-9" "#0f172a"
    "slate-95" "#020617"
-   
+
    "gray-1" "#f3f4f6"
    "gray-2" "#e5e7eb"
    "gray-3" "#d1d5db"
@@ -37,7 +37,7 @@
    "gray-8" "#1f2937"
    "gray-9" "#111827"
    "gray-95" "#030712"
-   
+
    "zinc-1" "#f4f4f5"
    "zinc-2" "#e4e4e7"
    "zinc-3" "#d4d4d8"
@@ -245,8 +245,7 @@
    "rose-7" "#be123c"
    "rose-8" "#9f1239"
    "rose-9" "#881337"
-   "rose-95" "#4c0519"
-   })
+   "rose-95" "#4c0519"})
 
 (defn set-color [c]
   (if-let [hex (get colors c)]

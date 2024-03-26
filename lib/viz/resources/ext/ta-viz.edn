@@ -16,4 +16,6 @@
                ta.viz.lib.column
                ta.viz.lib.format
                ta.viz.lib.resolve
+               ta.viz.lib.format-number
+               ta.viz.lib.format-date
                ]}

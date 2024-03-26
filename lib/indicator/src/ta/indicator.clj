@@ -152,33 +152,44 @@
 (defn add-atr [opts bar-ds]
   (tc/add-column bar-ds :atr (atr opts bar-ds)))
 
-(defn atr-band [{:keys [atr-n atr-m]} bar-ds]
-  (assert atr-n "atr-band needs :atr-n option")
-  (assert atr-m "atr-band needs :atr-m option")
-  (let [atr-vec (atr {:n atr-n} bar-ds)
-        atr-band (dfn/* atr-vec atr-m)
-        band-mid (prior (:close bar-ds))
-        band-upper (dfn/+ band-mid atr-band)
-        band-lower (dfn/- band-mid atr-band)]
-    {:atr-band-atr atr-vec
-     :atr-band-mid band-mid
-     :atr-band-upper band-upper
-     :atr-band-lower band-lower}))
-
-(defn add-atr-band [opts bar-ds]
-  (tc/add-columns bar-ds (atr-band opts bar-ds)))
-
 (defn carry-forward
-  "carries forward the last non-nil-non-nan value of vector x."
+  "carries forward the last non-nil-non-nan value of vector x.
+   carries the value forward indefinitely."
   [x]
   (let [p (volatile! Double/NaN); 
         n (count x)]
-    (dtype/make-reader
-     :float64 n
-     (let [v (x idx)]
-       (if (or (not v) (NaN? v))
-         @p
-         (vreset! p v))))))
+    ; dtype/clone is essential. otherwise on large datasets, the mapping will not
+    ; be done in sequence, which means that the stateful mapping function will fail.
+    (dtype/clone
+     (dtype/make-reader
+      :float64 n
+      (let [v (x idx)]
+        (if (or (nil? v) (NaN? v))
+          @p
+          (vreset! p v)))))))
+
+(defn carry-forward-for
+  "carries forward the last non-nil-non-nan value of vector x.
+   carries the value a maximum of n bars."
+  [n x]
+  (let [p (volatile! Double/NaN)
+        i (volatile! 0)
+        l (count x)
+        set-value (fn [v]
+                    (vreset! i 0)
+                    (vreset! p v))]
+    ; dtype/clone is essential. otherwise on large datasets, the mapping will not
+    ; be done in sequence, which means that the stateful mapping function will fail.
+    (dtype/clone
+     (dtype/make-reader
+      :float64 l
+      (let [v (x idx)]
+        (if (or (nil? v) (NaN? v))
+          (if (< @i n)
+            (do (vswap! i inc)
+                @p)
+            Double/NaN)
+          (set-value v)))))))
 
 (comment
   (def ds
@@ -198,11 +209,12 @@
   (atr {:n 2} ds)
   (add-atr {:n 5} ds)
 
-  (add-atr-band {:atr-n 5 :atr-m 2.0} ds)
-
   (sma {:n 2} ds)
 
   (carry-forward [nil Double/NaN 1.0 nil nil -1.0 2.0 nil])
+
+  (carry-forward-for 1 [1.0 nil nil -1.0 2.0 nil])
+  (carry-forward-for 1 [1.0 Double/NaN nil -1.0 2.0 nil])
 
 ; 
   )

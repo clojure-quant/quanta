@@ -7,7 +7,6 @@
    [modular.ws.core :refer [send-all!  connected-uids]]
    [ta.algo.env.protocol :as algo]
    [ta.engine.protocol :as engine]
-   [ta.algo.env.protocol :as env]
    [ta.interact.template :as t]
    [ta.viz.error :refer [error-render-spec]]))
 
@@ -56,7 +55,7 @@
 
 (defn subscribe [e {:keys [id algo key] :as template} mode]
   (let [subscription-id (nano-id 6)
-        eng (env/get-engine e)
+        eng (algo/get-engine e)
         algo-results-a (algo/add-algo e algo)
         algo-result-a (if key (key algo-results-a)
                           algo-results-a)
@@ -90,7 +89,7 @@
   (when-let [s (get @subscriptions-a subscription-id)]
     (warn "unsubscribing subscription-id: " subscription-id)
     (let [e (modular.system/system :live)
-          eng (env/get-engine e)
+          eng (algo/get-engine e)
           pusher-result-a (get @pushers-a subscription-id)
           viz-result-a (get @visualizations-a subscription-id)
           result-a (get @results-a subscription-id)]

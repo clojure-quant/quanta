@@ -37,12 +37,34 @@
                   (dfn/* m))]
     (add-bands mid delta delta pre mid? bar-ds)))
 
+(defn add-atr-band [{:keys [atr-n atr-m pre mid?]
+                     :or {pre "atr-band"
+                          mid? true}} bar-ds]
+  (assert atr-n "atr-band needs :atr-n option")
+  (assert atr-m "atr-band needs :atr-m option")
+  (let [atr-vec (ind/atr {:n atr-n} bar-ds)
+        delta (dfn/* atr-vec atr-m)
+        mid (ind/prior (:close bar-ds))]
+    (add-bands mid delta delta pre mid? bar-ds)))
+
 (comment
 
-  (def ds
+  (def ds1
     (tc/dataset {:close [100.0 101.0 103.0 102.0 104.0 105.0]}))
 
-  (add-bollinger {:n 2 :m 3.0} ds)
+  (add-bollinger {:n 2 :m 3.0} ds1)
+
+  (def ds
+    (tc/dataset [{:open 100 :high 120 :low 90 :close 100}
+                 {:open 100 :high 120 :low 90 :close 101}
+                 {:open 100 :high 140 :low 90 :close 102}
+                 {:open 100 :high 140 :low 90 :close 104}
+                 {:open 100 :high 140 :low 90 :close 104}
+                 {:open 100 :high 160 :low 90 :close 106}
+                 {:open 100 :high 160 :low 90 :close 107}
+                 {:open 100 :high 160 :low 90 :close 110}]))
+
+  (add-atr-band {:atr-n 5 :atr-m 2.0} ds)
 
 ; 
   )

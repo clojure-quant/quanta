@@ -59,11 +59,12 @@
    otherwise returns NaN."
   [price signal]
   (let [n (count price)]
-    (dtype/make-reader
-     :float64 n
-     (if (signal idx)
-       (price idx)
-       Double/NaN))))
+    (dtype/clone
+     (dtype/make-reader
+      :float64 n
+      (if (signal idx)
+        (price idx)
+        Double/NaN)))))
 
 (defn prior-int [price n-ago]
   (let [l (count price)]
@@ -107,28 +108,34 @@
   [signal]
   (let [prior (volatile! 0)
         n (count signal)]
-    (dtype/make-reader
-     :int64 n
-     (cond
+    ; dtype/clone is essential. otherwise on large datasets, the mapping will not
+    ; be done in sequence, which means that the stateful mapping function will fail.
+    (dtype/clone
+     (dtype/make-reader
+      :int64 n
+      (cond
 
-       (= idx 0) ; no prior for idx 0
-       0
+        (= idx 0) ; no prior for idx 0
+        0
 
-       (not (signal idx)) ; 0 when-not signal
-       0
+        (not (signal idx)) ; 0 when-not signal
+        0
 
        ; here it is guaranteed that signal is true.
-       (signal (dec idx)) ; count if prior signal also true.
-       (vswap! prior inc)
+        (signal (dec idx)) ; count if prior signal also true.
+        (vswap! prior inc)
 
-       :else ; prior=false signal=true => reset to 0.
-       (vreset! prior 0)))))
+        :else ; prior=false signal=true => reset to 0.
+        (vreset! prior 0))))))
 
 (comment
 
   (buyhold-signal-bar-length 5)
 
   (cross-up [1 2 3 5 6 7 8 9]
+            [4 4 4 4 4 4 4 4])
+
+  (cross-up [1 2 Double/NaN 5 6 7 8 9]
             [4 4 4 4 4 4 4 4])
 
   (def px-d [9 8 8 6 5 3 2 1])
