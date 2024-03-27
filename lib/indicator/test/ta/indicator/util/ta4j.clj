@@ -3,8 +3,8 @@
     [ta.indicator.ta4j.ta4j :as ta4j]))
 
 (defn get-constructor [ind-kw]
-  (if (= (namespace ind-kw) "helper")
-    ta4j/ind-helper
+  (if (namespace ind-kw) 
+    (partial ta4j/ind-helper  (namespace ind-kw))
     ta4j/ind))
 
 (defn get-name [ind-kw]
@@ -21,6 +21,7 @@
                (ind ind-kw data))]
     (ta4j/ind-values result)))
 
+
 (defn close [ds ind-kw & args]
   (let [close (ta4j/ds->ta4j-close ds)]
     (calc-indicator close ind-kw args)))
@@ -34,12 +35,13 @@
   (require '[ta.indicator.util.data :refer [ds]])
 
   (namespace :ATR)
-  (namespace :helper/ATR)
-  (-> :helper/ATR name keyword)
+  (namespace :helpers/TR)
+  (-> :helpers/TR name keyword)
 
   (close ds :SMA 5)
   (bar ds :ATR 5)
-  (bar ds :helper/TR)
+  (bar ds :helpers/TR)
+  (bar ds :bollinger/TR)
  
 ;  
   )

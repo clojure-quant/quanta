@@ -32,8 +32,10 @@
   (let [ctor (constructor "org.ta4j.core.indicators." "Indicator")]
     (ctor class-key args)))
 
-(defn ind-helper [class-key & args]
-  (let [ctor (constructor "org.ta4j.core.indicators.helpers." "Indicator")]
+(defn ind-helper [sub-ns class-key & args]
+  (let [namespace (str "org.ta4j.core.indicators." sub-ns ".")
+        _ (println "namespace: " namespace)
+        ctor (constructor namespace "Indicator")]
     (ctor class-key args)))
 
 
