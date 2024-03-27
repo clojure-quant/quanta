@@ -32,7 +32,7 @@
                                        n 20
                                        m 2.0}}
    bar-ds]
-  (let [mid (ind/sma n (:close bar-ds))
+  (let [mid (ind/sma {:n n} (:close bar-ds))
         delta (-> (roll/trailing-return-stddev n bar-ds)
                   (dfn/* m))]
     (add-bands mid delta delta pre mid? bar-ds)))

@@ -4,7 +4,10 @@
    [tick.core :as tick]
    [tech.v3.datatype :as dtype]
    [tech.v3.dataset :as tds])
-  (:import [org.ta4j.core.num DoubleNum DecimalNum]))
+  (:import [org.ta4j.core.num DoubleNum DecimalNum])
+  (:import [org.ta4j.core BaseStrategy #_BaseTimeSeries$SeriesBuilder
+              ;TimeSeriesManager
+            ]))
 
 ; https://github.com/ta4j/ta4j/
 ; https://ta4j.github.io/ta4j-wiki/
@@ -28,6 +31,12 @@
 (defn ind [class-key & args]
   (let [ctor (constructor "org.ta4j.core.indicators." "Indicator")]
     (ctor class-key args)))
+
+(defn ind-helper [class-key & args]
+  (let [ctor (constructor "org.ta4j.core.indicators.helpers." "Indicator")]
+    (ctor class-key args)))
+
+
 
 (defn ind-values
   ([ind] (ind-values (-> ind .getBarSeries .getBarCount) ind))
@@ -233,3 +242,65 @@
                  :ZLEMA])
 
 
+
+; trading rules
+
+(defn rule [class-key & args]
+  (let [ctor (constructor "org.ta4j.core.trading.rules." "Rule")]
+    (ctor class-key args)))
+
+(defn crit [class-key & args]
+  (let [ctor (constructor "org.ta4j.core.analysis.criteria." "Criterion")]
+    (ctor class-key args)))
+
+;;Note: Doesn't work with parameterized crits.
+(defn crit-values [crit-key series trades]
+  (.doubleValue (.calculate (crit crit-key) series trades)))
+
+(defn analysis [class-key & args]
+  (let [ctor (constructor "org.ta4j.core.analysis." "")]
+    (ctor class-key args)))
+
+;;todo: other constructor signatures
+(defn base-strategy [entry-rule exit-rule]
+  (BaseStrategy. entry-rule exit-rule))
+
+#_(defn run-strat [series strat]
+    (let [mgr (TimeSeriesManager. series)]
+      (.run mgr strat)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;ta4j->clj;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn record->clj [series rec]
+  (->> (.getTrades rec)
+       (map (fn [t] {:px-entry (-> t .getEntry .getPrice .doubleValue)
+                     :px-exit  (-> t .getExit .getPrice .doubleValue)
+                     :entry-time  (->> t .getEntry .getIndex (.getBar series) .getEndTime)
+                     :exit-time   (->> t .getExit .getIndex (.getBar series) .getEndTime)
+                     :idx-entry (-> t .getEntry .getIndex)
+                     :idx-exit  (-> t .getExit
+
+                                    .getIndex)}))))
+
+(comment
+  (require '[ta.helper.date-ds  :refer [days-ago]])
+  (require '[tablecloth.api :as tc])
+  (def ds
+    (-> {:open [10.0 10.6 10.7]
+         :high [10.0 10.6 10.7]
+         :low [10.0 10.6 10.7]
+         :close [10.0 10.6 10.7]
+         :volume [10.0 10.6 10.7]
+         :date [(days-ago 3) (days-ago 2) (days-ago 1)]}
+        tc/dataset))
+  ds
+  (ds->ta4j-ohlcv ds)
+  (ds->ta4j-close ds)
+  (def close  (ds->ta4j-close ds))
+
+  (ind :SMA close 2)
+
+; 
+  )

@@ -39,7 +39,7 @@ jobs:
     #  run: clojure -M:lint
     - name: test-clj
       run: |
-        cd lib/indicator && clojure -X:test-ind
+        cd lib/indicator && clojure -X:test
         cd ../calendar && clojure -X:test
     #- name: cloverage
     #  run: clojure -M:cloverage

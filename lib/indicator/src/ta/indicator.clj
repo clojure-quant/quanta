@@ -3,7 +3,8 @@
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as dfn]
    [tech.v3.datatype.statistics :as stats]
-   [tech.v3.dataset.rolling :as r :refer [rolling mean]]
+   [tech.v3.dataset.rolling :as r]
+   [ta.indicator.rolling :as roll]
    [tablecloth.api :as tc]
    [ta.indicator.helper :refer [indicator]]
    [ta.indicator.signal :refer [upward-change downward-change]]
@@ -15,19 +16,14 @@
   "this does not work, as it always returns the current value."
   [col]
   (let [ds (tc/dataset {:col col})]
-    (:prior (rolling ds {:window-size 1
-                         :relative-window-position :left}
-                     {:prior (r/last :col)}))))
+    (:prior (r/rolling ds {:window-size 1
+                           :relative-window-position :left}
+                       {:prior (r/last :col)}))))
 
 (defn sma
   "Simple moving average"
-  [{:keys [n]
-    :or {n 100}}
-   col]
-  (let [ds (tc/dataset {:col col})]
-    (:sma (rolling ds {:window-size n
-                       :relative-window-position :left}
-                   {:sma (mean :col)}))))
+  [{:keys [n]} v]
+  (roll/rolling-window-reduce r/mean n v))
 
 (defn sma2
   "sma indicator, that does not produce any value until
@@ -86,13 +82,13 @@
 (defn ema
   "Exponential moving average"
   [n col]
-  (let [alpha (/ 2 (inc n))]
+  (let [alpha (/ 2.0 (double (inc n)))]
     (into [] (calc-ema-idx alpha) col)))
 
 (defn mma
   "Modified moving average"
   [n col]
-  (let [alpha (/ 1 n)]
+  (let [alpha (/ 1.0 (double n))]
     (into [] (calc-ema-idx alpha) col)))
 
 (defn macd
@@ -110,13 +106,14 @@
         mma-gain (mma n gain)
         mma-loss (mma n loss)
         len (count gain)]
-    (dtype/make-reader
-     :float64 len
-     (if (= 0.0 (mma-loss idx))
-       (if (= 0.0 (mma-gain idx)) 0 100)
-       (- 100 (/ 100
-                 (+ 1 (/ (mma-gain idx)
-                         (mma-loss idx)))))))))
+    (dtype/clone
+     (dtype/make-reader
+      :float64 len
+      (if (= 0.0 (mma-loss idx))
+        (if (= 0.0 (mma-gain idx)) 0 100)
+        (- 100 (/ 100
+                  (+ 1 (/ (mma-gain idx)
+                          (mma-loss idx))))))))))
 
 (defn hlc3
   "input: bar-ds with (:close :high :low) columns
@@ -144,10 +141,21 @@
 
 (defn atr [{:keys [n]} bar-ds]
   (assert n "atr needs :n option")
-  (let [ds (tc/add-column bar-ds :tr (tr bar-ds))]
-    (:atr (rolling ds {:window-size n
-                       :relative-window-position :left}
-                   {:atr (mean :tr)}))))
+  (roll/rolling-window-reduce r/mean n (tr bar-ds)))
+
+#_(defn atr-mma [{:keys [n]} bar-ds]
+ (assert n "atr needs :n option")
+ (roll/rolling-window-reduce (fn [col-name]
+                               {:column-name col-name
+                                :reducer (fn [col] 
+                                           (-> (mma n col) last))
+                                :datatype :float64})
+                        n (tr bar-ds)))
+
+(defn atr-mma [{:keys [n]} bar-ds]
+  (assert n "atr needs :n option")
+  (->> (tr bar-ds) (mma n)))
+
 
 (defn add-atr [opts bar-ds]
   (tc/add-column bar-ds :atr (atr opts bar-ds)))
@@ -209,7 +217,7 @@
   (atr {:n 2} ds)
   (add-atr {:n 5} ds)
 
-  (sma {:n 2} ds)
+  (sma {:n 2} (:close ds))
 
   (carry-forward [nil Double/NaN 1.0 nil nil -1.0 2.0 nil])
 

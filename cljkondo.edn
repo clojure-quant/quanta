@@ -34,7 +34,8 @@
  :linters
  {
 
-  :consistent-alias {:aliases {tablecloth.api tc
+  :consistent-alias {:aliases {tick.core t
+                               tablecloth.api tc
                                tech.v3.dataset tds
                                tech.v3.datatype.functional dfn}}
 

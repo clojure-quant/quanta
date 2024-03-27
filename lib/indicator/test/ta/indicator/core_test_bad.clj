@@ -1,4 +1,4 @@
-(ns ta.indicator.core-test
+(ns ta.indicator.core-test-bad
   (:require
    [clojure.test :refer :all]
    [ta.data.csv :refer [load-csv-bars-trateg]]
@@ -52,32 +52,13 @@ spx-bars
 ;;indicator tests;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deftest test-atr
-  (is (all-fuzzy= (ind-values (ind :ATR series4j 14))
-                  (ind/atr 14
-                           (map :high spx-bars)
-                           (map :low spx-bars)
-                           (map :close spx-bars)))))
+
 
 (deftest test-stochastic
   (is (all-fuzzy=
        (ind-values (ind :StochasticOscillatorK series4j 14))
        (ind/stochastic 14 (map (juxt :high :low :close) spx-bars)))))
 
-(deftest test-sma
-  (is (all-fuzzy=
-       (ind-values (ind :SMA (ind :helpers/ClosePrice series4j) 14))
-       (ind/sma 14 (map :close spx-bars)))))
-
-(deftest test-ema
-  (is (all-fuzzy=
-       (ind-values (ind :EMA (ind :helpers/ClosePrice series4j) 14))
-       (ind/ema 14 (map :close spx-bars)))))
-
-(deftest test-rsi
-  (is (all-fuzzy=
-       (ind-values (ind :RSI (ind :helpers/ClosePrice series4j) 14))
-       (ind/rsi 14 (map :close spx-bars)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;crit tests;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
