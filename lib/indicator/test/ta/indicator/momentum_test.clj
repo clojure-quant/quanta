@@ -8,11 +8,11 @@
 ;; TESTS
 
 (deftest macd-test
-  (let [macd-ds (map double (macd {:n 12 :m 26} (:close ds)))
-        macd-ta4j (ta4j/close ds :MACD 12 26)]
-    (is (all-fuzzy= macd-ds macd-ta4j))))
+  (is (all-fuzzy= 
+        (macd {:n 12 :m 26} (:close ds))
+        (ta4j/close ds :MACD 12 26))))
 
 (deftest rsi-test
-  (let [rsi-ds (map double (rsi 2 (:close ds)))
-        rsi-ta4j (ta4j/close ds :RSI 2)]
-    (is (all-fuzzy= rsi-ds rsi-ta4j))))
+  (is (all-fuzzy= 
+        (rsi 2 (:close ds))
+        (ta4j/close ds :RSI 2))))

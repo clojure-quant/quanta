@@ -7,14 +7,13 @@
 
 (deftest test-tr
   (is (all-fuzzy=
-       (ta4j/bar ds :helper/TR)
+       (ta4j/bar ds :helpers/TR)
        (ind/tr ds))))
 
 (deftest test-atr
   (is (all-fuzzy= 0.1
         (ta4j/bar ds :ATR 4)
         (->> (ind/atr-mma {:n 4} ds) (into []))
-        ;(-> (ind/atr-mma {:n 4} ds) (round))
        )))
 
 
