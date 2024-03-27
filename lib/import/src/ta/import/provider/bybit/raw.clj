@@ -91,6 +91,7 @@
        {:symbol "BTCUSD"
         :start 1669852800000
         :interval "D"
+        :category "inverse"
         :limit 3})
       (count))
 
@@ -99,6 +100,7 @@
         :start (-> "2024-03-05T00:00:00Z" t/instant t/long (* 1000))
         :end (-> "2024-03-06T00:05:00Z" t/instant t/long (* 1000))
         :interval "1"
+        :category "spot"                                  ; default linear
         :limit 3})
       count)
 

@@ -1,5 +1,6 @@
 (ns ta.import.provider.bybit.ds
   (:require
+    [clojure.string :as str]
    [taoensso.timbre :refer [info]]
    [de.otto.nom.core :as nom]
    [tick.core :as t] ; tick uses cljc.java-time
@@ -23,9 +24,38 @@
 
 ;; REQUEST CONVERSION
 
-(defn symbol->provider [symbol]
+(defn symbol->provider
+  "converts a quanta symbol to a bybit symbol
+
+   spot or inverse:    => symbol equal
+   perpetual:          => remove .P from 'symbol.P' pattern
+   perpetual (USDC)    => additionally rename USDC to PERP"
+  [symbol]
   ; {:keys [category] :as instrument} (db/instrument-details symbol)
-  symbol)
+  (cond
+    ; USDT perp
+    (str/ends-with? symbol "USDT.P")
+    (str/replace symbol #"\.P$" "")
+
+    ; USDC perp
+    (str/ends-with? symbol "USDC.P")
+    (str/replace symbol #"USDC\.P$" "PERP")
+
+    :else symbol))
+
+(defn symbol->provider-category
+  "converts a quanta symbol to a bybit category"
+  [symbol]
+  (cond
+    (or (str/ends-with? symbol "USDT.P")
+        (str/ends-with? symbol "USDC.P"))
+    "linear"
+
+    (re-find #"USD$|USD[A-Z0-9]{1,2}\d\d$" symbol)
+    "inverse"
+
+    :else
+    "spot"))
 
 (def start-date-bybit (t/instant "2018-11-01T00:00:00Z"))
 
@@ -63,10 +93,12 @@
                                                 :opts opts
                                                 :range range}))
     symbol-bybit (symbol->provider asset)
+    category (symbol->provider-category asset)
     range-bybit (range->parameter range)]
    (-> (bybit/get-history-request (merge
                                    {:symbol symbol-bybit
-                                    :interval frequency-bybit}
+                                    :interval frequency-bybit
+                                    :category category}
                                    range-bybit))
        (bybit-result->dataset))))
 
