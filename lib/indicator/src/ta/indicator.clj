@@ -144,18 +144,17 @@
   (roll/rolling-window-reduce r/mean n (tr bar-ds)))
 
 #_(defn atr-mma [{:keys [n]} bar-ds]
- (assert n "atr needs :n option")
- (roll/rolling-window-reduce (fn [col-name]
-                               {:column-name col-name
-                                :reducer (fn [col] 
-                                           (-> (mma n col) last))
-                                :datatype :float64})
-                        n (tr bar-ds)))
+    (assert n "atr needs :n option")
+    (roll/rolling-window-reduce (fn [col-name]
+                                  {:column-name col-name
+                                   :reducer (fn [col]
+                                              (-> (mma n col) last))
+                                   :datatype :float64})
+                                n (tr bar-ds)))
 
 (defn atr-mma [{:keys [n]} bar-ds]
   (assert n "atr needs :n option")
   (->> (tr bar-ds) (mma n)))
-
 
 (defn add-atr [opts bar-ds]
   (tc/add-column bar-ds :atr (atr opts bar-ds)))

@@ -38,8 +38,6 @@
         ctor (constructor namespace "Indicator")]
     (ctor class-key args)))
 
-
-
 (defn ind-values
   ([ind] (ind-values (-> ind .getBarSeries .getBarCount) ind))
   ([n ind]
@@ -242,8 +240,6 @@
                  :WilliamsR
                  :WMA
                  :ZLEMA])
-
-
 
 ; trading rules
 

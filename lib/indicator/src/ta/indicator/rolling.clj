@@ -1,7 +1,7 @@
 (ns ta.indicator.rolling
   (:require
    [tech.v3.dataset.rolling :as r]
-    [tech.v3.datatype.functional :as dfn]
+   [tech.v3.datatype.functional :as dfn]
    [tablecloth.api :as tc]
    [ta.indicator.returns :as ret]))
 
@@ -36,7 +36,6 @@
                             :datatype :float64})
                          n (:close bar-ds)))
 
-
 (defn trailing-stddev
   "returns the trailing-stddev over n bars of column v.
    the current row is included in the window."
@@ -44,11 +43,9 @@
   (rolling-window-reduce (fn [col-name]
                            (println "col: " col-name)
                            {:column-name col-name
-                            :reducer dfn/standard-deviation 
+                            :reducer dfn/standard-deviation
                             :datatype :float64})
                          n (:close bar-ds)))
-
-
 
 (defn prior-window
   "this does not work!"
