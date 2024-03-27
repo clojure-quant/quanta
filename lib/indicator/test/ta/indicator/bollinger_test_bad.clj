@@ -3,7 +3,10 @@
             [ta.indicator.util.fuzzy :refer [all-fuzzy=]]
             [ta.indicator.util.ta4j :as ta4j]
             [ta.indicator.util.data :refer [ds]]
-            [ta.indicator.band :as band]))
+            [ta.indicator.band :as band])
+    (:import [org.ta4j.core BaseStrategy #_BaseTimeSeries$SeriesBuilder
+                  ;TimeSeriesManager
+            ])s)
 
 
 ; ta4j calculates bollinger via facade; 

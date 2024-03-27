@@ -34,7 +34,6 @@
 
 (defn ind-helper [sub-ns class-key & args]
   (let [namespace (str "org.ta4j.core.indicators." sub-ns ".")
-        _ (println "namespace: " namespace)
         ctor (constructor namespace "Indicator")]
     (ctor class-key args)))
 
