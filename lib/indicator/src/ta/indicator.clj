@@ -13,12 +13,12 @@
   (:import [clojure.lang PersistentQueue]))
 
 (defn prior
-  "this does not work, as it always returns the current value."
+  "prior value of a vector. first value returns same value"
   [col]
   (let [ds (tc/dataset {:col col})]
-    (:prior (r/rolling ds {:window-size 1
+    (:prior (r/rolling ds {:window-size 2
                            :relative-window-position :left}
-                       {:prior (r/last :col)}))))
+                       {:prior (r/first :col)}))))
 
 (defn sma
   "Simple moving average"
@@ -209,6 +209,8 @@
                  {:open 100 :high 160 :low 90 :close 106}
                  {:open 100 :high 160 :low 90 :close 107}
                  {:open 100 :high 160 :low 90 :close 110}]))
+
+  (prior (:close ds))
 
   (into [] sma2 [4 5 6 7 8 6 5 4 3])
 
