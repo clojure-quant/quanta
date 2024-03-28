@@ -23,8 +23,8 @@
   ([n a b]
    (nthrest-fuzzy= diff-tolerance n a b))
   ([tolerance n a b]
-   (let [a (nthrest a n)
-         b (nthrest b n)]
+   (let [a (nthrest (into [] a) n)
+         b (nthrest (into [] b) n)]
    (and (= (count a) (count b))
         (every? true? (map (fn [a b] (fuzzy= tolerance a b)) a b))))))
 

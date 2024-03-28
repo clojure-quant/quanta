@@ -91,6 +91,19 @@
   (let [alpha (/ 1.0 (double n))]
     (into [] (calc-ema-idx alpha) col)))
 
+(defn hma
+  "Hull Moving Average  http://alanhull.com/hull-moving-average
+   A simple application for the HMA, given its superior smoothing, would be to employ the 
+   turning points as entry/exit signals. However it shouldn't be used to generate crossover 
+   signals as this technique relies on lag."
+  [n v]
+  (assert (even? n) "n needs to be even")
+  (let [n_2 (/ n 2)
+        nsqrt (Math/sqrt n)
+        wma2 (dfn/* 2.0 (wma n_2 v))
+        d (dfn/- wma2 (wma n v))]
+    (wma nsqrt d)))
+
 (defn macd
   ([col] (macd {:n 12 :m 26} col))
   ([{:keys [n m]} col]

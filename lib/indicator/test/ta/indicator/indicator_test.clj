@@ -1,6 +1,6 @@
 (ns ta.indicator.indicator-test
   (:require [clojure.test :refer :all]
-            [ta.indicator.util.fuzzy :refer [all-fuzzy=]]
+            [ta.indicator.util.fuzzy :refer [all-fuzzy= nthrest-fuzzy=]]
             [ta.indicator.util.ta4j :as ta4j]
             [ta.indicator.util.data :refer [ds]]
             [ta.indicator :as ind]))
@@ -42,3 +42,37 @@
        0.1
        (ta4j/bar ds :ATR 4)
        (ind/atr {:n 4} ds))))
+
+(deftest test-hull-ma
+  (is (nthrest-fuzzy=
+       4
+       (ta4j/close ds :HMA 4)
+      (ind/hma 4 (:close ds)))))
+
+(comment 
+  
+   (ta4j/close ds :HMA 4)
+   ;; => (100.0
+   ;;     100.44444444444444
+   ;;     117.11111111111111
+   ;;     137.42222222222222
+   ;;     142.62222222222223
+   ;;     147.8
+   ;;     157.77777777777777
+   ;;     144.1
+   ;;     120.53333333333333
+   ;;     120.04444444444445
+   ;;     126.06666666666666
+   ;;     122.33333333333333
+   ;;     112.38888888888889
+   ;;     101.0
+   ;;     102.61111111111111)
+
+   
+
+   (ind/hma 4 (:close ds))
+
+
+  
+ ; 
+  )
