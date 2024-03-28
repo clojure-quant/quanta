@@ -13,7 +13,8 @@
 (deftest test-atr
   (is (all-fuzzy= 0.1
                   (ta4j/bar ds :ATR 4)
-                  (->> (ind/atr-mma {:n 4} ds) (into [])))))
+                  (->> (ind/atr {:n 4} ds) (into [])))))
+
 
 (comment
   (ind/tr ds)
@@ -23,7 +24,7 @@
 
   (ind/sma {:n 4} [30.0 30.0 40.0 40.0])
 
-  (->> (ind/atr-mma {:n 4} ds)
+  (->> (ind/atr {:n 4} ds)
        (into []))
 
   (ta4j/bar ds :ATR 4)

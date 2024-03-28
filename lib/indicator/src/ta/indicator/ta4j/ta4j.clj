@@ -24,18 +24,22 @@
   (fn [class-key args]
     (let [kns       (when-let [x (namespace class-key)] (str x "."))
           class-str (str pre-str kns (name class-key) post-str)]
+      (println "class-str: " class-str)
       (clojure.lang.Reflector/invokeConstructor
        (resolve (symbol class-str))
        (to-array args)))))
 
-(defn ind [class-key & args]
+(defn indicator [ind-kw args]
   (let [ctor (constructor "org.ta4j.core.indicators." "Indicator")]
-    (ctor class-key args)))
+    (ctor ind-kw args)))
 
-(defn ind-helper [sub-ns class-key & args]
-  (let [namespace (str "org.ta4j.core.indicators." sub-ns ".")
-        ctor (constructor namespace "Indicator")]
-    (ctor class-key args)))
+(defn facade [ind-kw args]
+  (let [ctor (constructor "org.ta4j.core.indicators." "Facade")]
+    (ctor ind-kw args)))
+
+(defn get-data [o m args]
+  (clojure.lang.Reflector/invokeInstanceMethod o m (to-array args))
+  )
 
 (defn ind-values
   ([ind] (ind-values (-> ind .getBarSeries .getBarCount) ind))
@@ -63,7 +67,7 @@
 (defn ds->ta4j-close
   [ds]
   (let [ta4j-series (ds->ta4j-ohlcv ds)]
-    (ind :helpers/ClosePrice ta4j-series)))
+    (indicator :helpers/ClosePrice (list ta4j-series))))
 
 (defn get-column
   [ds col]
@@ -101,7 +105,7 @@
 
   (get-column ds :close)
 
-  (ind :SMA close 2)
+  (indicator :SMA [close 2])
 
 ; 
   )

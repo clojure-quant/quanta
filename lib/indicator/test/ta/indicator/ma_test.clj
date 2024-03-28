@@ -3,7 +3,7 @@
             [ta.indicator.util.fuzzy :refer [all-fuzzy=]]
             [ta.indicator.util.ta4j :as ta4j]
             [ta.indicator.util.data :refer [ds]]
-            [ta.indicator :refer [sma wma ema mma]]))
+            [ta.indicator :refer [sma wma ema mma hl2]]))
 
 ;; TESTS
 
@@ -26,3 +26,15 @@
   (is (all-fuzzy= 
          (mma 2 (:close ds))
          (ta4j/close ds :MMA 2))))
+
+(deftest hl2-test
+  (is (all-fuzzy=
+       (hl2 ds)
+       (ta4j/bar ds :helpers/MedianPrice))))
+
+(comment 
+  (ta4j/close ds :SMA 2)
+  
+  
+ ; 
+  )

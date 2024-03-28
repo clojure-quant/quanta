@@ -128,6 +128,17 @@
         hlc3 (dfn// (dfn/+ low high close) 3.0)]
     hlc3))
 
+(defn hl2
+  "input: bar-ds with (:high :low) columns
+   output: (high+low) / 2"
+  [bar-ds]
+  (assert (has-col bar-ds :low) "hlc3 needs :low column in bar-ds")
+  (assert (has-col bar-ds :high) "hlc3 needs :high column in bar-ds")
+  (let [low (:low bar-ds)
+        high (:high bar-ds)
+        hl2 (dfn// (dfn/+ low high) 2.0)]
+    hl2))
+
 (defn tr
   "input: bar-ds with (:low :high) columns
    output: (high-low)"
@@ -139,7 +150,16 @@
         hl (dfn/- high low)]
     hl))
 
-(defn atr [{:keys [n]} bar-ds]
+(defn atr 
+  "atr is a mma(n) on (tr bar)"
+  [{:keys [n]} bar-ds]
+  (assert n "atr needs :n option")
+  (->> (tr bar-ds) (mma n)))
+
+(defn atr-sma 
+  "a variation of atr 
+   (sma n) on (tr bar)"
+  [{:keys [n]} bar-ds]
   (assert n "atr needs :n option")
   (roll/rolling-window-reduce r/mean n (tr bar-ds)))
 
@@ -152,9 +172,7 @@
                                    :datatype :float64})
                                 n (tr bar-ds)))
 
-(defn atr-mma [{:keys [n]} bar-ds]
-  (assert n "atr needs :n option")
-  (->> (tr bar-ds) (mma n)))
+
 
 (defn add-atr [opts bar-ds]
   (tc/add-column bar-ds :atr (atr opts bar-ds)))

@@ -21,21 +21,42 @@
     (tc/add-columns ds {col-upper (dfn/+ mid delta-up)
                         col-lower (dfn/- mid delta-down)})))
 
+
+(defn add-keltner
+  "adds keltner indicator to dataset
+   Band   | formula
+   Middle | n-bar exponential moving average (EMA)
+   Upper  | middle + (n-day atr) * k 
+   Lower  | middle + (n-day atr) * k "
+  [{:keys [n k pre mid?] :as opts :or {pre "keltner"
+                                       mid? true}}
+   bar-ds]
+  (assert n "keltner misses :n parameter (typically 20)")
+  (assert k "keltner misses :k parameter (typically 2.0)")
+  (let [mid (ind/ema n (:close bar-ds))
+        atr-vec (ind/atr {:n n} bar-ds)
+        delta (dfn/* atr-vec k)]
+    (add-bands mid delta delta pre mid? bar-ds)))
+
+
 (defn add-bollinger
   "adds bollinger indicator to dataset
    Band   | formula
    Middle | n-bar simple moving average (SMA)
    Upper  | middle + (n-day standard deviation of price-change) * m 
    Lower  | middle + (n-day standard deviation of price-change) * m "
-  [{:keys [n m pre mid?] :as opts :or {pre "bollinger"
-                                       mid? true
-                                       n 20
-                                       m 2.0}}
+  [{:keys [n k pre mid?] :as opts :or {pre "bollinger"
+                                       mid? true}}
    bar-ds]
+   (assert n "bollinger misses :n parameter (typically 20)")
+   (assert k "bollinger misses :k parameter (typically 2.0)")
   (let [mid (ind/sma {:n n} (:close bar-ds))
         delta (-> (roll/trailing-return-stddev n bar-ds)
-                  (dfn/* m))]
+                  (dfn/* k))]
     (add-bands mid delta delta pre mid? bar-ds)))
+
+
+
 
 (defn add-atr-band [{:keys [atr-n atr-m pre mid?]
                      :or {pre "atr-band"
