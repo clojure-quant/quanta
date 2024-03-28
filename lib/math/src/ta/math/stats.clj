@@ -46,7 +46,8 @@
 (defn mad
   "mad = mean absolute deviation.
    the mean of the absolute deviation of the mean.
-   more applicable to reality than the standard deviation"
+   more applicable to reality than the standard deviation
+   http://en.wikipedia.org/wiki/Mean_absolute_deviation#Average_absolute_deviation"
   [vec]
   (let [m (dfn/mean vec)
         ad (-> (dfn/- vec m) (dfn/abs))]

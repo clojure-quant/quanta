@@ -49,6 +49,7 @@
 
 (defn trailing-mad
   "returns the trailing mean-deviaton over n bars of column v.
+   http://en.wikipedia.org/wiki/Mean_absolute_deviation#Average_absolute_deviation
    the current row is included in the window."
   [n v]
   (rolling-window-reduce  (fn [col-name]
