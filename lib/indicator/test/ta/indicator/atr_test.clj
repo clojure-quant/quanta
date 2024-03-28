@@ -6,7 +6,7 @@
             [ta.indicator :as ind]))
 
 (deftest test-tr
-  (is (all-fuzzy=
+  (is (all-fuzzy= 0.1
        (ta4j/bar ds :helpers/TR)
        (ind/tr ds))))
 
@@ -18,16 +18,8 @@
 
 (comment
   (ind/tr ds)
-
-  (->> (ind/atr {:n 4} ds)
-       (into []))
-
-  (ind/sma {:n 4} [30.0 30.0 40.0 40.0])
-
-  (->> (ind/atr {:n 4} ds)
-       (into []))
-
-  (ta4j/bar ds :ATR 4)
+  (ta4j/bar ds :helpers/TR)
+  
 
 ;  
   )

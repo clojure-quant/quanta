@@ -30,17 +30,16 @@
   "returns the trailing-variance over n bars of column v.
    the current row is included in the window."
   [n v]
-  (rolling-window-reduce r/variance n v))
+  (let [r (rolling-window-reduce r/variance n v)
+        k (double (/ (dec n) n))]
+    (dfn/* r k)))
 
-(defn trailing-variance-population
-  "returns the trailing mean-deviaton over n bars of column v.
+(defn trailing-stddev
+  "returns the trailing-stddev over n bars of column v.
    the current row is included in the window."
   [n v]
-  (rolling-window-reduce  (fn [col-name]
-                            {:column-name col-name
-                             :reducer stats/variance-population
-                             :datatype :float64})
-                          n v))
+  (let [variance (trailing-variance n v)]
+    (dfn/sqrt variance)))
 
 (defn trailing-mad
   "returns the trailing mean-deviaton over n bars of column v.
@@ -60,17 +59,6 @@
                            (println "col: " col-name)
                            {:column-name col-name
                             :reducer ret/return-stddev
-                            :datatype :float64})
-                         n (:close bar-ds)))
-
-(defn trailing-stddev
-  "returns the trailing-stddev over n bars of column v.
-   the current row is included in the window."
-  [n bar-ds]
-  (rolling-window-reduce (fn [col-name]
-                           (println "col: " col-name)
-                           {:column-name col-name
-                            :reducer dfn/standard-deviation
                             :datatype :float64})
                          n (:close bar-ds)))
 

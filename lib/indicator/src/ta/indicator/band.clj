@@ -49,7 +49,7 @@
   (assert n "bollinger misses :n parameter (typically 20)")
   (assert k "bollinger misses :k parameter (typically 2.0)")
   (let [mid (ind/sma {:n n} (:close bar-ds))
-        delta (-> (roll/trailing-return-stddev n bar-ds)
+        delta (-> (roll/trailing-stddev n (:close bar-ds))
                   (dfn/* k))]
     (add-bands mid delta delta pre mid? bar-ds)))
 

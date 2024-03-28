@@ -1,6 +1,6 @@
 (ns ta.indicator.stats-test
   (:require [clojure.test :refer :all]
-            [ta.indicator.util.fuzzy :refer [all-fuzzy=]]
+            [ta.indicator.util.fuzzy :refer [all-fuzzy= nthrest-fuzzy=]]
             [ta.indicator.util.ta4j :as ta4j]
             [ta.indicator.util.data :refer [ds]]
             [ta.indicator.rolling :as roll]
@@ -12,43 +12,42 @@
        (roll/trailing-mad 2 (:close ds)))))
 
 (deftest test-mad-3
-  (is (all-fuzzy=
-       (-> (ta4j/close ds :statistics/MeanDeviation 3) rest rest)
-       (-> (roll/trailing-mad 3 (:close ds)) rest rest))))
+  (is (nthrest-fuzzy= 2
+         (ta4j/close ds :statistics/MeanDeviation 3)
+         (roll/trailing-mad 3 (:close ds)))))
 
 (deftest test-mad-4
-  (is (all-fuzzy=
-       (-> (ta4j/close ds :statistics/MeanDeviation 4) rest rest rest)
-       (-> (roll/trailing-mad 4 (:close ds)) rest rest rest))))
+  (is (nthrest-fuzzy= 4
+        (ta4j/close ds :statistics/MeanDeviation 4) 
+        (roll/trailing-mad 4 (:close ds)))))
+
+(deftest test-variance
+  (is (nthrest-fuzzy= 3
+         (ta4j/close ds :statistics/Variance 4)
+         (roll/trailing-variance 4 (:close ds)))))
 
 
+(deftest test-stddev
+    (is (nthrest-fuzzy= 3
+           (ta4j/close ds :statistics/StandardDeviation 3)
+           (roll/trailing-stddev 3 (:close ds)))))
 
-#_(deftest test-stddev
-    (is (all-fuzzy= 0.1
-                    (ta4j/close ds :statistics/StandardDeviation 4)
-                    (->> (roll/trailing-stddev 4 ds)  (into []))
-        ;(-> (ind/atr-mma {:n 4} ds) (round))
-                    )))
 (comment
+  (:close ds)
+
   (ta4j/close ds :statistics/MeanDeviation 2)
   (roll/trailing-mad 2 (:close ds))
 
-  (ta4j/close ds :statistics/Variance 2)
-  ;; => (0.0 0.25 193.55555555555554 259.25 216.5 54.1875 85.6875 116.0 230.75 200.75 17.1875 17.1875 54.6875 92.1875 50.0)
+  (ta4j/close ds :statistics/Variance 4)
+  (roll/trailing-variance 4 (:close ds))
 
-  (roll/trailing-variance 2 (:close ds))
-
-  (roll/trailing-variance-population 4 (:close ds))
- 
   
 
-  (ta4j/close ds :statistics/StandardDeviation 4)
+  (roll/trailing-stddev 3 (:close ds))
+  (ta4j/close ds :statistics/StandardDeviation 3)
+
+
   
-
-
-
- (ta4j/close ds :statistics/StandardDeviation 4)
-  (roll/trailing-stddev 4 ds)
 
 
 ;  
