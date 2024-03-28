@@ -46,6 +46,15 @@
    (->> (map #(->> % (.getValue ind) .doubleValue)
              (range n)))))
 
+(defn ind-values-bool
+  ([ind]
+   (println "ind-values-bool!")
+   (ind-values-bool (-> ind .getBarSeries .getBarCount) ind))
+  ([n ind]
+   (println "get-values-bool: " ind)
+   (->> (map #(->> % (.getValue ind) .booleanValue)
+             (range n)))))
+
 (defn num-double [d]
   (DoubleNum/valueOf d))
 

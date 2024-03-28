@@ -17,6 +17,19 @@
   (let [bar (ta4j/ds->ta4j-ohlcv ds)]
     (calc-indicator ind-kw bar args)))
 
+;; bool indicator
+
+(defn calc-indicator-bool [ind-kw data args]
+  (let [args (conj args data)
+        _ (println "calc indicator " ind-kw " args: " (count args) (rest args))
+        ind (ta4j/indicator ind-kw args)]
+    (ta4j/ind-values-bool ind)))
+
+(defn bar-bool [ds ind-kw & args]
+  (let [bar (ta4j/ds->ta4j-ohlcv ds)]
+    (calc-indicator-bool ind-kw bar args)))
+
+
 ; facade
 
 (defn- get-values-for [o name]
