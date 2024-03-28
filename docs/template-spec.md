@@ -19,7 +19,7 @@
 | :import     | yes       | datafeed for missing bars                                                      |
 | :feed       | yes       | datafeed for existing bars                                                     |
 | :algo       | yes       | algo namespace incl. function                                                  |
-| *           | no        | custom params passed to algo function as options                               |
+| *           | no        | default custom option values passed to algo function                           |
 
 # Algo options
 Array of fields. One field has the following format: 
@@ -29,7 +29,7 @@ Array of fields. One field has the following format:
 | :type | yes       | :select (Select Box)<br/>:string (Input Field)<br/>:bool (Checkbox)                              |
 | :path | yes       | matching keyword of [Algo spec](#algo-spec)                                                      |
 | :name | yes       | Label of the option field                                                                        |
-| :spec | yes*      | array of or function (which returns an array) for :select<br/>not mandatory for :bool or :string |
+| :spec | yes*      | array or function (which returns an array) for :select<br/>not mandatory for :bool or :string |
 
 # Chart spec
 | key          | mandatory | values                                                                                                                                    |
@@ -38,13 +38,11 @@ Array of fields. One field has the following format:
 | :viz-options | yes       | viz-options spec                                                                                                                          |
 
 ### :viz-options (highchart)
-| key     | mandatory | values                                                                                         |
-|---------|-----------|------------------------------------------------------------------------------------------------|
-| :chart  | yes       |                                                                                                |
-| :charts | yes       | array of indicator panes and main chart itself. an indicator is referenced by a tdm column key |
+| key     | mandatory | values                                                                                                          |
+|---------|-----------|-----------------------------------------------------------------------------------------------------------------|
+| :chart  | yes       | chart container options: {:box :fl}<br/><br/>:fl = full (100%)<br/>:sm = small<br/>:md = medium<br/>:lg = large |
+| :charts | yes       | array of indicator panes and main chart itself. [Charts options](chart-spec.md)                                 |
 
-### Line colors
-TODO
 
 # Table spec
 
@@ -52,6 +50,9 @@ TODO
 |--------------|-----------|--------------------------------------------------------------------------------|
 | :viz         | yes       | table renderer namespace<br/>**table ns:** ta.viz.ds.rtable/rtable-render-spec |
 | :viz-options | yes       | viz-options spec                                                               |
+
+TODO: path, column, ....
+
 
 # Metrics spec
 | key          | mandatory | values                                                                               |

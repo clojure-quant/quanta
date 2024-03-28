@@ -17,3 +17,4 @@ Welcome to the documentation for Quanta! This repository contains all the necess
 - Study
   - [Dataquality Bybit](study-dataquality-bybit.md)
 - [Template spec](template-spec.md)
+- [Zipline](zipline.md)
