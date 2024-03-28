@@ -17,9 +17,27 @@
    (and (= (count a) (count b))
         (every? true? (map (fn [a b] (fuzzy= tolerance a b)) a b)))))
 
+(defn nthrest-fuzzy=
+  "fuzzy= compare of two seqs.
+   ignores the first n items in the seq."
+  ([n a b]
+   (nthrest-fuzzy= diff-tolerance n a b))
+  ([tolerance n a b]
+   (let [a (nthrest a n)
+         b (nthrest b n)]
+   (and (= (count a) (count b))
+        (every? true? (map (fn [a b] (fuzzy= tolerance a b)) a b))))))
+
+
 (comment
   (all-fuzzy= [1.0 1.0 1.0] [1.0 1.0 1.00000000005])
   (all-fuzzy= [1.0 1.0 1.0] [1.0 1.0 1.0000000005])
   (all-fuzzy= 0.1 [1.0 1.0 1.0] [1.0 1.0 1.0000000005])
+
+  (all-fuzzy= 1 [99.0 1.0 1.0] [1.0 1.0 1.0000000000001])
+  (nthrest-fuzzy= 1 [99.0 1.0 1.0] [1.0 1.0 1.0000000000001])
+  (nthrest-fuzzy= 1 [99.0 44.0 1.0] [1.0 1.0 1.0000000000001])
+  (nthrest-fuzzy= 2 [99.0 44.0 1.0] [1.0 1.0 1.0000000000001])
+
 ;  
   )

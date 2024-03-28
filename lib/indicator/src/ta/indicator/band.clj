@@ -21,7 +21,6 @@
     (tc/add-columns ds {col-upper (dfn/+ mid delta-up)
                         col-lower (dfn/- mid delta-down)})))
 
-
 (defn add-keltner
   "adds keltner indicator to dataset
    Band   | formula
@@ -38,7 +37,6 @@
         delta (dfn/* atr-vec k)]
     (add-bands mid delta delta pre mid? bar-ds)))
 
-
 (defn add-bollinger
   "adds bollinger indicator to dataset
    Band   | formula
@@ -48,15 +46,12 @@
   [{:keys [n k pre mid?] :as opts :or {pre "bollinger"
                                        mid? true}}
    bar-ds]
-   (assert n "bollinger misses :n parameter (typically 20)")
-   (assert k "bollinger misses :k parameter (typically 2.0)")
+  (assert n "bollinger misses :n parameter (typically 20)")
+  (assert k "bollinger misses :k parameter (typically 2.0)")
   (let [mid (ind/sma {:n n} (:close bar-ds))
         delta (-> (roll/trailing-return-stddev n bar-ds)
                   (dfn/* k))]
     (add-bands mid delta delta pre mid? bar-ds)))
-
-
-
 
 (defn add-atr-band [{:keys [atr-n atr-m pre mid?]
                      :or {pre "atr-band"

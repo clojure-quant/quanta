@@ -38,8 +38,7 @@
     (ctor ind-kw args)))
 
 (defn get-data [o m args]
-  (clojure.lang.Reflector/invokeInstanceMethod o m (to-array args))
-  )
+  (clojure.lang.Reflector/invokeInstanceMethod o m (to-array args)))
 
 (defn ind-values
   ([ind] (ind-values (-> ind .getBarSeries .getBarCount) ind))

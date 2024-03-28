@@ -150,13 +150,13 @@
         hl (dfn/- high low)]
     hl))
 
-(defn atr 
+(defn atr
   "atr is a mma(n) on (tr bar)"
   [{:keys [n]} bar-ds]
   (assert n "atr needs :n option")
   (->> (tr bar-ds) (mma n)))
 
-(defn atr-sma 
+(defn atr-sma
   "a variation of atr 
    (sma n) on (tr bar)"
   [{:keys [n]} bar-ds]
@@ -171,8 +171,6 @@
                                               (-> (mma n col) last))
                                    :datatype :float64})
                                 n (tr bar-ds)))
-
-
 
 (defn add-atr [opts bar-ds]
   (tc/add-column bar-ds :atr (atr opts bar-ds)))

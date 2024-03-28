@@ -1,6 +1,6 @@
 (ns ta.import.provider.bybit.ds
   (:require
-    [clojure.string :as str]
+   [clojure.string :as str]
    [taoensso.timbre :refer [info]]
    [de.otto.nom.core :as nom]
    [tick.core :as t] ; tick uses cljc.java-time

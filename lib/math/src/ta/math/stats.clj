@@ -6,7 +6,6 @@
 (defn mean [coll]
   (/ (reduce + coll) (count coll)))
 
-
 (defn variance-sample [coll]
   (let [avg     (mean coll)
         squares (map #(Math/pow (- % avg) 2) coll)]
@@ -35,8 +34,6 @@
         (/  (count coll))
         Math/sqrt)))
 
-
-
 (defn standardize [xs]
   (-> xs
       (dfn/- (dfn/mean xs))
@@ -46,8 +43,7 @@
   (dtype/clone
    (dtype/make-reader :float32 n (rand))))
 
-
-(defn mad 
+(defn mad
   "mad = mean absolute deviation.
    the mean of the absolute deviation of the mean.
    more applicable to reality than the standard deviation"
@@ -56,22 +52,19 @@
         ad (-> (dfn/- vec m) (dfn/abs))]
     (dfn/mean ad)))
 
-(comment 
-  (mad [1 2 3]) 
+(comment
+  (mad [1 2 3])
   ; mean = 2.
   ; diffs: 1 0 1
   ; mad (2/3)
-  
+
   (dfn/variance [1 2 3 4 5])
   (variance-sample [1 2 3 4 5])
   (variance-population [1 2 3 4 5])
 
-  
   (dfn/standard-deviation [1 2 3 4 5])
   (standard-deviation [1 2 3 4 5])
   (standard-deviation-population [1 2 3 4 5])
- 
 
 ;
   )
-  

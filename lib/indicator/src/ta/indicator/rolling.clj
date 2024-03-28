@@ -4,8 +4,7 @@
    [tech.v3.datatype.functional :as dfn]
    [tablecloth.api :as tc]
    [ta.indicator.returns :as ret]
-   [ta.math.stats :as stats]
-   ))
+   [ta.math.stats :as stats]))
 
 (defn rolling-window-reduce [rf n vec]
   (let [ds (tc/dataset {:in vec})]
@@ -27,13 +26,11 @@
   [n v]
   (rolling-window-reduce r/min n v))
 
-
 (defn trailing-variance
   "returns the trailing-variance over n bars of column v.
    the current row is included in the window."
   [n v]
   (rolling-window-reduce r/variance n v))
-
 
 (defn trailing-variance-population
   "returns the trailing mean-deviaton over n bars of column v.
@@ -41,21 +38,19 @@
   [n v]
   (rolling-window-reduce  (fn [col-name]
                             {:column-name col-name
-                             :reducer stats/variance-population 
+                             :reducer stats/variance-population
                              :datatype :float64})
                           n v))
-
-
 
 (defn trailing-mad
   "returns the trailing mean-deviaton over n bars of column v.
    the current row is included in the window."
   [n v]
-    (rolling-window-reduce  (fn [col-name]
-                              {:column-name col-name
-                               :reducer stats/mad
-                               :datatype :float64})
-                             n v))
+  (rolling-window-reduce  (fn [col-name]
+                            {:column-name col-name
+                             :reducer stats/mad
+                             :datatype :float64})
+                          n v))
 
 (defn trailing-return-stddev
   "returns the trailing-stddev over n bars of column v.
@@ -122,10 +117,10 @@
   (trailing-mad 2 (:close ds))
   ; tmd-1:  1.1 + 2.2 = 3.3 / 2 = 1.65 - 2.2 = -0.55
 
-   (rolling-window-reduce 
-    r/min 
-    2 
-    (:close ds))
+  (rolling-window-reduce
+   r/min
+   2
+   (:close ds))
 ; 
   )
 
