@@ -28,23 +28,11 @@ For your specific case, column-map seems like the exact fit. Another option is t
               a b))))
 => _unnamed [6 3]:
 
-https://github.com/joshuaulrich/quantmod
-
-##  $ xts                 : chr [1:27] "apply.daily" "apply.monthly" "apply.quarterly" "apply.weekly" ...
-##  $ quantmod            : chr [1:25] "allReturns" "annualReturn" "ClCl" "dailyReturn" ...
-##  $ TTR                 : chr [1:63] "adjRatios" "ADX" "ALMA" "aroon" ...
-##  $ PerformanceAnalytics: chr [1:7] "Return.annualized" "Return.annualized.excess" "Return.clean" "Return.cumulative" ...
 
 hurst index
 https://r-forge.r-project.org/scm/viewvc.php/pkg/PerformanceAnalytics/R/HurstIndex.R?view=markup&root=returnanalytics
 
 https://github.com/cgrand/xforms
-
-TASK PIPELINE:
-https://github.com/sunng87/papaline
-
-
-
 
 ;; http://www.nasdaq.com/screening/company-list.aspx
 ;; NASDAQTrader
