@@ -14,6 +14,12 @@
                       :relative-window-position :left}
                      {:out (rf :in)}))))
 
+(defn trailing-sum
+  "returns the trailing-sum over n bars of column v.
+   the current row is included in the window."
+  [n v]
+  (rolling-window-reduce r/sum n v))
+
 (defn trailing-max
   "returns the trailing-maximum over n bars of column v.
    the current row is included in the window."
