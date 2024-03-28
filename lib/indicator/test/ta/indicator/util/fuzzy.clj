@@ -1,5 +1,7 @@
 (ns ta.indicator.util.fuzzy)
 
+; from https://github.com/jjttjj/trateg/blob/master/src/trateg/core.clj
+
 (def diff-tolerance 0.0000000001)
 
 (defn fuzzy=
