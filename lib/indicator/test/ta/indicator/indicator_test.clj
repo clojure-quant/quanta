@@ -39,7 +39,6 @@
 
 (deftest test-atr
   (is (all-fuzzy=
-       0.1
        (ta4j/bar ds :ATR 4)
        (ind/atr {:n 4} ds))))
 

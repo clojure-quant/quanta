@@ -38,6 +38,19 @@
         (- (integrated-values idx)
            (integrated-values (- idx n))))))))
 
+(defn diff-2col
+  "returns a vector of the difference between 2 columns (shifted)
+   formula: x = col1 (current) - col2 (prev)
+   first value is passed as argument"
+  [col1 col2 v]
+  (let [len (count col1)]
+    (dtype/clone
+      (dtype/make-reader
+        :float64 len
+        (if (= idx 0)
+          v
+          (- (col1 idx) (col2 (dec idx))))))))
+
 (defn return-stddev [price]
   (let [d (diff price)]
     (dfn/standard-deviation d)))

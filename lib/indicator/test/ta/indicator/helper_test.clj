@@ -9,7 +9,6 @@
 
 (deftest test-tr
   (is (all-fuzzy=
-       0.1
        (ta4j/bar ds :helpers/TR)
        (ind/tr ds))))
 

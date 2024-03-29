@@ -8,6 +8,7 @@
    [tablecloth.api :as tc]
    [ta.indicator.helper :refer [indicator]]
    [ta.indicator.signal :refer [upward-change downward-change]]
+   [ta.indicator.returns :refer [diff-2col]]
    [ta.helper.ds :refer [has-col]]
    [ta.math.series :refer [gauss-summation]])
   (:import [clojure.lang PersistentQueue]))
@@ -153,15 +154,20 @@
     hl2))
 
 (defn tr
-  "input: bar-ds with (:low :high) columns
-   output: (high-low)"
+  "input: bar-ds with (:low :high :close) columns
+   output: Max [(H−L), abs(H−Cprev), abs(L−Cprev)]"
   [bar-ds]
   (assert (has-col bar-ds :low) "tr needs :low column in bar-ds")
   (assert (has-col bar-ds :high) "tr needs :high column in bar-ds")
-  (let [low (:low bar-ds)
-        high (:high bar-ds)
-        hl (dfn/- high low)]
-    hl))
+  (assert (has-col bar-ds :close) "tr needs :close column in bar-ds")
+  (let [{:keys [high low close]} bar-ds
+        hl (dfn/- high low)
+        hc (diff-2col high close (first hl))
+        lc (diff-2col low close (first hl))]
+    (dfn/max
+      hl
+      (dfn/abs hc)
+      (dfn/abs lc))))
 
 (defn atr
   "atr is a mma(n) on (tr bar)"
