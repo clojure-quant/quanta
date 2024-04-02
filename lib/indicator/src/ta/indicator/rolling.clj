@@ -69,6 +69,22 @@
                             :datatype :float64})
                          n (:close bar-ds)))
 
+(defn trailing-linear-regression
+  "trailing simple linear regression"
+  [n v]
+  (let [ds (tc/dataset {:col v})]
+    (:out (r/rolling ds {:window-type :fixed
+                         :window-size n
+                         :relative-window-position :left
+                         :edge-mode :zero}
+                     {:out {:column-name [:col]
+                            :reducer (fn [w]
+                                       (let [y (into [] (drop-while #(= % 0.0) w))
+                                             c (count y)
+                                             x (range 1 (inc c))
+                                             regressor (dfn/linear-regressor x y)]
+                                         (regressor c)))}}))))
+
 (defn prior-window
   "this does not work!"
   [ds]

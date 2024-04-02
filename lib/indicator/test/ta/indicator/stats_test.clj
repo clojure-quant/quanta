@@ -3,8 +3,7 @@
             [ta.indicator.util.fuzzy :refer [all-fuzzy= nthrest-fuzzy=]]
             [ta.indicator.util.ta4j :as ta4j]
             [ta.indicator.util.data :refer [ds]]
-            [ta.indicator.rolling :as roll]
-            [tech.v3.datatype.functional :as dfn]))
+            [ta.indicator.rolling :as roll]))
 
 (deftest test-mad-2
   (is (all-fuzzy=
@@ -18,7 +17,7 @@
 
 (deftest test-mad-4
   (is (nthrest-fuzzy= 4
-        (ta4j/close ds :statistics/MeanDeviation 4) 
+        (ta4j/close ds :statistics/MeanDeviation 4)
         (roll/trailing-mad 4 (:close ds)))))
 
 (deftest test-variance
@@ -32,6 +31,12 @@
            (ta4j/close ds :statistics/StandardDeviation 3)
            (roll/trailing-stddev 3 (:close ds)))))
 
+(deftest test-linear-regression
+  (is (nthrest-fuzzy= 1
+          (ta4j/close ds :statistics/SimpleLinearRegression 3)
+          (roll/trailing-linear-regression 3 (:close ds)))))
+
+
 (comment
   (:close ds)
 
@@ -41,16 +46,13 @@
   (ta4j/close ds :statistics/Variance 4)
   (roll/trailing-variance 4 (:close ds))
 
-  
-
   (roll/trailing-stddev 3 (:close ds))
   (ta4j/close ds :statistics/StandardDeviation 3)
 
+  (ta4j/close ds :statistics/SimpleLinearRegression 3)
+  (roll/trailing-linear-regression 3 (:close ds))
 
-  
-
-
-;  
+;
   )
                
 
