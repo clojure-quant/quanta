@@ -17,8 +17,8 @@
     </developer>
   </developers>
   <scm>
-    <url>https://github.com/clojure-quant/trateg/</url>
-    <connection>scm:git:git://github.com/clojure-quant/trateg.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/clojure-quant/trateg.git</developerConnection>
+    <url>https://github.com/clojure-quant/quanta/</url>
+    <connection>scm:git:git://github.com/clojure-quant/quanta.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/clojure-quant/quanta.git</developerConnection>
   </scm>
 </project>
