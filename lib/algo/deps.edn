@@ -1,4 +1,4 @@
-{:paths ["src"]
+{:paths ["src" "resources"]
  :deps
  {org.clojure/clojure    {:mvn/version "1.11.1"}
   ta/db {:local/root "../db" :deps/manifest :deps} ; bar-db

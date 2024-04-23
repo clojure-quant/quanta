@@ -1,4 +1,4 @@
-{:paths ["src"]
+{:paths ["src" "resources"]
  :deps
  {org.clojure/clojure    {:mvn/version "1.11.1"}
   aleph/aleph {:mvn/version "0.7.1"} ; websocket client steam bybit
