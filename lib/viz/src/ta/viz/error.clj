@@ -9,6 +9,7 @@
    plotted with a specified style/position, 
    created from the bar-algo-ds"
   [nom-anomaly]
+  ^{:render-fn 'ta.viz.renderfn/render-spec} ; needed for notebooks
   {:render-fn 'ta.viz.renderfn.error/nom-error
    :data nom-anomaly
    :spec :whatever})

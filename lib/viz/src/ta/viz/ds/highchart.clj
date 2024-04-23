@@ -16,6 +16,7 @@
   (let [chart-spec (or (:chart spec) {})
         pane-spec (:charts spec)]
     (assert (chart-pane-spec? pane-spec) "please comply with chart-pane-spec")
+    ^{:render-fn 'ta.viz.renderfn/render-spec} ; needed for notebooks
     {:render-fn 'ta.viz.renderfn.highcharts/highstock
      :data (-> bar-algo-ds
                (tc/select-columns (chart-cols pane-spec))

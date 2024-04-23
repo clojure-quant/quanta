@@ -21,6 +21,7 @@
                             :location :trade-summary}))))
 
 (defn metrics-render-spec-impl [{:keys [roundtrip-ds nav-ds metrics]}]
+  ^{:render-fn 'ta.viz.renderfn/render-spec} ; needed for notebooks
   {:render-fn 'ta.viz.renderfn.metrics/metrics
    :data {:roundtrips (ds->map roundtrip-ds)
           :nav (ds->map nav-ds)

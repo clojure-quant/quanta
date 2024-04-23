@@ -34,6 +34,7 @@
    Specified formats, created from the bar-algo-ds"
   [spec bar-algo-ds]
   (assert (rtable-spec? spec) "rtable-spec needs to have :columns key")
+  ^{:render-fn 'ta.viz.renderfn/render-spec} ; needed for notebooks
   {:render-fn 'ta.viz.renderfn.rtable/rtable
    :data (-> bar-algo-ds
              (tc/select-columns (rtable-cols spec))
