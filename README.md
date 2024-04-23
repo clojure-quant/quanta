@@ -14,8 +14,14 @@ Quanta is a technical analysis datascience platform written in Clojure.
 - Statistics and Machine Learning Libraries: 
 You can use libraries similar to matplotlib, scipy, statsmodels, and sklearn to support development, analysis, and visualization of state-of-the-art trading systems.
 
+## DOCS
 
+Quanta is a library. 
+[quanta docs](docs/README.md)
 
+## DEMO APP
+
+[demo](https://github.com/clojure-quant/quanta-demo)
 
 ## VAULT
 
@@ -44,16 +50,7 @@ MYVAULT environment variable needs to be set.
 
 
 
-## GoldlyDocs Web app
 
- - MYVAULT environment variable needs to be set.
- - run: `cd app/demo && clojure -X:docs`
- - in webbrowser go to localhost:8080 
- - you connect nrepl to port 8080 (clj repl)
-
-## Notebook Eval
-
-`bb notebook-eval`
 
 ## Tradingview Chart Study maker
 
@@ -67,7 +64,7 @@ This reads profiles/resources/gann.edn and creates tradingview charts for each s
 The charts can be loaded via the tradingview page.
  
 
-## for TA developers
+## for developers
 
 *code linter*  `clj -M:lint`
 
@@ -77,9 +74,6 @@ The charts can be loaded via the tradingview page.
 
 *warehouse io-performance speed test* `bb performance-test`
 
-
-## Algo template spec
-[Template spec](docs/template-spec.md)
 
 
 
