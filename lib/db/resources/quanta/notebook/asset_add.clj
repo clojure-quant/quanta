@@ -1,4 +1,4 @@
-(ns quanta.notebook.asset-symbollist
+(ns quanta.notebook.asset-add
   (:require
    [ta.db.asset.db :as db]
    [ta.db.asset.symbollist :refer [load-lists-full]]
