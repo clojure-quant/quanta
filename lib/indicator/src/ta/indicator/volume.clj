@@ -7,7 +7,7 @@
 
 (defn vwap
   "vwap (volume weighted average price)
-   over n bars: rolling-sum (hlc3*vol) / rollig-sum (vol)"
+   over n bars: rolling-sum (hlc3*vol) / rolling-sum (vol)"
   [n bar-ds]
   (assert n "vwap needs :n parameter")
   (let [hlc3  (ind/hlc3 bar-ds)
