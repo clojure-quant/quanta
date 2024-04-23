@@ -45,11 +45,11 @@
   [col1 col2 v]
   (let [len (count col1)]
     (dtype/clone
-      (dtype/make-reader
-        :float64 len
-        (if (= idx 0)
-          v
-          (- (col1 idx) (col2 (dec idx))))))))
+     (dtype/make-reader
+      :float64 len
+      (if (= idx 0)
+        v
+        (- (col1 idx) (col2 (dec idx))))))))
 
 (defn return-stddev [price]
   (let [d (diff price)]

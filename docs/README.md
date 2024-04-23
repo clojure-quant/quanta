@@ -1,4 +1,4 @@
-# Project Documentation
+# Quanta Documentation
 
 Welcome to the documentation for Quanta! This repository contains all the necessary information to understand, install, configure, and use Quanta effectively.
 

@@ -165,9 +165,9 @@
         hc (diff-2col high close (first hl))
         lc (diff-2col low close (first hl))]
     (dfn/max
-      hl
-      (dfn/abs hc)
-      (dfn/abs lc))))
+     hl
+     (dfn/abs hc)
+     (dfn/abs lc))))
 
 (defn atr
   "atr is a mma(n) on (tr bar)"
