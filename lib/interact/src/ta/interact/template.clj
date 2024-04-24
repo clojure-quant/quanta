@@ -1,5 +1,6 @@
 (ns ta.interact.template
   (:require
+   [de.otto.nom.core :as nom]
    [taoensso.timbre :as log :refer [tracef debug debugf info infof warn error errorf]]
    [com.rpl.specter :as specter]))
 
@@ -86,6 +87,28 @@
     (warn "applied options: " (:algo template))
     (warn "full template: " template)
     template))
+
+(defn- get-fn [fun]
+  (if (symbol? fun)
+    (requiring-resolve fun)
+    fun))
+
+(defn show-result [template result viz-mode]
+  (let [{:keys [viz viz-options]} (get template viz-mode)
+        viz-fn (get-fn viz)]
+    (if viz-fn
+      (if (nom/anomaly? result)
+        result
+        (try
+          (let [r (if viz-options
+                    (viz-fn viz-options result)
+                    (viz-fn result))]
+            r)
+          (catch Exception ex
+            (error "viz calc exception: " ex)
+            (nom/fail ::algo-calc {:message "algo viz exception!"
+                                   :location :visualize}))))
+      (nom/fail ::unknown-viz {:message (str "algo viz not found: " viz-mode)}))))
 
 (comment
   (load-template :juan-fx)
