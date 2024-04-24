@@ -44,9 +44,5 @@
   (def files (file-seq directory))
   (take 10 files)
 
-  (load-list "../resources/symbollist/bonds.edn")
-
-  (load-list-full "../resources/symbollist/fidelity-select.edn")
-
 ; 
   )

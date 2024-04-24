@@ -23,6 +23,7 @@
    "equity-region-country"
    "equity-sector-industry"
    "equity-style"
+   "equity-sector"
    ; stocks
    "eodhd-AU"
    "test"])
