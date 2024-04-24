@@ -14,13 +14,13 @@
   (dtype/emap sign-switch :float64 side-vec val-vec))
 
 (defn add-performance [roundtrip-ds]
-  (println "add-performance roundtrips: " roundtrip-ds)
+  (println "add-performance roundtrips .. ")
   (let [{:keys [side entry-price exit-price exit-idx entry-idx]} roundtrip-ds
         _ (assert side)
         _ (assert entry-price)
         _ (assert entry-idx)
         _ (assert exit-price)
-        _ (assert exit-price)
+        _ (assert exit-idx)
         ret-abs (adjust (dfn/- exit-price entry-price) side)
         ret-prct (-> 100.0 (dfn/* ret-abs) (dfn// entry-price))
         ret-log (adjust (dfn/- (dfn/log10 entry-price) (dfn/log10 exit-price)) side)
@@ -42,8 +42,8 @@
                  :exit-idx [2 3 4 5]
                  :entry-date [:d1 :d2 :d3 :d4]
                  :exit-date [:d2 :d3 :d4 :d5]
-                 :entry-price [1 2 3 4]
-                 :exit-price [2 3 4 5]}))
+                 :entry-price [1.0 2.0 3.0 4.0]
+                 :exit-price [2.0 3.0 4.0 5.0]}))
 
   (add-performance ds)
    ;; => _unnamed [4 14]:
@@ -54,6 +54,9 @@
    ;;    | :short |          2 |         3 |         :d2 |        :d3 |            2 |           3 |       -1 | -50.00000000 |  0.17609126 | false |     1 |  -0.12493874 | 1.87506126 |
    ;;    |  :long |          3 |         4 |         :d3 |        :d4 |            3 |           4 |        1 |  33.33333333 | -0.12493874 |  true |     1 |  -0.24987747 | 1.75012253 |
    ;;    | :short |          4 |         5 |         :d4 |        :d5 |            4 |           5 |       -1 | -25.00000000 |  0.09691001 | false |     1 |  -0.15296746 | 1.84703254 |
+
+  (-> (add-performance ds)
+      (tc/info))
 
   (Math/pow 10 2.8132)
 

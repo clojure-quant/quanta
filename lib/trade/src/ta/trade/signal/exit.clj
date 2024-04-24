@@ -5,7 +5,7 @@
 (defn- create-exit [position rule row]
   (assoc position
          :exit-rule rule
-         :exit-index  (:idx row)
+         :exit-idx  (:idx row)
          :exit-date (:date row)))
 
 (defmulti exit

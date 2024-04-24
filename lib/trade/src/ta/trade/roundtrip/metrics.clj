@@ -68,7 +68,7 @@
   (assert (:bars  roundtrips-ds) "to calc metrics :bars column needs to be present!")
   (assert (:win?  roundtrips-ds) "to calc metrics :win? column needs to be present!")
   ;(println (tc/select-columns roundtrips-ds [:win? :ret-log :bars]))
-  (println "calc-roundtrip-metrics " roundtrips-ds)
+  (println "calc-roundtrip-metrics ..")
   (let [wl-stats (win-loss-stats roundtrips-ds)
         metrics (win-loss-performance-metrics wl-stats)]
     metrics))
