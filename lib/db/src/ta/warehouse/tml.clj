@@ -1,21 +1,21 @@
 (ns ta.warehouse.tml
   (:require
    [taoensso.timbre :refer [debug info warnf error]]
-   [tick.core :as tick]
+   [tick.core :as t]
    [tablecloth.api :as tc]
    [ta.warehouse :refer [load-symbol]]))
 
 (defn range-filter [dt-begin dt-end]
   (fn [dt]
-    (and (tick/>= dt dt-begin)
-         (tick/<= dt dt-end))))
+    (and (t/>= dt dt-begin)
+         (t/<= dt dt-end))))
 
 (comment
-  (let [rf (range-filter (tick/date-time "2021-01-01T00:00:00")
-                         (tick/date-time "2021-12-31T00:00:00"))]
-    [(rf (tick/date-time "2021-06-01T00:00:00")) ; inside
-     (rf (tick/date-time "2020-06-01T00:00:00")) ; prior
-     (rf (tick/date-time "2022-06-01T00:00:00")) ; past
+  (let [rf (range-filter (t/date-time "2021-01-01T00:00:00")
+                         (t/date-time "2021-12-31T00:00:00"))]
+    [(rf (t/date-time "2021-06-01T00:00:00")) ; inside
+     (rf (t/date-time "2020-06-01T00:00:00")) ; prior
+     (rf (t/date-time "2022-06-01T00:00:00")) ; past
      ])
  ; 
   )
@@ -28,8 +28,8 @@
 (comment
   (-> (load-symbol :crypto "D" "ETHUSD")
       (filter-date-range
-       (tick/date-time "2021-04-01T00:00:00")
-       (tick/date-time "2021-05-01T00:00:00")))
+       (t/date-time "2021-04-01T00:00:00")
+       (t/date-time "2021-05-01T00:00:00")))
 
 ;
   )

@@ -2,8 +2,8 @@
   (:require
    [tick.core :as t]
    [tablecloth.api :as tc]
-   [ta.trade.signal.core :refer [create-positions]]
-   [ta.trade.metrics :refer [metrics]]
+   [ta.trade.backtest.from-entry :refer [entry-signal->roundtrips]]
+   [ta.trade.roundtrip.core :refer [metrics]]
    [ta.viz.ds.metrics :refer [metrics-render-spec-impl]]))
 
 (def ds (tc/dataset {:date (repeatedly 6 #(t/instant))
@@ -14,7 +14,7 @@
 
 ds
 
-(def rts (-> (create-positions {:asset "QQQ"
+(def rts (-> (entry-signal->roundtrips {:asset "QQQ"
                                 :entry [:fixed-qty 3.1]
                                 :exit [:time 2
                                        :loss-percent 2.5

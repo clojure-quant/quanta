@@ -1,4 +1,4 @@
-(ns ta.trade.position
+(ns ta.trade.backtest.from-position
   (:require
    [tablecloth.api :as tc]
    [ta.indicator.helper :refer [indicator]]))
