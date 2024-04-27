@@ -20,3 +20,11 @@
                {:date (t/instant "2019-11-14T00:00:00.000Z") :open 101.0 :high 110.0 :low 88.022 :close 89.0 :volume  9000}
                {:date (t/instant "2019-11-15T00:00:00.000Z") :open 100.0 :high 120.0 :low 90.011 :close 110.0 :volume 11000}]))
 
+
+(defn get-csv-ds [csv-name]
+  (tc/dataset (str "test/ta/indicator/csv/" csv-name) {:key-fn keyword}))
+
+; indicator length = 100
+(def ind-100-export-ds (get-csv-ds "INDEX_BTCUSD_1D_len_100.csv"))
+
+(def compress-ds (get-csv-ds "compress.csv"))

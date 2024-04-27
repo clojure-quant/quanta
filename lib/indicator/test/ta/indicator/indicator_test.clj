@@ -1,8 +1,8 @@
 (ns ta.indicator.indicator-test
   (:require [clojure.test :refer :all]
-            [ta.indicator.util.fuzzy :refer [all-fuzzy= nthrest-fuzzy=]]
+            [ta.indicator.util.fuzzy :refer [all-fuzzy= nthrest-fuzzy= fuzzy=]]
             [ta.indicator.util.ta4j :as ta4j]
-            [ta.indicator.util.data :refer [ds]]
+            [ta.indicator.util.data :refer [ds ind-100-export-ds]]
             [ta.indicator :as ind]))
 
 ;; TESTS
@@ -48,11 +48,79 @@
        (ta4j/close ds :HMA 4)
       (ind/hma 4 (:close ds)))))
 
+(deftest lma-test
+  (is (nthrest-fuzzy=
+        0.00000001
+        100
+        (:lma ind-100-export-ds)
+        (ind/lma 100 (:close ind-100-export-ds)))))
+
+(deftest chebyshev1-test
+  (is (nthrest-fuzzy=
+        0.00000001
+        110
+        (vec (:chebyshev1 ind-100-export-ds))
+        (ind/chebyshev1 100 (:close ind-100-export-ds)))))
+
+(deftest chebyshev2-test
+  (is (all-fuzzy=
+        0.0001
+        (vec (:chebyshev2 ind-100-export-ds))
+        (ind/chebyshev2 100 (:close ind-100-export-ds)))))
+
+(deftest ehlers-gaussian-test
+  (is (nthrest-fuzzy=
+        0.00000001
+        150
+        (vec (:ehlers-gaussian ind-100-export-ds))
+        (ind/ehlers-gaussian 100 (:close ind-100-export-ds)))))
+
+(deftest ehlers-supersmoother-test
+  (is (nthrest-fuzzy=
+        0.00000001
+        250
+        (vec (:ehlers-supersmoother ind-100-export-ds))
+        (ind/ehlers-supersmoother 100 (:close ind-100-export-ds)))))
+
+;
+
 (comment 
   
    (ta4j/close ds :HMA 4)
    (ind/hma 4 (:close ds))
 
-  
+   (defn print-diff [l1 l2 tol]
+     (doseq [i (range (count l1))]
+       (let [v1 (nth l1 i)
+             v2 (nth l2 i)]
+         (if (not (fuzzy= tol v1 v2))
+           (println "!= at index:" i ", v1:" v1 "v2:" v2)))))
+
+
+   (print-diff (drop 10 (:lma ind-100-export-ds))
+               (ind/lma 100 (drop 10 (:close ind-100-export-ds)))
+               0.00000001)
+
+   (print-diff (:chebyshev1 ind-100-export-ds)
+               (ind/chebyshev1 100 (:close ind-100-export-ds))
+               0.00000001)
+
+   (print-diff (:chebyshev2 ind-100-export-ds)
+               (ind/chebyshev2 100 (:close ind-100-export-ds))
+               0.0001)
+
+   (print-diff (:ehlers-supersmoother ind-100-export-ds)
+               (ind/ehlers-supersmoother 100 (:close ind-100-export-ds))
+               0.00000001)
+
+   (print-diff (:ehlers-gaussian ind-100-export-ds)
+               (ind/ehlers-gaussian 100 (:close ind-100-export-ds))
+               0.00000001)
+
+
+   (vec (:lma ind-100-export-ds))
+   (vec (ind/lma 100 (:close ind-100-export-ds)))
+   (ind/ehlers-supersmoother 100 (:close ind-100-export-ds))
+   (ind/ehlers-gaussian 100 (:close ind-100-export-ds))
  ; 
   )

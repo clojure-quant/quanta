@@ -14,6 +14,15 @@
                       :relative-window-position :left}
                      {:out (rf :in)}))))
 
+(defn rolling-window-reduce-zero-edge [rf n vec]
+  (let [ds (tc/dataset {:in vec})]
+    (:out (r/rolling ds
+                     {:window-type :fixed
+                      :window-size n
+                      :relative-window-position :left
+                      :edge-mode :zero}
+                     {:out (rf :in)}))))
+
 (defn trailing-sum
   "returns the trailing-sum over n bars of column v.
    the current row is included in the window."
@@ -72,18 +81,15 @@
 (defn trailing-linear-regression
   "trailing simple linear regression"
   [n v]
-  (let [ds (tc/dataset {:col v})]
-    (:out (r/rolling ds {:window-type :fixed
-                         :window-size n
-                         :relative-window-position :left
-                         :edge-mode :zero}
-                     {:out {:column-name [:col]
-                            :reducer (fn [w]
-                                       (let [y (into [] (drop-while #(= % 0.0) w))
-                                             c (count y)
-                                             x (range 1 (inc c))
-                                             regressor (dfn/linear-regressor x y)]
-                                         (regressor c)))}}))))
+  (rolling-window-reduce-zero-edge (fn [col-name]
+                                     {:column-name col-name
+                                      :reducer (fn [w]
+                                                 (let [y (into [] (drop-while #(= % 0.0) w))
+                                                       c (count y)
+                                                       x (range 1 (inc c))
+                                                       regressor (dfn/linear-regressor x y)]
+                                                   (regressor c)))})
+                                   n v))
 
 (defn prior-window
   "this does not work!"

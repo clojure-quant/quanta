@@ -10,7 +10,8 @@
    [ta.indicator.signal :refer [upward-change downward-change]]
    [ta.indicator.returns :refer [diff-2col]]
    [ta.helper.ds :refer [has-col]]
-   [ta.math.series :refer [gauss-summation]])
+   [ta.math.series :refer [gauss-summation]]
+   [fastmath.core :as fmath])
   (:import [clojure.lang PersistentQueue]))
 
 (defn prior
@@ -95,7 +96,7 @@
 (defn hma
   "Hull Moving Average  http://alanhull.com/hull-moving-average
    A simple application for the HMA, given its superior smoothing, would be to employ the 
-   turning points as entry/exit signals. However it shouldn't be used to generate crossover 
+   turning points as entry/exit signals. However, it shouldn't be used to generate crossover
    signals as this technique relies on lag."
   [n v]
   (assert (even? n) "n needs to be even")
@@ -104,6 +105,115 @@
         wma2 (dfn/* 2.0 (wma n_2 v))
         d (dfn/- wma2 (wma n v))]
     (wma nsqrt d)))
+
+(defn- lma-rfn [n v]
+  (let [alpha (dfn/log (range 2 (+ n 2)))
+        norm (dfn/sum alpha)
+        sum (dfn/sum
+             (dfn/* v alpha))]
+    (/ sum norm)))
+
+(defn lma
+  "Logarithmic moving average"
+  [n v]
+  (roll/rolling-window-reduce-zero-edge (fn [col-name]
+                                          {:column-name col-name
+                                           :reducer (fn [w]
+                                                      (lma-rfn n w))
+                                           :datatype :float64})
+                                        n v))
+
+(defn- ehlers-tfn
+  ""
+  [{:keys [c1 c2 c3]}]
+  (let [f (fn [x y1 y2]
+            (+ (* c1 x)
+               (* c2 y1)
+               (* c3 y2)))]
+    (indicator
+     [prev1 (volatile! nil)
+      prev2 (volatile! nil)]
+     (fn [x]
+       (cond
+          ; first x
+         (and (not @prev1) (not @prev2))
+         (let [res (f x 0.0 0.0)]
+           (vreset! prev1 res)
+           res)
+
+          ; second x
+         (and prev1 (not @prev2))
+         (let [res (f x @prev1 0.0)]
+           (vreset! prev2 @prev1)
+           (vreset! prev1 res)
+           res)
+
+         :else
+         (let [res (f x @prev1 @prev2)]
+           (vreset! prev2 @prev1)
+           (vreset! prev1 res)
+           res))))))
+
+(defn ehlers-supersmoother
+  "Ehlers Supersmoother Filter"
+  [n v]
+  (let [a1 (Math/exp (/ (* -1 (Math/sqrt 2) Math/PI) n))
+        b1 (* 2 a1 (Math/cos (/ (* (Math/sqrt 2) Math/PI) n)))
+        c3 (* -1 a1 a1)
+        c2 b1
+        c1 (- 1 c2 c3)]
+    (into [] (ehlers-tfn {:c1 c1 :c2 c2 :c3 c3}) v)))
+
+(defn ehlers-gaussian
+  "Ehlers Gaussian Filter"
+  [n v]
+  (let [cycle (/ (* 2 Math/PI) n)
+        beta (* 2.415 (- 1 (Math/cos cycle)))
+        alpha (+ (* -1 beta)
+                 (Math/sqrt (+ (* beta beta) (* 2 beta))))
+        c0 (* alpha alpha)
+        a1 (* 2 (- 1 alpha))
+        a2 (* -1 (- 1 alpha) (- 1 alpha))]
+    (into [] (ehlers-tfn {:c1 c0 :c2 a1 :c3 a2}) v)))
+
+(defn- chebyshev-tfn [g]
+  (let [f (fn [x y1]
+            (+ (* (- 1 g) x)
+               (* g y1)))]
+    (indicator
+     [prev1 (volatile! nil)]
+     (fn [x]
+       (cond
+          ; first
+         (not @prev1)
+         (let [res (f x x)]
+           (vreset! prev1 res)
+           res)
+
+         :else
+         (let [res (f x @prev1)]
+           (vreset! prev1 res)
+           res))))))
+
+(defn chebyshev1
+  "Chebyshev Type I Filter"
+  ([n v]
+   (chebyshev1 n v 0.05))
+  ([n v r]
+   (let [a (Math/cosh (/ (fmath/acosh (/ 1 (- 1 r))) n))
+         b (Math/sinh (/ (fmath/asinh (/ 1 r)) n))
+         g (/ (- a b) (+ a b))]
+     (into [] (chebyshev-tfn g) v))))
+
+(defn chebyshev2
+  "Chebyshev Type II Filter"
+  ([n v]
+   (chebyshev2 n v 0.05))
+  ([n v r]
+   (let [a (Math/cosh (/ (fmath/acosh (/ 1 r)) n))
+         b (Math/sinh (/ (fmath/asinh r) n))
+         g (/ (- a b) (+ a b))]
+     (into [] (chebyshev-tfn g) v))))
 
 (defn macd
   ([col] (macd {:n 12 :m 26} col))
@@ -259,8 +369,7 @@
 
   (carry-forward-for 1 [1.0 nil nil -1.0 2.0 nil])
   (carry-forward-for 1 [1.0 Double/NaN nil -1.0 2.0 nil])
-
-; 
+;
   )
 
 
