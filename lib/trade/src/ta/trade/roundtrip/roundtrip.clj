@@ -27,15 +27,21 @@
   (dtype/emap sign-switch :float64 side-vec val-vec))
 
 (defn add-performance [roundtrip-ds]
-  (println "add-performance roundtrips .. ")
-  (let [{:keys [side entry-price exit-price exit-idx entry-idx]} roundtrip-ds
+  (let [roundtrip-ds (tc/order-by roundtrip-ds [:exit-date] [:asc])
+        {:keys [side qty entry-price exit-price exit-idx entry-idx]} roundtrip-ds
         _ (assert side)
         _ (assert entry-price)
         _ (assert exit-price)
+        entry-volume (dfn/* qty entry-price)
+        exit-volume (dfn/* qty exit-price)
+        ret-volume (adjust (dfn/- exit-volume entry-volume) side)
         ret-abs (adjust (dfn/- exit-price entry-price) side)
         ret-prct (-> 100.0 (dfn/* ret-abs) (dfn// entry-price))
-        ret-log (adjust (dfn/- (dfn/log10 entry-price) (dfn/log10 exit-price)) side)
-        cum-ret-log  (dfn/cumsum ret-log)]
+        ret-log (adjust (dfn/- (dfn/log10 exit-price) (dfn/log10 entry-price)) side)
+        cum-ret-volume  (dfn/cumsum ret-volume)
+        cum-ret-abs  (dfn/cumsum ret-abs)
+        cum-ret-log  (dfn/cumsum ret-log)
+        cum-ret-prct  (dfn/cumsum ret-prct)]
     (tc/add-columns roundtrip-ds
                     {:ret-abs ret-abs
                      :ret-prct ret-prct
@@ -44,7 +50,10 @@
                      :bars (if (and entry-idx exit-idx)
                              (dfn/- exit-idx entry-idx)
                              0)
+                     :cum-ret-volume cum-ret-volume
+                     :cum-ret-abs cum-ret-abs
                      :cum-ret-log cum-ret-log
+                     :cum-ret-prct cum-ret-prct
                      :nav (dfn/+ (Math/log10 100.0) cum-ret-log)})))
 
 (comment

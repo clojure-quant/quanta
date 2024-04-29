@@ -2,7 +2,9 @@
   (:require
    [tech.v3.dataset :as tds]
    [de.otto.nom.core :as nom]
-   [ta.viz.error :refer [error-render-spec]]))
+   [ta.viz.error :refer [error-render-spec]]
+   [ta.viz.trade.nav-chart :refer [nav-chart]]
+   [ta.viz.trade.roundtrip :refer [roundtrip-ui]]))
 
 (defn ds->map [ds]
   ;(tc/rows :as-maps) ; this does not work, type of it is a reified dataset. 
@@ -15,7 +17,9 @@
   {:render-fn 'ta.viz.renderfn.metrics/metrics
    :data {:roundtrips (ds->map roundtrip-ds)
           :nav (ds->map nav-ds)
-          :metrics metrics}
+          :metrics metrics
+          :nav-chart (nav-chart roundtrip-ds)
+          :rt (roundtrip-ui {} roundtrip-ds)}
    :spec {}})
 
 (defn metrics-render-spec

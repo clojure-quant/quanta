@@ -39,7 +39,7 @@
 (defn validate-roundtrips [rts]
   (loop [rt (first rts)
          rts (rest rts)]
-    (println "validationg rt: " rt)
+    ;(println "validationg rt: " rt)
     (if (validate-roundtrip rt)
       (if (empty? rts)
         true

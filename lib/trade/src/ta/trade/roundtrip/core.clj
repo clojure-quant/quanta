@@ -2,11 +2,11 @@
   (:require
    [de.otto.nom.core :as nom]
    [tech.v3.dataset :as tds]
+   [ta.trade.roundtrip.validation :refer [validate-roundtrips]]
    [ta.trade.roundtrip.roundtrip :refer [add-performance]]
    [ta.trade.roundtrip.metrics :refer [calc-roundtrip-metrics]]
    [ta.trade.roundtrip.nav.metrics :refer [calc-nav-metrics]]
-   [ta.trade.roundtrip.nav.grouped :refer [grouped-nav]]
-   [ta.trade.roundtrip.validation :refer [validate-roundtrips]]))
+   [ta.trade.roundtrip.nav.grouped :refer [grouped-nav]]))
 
 (defn metrics-impl [roundtrip-ds]
   (let [vr (validate-roundtrips (tds/mapseq-reader roundtrip-ds))]
