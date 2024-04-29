@@ -5,22 +5,22 @@
    [tech.v3.datatype.functional :as dfn]
    [tech.v3.datatype.datetime :as datetime]
    [tablecloth.api :as tc]
-   [tick.core :as tick]
+   [tick.core :as t]
    [ta.helper.date :as dt]
    [ta.helper.ds :refer [cols-of-type]]))
 
 (defn now []
-  (-> (tick/now)
-      (tick/date-time)))
+  (-> (t/now)
+      (t/date-time)))
 
 (defn days-ago [n]
-  (-> (tick/now)
-      (tick/date-time)
-      (tick/<< (tick/new-duration n :days))))
+  (-> (t/now)
+      (t/date-time)
+      (t/<< (t/new-duration n :days))))
 
 (defn days-ago-instant [n]
-  (-> (tick/now)
-      (tick/- (tick/new-duration n :days))))
+  (-> (t/now)
+      (t/- (t/new-duration n :days))))
 
 (defn ds-epoch [ds]
   (tds/column-map ds :epoch #(* 1000 (dt/->epoch-second %)) [:date]))
@@ -40,10 +40,10 @@
 
 (comment
 
-  (->  (tc/dataset {:date [(tick/new-date 2021 10 28)
-                           (tick/new-date 2021 10 29)
-                           (tick/new-date 2021 11 01)
-                           (tick/new-date 2021 11 02)]})
+  (->  (tc/dataset {:date [(t/new-date 2021 10 28)
+                           (t/new-date 2021 10 29)
+                           (t/new-date 2021 11 01)
+                           (t/new-date 2021 11 02)]})
        (add-year-and-month-date-as-local-date))
 ;
   )
@@ -56,15 +56,15 @@
     (if (= t :packed-instant)
       (do (println "converting to local-datetime")
           (-> ds
-              (tds/column-map :date-close #(tick/date-time %) [:date-close])
-              (tds/column-map :date-open #(tick/date-time %) [:date-open])))
+              (tds/column-map :date-close #(t/date-time %) [:date-close])
+              (tds/column-map :date-open #(t/date-time %) [:date-open])))
 
       (do (println "already local-date")
           ds))))
 
 (defn convert-col-instant->localdatetime [ds col]
   (println "converting col " col "to local-datetime")
-  (tds/column-map ds col #(tick/date-time %) [col]))
+  (tds/column-map ds col #(t/date-time %) [col]))
 
 (defn ds-convert-col-instant->localdatetime [ds]
   (let [cols (cols-of-type ds :packed-instant)]
@@ -72,13 +72,13 @@
     (reduce convert-col-instant->localdatetime ds cols)))
 
 (defn month-as-int [dt]
-  (-> dt tick/month .getValue))
+  (-> dt t/month .getValue))
 
 (comment
 
   (days-ago 50)
 
-  (-> (month-as-int (tick/now)) class)
+  (-> (month-as-int (t/now)) class)
   ;  
   )
 
@@ -102,48 +102,48 @@
                          false))))
 
 (comment
-  (month-end? [(tick/now)])
+  (month-end? [(t/now)])
 
-  (month-begin? [(tick/new-date 2021 10 28)
-                 (tick/new-date 2021 10 29)
-                 (tick/new-date 2021 11 01)
-                 (tick/new-date 2021 11 02)])
+  (month-begin? [(t/new-date 2021 10 28)
+                 (t/new-date 2021 10 29)
+                 (t/new-date 2021 11 01)
+                 (t/new-date 2021 11 02)])
 
-  (month-end? [(tick/new-date 2021 10 28)
-               (tick/new-date 2021 10 29)
-               (tick/new-date 2021 11 01)
-               (tick/new-date 2021 11 02)])
+  (month-end? [(t/new-date 2021 10 28)
+               (t/new-date 2021 10 29)
+               (t/new-date 2021 11 01)
+               (t/new-date 2021 11 02)])
 
-  (month-end? [(tick/new-date 2021 12 28)
-               (tick/new-date 2021 12 29)
-               (tick/new-date 2022  1 01)
-               (tick/new-date 2022  1 02)])
+  (month-end? [(t/new-date 2021 12 28)
+               (t/new-date 2021 12 29)
+               (t/new-date 2022  1 01)
+               (t/new-date 2022  1 02)])
 
 ;
   )
 (comment
-  (-> (tick/now)
-      (tick/year)
+  (-> (t/now)
+      (t/year)
       .getValue
       class)
 
-  (into [] (month [(tick/now)]))
-  (into [] (year [(tick/now)]))
+  (into [] (month [(t/now)]))
+  (into [] (year [(t/now)]))
 
-  (-> (tick/now)
-      (tick/date-time)
+  (-> (t/now)
+      (t/date-time)
 
       class)
 
-  (->> (tc/dataset [{:date-close (tick/now)
-                     :date-open (tick/now)}])
+  (->> (tc/dataset [{:date-close (t/now)
+                     :date-open (t/now)}])
        ensure-roundtrip-date-localdatetime
        ;tc/columns
        ;(map meta)
        )
 
-  (->> (tc/dataset [{:date-close (tick/now)
-                     :date-open (tick/now)
+  (->> (tc/dataset [{:date-close (t/now)
+                     :date-open (t/now)
                      :bongo 3
                      :signal true}])
        ds-convert-col-instant->localdatetime

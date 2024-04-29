@@ -124,7 +124,6 @@
                                         n v))
 
 (defn- ehlers-tfn
-  ""
   [{:keys [c1 c2 c3]}]
   (let [f (fn [x y1 y2]
             (+ (* c1 x)
