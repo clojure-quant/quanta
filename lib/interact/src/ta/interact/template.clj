@@ -10,10 +10,9 @@
   "adds a template to the template-db
    templates are used in the browser so traders can add
    and configure algos easily."
-  [{:keys [id algo viz] :as template-spec}]
+  [{:keys [id algo] :as template-spec}]
   (assert id "missing mandatory parameter :id")
   (assert algo "missing mandatory parameter :algo")
-  ;(assert viz "missing mandatory parameter :viz")
   (swap! db assoc id template-spec))
 
 (defn available-templates
