@@ -1,7 +1,7 @@
 (ns ta.indicator.ta4j.ta4j
   "convenience wrapper on the java library ta4j"
   (:require
-   [tick.core :as tick]
+   [tick.core :as t]
    [tech.v3.datatype :as dtype]
    [tech.v3.dataset :as tds])
   (:import [org.ta4j.core.num DoubleNum DecimalNum])
@@ -68,7 +68,7 @@
   (let [series (org.ta4j.core.BaseBarSeries.)
         r (tds/mapseq-reader ds)]
     (doseq [{:keys [date open high low close volume]} r]
-      (let [ldt (tick/in date "UTC")] ; convert time instance to (zoned)localdate
+      (let [ldt (t/in date "UTC")] ; convert time instance to (zoned)localdate
         (.addBar series ldt open high low close volume)))
     series))
 

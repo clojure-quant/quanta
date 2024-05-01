@@ -1,10 +1,10 @@
-(ns ta.trade.signal.core
+(ns ta.trade.backtest.from-entry
   (:require
    [tech.v3.dataset :as tds]
    [tablecloth.api :as tc]
    [ta.indicator.helper :refer [indicator]]
-   [ta.trade.signal.exit :refer [eventually-exit-position]]
-   [ta.trade.signal.entry :refer [eventually-entry-position]]))
+   [ta.trade.backtest.exit :refer [eventually-exit-position]]
+   [ta.trade.backtest.entry :refer [eventually-entry-position]]))
 
 (defn position? [p]
   (not (= :flat (:side p))))
@@ -38,7 +38,7 @@
      ; signal
      @exit-signal)))
 
-(defn create-positions
+(defn entry-signal->roundtrips
   "takes :entry from bar-entry-ds and iterates over all rows to create roundtrips 
    and adds :position column to var-signal-ds. This has a double purpose: 
    1. Modify ds so that position column can be displayed in a chart. 

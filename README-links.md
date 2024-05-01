@@ -29,6 +29,7 @@ For your specific case, column-map seems like the exact fit. Another option is t
 => _unnamed [6 3]:
 
 
+
 hurst index
 https://r-forge.r-project.org/scm/viewvc.php/pkg/PerformanceAnalytics/R/HurstIndex.R?view=markup&root=returnanalytics
 

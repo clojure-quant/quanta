@@ -1,13 +1,7 @@
 (ns ta.trade.trades
   (:require
-   ;[clojure.set :refer [rename-keys]]
-   ;[clojure.walk]
-   [taoensso.timbre :refer [trace debug info warnf error]]
-   ;[tick.core :as t]
-   ;[cljc.java-time.instant :as ti]
-   ;[cljc.java-time.local-date-time :as ldt]
    [tablecloth.api :as tc]
-   [ta.helper.date :refer [now-datetime datetime->epoch-second epoch-second->datetime]]))
+   [ta.helper.date :refer [datetime->epoch-second]]))
 
 (defn has-col? [ds col-kw]
   (->> ds

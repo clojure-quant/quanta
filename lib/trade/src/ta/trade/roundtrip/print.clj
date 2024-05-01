@@ -1,4 +1,4 @@
-(ns ta.trade.print
+(ns ta.trade.roundtrip.print
   (:require
    [tablecloth.api :as tc]
    [ta.helper.print :refer [print-all]]))
@@ -9,8 +9,8 @@
   [:rt-no
    :trade
    :pl-log :win
-   :date-open :date-close :bars
-   :price-open :price-close
+   :entry-date :exit-date :bars
+   :entry-price :exit-price
    ;:index-open :index-close
    ])
 

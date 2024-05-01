@@ -1,40 +1,72 @@
-(ns ta.trade.roundtrip.performance
+(ns ta.trade.roundtrip.roundtrip
   (:require
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as dfn]
    [tablecloth.api :as tc]))
 
-(defn sign-switch [side v]
+(defn- sign-switch [side v]
   (case side
     :long v
     :short (- 0.0 v)
     v))
 
+(defn return-abs [{:keys [exit-price entry-price side] :as _roundtrip}]
+  (sign-switch side (- exit-price entry-price)))
+
+(defn return-prct [{:keys [entry-price] :as roundtrip}]
+  (-> 100.0 (* (return-abs roundtrip) (/ entry-price))))
+
+(defn return-log [{:keys [entry-price exit-price side] :as _roundtrip}]
+  (sign-switch side (- (Math/log10 exit-price) (Math/log10 entry-price))))
+
+(defn set-exit-price-percent [{:keys [entry-price side] :as roundtrip} percent]
+  (let [m (+ 1.0 (/ (sign-switch side percent) 100.0))]
+    (assoc roundtrip :exit-price (* m entry-price))))
+
 (defn- adjust [val-vec side-vec]
   (dtype/emap sign-switch :float64 side-vec val-vec))
 
 (defn add-performance [roundtrip-ds]
-  (println "add-performance roundtrips .. ")
-  (let [{:keys [side entry-price exit-price exit-idx entry-idx]} roundtrip-ds
+  (let [roundtrip-ds (tc/order-by roundtrip-ds [:exit-date] [:asc])
+        {:keys [side qty entry-price exit-price exit-idx entry-idx]} roundtrip-ds
         _ (assert side)
         _ (assert entry-price)
-        _ (assert entry-idx)
         _ (assert exit-price)
-        _ (assert exit-idx)
+        entry-volume (dfn/* qty entry-price)
+        exit-volume (dfn/* qty exit-price)
+        ret-volume (adjust (dfn/- exit-volume entry-volume) side)
         ret-abs (adjust (dfn/- exit-price entry-price) side)
         ret-prct (-> 100.0 (dfn/* ret-abs) (dfn// entry-price))
-        ret-log (adjust (dfn/- (dfn/log10 entry-price) (dfn/log10 exit-price)) side)
-        cum-ret-log  (dfn/cumsum ret-log)]
+        ret-log (adjust (dfn/- (dfn/log10 exit-price) (dfn/log10 entry-price)) side)
+        cum-ret-volume  (dfn/cumsum ret-volume)
+        cum-ret-abs  (dfn/cumsum ret-abs)
+        cum-ret-log  (dfn/cumsum ret-log)
+        cum-ret-prct  (dfn/cumsum ret-prct)]
     (tc/add-columns roundtrip-ds
                     {:ret-abs ret-abs
                      :ret-prct ret-prct
                      :ret-log ret-log
                      :win? (dfn/> ret-abs 0.0)
-                     :bars (dfn/- exit-idx entry-idx)
+                     :bars (if (and entry-idx exit-idx)
+                             (dfn/- exit-idx entry-idx)
+                             0)
+                     :cum-ret-volume cum-ret-volume
+                     :cum-ret-abs cum-ret-abs
                      :cum-ret-log cum-ret-log
+                     :cum-ret-prct cum-ret-prct
                      :nav (dfn/+ (Math/log10 100.0) cum-ret-log)})))
 
 (comment
+  (return-abs {:entry-price 100.0 :exit-price 101.0 :side :long})
+  (return-prct {:entry-price 100.0 :exit-price 101.0 :side :long})
+  (return-log {:entry-price 100.0 :exit-price 101.0 :side :long})
+
+  (return-abs {:entry-price 100.0 :exit-price 101.0 :side :short})
+  (return-prct {:entry-price 100.0 :exit-price 101.0 :side :short})
+  (return-log {:entry-price 100.0 :exit-price 101.0 :side :short})
+
+  (set-exit-price-percent {:entry-price 100.0 :side :long} 5.0)
+  (set-exit-price-percent {:entry-price 100.0 :side :short} 5.0)
 
   (def ds
     (tc/dataset {:side [:long :short :long :short]

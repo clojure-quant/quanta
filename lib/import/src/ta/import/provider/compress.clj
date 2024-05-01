@@ -11,7 +11,7 @@
   (case interval
     :month (compress/add-date-group-month ds)
     :year  (compress/add-date-group-year ds)
-    :h (compress/add-date-group-hour)))
+    :h (compress/add-date-group-hour ds)))
 
 (defrecord compressing-provider [provider interval-config]
   barsource

@@ -2,8 +2,8 @@
   (:require
    [tick.core :as t]
    [tablecloth.api :as tc]
-   [ta.trade.position :refer [signal->roundtrips]]
-   [ta.trade.metrics :refer [metrics]]
+   [ta.trade.backtest.from-position :refer [signal->roundtrips]]
+   [ta.trade.roundtrip.core :refer [metrics]]
    [ta.viz.ds.metrics :refer [metrics-render-spec-impl]]))
 
 (def signal-ds (tc/dataset {:date [(t/instant "2020-01-01T00:00:00Z")

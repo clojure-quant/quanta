@@ -1,6 +1,6 @@
-(ns ta.trade.signal.exit
+(ns ta.trade.backtest.exit
   (:require
-   [ta.trade.roundtrip.core :as rt]))
+   [ta.trade.roundtrip.roundtrip :as rt]))
 
 (defn- create-exit [position rule row]
   (assoc position
