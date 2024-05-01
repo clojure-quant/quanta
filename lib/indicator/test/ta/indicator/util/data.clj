@@ -27,4 +27,7 @@
 ; indicator length = 100
 (def ind-100-export-ds (get-csv-ds "INDEX_BTCUSD_1D_len_100.csv"))
 
+; arma and arma2 with length / gamma: 14 / 3 and 20 / 2.5
+(def arma-export-ds (get-csv-ds "INDEX_BTCUSD_60_arma_14_3 20_2.5_a2rma_14_3 20_2.5.csv"))
+
 (def compress-ds (get-csv-ds "compress.csv"))

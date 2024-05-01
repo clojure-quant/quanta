@@ -2,7 +2,7 @@
   (:require [clojure.test :refer :all]
             [ta.indicator.util.fuzzy :refer [all-fuzzy= nthrest-fuzzy= fuzzy=]]
             [ta.indicator.util.ta4j :as ta4j]
-            [ta.indicator.util.data :refer [ds ind-100-export-ds]]
+            [ta.indicator.util.data :refer [ds ind-100-export-ds arma-export-ds]]
             [ta.indicator :as ind]))
 
 ;; TESTS
@@ -94,7 +94,7 @@
        (let [v1 (nth l1 i)
              v2 (nth l2 i)]
          (if (not (fuzzy= tol v1 v2))
-           (println "!= at index:" i ", v1:" v1 "v2:" v2)))))
+           (println "!= at index:" i ", v1:" v1 "v2:" v2 "diff" (- v1 v2))))))
 
 
    (print-diff (drop 10 (:lma ind-100-export-ds))
@@ -116,6 +116,29 @@
    (print-diff (:ehlers-gaussian ind-100-export-ds)
                (ind/ehlers-gaussian 100 (:close ind-100-export-ds))
                0.00000001)
+
+   (ind/arma 3 (:close ds) 3)
+
+   (print-diff (:arma14 arma-export-ds)
+               (ind/arma 14 (:close arma-export-ds) 3)
+               0.00000001)
+
+   (print-diff (:arma20 arma-export-ds)
+               (ind/arma 20 (:close arma-export-ds) 2.5)
+               0.00000001)
+
+   (print-diff (:a2rma-14 arma-export-ds)
+               (ind/a2rma 14 (:close arma-export-ds) 3)
+               0.00000001)
+
+
+   (print-diff (:a2rma20 arma-export-ds)
+               (ind/a2rma 21 (:close arma-export-ds) 2.5)
+               0.00000001)
+
+   (nth (:close ds) 0)
+
+   (ind/a2rma 3 (:close ds) 3)
 
 
    (vec (:lma ind-100-export-ds))
