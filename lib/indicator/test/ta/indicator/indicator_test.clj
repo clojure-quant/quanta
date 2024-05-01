@@ -118,6 +118,7 @@
                0.00000001)
 
    (ind/arma 3 (:close ds) 3)
+   (ind/a2rma 3 (:close ds) 3)
 
    (print-diff (:arma14 arma-export-ds)
                (ind/arma 14 (:close arma-export-ds) 3)
@@ -131,15 +132,11 @@
                (ind/a2rma 14 (:close arma-export-ds) 3)
                0.00000001)
 
-
-   (print-diff (:a2rma20 arma-export-ds)
-               (ind/a2rma 21 (:close arma-export-ds) 2.5)
+   (print-diff (:a2rma-20 arma-export-ds)
+               (ind/a2rma 20 (:close arma-export-ds) 2.5)
                0.00000001)
 
    (nth (:close ds) 0)
-
-   (ind/a2rma 3 (:close ds) 3)
-
 
    (vec (:lma ind-100-export-ds))
    (vec (ind/lma 100 (:close ind-100-export-ds)))
