@@ -141,11 +141,28 @@
          (reduce or-fn false)
          not)))
 
+(defn set-close-time [dt]
+  (-> dt
+      (t/date)
+      (t/at (t/time "23:59:59"))
+      (t/in "UTC")
+      (t/instant)))
+
+(defn set-close-time-vec [dt-vec]
+  (map set-close-time dt-vec))
+
+(defn set-daily-time [{:keys [asset calendar] :as opts} ds]
+  (let [frequency (second calendar)]
+    (if (= frequency :d)
+      (tc/update-columns ds {:date set-close-time-vec})
+      ds)))
+
 (defn consolidate-datasets [opts range datasets]
   (if (all-ds-valid datasets)
     (->> datasets
          (apply tc/concat)
-         (sort-ds))
+         (sort-ds)
+         (set-daily-time opts))
     (nom/fail ::consolidate-datasets {:message "paged request failed!"
                                       :opts opts
                                       :range range})))

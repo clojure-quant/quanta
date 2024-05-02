@@ -94,6 +94,14 @@
     (info "overview tx: " tx)
     (d/transact conn [tx])))
 
+(defn remove-asset [conn {:keys [asset calendar] :as opts}]
+  (let [[market interval] calendar
+        id (find-id conn opts)]
+    (info "removing overview-db asset: " asset " " calendar " db-id: " id)
+    (d/transact
+     conn
+     {:tx-data [[:db/retractEntity id]]})))
+
 (comment
   (def conn (start-overview-db "/tmp/datahike-overview"))
   conn

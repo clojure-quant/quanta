@@ -1,7 +1,8 @@
 (ns ta.trade.backtest.from-position
   (:require
    [tablecloth.api :as tc]
-   [ta.indicator.helper :refer [indicator]]))
+   [ta.indicator.helper :refer [indicator]]
+   [ta.trade.backtest.entry :refer [positionsize]]))
 
 (defn- new-signal [signal]
   (case signal
@@ -10,7 +11,7 @@
     :flat :flat
     nil))
 
-(defn signal-action []
+(defn signal-action [size-rule]
   (indicator
    [idx (volatile! 0)
     position (volatile! :flat)
@@ -18,7 +19,7 @@
     entry (volatile! {:side :flat
                       :entry-idx 0
                       :id 1})]
-   (fn [[signal date price]]
+   (fn [[signal date price asset]]
      (let [prior-position @position
            new-position (or (new-signal signal) prior-position)
            chg? (not (= new-position prior-position))
@@ -40,26 +41,36 @@
          (vreset! entry {:id @id
                          :entry-idx @idx
                          :side new-position
+                         :qty (positionsize size-rule price)
+                         :asset asset
                          :entry-date date
                          :entry-price price}))
        (vswap! idx inc)
        (vreset! position new-position)
        result))))
 
-(defn signal->roundtrips [signal-ds]
-  (assert (:signal signal-ds) "to create roundtrips :signal column needs to be present!")
-  (assert (:date  signal-ds) "to create roundtrips :date column needs to be present!")
-  (assert (:close  signal-ds) "to create roundtrips :close column needs to be present!")
-  (let [n (tc/row-count signal-ds)
-        fun (signal-action)
-        signal (:signal signal-ds)
-        date (:date signal-ds)
-        close (:close signal-ds)
-        vec (fn [idx]
-              [(signal idx) (date idx) (close idx)])
-        map-of-vecs (map vec (range n))
-        roundtrips (into [] fun map-of-vecs)]
-    (tc/dataset roundtrips)))
+(defn signal->roundtrips
+  "returns roundtrips from :signal column of ds
+   size-rule default: [:fixed-amount 100000] 
+   could be also: [:fixed-qty 3.1]"
+  ([signal-ds]
+   (signal->roundtrips signal-ds [:fixed-amount 100000]))
+  ([signal-ds size-rule]
+   (assert (:signal signal-ds) "to create roundtrips :signal column needs to be present!")
+   (assert (:date  signal-ds) "to create roundtrips :date column needs to be present!")
+   (assert (:close  signal-ds) "to create roundtrips :close column needs to be present!")
+   (assert (:asset  signal-ds) "to create roundtrips :asset column needs to be present!")
+   (let [n (tc/row-count signal-ds)
+         fun (signal-action size-rule)
+         signal (:signal signal-ds)
+         date (:date signal-ds)
+         close (:close signal-ds)
+         asset (:asset signal-ds)
+         vec (fn [idx]
+               [(signal idx) (date idx) (close idx) (asset idx)])
+         map-of-vecs (map vec (range n))
+         roundtrips (into [] fun map-of-vecs)]
+     (tc/dataset roundtrips))))
 
 (comment
 

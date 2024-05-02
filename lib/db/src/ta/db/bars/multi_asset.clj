@@ -1,5 +1,6 @@
 (ns ta.db.bars.multi-asset
   (:require
+   [taoensso.timbre :as timbre :refer [debug info warn error]]
    [de.otto.nom.core :as nom]
    [tick.core :as t]
    [tablecloth.api :as tc]
@@ -16,24 +17,37 @@
 (defn- align-to-calendar2 [ds-bars ds-cal]
   (align/align-to-calendar ds-cal ds-bars))
 
+(defn- debug-ds [ds]
+  (info "aligned ds: " ds)
+  ds)
+
 (defn load-aligned [bardb {:keys [asset] :as opts} window ds-cal]
   (nom/let-nom> [ds-bars (b/get-bars bardb opts window)]
                 (-> ds-bars
                     (tc/set-dataset-name asset)
+                    ;debug-ds
                     (align-to-calendar2 ds-cal)
+                    ;debug-ds
                     (align/fill-missing-close)
                     (tc/add-column :asset asset))))
 
 (defn load-aligned-assets [bardb opts assets cal-seq]
-  (let [window (calendar-seq->window cal-seq)
-        date-ds (calendar-seq->date-ds cal-seq)
-        load-asset (fn [asset]
-                     [asset (load-aligned bardb (assoc opts :asset asset) window date-ds)])]
-    (->> (map load-asset assets)
-         (into {}))))
+  (try
+    (let [window (calendar-seq->window cal-seq)
+          date-ds (calendar-seq->date-ds cal-seq)
+          load-asset (fn [asset]
+                       [asset (load-aligned bardb (assoc opts :asset asset) window date-ds)])]
+      (->> (map load-asset assets)
+           (into {})))
+    (catch Exception ex
+      (error "exception: " ex)
+      (nom/fail ::load-aligned-bars {}))))
 
 (defn is-valid? [result asset]
-  (->  result (get asset) nom/anomaly? not))
+  (if (nom/anomaly? result)
+    false
+    (let [ds (get result asset)]
+      (->  ds  nom/anomaly? not))))
 
 (comment
   (require '[modular.system])

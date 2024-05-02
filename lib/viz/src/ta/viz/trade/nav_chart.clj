@@ -4,8 +4,8 @@
 
 (defn nav-chart [roundtrip-ds]
   (let [cols [:exit-date :cum-ret-volume]
-        spec {:width "800" ;"100%"
-              :height "600" ;"100%"
+        spec {:width "700"
+              :height "550"
               :description "NAV"
               :mark "line"
               :encoding  {:y {:field :cum-ret-volume

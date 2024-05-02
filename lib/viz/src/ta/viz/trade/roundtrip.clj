@@ -4,14 +4,14 @@
 
 (def default-spec
   {:class "table-head-fixed padding-sm table-blue table-striped table-hover"
-   :style {:width "1000px"
-           :height "400px"
+   :style {:width "100%" ;"1000px"
+           :height "100%" ;"400px"
            :border "1px solid blue"}
    :columns [{:path :entry-date :format 'ta.viz.trade.format/fmt-yyyymmdd :header "dt-e"}
-             {:path :asset :header "asset" :max-width 50}
-             {:path :side :header "side" :max-width 50}
-             {:path :qty :header "qty" :max-width 50 :attrs 'ta.viz.trade.format/align-right}
-             {:path :entry-price :header "px-e" :max-width 50 :attrs 'ta.viz.trade.format/align-right}
+             {:path :asset :header "asset"}
+             {:path :side :header "side"}
+             {:path :qty :header "qty" :attrs 'ta.viz.trade.format/align-right :format 'ta.viz.trade.format/round-digit-1}
+             {:path :entry-price :header "px-e"  :attrs 'ta.viz.trade.format/align-right}
              {:path :entry-vol :format 'ta.viz.trade.format/round-digit-0 :header "vol-e" :attrs 'ta.viz.trade.format/align-right}
              {:path :exit-date :format 'ta.viz.trade.format/fmt-yyyymmdd :header "dt-x"}
              {:path :exit-price :header "px-x" :max-width 50 :attrs 'ta.viz.trade.format/align-right}

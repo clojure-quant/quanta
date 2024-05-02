@@ -1,4 +1,4 @@
-(ns ta.viz.ds.metrics
+(ns ta.viz.trade.core
   (:require
    [tech.v3.dataset :as tds]
    [de.otto.nom.core :as nom]
@@ -12,23 +12,23 @@
   (into []
         (tds/mapseq-reader ds)))
 
-(defn metrics-render-spec-impl [{:keys [roundtrip-ds nav-ds metrics]}]
+(defn- roundtrip-stats-ui-impl [spec {:keys [roundtrip-ds metrics]}]
   ^{:render-fn 'ta.viz.renderfn/render-spec} ; needed for notebooks
-  {:render-fn 'ta.viz.renderfn.metrics/metrics
-   :data {:roundtrips (ds->map roundtrip-ds)
-          :nav (ds->map nav-ds)
-          :metrics metrics
-          :nav-chart (nav-chart roundtrip-ds)
+  {:render-fn 'ta.viz.trade.core/roundtrip-stats-ui
+   :data {:metrics metrics
+          :chart (nav-chart roundtrip-ds)
           :rt (roundtrip-ui {} roundtrip-ds)}
-   :spec {}})
+   :spec spec})
 
-(defn metrics-render-spec
+(defn roundtrip-stats-ui
   "returns a render specification {:render-fn :spec :data}. 
    spec must follow chart-pane format.
    The ui shows a barchart with extra specified columns 
    plotted with a specified style/position, 
    created from the bar-algo-ds"
-  [spec metrics]
-  (if (nom/anomaly? metrics)
-    (error-render-spec metrics)
-    (metrics-render-spec-impl metrics)))
+  ([metrics]
+   (roundtrip-stats-ui {} metrics))
+  ([spec metrics]
+   (if (nom/anomaly? metrics)
+     (error-render-spec metrics)
+     (roundtrip-stats-ui-impl spec metrics))))
