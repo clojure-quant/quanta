@@ -1,10 +1,10 @@
-(ns quanta.notebook.trade-entry-exit
+(ns quanta.notebook.docs.trade-entry-exit
   (:require
    [tick.core :as t]
    [tablecloth.api :as tc]
    [ta.trade.backtest.from-entry :refer [entry-signal->roundtrips]]
-   [ta.trade.roundtrip.core :refer [metrics]]
-   [ta.viz.ds.metrics :refer [metrics-render-spec-impl]]))
+   [ta.trade.roundtrip.core :refer [roundtrip-stats]]
+   [ta.viz.trade.core :refer [roundtrip-stats-ui]]))
 
 (def ds (tc/dataset {:date (repeatedly 6 #(t/instant))
                      :close [100.0 104.0 106.0 103.0 102.0 108.0]
@@ -24,6 +24,6 @@ ds
 
 rts
  
-(-> (metrics rts)
-    (metrics-render-spec-impl)
+(-> (roundtrip-stats rts)
+    (roundtrip-stats-ui)
  )

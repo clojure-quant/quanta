@@ -1,4 +1,4 @@
-(ns quanta.notebook.trade-stats
+(ns quanta.notebook.docs.trade-stats
   (:require
    [tablecloth.api :as tc]
    [ta.trade.roundtrip.metrics :as m]))

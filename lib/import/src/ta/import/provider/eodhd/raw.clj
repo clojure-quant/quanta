@@ -1,9 +1,7 @@
 (ns ta.import.provider.eodhd.raw
   (:require
-   [clojure.string :as str]
    [clojure.set]
    [taoensso.timbre :refer [info warn error]]
-   [clojure.edn :as edn]
    [cheshire.core :as cheshire] ; JSON Encoding
    [de.otto.nom.core :as nom]
    [ta.import.helper :refer [str->float http-get]]
@@ -51,6 +49,9 @@
 (defn get-exchange-tickers [api-token exchange-code]
   (make-request api-token (str "exchange-symbol-list/" exchange-code) {}))
 
+(defn warning [result]
+  (-> result last :warning))
+
 (comment
   (def d (get-bars "65f0ad82c56400.56029279"
                    "MCD.US"
@@ -58,5 +59,14 @@
                    "2024-03-15"))
 
   d
+
+  (require '[clojure.pprint :refer [print-table]])
+
+  (->> (get-bars "65f0ad82c56400.56029279"
+                 "MCD.US"
+                 "2020-01-01"
+                 "2024-03-15")
+       warning)
+
 ;  
   )

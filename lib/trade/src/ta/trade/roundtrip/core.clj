@@ -8,7 +8,7 @@
    [ta.trade.roundtrip.nav.metrics :refer [calc-nav-metrics]]
    [ta.trade.roundtrip.nav.grouped :refer [grouped-nav]]))
 
-(defn metrics-impl [roundtrip-ds]
+(defn- roundtrip-stats-impl [roundtrip-ds]
   (let [vr (validate-roundtrips (tds/mapseq-reader roundtrip-ds))]
     (if (nom/anomaly? vr)
       vr
@@ -21,9 +21,9 @@
                    :nav nav-metrics}
          :nav-ds nav-ds}))))
 
-(defn metrics [roundtrip-ds]
+(defn roundtrip-stats [roundtrip-ds]
   (try
-    (metrics-impl roundtrip-ds)
+    (roundtrip-stats-impl roundtrip-ds)
     (catch Exception ex
       (nom/fail ::viz-calc {:message "metrics calc exception!"
                             :location :metrics

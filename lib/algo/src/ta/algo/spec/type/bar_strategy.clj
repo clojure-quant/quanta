@@ -47,9 +47,8 @@
   (assert algo)
   (let [algo-fn (chain/make-chain algo)
         load-fn (create-trailing-bar-loader spec)]
-    (assert algo-fn)
+    (assert algo-fn (str "could not compile algo-fn: " algo))
     (fn [env _spec time]
-       ;(println "calculating barstrategy for time: " time)
       (when time
         (let [ds-bars (load-fn env spec time)]
           (if (nom/anomaly? ds-bars)

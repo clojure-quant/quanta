@@ -44,7 +44,7 @@
       ))
 
 (defn error? [body]
-  (-> body first :warning))
+  (-> body last :warning))
 
 (defn get-bars-eodhd [api-token {:keys [asset calendar] :as opts} {:keys [start end] :as window}]
   (warn "get-bars: " opts window)

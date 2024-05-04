@@ -198,6 +198,10 @@
       (subtract-days n)
       ;(t/date)
       ))
+(defn fmt-yyyymmdd [dt]
+  (if dt
+    (t/format (t/formatter "YYYY-MM-dd")  (t/zoned-date-time dt))
+    ""))
 
 ; *****************************************************************************
 (comment
@@ -300,6 +304,9 @@
          \"2021-11-03T00:00:00.000000001\"]")
 
 ;java.time.LocalDateTime
+
+  (-> (t/instant)
+      (fmt-yyyymmdd))
 
 ;
   )

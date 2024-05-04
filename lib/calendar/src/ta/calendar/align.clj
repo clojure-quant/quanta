@@ -1,6 +1,5 @@
 (ns ta.calendar.align
   (:require
-   [taoensso.timbre :refer [trace debug info warn error]]
    [tablecloth.api :as tc]
    [tech.v3.datatype.argops :as argops]
    [tech.v3.tensor :as dtt]))

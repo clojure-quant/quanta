@@ -30,7 +30,7 @@
     :pl-u (vec-const size 0.0)
     :pl-r (vec-const size 0.0)}))
 
-(defn trade-stats [ds-bars {:keys [date-entry date-exit qty]}]
+(defn trade-stats [ds-bars {:keys [date-entry date-exit]}]
   (let [ds-trade (filter-range ds-bars {:start date-entry :end date-exit})]
     (tc/add-columns ds-trade
                     {:position/trades-open
@@ -42,8 +42,7 @@
 
 (defn trade-unrealized-effect [ds-eff idxs-win price-w w#
                                {:keys [qty side
-                                       entry-price entry-date
-                                       exit-price exit-date] :as trade}]
+                                       entry-price entry-date] :as trade}]
   ;(info "calculate trade-un-realized..")
   (let [long? (= :long side)
         qty2 (if long? (+ 0.0 qty) (- 0.0 qty))
@@ -86,13 +85,15 @@
                             entry-date exit-date]
                      :as trade}]
   (assert entry-date "trade does not have entry-dt")
-  ;(assert exit-date "trade does not have entry-dt")
+  ;(assert exit-date "trade does not have exit-dt")
   (assert side "trade does not have side")
   (assert qty "trade does not have qty")
   ;(info "calculating trade-effect " trade)
   (let [full# (tc/row-count ds-bars)
         ds-eff (no-effect full#)
-        warnings (atom [])
+        warnings (atom (if has-series?
+                         []
+                         [(assoc trade :warning :no-bars)]))
         idxs-win (cond
                    ; open trade
                    (nil? exit-date)
@@ -122,7 +123,9 @@
             ds-x (tc/select-rows ds-bars idxs-exit)
             x# (tc/row-count ds-x)]
         (if (= x# 0)
-          (do (warn "cannot calculate REALIZED effect for trade: " trade)
+          (do (warn "cannot set REALIZED effect for trade: " trade)
+              (warn "exit date: " exit-date)
+              (warn "date-fd: " (:date ds-bars))
               (swap! warnings conj (assoc trade :warning :realized)))
           (trade-realized-effect ds-eff idxs-exit trade))))
     ; return
@@ -152,6 +155,18 @@
   (let [effects (map #(trade-effect bar-ds has-series? %) trades)]
     (effects-sum effects)))
 
+(defn add-days [dt-inst days]
+  (-> (t/>> dt-inst (t/new-duration days :days))
+      ;t/inst) ; casting to int is required, otherwise it returns an instance.
+      ))
+
+(defn subtract-days [dt-inst days]
+  ; (t/+ due (t/new-period 1 :months)) this does not work
+  ; https://github.com/juxt/tick/issues/65
+  (-> (t/<< dt-inst (t/new-duration days :days))
+      ;t/inst
+) ; casting to int is required, otherwise it returns an instance.
+  )
 (defn portfolio [bardb trades {:keys [calendar] :as opts}]
   (let [assets (->> trades
                     (map :asset)
@@ -160,7 +175,7 @@
         start-dt (apply t/min (map :entry-date trades))
         end-dt (apply t/max (->> (map :exit-date trades)
                                  (remove nil?)))
-        window {:start start-dt :end end-dt}
+        window {:start (subtract-days start-dt 3) :end (add-days end-dt 3)}
         cal-seq (cal/fixed-window calendar window)
         date-ds (calendar-seq->date-ds cal-seq)
         l (tc/row-count date-ds)
@@ -222,17 +237,6 @@
   (in-range? entry-date exit-date (parse-date "2022-03-08"))
   (in-range? entry-date exit-date (parse-date "2022-03-07"))
 
-  (def trade1 {:asset "EUR/USD"
-               :side :long
-               :qty 1000.0
-               :entry-date (t/instant "2023-03-09T17:00:00Z")
-               :entry-price 94.78
-               :exit-date (t/instant "2023-03-16T17:00:00Z")
-               :exit-price 96.92})
-
-  (def trades-test
-    [trade1])
-
   (require '[modular.system])
   (def bardb (modular.system/system :duckdb ;:bardb-dynamic
                                     ))
@@ -244,19 +248,23 @@
                           {:start (t/instant "2023-03-06T20:30:00Z")
                            :end (t/instant "2023-03-16T20:30:00Z")}))
 
-  (-> (effects-asset
-       eurusd
-       true
-       trades-test)
+  eurusd
+
+  (def rts [{:asset "EUR/USD"
+             :side :long
+             :qty 1000000.0
+             :entry-date (t/instant "2023-03-09T20:30:00Z")
+             :entry-price 1.1078
+             :exit-date (t/instant "2023-03-16T20:30:00Z")
+             :exit-price 1.1292}])
+
+  (-> (effects-asset eurusd true rts)
       :eff)
 
-  (trade-effect eurusd true trade1)
+  (trade-effect eurusd true (first rts))
 
-  (effects-sum [(trade-effect eurusd true trade1)
-                (trade-effect eurusd true trade1)])
-
-  (portfolio bardb trades-test {:calendar [:forex :d]
-                                :import :kibot})
+  (effects-sum [(trade-effect eurusd true (first rts))
+                (trade-effect eurusd true (first rts))])
 
 ; 
   )
