@@ -24,6 +24,9 @@
 (defn get-csv-ds [csv-name]
   (tc/dataset (str "test/ta/indicator/csv/" csv-name) {:key-fn keyword}))
 
+; bybit spot
+(def bybit-spot-btc-daily (get-csv-ds "BYBIT_SPOT_BTCUSDT_1D.csv"))
+
 ; indicator length = 100
 (def ind-100-export-ds (get-csv-ds "INDEX_BTCUSD_1D_len_100.csv"))
 

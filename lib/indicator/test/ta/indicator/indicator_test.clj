@@ -2,7 +2,7 @@
   (:require [clojure.test :refer :all]
             [ta.indicator.util.fuzzy :refer [all-fuzzy= nthrest-fuzzy= fuzzy=]]
             [ta.indicator.util.ta4j :as ta4j]
-            [ta.indicator.util.data :refer [ds ind-100-export-ds arma-export-ds]]
+            [ta.indicator.util.data :refer [ds] :as data]
             [ta.indicator :as ind]))
 
 ;; TESTS
@@ -52,35 +52,35 @@
   (is (nthrest-fuzzy=
         0.00000001
         100
-        (:lma ind-100-export-ds)
-        (ind/lma 100 (:close ind-100-export-ds)))))
+        (:lma data/ind-100-export-ds)
+        (ind/lma 100 (:close data/ind-100-export-ds)))))
 
 (deftest chebyshev1-test
   (is (nthrest-fuzzy=
         0.00000001
         110
-        (vec (:chebyshev1 ind-100-export-ds))
-        (ind/chebyshev1 100 (:close ind-100-export-ds)))))
+        (vec (:chebyshev1 data/ind-100-export-ds))
+        (ind/chebyshev1 100 (:close data/ind-100-export-ds)))))
 
 (deftest chebyshev2-test
   (is (all-fuzzy=
         0.0001
-        (vec (:chebyshev2 ind-100-export-ds))
-        (ind/chebyshev2 100 (:close ind-100-export-ds)))))
+        (vec (:chebyshev2 data/ind-100-export-ds))
+        (ind/chebyshev2 100 (:close data/ind-100-export-ds)))))
 
 (deftest ehlers-gaussian-test
   (is (nthrest-fuzzy=
         0.00000001
         150
-        (vec (:ehlers-gaussian ind-100-export-ds))
-        (ind/ehlers-gaussian 100 (:close ind-100-export-ds)))))
+        (vec (:ehlers-gaussian data/ind-100-export-ds))
+        (ind/ehlers-gaussian 100 (:close data/ind-100-export-ds)))))
 
 (deftest ehlers-supersmoother-test
   (is (nthrest-fuzzy=
         0.00000001
         250
-        (vec (:ehlers-supersmoother ind-100-export-ds))
-        (ind/ehlers-supersmoother 100 (:close ind-100-export-ds)))))
+        (vec (:ehlers-supersmoother data/ind-100-export-ds))
+        (ind/ehlers-supersmoother 100 (:close data/ind-100-export-ds)))))
 
 ;
 
@@ -97,50 +97,50 @@
            (println "!= at index:" i ", v1:" v1 "v2:" v2 "diff" (- v1 v2))))))
 
 
-   (print-diff (drop 10 (:lma ind-100-export-ds))
-               (ind/lma 100 (drop 10 (:close ind-100-export-ds)))
+   (print-diff (drop 10 (:lma data/ind-100-export-ds))
+               (ind/lma 100 (drop 10 (:close data/ind-100-export-ds)))
                0.00000001)
 
-   (print-diff (:chebyshev1 ind-100-export-ds)
-               (ind/chebyshev1 100 (:close ind-100-export-ds))
+   (print-diff (:chebyshev1 data/ind-100-export-ds)
+               (ind/chebyshev1 100 (:close data/ind-100-export-ds))
                0.00000001)
 
-   (print-diff (:chebyshev2 ind-100-export-ds)
-               (ind/chebyshev2 100 (:close ind-100-export-ds))
+   (print-diff (:chebyshev2 data/ind-100-export-ds)
+               (ind/chebyshev2 100 (:close data/ind-100-export-ds))
                0.0001)
 
-   (print-diff (:ehlers-supersmoother ind-100-export-ds)
-               (ind/ehlers-supersmoother 100 (:close ind-100-export-ds))
+   (print-diff (:ehlers-supersmoother data/ind-100-export-ds)
+               (ind/ehlers-supersmoother 100 (:close data/ind-100-export-ds))
                0.00000001)
 
-   (print-diff (:ehlers-gaussian ind-100-export-ds)
-               (ind/ehlers-gaussian 100 (:close ind-100-export-ds))
+   (print-diff (:ehlers-gaussian data/ind-100-export-ds)
+               (ind/ehlers-gaussian 100 (:close data/ind-100-export-ds))
                0.00000001)
 
    (ind/arma 3 (:close ds) 3)
-   (ind/a2rma 3 (:close ds) 3)
+   (ind/a2rma 14 (:close data/bybit-spot-btc-daily) 3)
 
-   (print-diff (:arma14 arma-export-ds)
-               (ind/arma 14 (:close arma-export-ds) 3)
+   (print-diff (:arma14 data/arma-export-ds)
+               (ind/arma 14 (:close data/arma-export-ds) 3)
                0.00000001)
 
-   (print-diff (:arma20 arma-export-ds)
-               (ind/arma 20 (:close arma-export-ds) 2.5)
+   (print-diff (:arma20 data/arma-export-ds)
+               (ind/arma 20 (:close data/arma-export-ds) 2.5)
                0.00000001)
 
-   (print-diff (:a2rma-14 arma-export-ds)
-               (ind/a2rma 14 (:close arma-export-ds) 3)
+   (print-diff (:a2rma-14 data/arma-export-ds)
+               (ind/a2rma 14 (:close data/arma-export-ds) 3)
                0.00000001)
 
-   (print-diff (:a2rma-20 arma-export-ds)
-               (ind/a2rma 20 (:close arma-export-ds) 2.5)
+   (print-diff (:a2rma-20 data/arma-export-ds)
+               (ind/a2rma 20 (:close data/arma-export-ds) 2.5)
                0.00000001)
 
    (nth (:close ds) 0)
 
-   (vec (:lma ind-100-export-ds))
-   (vec (ind/lma 100 (:close ind-100-export-ds)))
-   (ind/ehlers-supersmoother 100 (:close ind-100-export-ds))
-   (ind/ehlers-gaussian 100 (:close ind-100-export-ds))
+   (vec (:lma data/ind-100-export-ds))
+   (vec (ind/lma 100 (:close data/ind-100-export-ds)))
+   (ind/ehlers-supersmoother 100 (:close data/ind-100-export-ds))
+   (ind/ehlers-gaussian 100 (:close data/ind-100-export-ds))
  ; 
   )
