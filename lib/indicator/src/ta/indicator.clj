@@ -6,7 +6,7 @@
    [tech.v3.dataset.rolling :as r]
    [ta.indicator.rolling :as roll]
    [tablecloth.api :as tc]
-   [ta.indicator.helper :refer [indicator]]
+   [ta.indicator.helper :refer [indicator nil-or-nan?]]
    [ta.indicator.signal :refer [upward-change downward-change]]
    [ta.indicator.returns :refer [diff-2col diff-n diff]]
    [ta.helper.ds :refer [has-col]]
@@ -145,71 +145,82 @@
       (fn [x]
         (if (< @i (count er))
           (let [cur-er (nth er @i)
-                prev-a-nonzero (if @prev-a @prev-a x)
+                prev-a-nonzero (if (not (nil-or-nan? @prev-a))
+                                 @prev-a
+                                 x)
                 a (+ (* cur-er x)
                      (* (- 1 cur-er) prev-a-nonzero))]
             (vreset! prev-a a)
-            (vreset! i (inc @i))
-            a))))))
+            (println "a2ma helper - i:" @i "cur-er:" cur-er "x:" x "prev-a:" @prev-a)))
+        (vswap! i inc)
+        @prev-a))))
 
 (defn arma
   "Autonomous Recursive Moving Average (ARMA)
    https://www.tradingview.com/script/AnmTY0Q3-Autonomous-Recursive-Moving-Average/"
-  [n v g]                                               ; TODO: zerolag flag
-  (let [tfn (indicator
-              [values (volatile! PersistentQueue/EMPTY)
-               dsum (volatile! 0.0)]
-              (fn [i]
-                ; drop last
-                (when (>= (count @values) n)
-                  (vswap! values pop))
-                ; add next
-                (let [x (nth v i)
-                      xprevn (if (>= i (dec n))
-                               (nth v (- i (dec n)))
-                               (nth v 0))
-                      prev (last @values)
-                      prev (if prev prev x)
-                      diff (Math/abs (- xprevn prev))
-                      _ (vswap! dsum + diff)
-                      d (if (> i 0)
-                          (/ @dsum (* i g))
-                          0.0)
-                      ts (conj @values (adjust-ma-src x d prev))
-                      next (last (sma {:n n}
-                                    (sma {:n n} ts)))]
-                  ;(println (vec ts))
-                  (println "i:" i "x:" x "xprevn:" xprevn "diff: " diff "dsum" @dsum)
-                  (vswap! values conj next)
-                  next)))]
-    (into [] tfn (range 0 (count v)))))
+  ([n v]
+   (arma n v 3))
+  ([n v g]                                               ; TODO: zerolag flag
+   (let [tfn (indicator
+               [values (volatile! PersistentQueue/EMPTY)
+                dsum (volatile! 0.0)]
+               (fn [i]
+                 ; drop last
+                 (when (>= (count @values) n)
+                   (vswap! values pop))
+                 ; add next
+                 (let [x (nth v i)
+                       xprevn (if (>= i (dec n))
+                                (nth v (- i (dec n)))
+                                (nth v 0))
+                       prev (last @values)
+                       prev (if prev prev x)
+                       diff (Math/abs (- xprevn prev))
+                       _ (vswap! dsum + diff)
+                       d (if (> i 0)
+                           (/ @dsum (* i g))
+                           0.0)
+                       ts (conj @values (adjust-ma-src x d prev))
+                       next (last (sma {:n n}
+                                       (sma {:n n} ts)))]
+                   ;(println (vec ts))
+                   ;(println "i:" i "x:" x "xprevn:" xprevn "diff: " diff "dsum" @dsum)
+                   (vswap! values conj next)
+                   next)))]
+     (into [] tfn (range 0 (count v))))))
 
 (defn a2rma
   "Adaptive Autonomous Recursive Moving Average (A2RMA)
    https://www.tradingview.com/script/4bI1zjc6-Adaptive-Autonomous-Recursive-Moving-Average/"
-  [n v g]
-  (let [ama1 (ama-tfn n v)
-        ama2 (ama-tfn n v)
-        tfn (indicator
-              [prev-ma (volatile! nil)
-               dsum (volatile! 0.0)]
-              (fn [i]
-                ;(println "i:" i "x:" (nth v i) "prev-ma" @prev-ma)
-                (let [x (nth v i)
-                      prev-ma-nz (if @prev-ma @prev-ma x)
-                      sum (+ @dsum (Math/abs (- x prev-ma-nz)))
-                      d (if (> i 0)
-                          (/ sum (* i g))
-                          0.0)
-                      y (adjust-ma-src x d prev-ma-nz)
-                      next-ma (->> (reduce ama1 [y])
-                                   (vector)
-                                   (reduce ama2))]
-                  ;(println "y:" y "next-ma:" next-ma)
-                  (vreset! prev-ma next-ma)
-                  (vreset! dsum sum)
-                  next-ma)))]
-    (into [] tfn (range 0 (count v)))))
+  ([n v]
+   (a2rma n v 3))
+  ([n v g]
+   (let [ama1 (ama-tfn n v)
+         ama2 (ama-tfn n v)
+         tfn (indicator
+               [prev-ma (volatile! nil)
+                dsum (volatile! 0.0)]
+               (fn [i]
+                 ;(println "i:" i "x:" (nth v i) "prev-ma:" @prev-ma "dsum: " @dsum)
+                 (let [x (nth v i)
+                       prev-ma-nz (if (not (nil-or-nan? @prev-ma))
+                                    @prev-ma
+                                    x)
+                       sum (+ @dsum (Math/abs (- x prev-ma-nz)))
+                       d (if (> i 0)
+                           (/ (* sum g) i)
+                           0.0)
+                       y (adjust-ma-src x d prev-ma-nz)
+                       a1 (into [] ama1 [y])
+                       a2 (into [] ama2 a1)
+                       next-ma (if (>= i n)
+                                 (first a2)
+                                 nil)]
+                   (vreset! prev-ma next-ma)
+                   (vreset! dsum d)
+                   (println "i:" i "x:" (nth v i) "prev-ma:" @prev-ma "sum:" sum "dsum: "@dsum "y:" y "a-i:" a1 "a-o:" a2)
+                   next-ma)))]
+     (into [] tfn (range 0 (count v))))))
 
 (defn- ehlers-tfn
   [{:keys [c1 c2 c3]}]
