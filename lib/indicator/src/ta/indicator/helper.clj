@@ -18,6 +18,9 @@
                r# (xf# result# r#))
              result#)))))))
 
+(defn nil-or-nan? [n]
+  (or (nil? n) (NaN? n)))
+
 (comment
 
   (defn field-xf [f]

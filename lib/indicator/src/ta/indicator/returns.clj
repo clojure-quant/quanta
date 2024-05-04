@@ -1,10 +1,8 @@
 (ns ta.indicator.returns
   (:require
    [tech.v3.datatype :as dtype]
-   [tech.v3.datatype.functional :as dfn]))
-
-(defn- nil-or-nan? [n]
-  (or (nil? n) (NaN? n)))
+   [tech.v3.datatype.functional :as dfn]
+   [ta.indicator.helper :refer [nil-or-nan?]]))
 
 (defn diff
   "returns a vector of the difference between subsequent values.
