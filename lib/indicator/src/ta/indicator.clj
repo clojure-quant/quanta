@@ -131,29 +131,14 @@
       (- x d)
       prev)))
 
-(defn- ama-tfn
+(defn- ama-fn
   "a2ma helper"
-  [n v]
-  (let [diff-n (dfn/abs (diff-n n v))
-        diff-1 (dfn/abs (diff v))
-        trailing-sum (roll/rolling-window-reduce-zero-edge r/sum n diff-1)
-        er (dfn// diff-n
-                  trailing-sum)]
-    (indicator
-      [prev-a (volatile! nil)
-       i (volatile! 0)]
-      (fn [x]
-        (if (< @i (count er))
-          (let [cur-er (nth er @i)
-                prev-a-nonzero (if (not (nil-or-nan? @prev-a))
-                                 @prev-a
-                                 x)
-                a (+ (* cur-er x)
-                     (* (- 1 cur-er) prev-a-nonzero))]
-            (vreset! prev-a a)
-            (println "a2ma helper - i:" @i "cur-er:" cur-er "x:" x "prev-a:" @prev-a)))
-        (vswap! i inc)
-        @prev-a))))
+  [x er prev-a]
+  (let [prev-a-nonzero (if (nil-or-nan? prev-a)
+                         x
+                         prev-a)]
+    (+ (* er x)
+       (* (- 1 er) prev-a-nonzero))))
 
 (defn arma
   "Autonomous Recursive Moving Average (ARMA)
@@ -176,9 +161,9 @@
                        prev (last @values)
                        prev (if prev prev x)
                        diff (Math/abs (- xprevn prev))
-                       _ (vswap! dsum + diff)
+                       next-sum (vswap! dsum + diff)
                        d (if (> i 0)
-                           (/ @dsum (* i g))
+                           (/ (* next-sum g) i)
                            0.0)
                        ts (conj @values (adjust-ma-src x d prev))
                        next (last (sma {:n n}
@@ -195,31 +180,38 @@
   ([n v]
    (a2rma n v 3))
   ([n v g]
-   (let [ama1 (ama-tfn n v)
-         ama2 (ama-tfn n v)
+   (let [diff-n (dfn/abs (diff-n n v))
+         diff-1 (dfn/abs (diff v))
+         trailing-sum (roll/rolling-window-reduce-zero-edge r/sum n diff-1)
+         er (dfn// diff-n
+                   trailing-sum)
          tfn (indicator
-               [prev-ma (volatile! nil)
+               [prev-ma0 (volatile! nil)
+                prev-ma (volatile! nil)
                 dsum (volatile! 0.0)]
                (fn [i]
-                 ;(println "i:" i "x:" (nth v i) "prev-ma:" @prev-ma "dsum: " @dsum)
                  (let [x (nth v i)
-                       prev-ma-nz (if (not (nil-or-nan? @prev-ma))
-                                    @prev-ma
-                                    x)
-                       sum (+ @dsum (Math/abs (- x prev-ma-nz)))
+                       prev-ma-nz (if (nil-or-nan? @prev-ma)
+                                    x
+                                    @prev-ma)
+                       diff (Math/abs (- x prev-ma-nz))
+                       next-sum (+ @dsum diff)
                        d (if (> i 0)
-                           (/ (* sum g) i)
+                           (/ (* next-sum g) i)
                            0.0)
                        y (adjust-ma-src x d prev-ma-nz)
-                       a1 (into [] ama1 [y])
-                       a2 (into [] ama2 a1)
-                       next-ma (if (>= i n)
-                                 (first a2)
-                                 nil)]
+                       cur-er (nth er i)
+                       a0 (ama-fn y cur-er @prev-ma0)
+                       a (ama-fn a0 cur-er @prev-ma)
+                       next-ma0 (if (>= i n) a0)
+                       next-ma (if (>= i n) a)]
+                   (vreset! prev-ma0 next-ma0)
                    (vreset! prev-ma next-ma)
-                   (vreset! dsum d)
-                   (println "i:" i "x:" (nth v i) "prev-ma:" @prev-ma "sum:" sum "dsum: "@dsum "y:" y "a-i:" a1 "a-o:" a2)
-                   next-ma)))]
+                   (vreset! dsum next-sum)
+                   ;(println "i:" i "x:" (nth v i) "prev-ma:" @prev-ma "cur-er:" cur-er"dsum:" @dsum "y:" y "a0:" a0 "a:" a)
+                   (if (nil-or-nan? next-ma)
+                     0.0
+                     next-ma))))]
      (into [] tfn (range 0 (count v))))))
 
 (defn- ehlers-tfn
