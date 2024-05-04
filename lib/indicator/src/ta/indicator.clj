@@ -122,7 +122,6 @@
                                            :datatype :float64})
                                         n v))
 
-
 (defn- adjust-ma-src
   [x d prev]
   (if (> x (+ prev d))
@@ -147,31 +146,31 @@
    (arma n v 3))
   ([n v g]                                               ; TODO: zerolag flag
    (let [tfn (indicator
-               [values (volatile! PersistentQueue/EMPTY)
-                dsum (volatile! 0.0)]
-               (fn [i]
+              [values (volatile! PersistentQueue/EMPTY)
+               dsum (volatile! 0.0)]
+              (fn [i]
                  ; drop last
-                 (when (>= (count @values) n)
-                   (vswap! values pop))
+                (when (>= (count @values) n)
+                  (vswap! values pop))
                  ; add next
-                 (let [x (nth v i)
-                       xprevn (if (>= i (dec n))
-                                (nth v (- i (dec n)))
-                                (nth v 0))
-                       prev (last @values)
-                       prev (if prev prev x)
-                       diff (Math/abs (- xprevn prev))
-                       next-sum (vswap! dsum + diff)
-                       d (if (> i 0)
-                           (/ (* next-sum g) i)
-                           0.0)
-                       ts (conj @values (adjust-ma-src x d prev))
-                       next (last (sma {:n n}
-                                       (sma {:n n} ts)))]
+                (let [x (nth v i)
+                      xprevn (if (>= i (dec n))
+                               (nth v (- i (dec n)))
+                               (nth v 0))
+                      prev (last @values)
+                      prev (if prev prev x)
+                      diff (Math/abs (- xprevn prev))
+                      next-sum (vswap! dsum + diff)
+                      d (if (> i 0)
+                          (/ (* next-sum g) i)
+                          0.0)
+                      ts (conj @values (adjust-ma-src x d prev))
+                      next (last (sma {:n n}
+                                      (sma {:n n} ts)))]
                    ;(println (vec ts))
                    ;(println "i:" i "x:" x "xprevn:" xprevn "diff: " diff "dsum" @dsum)
-                   (vswap! values conj next)
-                   next)))]
+                  (vswap! values conj next)
+                  next)))]
      (into [] tfn (range 0 (count v))))))
 
 (defn a2rma
@@ -186,32 +185,32 @@
          er (dfn// diff-n
                    trailing-sum)
          tfn (indicator
-               [prev-ma0 (volatile! nil)
-                prev-ma (volatile! nil)
-                dsum (volatile! 0.0)]
-               (fn [i]
-                 (let [x (nth v i)
-                       prev-ma-nz (if (nil-or-nan? @prev-ma)
-                                    x
-                                    @prev-ma)
-                       diff (Math/abs (- x prev-ma-nz))
-                       next-sum (+ @dsum diff)
-                       d (if (> i 0)
-                           (/ (* next-sum g) i)
-                           0.0)
-                       y (adjust-ma-src x d prev-ma-nz)
-                       cur-er (nth er i)
-                       a0 (ama-fn y cur-er @prev-ma0)
-                       a (ama-fn a0 cur-er @prev-ma)
-                       next-ma0 (if (>= i n) a0)
-                       next-ma (if (>= i n) a)]
-                   (vreset! prev-ma0 next-ma0)
-                   (vreset! prev-ma next-ma)
-                   (vreset! dsum next-sum)
+              [prev-ma0 (volatile! nil)
+               prev-ma (volatile! nil)
+               dsum (volatile! 0.0)]
+              (fn [i]
+                (let [x (nth v i)
+                      prev-ma-nz (if (nil-or-nan? @prev-ma)
+                                   x
+                                   @prev-ma)
+                      diff (Math/abs (- x prev-ma-nz))
+                      next-sum (+ @dsum diff)
+                      d (if (> i 0)
+                          (/ (* next-sum g) i)
+                          0.0)
+                      y (adjust-ma-src x d prev-ma-nz)
+                      cur-er (nth er i)
+                      a0 (ama-fn y cur-er @prev-ma0)
+                      a (ama-fn a0 cur-er @prev-ma)
+                      next-ma0 (if (>= i n) a0)
+                      next-ma (if (>= i n) a)]
+                  (vreset! prev-ma0 next-ma0)
+                  (vreset! prev-ma next-ma)
+                  (vreset! dsum next-sum)
                    ;(println "i:" i "x:" (nth v i) "prev-ma:" @prev-ma "cur-er:" cur-er"dsum:" @dsum "y:" y "a0:" a0 "a:" a)
-                   (if (nil-or-nan? next-ma)
-                     0.0
-                     next-ma))))]
+                  (if (nil-or-nan? next-ma)
+                    0.0
+                    next-ma))))]
      (into [] tfn (range 0 (count v))))))
 
 (defn- ehlers-tfn
