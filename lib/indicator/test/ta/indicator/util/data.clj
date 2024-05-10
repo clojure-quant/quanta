@@ -24,13 +24,11 @@
 (defn get-csv-ds [csv-name]
   (tc/dataset (str "test/ta/indicator/csv/" csv-name) {:key-fn keyword}))
 
-; bybit spot
-(def bybit-spot-btc-daily (get-csv-ds "BYBIT_SPOT_BTCUSDT_1D.csv"))
-
 ; indicator length = 100
 (def ind-100-export-ds (get-csv-ds "INDEX_BTCUSD_1D_len_100.csv"))
 
-; arma and arma2 with length / gamma: 14 / 3 and 20 / 2.5
-(def arma-export-ds (get-csv-ds "INDEX_BTCUSD_60_arma_14_3 20_2.5_a2rma_14_3 20_2.5.csv"))
+(def arma-bybit-export-ds (get-csv-ds "BYBIT_BTCUSDT_1D_arma.csv"))
+(def a2rma-bybit-export-ds (get-csv-ds "BYBIT_BTCUSDT_1D_a2rma.csv"))
+(def arma-debug-bybit-export-ds (get-csv-ds "BYBIT_BTCUSDT_1D_arma_debug.csv"))
 
 (def compress-ds (get-csv-ds "compress.csv"))

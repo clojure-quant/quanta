@@ -122,7 +122,7 @@
                                            :datatype :float64})
                                         n v))
 
-(defn- adjust-ma-src
+(defn- adjust-src-val
   [x d prev]
   (if (> x (+ prev d))
     (+ x d)
@@ -146,31 +146,47 @@
    (arma n v 3))
   ([n v g]                                               ; TODO: zerolag flag
    (let [tfn (indicator
-              [values (volatile! PersistentQueue/EMPTY)
+              [src-d (volatile! [])
+               src-ma (volatile! [])
+               prev-mad (volatile! [])
                dsum (volatile! 0.0)]
               (fn [i]
-                 ; drop last
-                (when (>= (count @values) n)
-                  (vswap! values pop))
-                 ; add next
+                ;; drop last
+                (when (>= (count @src-d) n)
+                  (vswap! src-d #(vec (rest %))))
+                (when (>= (count @src-ma) n)
+                  (vswap! src-ma #(vec (rest %))))
+                (when (>= (count @prev-mad) n)
+                  (vswap! prev-mad #(vec (rest %))))
+                ;;
                 (let [x (nth v i)
-                      xprevn (if (>= i (dec n))
-                               (nth v (- i (dec n)))
-                               (nth v 0))
-                      prev (last @values)
-                      prev (if prev prev x)
-                      diff (Math/abs (- xprevn prev))
+                      prev (if (last @prev-mad)
+                             (last @prev-mad)
+                             x)
+                      xprevn (if (>= i n)
+                               (nth v (- i n)))
+                      diff (if xprevn
+                             (Math/abs (- xprevn prev))
+                             0.0)
                       next-sum (vswap! dsum + diff)
                       d (if (> i 0)
                           (/ (* next-sum g) i)
                           0.0)
-                      ts (conj @values (adjust-ma-src x d prev))
-                      next (last (sma {:n n}
-                                      (sma {:n n} ts)))]
-                   ;(println (vec ts))
-                   ;(println "i:" i "x:" x "xprevn:" xprevn "diff: " diff "dsum" @dsum)
-                  (vswap! values conj next)
-                  next)))]
+                      next-src-val (adjust-src-val x d prev)
+                      _ (vswap! src-d conj next-src-val)
+                      sma0 (if (>= i (dec n))
+                             (sma {:n n} @src-d))
+                      _ (if sma0
+                          (vswap! src-ma conj (last sma0)))
+                      sma1 (if (>= i (- (* 2 n) 2))
+                             (sma {:n n} @src-ma))
+                      next-ma (if (>= i (- (* 2 n) 2))
+                                (last sma1))]
+                  (vswap! prev-mad conj next-ma)
+                  next-ma
+                  (if next-ma
+                    next-ma
+                    Double/NaN))))]
      (into [] tfn (range 0 (count v))))))
 
 (defn a2rma
@@ -198,7 +214,7 @@
                       d (if (> i 0)
                           (/ (* next-sum g) i)
                           0.0)
-                      y (adjust-ma-src x d prev-ma-nz)
+                      y (adjust-src-val x d prev-ma-nz)
                       cur-er (nth er i)
                       a0 (ama-fn y cur-er @prev-ma0)
                       a (ama-fn a0 cur-er @prev-ma)
@@ -207,9 +223,8 @@
                   (vreset! prev-ma0 next-ma0)
                   (vreset! prev-ma next-ma)
                   (vreset! dsum next-sum)
-                   ;(println "i:" i "x:" (nth v i) "prev-ma:" @prev-ma "cur-er:" cur-er"dsum:" @dsum "y:" y "a0:" a0 "a:" a)
                   (if (nil-or-nan? next-ma)
-                    0.0
+                    Double/NaN
                     next-ma))))]
      (into [] tfn (range 0 (count v))))))
 
@@ -445,7 +460,7 @@
 
   (prior (:close ds))
 
-  (into [] sma2 [4 5 6 7 8 6 5 4 3])
+  (into [] (sma2 3) [4 5 6 7 8 6 5 4 3])
 
   (tr ds)
 

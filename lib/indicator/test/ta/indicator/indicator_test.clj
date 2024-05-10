@@ -3,7 +3,8 @@
             [ta.indicator.util.fuzzy :refer [all-fuzzy= nthrest-fuzzy= fuzzy=]]
             [ta.indicator.util.ta4j :as ta4j]
             [ta.indicator.util.data :refer [ds] :as data]
-            [ta.indicator :as ind]))
+            [ta.indicator :as ind]
+            [ta.indicator.helper :refer [nil-or-nan?]]))
 
 ;; TESTS
 
@@ -82,6 +83,52 @@
         (vec (:ehlers-supersmoother data/ind-100-export-ds))
         (ind/ehlers-supersmoother 100 (:close data/ind-100-export-ds)))))
 
+(deftest arma-test
+  (testing "arma"
+    (is (nthrest-fuzzy=
+          0.00000001
+          26
+          (vec (:arma14-3 data/arma-bybit-export-ds))
+          (ind/arma 14 (:close data/arma-bybit-export-ds) 3)))
+    (is (nthrest-fuzzy=
+          0.00000001
+          26
+          (vec (:arma14-2 data/arma-bybit-export-ds))
+          (ind/arma 14 (:close data/arma-bybit-export-ds) 2)))
+    (is (nthrest-fuzzy=
+          0.00000001
+          38
+          (vec (:arma20-3 data/arma-bybit-export-ds))
+          (ind/arma 20 (:close data/arma-bybit-export-ds) 3)))
+    (is (nthrest-fuzzy=
+          0.00000001
+          58
+          (vec (:arma30-2 data/arma-bybit-export-ds))
+          (ind/arma 30 (:close data/arma-bybit-export-ds) 2)))))
+
+(deftest a2rma-test
+  (testing "a2rma"
+    (is (nthrest-fuzzy=
+          0.01
+          14
+          (vec (:a2rma14-3 data/a2rma-bybit-export-ds))
+          (ind/a2rma 14 (:close data/a2rma-bybit-export-ds) 3)))
+    (is (nthrest-fuzzy=
+          0.001
+          14
+          (vec (:a2rma14-2 data/a2rma-bybit-export-ds))
+          (ind/a2rma 14 (:close data/a2rma-bybit-export-ds) 2)))
+    (is (nthrest-fuzzy=
+          0.001
+          20
+          (vec (:a2rma20-3 data/a2rma-bybit-export-ds))
+          (ind/a2rma 20 (:close data/a2rma-bybit-export-ds) 3)))
+    (is (nthrest-fuzzy=
+          0.001
+          30
+          (vec (:a2rma30-2 data/a2rma-bybit-export-ds))
+          (ind/a2rma 30 (:close data/a2rma-bybit-export-ds) 2)))))
+
 ;
 
 (comment 
@@ -93,8 +140,11 @@
      (doseq [i (range (count l1))]
        (let [v1 (nth l1 i)
              v2 (nth l2 i)]
-         (if (not (fuzzy= tol v1 v2))
-           (println "!= at index:" i ", v1:" v1 "v2:" v2 "diff" (- v1 v2))))))
+         (if (or (nil-or-nan? v1) (nil-or-nan? v2))
+           (when (not= v1 v2)
+             (println "!= at index:" i ", v1:" v1 "v2:" v2))
+           (when (not (fuzzy= tol v1 v2))
+             (println "!= at index:" i ", v1:" v1 "v2:" v2 "diff" (- v1 v2)))))))
 
 
    (print-diff (drop 10 (:lma data/ind-100-export-ds))
@@ -117,24 +167,22 @@
                (ind/ehlers-gaussian 100 (:close data/ind-100-export-ds))
                0.00000001)
 
-   (ind/arma 3 (:close ds) 3)
-   (ind/a2rma 14 (:close data/bybit-spot-btc-daily) 3)
 
-   (print-diff (:arma14 data/arma-export-ds)
-               (ind/arma 14 (:close data/arma-export-ds) 3)
+   (print-diff (:arma14-3 data/arma-bybit-export-ds)
+               (ind/arma 14 (:close data/arma-bybit-export-ds) 3)
                0.00000001)
 
-   (print-diff (:arma20 data/arma-export-ds)
-               (ind/arma 20 (:close data/arma-export-ds) 2.5)
+   (print-diff (:arma20-3 data/arma-bybit-export-ds)
+               (ind/arma 20 (:close data/arma-bybit-export-ds) 3)
                0.00000001)
 
-   (print-diff (:a2rma-14 data/arma-export-ds)
-               (ind/a2rma 14 (:close data/arma-export-ds) 3)
-               0.00000001)
+   (print-diff (:a2rma14-3 data/a2rma-bybit-export-ds)
+               (ind/a2rma 14 (:close data/a2rma-bybit-export-ds) 3)
+               0.01)
 
-   (print-diff (:a2rma-20 data/arma-export-ds)
-               (ind/a2rma 20 (:close data/arma-export-ds) 2.5)
-               0.00000001)
+   (print-diff (:a2rma20-3 data/a2rma-bybit-export-ds)
+               (ind/a2rma 20 (:close data/a2rma-bybit-export-ds) 3)
+               0.001)
 
    (nth (:close ds) 0)
 
@@ -142,5 +190,6 @@
    (vec (ind/lma 100 (:close data/ind-100-export-ds)))
    (ind/ehlers-supersmoother 100 (:close data/ind-100-export-ds))
    (ind/ehlers-gaussian 100 (:close data/ind-100-export-ds))
+   (ind/a2rma 14 (:close data/arma-bybit-export-ds) 3)
  ; 
   )
