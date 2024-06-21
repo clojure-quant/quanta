@@ -27,4 +27,8 @@
 ; indicator length = 100
 (def ind-100-export-ds (get-csv-ds "INDEX_BTCUSD_1D_len_100.csv"))
 
+(def arma-bybit-export-ds (get-csv-ds "BYBIT_BTCUSDT_1D_arma.csv"))
+(def a2rma-bybit-export-ds (get-csv-ds "BYBIT_BTCUSDT_1D_a2rma.csv"))
+(def arma-debug-bybit-export-ds (get-csv-ds "BYBIT_BTCUSDT_1D_arma_debug.csv"))
+
 (def compress-ds (get-csv-ds "compress.csv"))

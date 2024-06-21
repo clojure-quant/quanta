@@ -6,9 +6,9 @@
    [tech.v3.dataset.rolling :as r]
    [ta.indicator.rolling :as roll]
    [tablecloth.api :as tc]
-   [ta.indicator.helper :refer [indicator]]
+   [ta.indicator.helper :refer [indicator nil-or-nan?]]
    [ta.indicator.signal :refer [upward-change downward-change]]
-   [ta.indicator.returns :refer [diff-2col]]
+   [ta.indicator.returns :refer [diff-2col diff-n diff]]
    [ta.helper.ds :refer [has-col]]
    [ta.math.series :refer [gauss-summation]]
    [fastmath.core :as fmath])
@@ -58,14 +58,13 @@
 (defn wma
   "Weighted moving average"
   [n col]
-  (let [ds (tc/dataset {:col col})
-        norm (gauss-summation n)]
-    (:wma (r/rolling ds {:window-type :fixed
-                         :window-size n
-                         :relative-window-position :left}
-                     {:wma {:column-name [:col]
-                            :reducer (fn [window]
-                                       (wma-f window n norm))}}))))
+  (let [norm (gauss-summation n)]
+    (roll/rolling-window-reduce (fn [col-name]
+                                  {:column-name col-name
+                                   :reducer (fn [w]
+                                              (wma-f w n norm))
+                                   :datatype :float64})
+                                n col)))
 
 (defn- calc-ema-idx
   "EMA-next = (cur-close-price - prev-ema) * alpha + prev-ema"
@@ -122,6 +121,112 @@
                                                       (lma-rfn n w))
                                            :datatype :float64})
                                         n v))
+
+(defn- adjust-src-val
+  [x d prev]
+  (if (> x (+ prev d))
+    (+ x d)
+    (if (< x (- prev d))
+      (- x d)
+      prev)))
+
+(defn- ama-fn
+  "a2ma helper"
+  [x er prev-a]
+  (let [prev-a-nonzero (if (nil-or-nan? prev-a)
+                         x
+                         prev-a)]
+    (+ (* er x)
+       (* (- 1 er) prev-a-nonzero))))
+
+(defn arma
+  "Autonomous Recursive Moving Average (ARMA)
+   https://www.tradingview.com/script/AnmTY0Q3-Autonomous-Recursive-Moving-Average/"
+  ([n v]
+   (arma n v 3))
+  ([n v g]                                               ; TODO: zerolag flag
+   (let [tfn (indicator
+              [src-d (volatile! [])
+               src-ma (volatile! [])
+               prev-mad (volatile! [])
+               dsum (volatile! 0.0)]
+              (fn [i]
+                ;; drop last
+                (when (>= (count @src-d) n)
+                  (vswap! src-d #(vec (rest %))))
+                (when (>= (count @src-ma) n)
+                  (vswap! src-ma #(vec (rest %))))
+                (when (>= (count @prev-mad) n)
+                  (vswap! prev-mad #(vec (rest %))))
+                ;;
+                (let [x (nth v i)
+                      prev (if (last @prev-mad)
+                             (last @prev-mad)
+                             x)
+                      xprevn (if (>= i n)
+                               (nth v (- i n)))
+                      diff (if xprevn
+                             (Math/abs (- xprevn prev))
+                             0.0)
+                      next-sum (vswap! dsum + diff)
+                      d (if (> i 0)
+                          (/ (* next-sum g) i)
+                          0.0)
+                      next-src-val (adjust-src-val x d prev)
+                      _ (vswap! src-d conj next-src-val)
+                      sma0 (if (>= i (dec n))
+                             (sma {:n n} @src-d))
+                      _ (if sma0
+                          (vswap! src-ma conj (last sma0)))
+                      sma1 (if (>= i (- (* 2 n) 2))
+                             (sma {:n n} @src-ma))
+                      next-ma (if (>= i (- (* 2 n) 2))
+                                (last sma1))]
+                  (vswap! prev-mad conj next-ma)
+                  next-ma
+                  (if next-ma
+                    next-ma
+                    Double/NaN))))]
+     (into [] tfn (range 0 (count v))))))
+
+(defn a2rma
+  "Adaptive Autonomous Recursive Moving Average (A2RMA)
+   https://www.tradingview.com/script/4bI1zjc6-Adaptive-Autonomous-Recursive-Moving-Average/"
+  ([n v]
+   (a2rma n v 3))
+  ([n v g]
+   (let [diff-n (dfn/abs (diff-n n v))
+         diff-1 (dfn/abs (diff v))
+         trailing-sum (roll/rolling-window-reduce-zero-edge r/sum n diff-1)
+         er (dfn// diff-n
+                   trailing-sum)
+         tfn (indicator
+              [prev-ma0 (volatile! nil)
+               prev-ma (volatile! nil)
+               dsum (volatile! 0.0)]
+              (fn [i]
+                (let [x (nth v i)
+                      prev-ma-nz (if (nil-or-nan? @prev-ma)
+                                   x
+                                   @prev-ma)
+                      diff (Math/abs (- x prev-ma-nz))
+                      next-sum (+ @dsum diff)
+                      d (if (> i 0)
+                          (/ (* next-sum g) i)
+                          0.0)
+                      y (adjust-src-val x d prev-ma-nz)
+                      cur-er (nth er i)
+                      a0 (ama-fn y cur-er @prev-ma0)
+                      a (ama-fn a0 cur-er @prev-ma)
+                      next-ma0 (if (>= i n) a0)
+                      next-ma (if (>= i n) a)]
+                  (vreset! prev-ma0 next-ma0)
+                  (vreset! prev-ma next-ma)
+                  (vreset! dsum next-sum)
+                  (if (nil-or-nan? next-ma)
+                    Double/NaN
+                    next-ma))))]
+     (into [] tfn (range 0 (count v))))))
 
 (defn- ehlers-tfn
   [{:keys [c1 c2 c3]}]
@@ -355,7 +460,7 @@
 
   (prior (:close ds))
 
-  (into [] sma2 [4 5 6 7 8 6 5 4 3])
+  (into [] (sma2 3) [4 5 6 7 8 6 5 4 3])
 
   (tr ds)
 

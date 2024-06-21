@@ -15,5 +15,6 @@
                                 }
         ta/helper {:local/root "../helper" :deps/manifest :deps}
         ta/db {:local/root "../db" :deps/manifest :deps}
+        ta/calendar {:local/root "../calendar" :deps/manifest :deps}
         }}
 
