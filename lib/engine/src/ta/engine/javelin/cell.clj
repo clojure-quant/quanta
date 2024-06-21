@@ -7,7 +7,7 @@
 
 (defn safe-formula-fn [formula-fn]
   (fn [& args]
-    (warn "calculating formula args: " args)
+    ;(warn "calculating formula args: " args)
     (try
       (apply formula-fn args)
       (catch AssertionError ex
