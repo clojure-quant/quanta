@@ -41,6 +41,10 @@
         (nom/fail ::get-bars-safe {:message "import-provider has returned nil."
                                    :opts opts
                                    :task task})))
+    (catch AssertionError ex
+      (nom/fail ::get-bars-safe {:message "import-provider get-bars has thrown an assertion error"
+                                 :opts opts
+                                 :task task}))
     (catch Exception ex
       (nom/fail ::get-bars-safe {:message "import-provider get-bars has thrown an exception"
                                  :opts opts
@@ -53,6 +57,9 @@
       (info "dynamically received ds-bars! appending to db...")
       (b/append-bars (:bar-db state) opts bar-ds)
       (overview/update-range (:overview-db state) opts (:db task)))
+    (catch AssertionError ex
+      (error "dynamic-import.append-bars exception! asset: " (:asset opts) "calendar: " (:calendar opts))
+      nil)
     (catch Exception ex
       (error "dynamic-import.append-bars exception! asset: " (:asset opts) "calendar: " (:calendar opts))
       nil)))

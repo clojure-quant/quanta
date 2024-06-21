@@ -10,6 +10,8 @@
     (warn "calculating formula args: " args)
     (try
       (apply formula-fn args)
+      (catch AssertionError ex 
+        (nom/fail ::error {:message "algo assert failure"}))
       (catch Exception ex
         (nom/fail ::error {:message "algo exception"})))))
 

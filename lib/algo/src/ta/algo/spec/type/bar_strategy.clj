@@ -7,6 +7,16 @@
    [ta.algo.env.core :refer [get-trailing-bars]]
    [ta.algo.error-report :refer [save-error-report]]))
 
+(defn create-error [spec ex]
+  (let [filename (save-error-report (str "run-algo-" (:algo spec)) spec ex)]
+    (error "run-algo " spec " exception. details: " filename)
+    (nom/fail ::algo-calc {:message "algo calc exception!"
+                           :location :bar-strategy-algo
+                           :file filename
+                           :spec spec
+                                   ;:ds-bars ds-bars ; dataset cannot be sent to the browser.
+                           })))
+
 (defn run-algo-safe [algo-fn env spec ds-bars]
   (warn "run-algo-safe: " (:algo spec))
   (cond
@@ -25,15 +35,8 @@
     (try
       (warn "run-algo-safe else.. fn: " algo-fn)
       (algo-fn env spec ds-bars)
-      (catch Exception ex
-        (let [filename (save-error-report (str "run-algo-" (:algo spec)) spec ex)]
-          (error "run-algo " spec " exception. details: " filename)
-          (nom/fail ::algo-calc {:message "algo calc exception!"
-                                 :location :bar-strategy-algo
-                                 :file filename
-                                 :spec spec
-                                 ;:ds-bars ds-bars ; dataset cannot be sent to the browser.
-                                 }))))))
+      (catch AssertionError ex (create-error spec ex))
+      (catch Exception ex (create-error spec ex)))))
 
 (defn create-trailing-bar-loader [{:keys [asset calendar trailing-n] :as spec}]
   (cond
