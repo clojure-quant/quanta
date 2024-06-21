@@ -24,7 +24,7 @@
     exit-signal (volatile! nil)
     set-exit-signal! (fn [s] (vreset! exit-signal s))]
    (fn [row]
-     (println "processing row: " row)
+     ;(println "processing row: " row)
      (set-exit-signal! :none)
      ; exit
      (when-let [p (existing-position @position)]
