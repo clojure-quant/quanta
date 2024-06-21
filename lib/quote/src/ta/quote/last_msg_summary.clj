@@ -1,4 +1,4 @@
-(ns ta.live.last-msg-summary
+(ns ta.quote.last-msg-summary
   "create stream listener that keeps the last value of a message
    that can be categorised with an identifier-fn
    The current table can be queried with 'current-summary'"

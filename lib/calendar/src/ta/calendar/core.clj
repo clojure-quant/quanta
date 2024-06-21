@@ -41,7 +41,7 @@
       (current-close-dt calendar dt)
       (current-close-dt calendar (t/now)))))
 
-(defn calendar-seq
+(defn calendar-seq ; todo: [cal interval] instead of 2 parameter
   ([calendar-kw interval-kw]
    (let [cur-dt (current-close calendar-kw interval-kw)]
      (calendar-seq calendar-kw interval-kw cur-dt)))
@@ -54,7 +54,7 @@
   (->> (calendar-seq calendar-kw interval-kw)
        (map t/instant)))
 
-(defn calendar-seq-prior [calendar-kw interval-kw dt]
+(defn calendar-seq-prior [calendar-kw interval-kw dt] ; todo: [cal interval] instead of 2 parameter
   (let [cur-dt (current-close calendar-kw interval-kw dt)
         prior-fn (partial prior-close calendar-kw interval-kw)]
     (iterate prior-fn cur-dt)))
@@ -111,49 +111,3 @@
     ;:W
     :d (get-calendar-day-duration calendar-kw)
     (get-in intervals [interval-kw :duration])))
-
-(comment
-  (now-calendar :us)
-  (now-calendar :eu)
-
-  (next-close :us :d (now-calendar :us))
-  (next-close :us :h (now-calendar :us))
-
-  (prior-close :us :d (now-calendar :us))
-  (prior-close :us :h (now-calendar :us))
-
-  (current-close :us :d)
-  (current-close :us :h)
-  (current-close :us :m)
-
-  (take 5 (calendar-seq :us :d))
-  (take 5 (calendar-seq-instant :us :d))
-
-  (take 5 (calendar-seq :eu :d))
-  (take 5 (calendar-seq :forex :m))
-
-  (take 30 (calendar-seq :us :d))
-  (take 100 (calendar-seq :eu :h))
-  (take 100 (calendar-seq-prior :eu :h))
-
-  (take 5 (calendar-seq :eu :h))
-
-  (trailing-window [:us :d] 5)
-  (trailing-window [:us :d] 10)
-  (trailing-window [:us :h] 5)
-
-  (get-bar-duration [:us :d])
-  (get-bar-duration [:us :m])
-
-  (-> (fixed-window [:us :d] {:start (t/date-time "2023-01-01T00:00:00")
-                              :end (t/date-time "2023-02-01T00:00:00")})
-      calendar-seq->range)
-
-  (-> (trailing-window :us :d 5)
-      calendar-seq->range)
-
-  (trailing-range [:us :d] 2)
-  (trailing-range [:us :m] 10 (t/in (t/date-time "2023-02-01T12:00:00") "America/New_York"))
-
-; 
-  )

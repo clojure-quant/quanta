@@ -1,16 +1,23 @@
-(ns ta.live.calendar-time
+(ns ta.calendar.generator
   (:require
    [taoensso.timbre :as timbre :refer [info warn error]]
    [manifold.stream :as s]
    [chime.core :as chime]
    [ta.calendar.core :refer [calendar-seq-instant]]))
 
-(defn create-live-calendar-time-generator []
+(defn create-live-calendar-time-generator
+  "calendar-time generator
+   pushes current calendar-time to a time-stream
+   calendar admin:
+   - add-calendar and remove-calendar 
+   - list-calendars
+   event stream: get-time-stream"
+  []
   {:time-stream (s/stream) ; same msg-type {:calendar :time} as multi-calendar playback.
    :calendars (atom {})})
 
-(defn get-time-stream [state]
-  (:time-stream state))
+(defn get-time-stream [this]
+  (:time-stream this))
 
 (defn- log-finished []
   (warn "bar-generator chime Schedule finished!"))
@@ -19,29 +26,30 @@
   (error "bar-generator chime exception: " ex)
   true)
 
-(defn add-calendar [state calendar]
-  (if (get @(:calendars state) calendar)
+(defn add-calendar [this calendar]
+  (if (get @(:calendars this) calendar)
     (error "cannot add calendar: " calendar " - calendar already exists!")
     (let [_ (warn "creating chimes for calendar: " calendar)
           date-seq (calendar-seq-instant calendar)
-          time-stream (get-time-stream state)
+          time-stream (get-time-stream this)
           closeable (chime/chime-at date-seq
                                     (fn [time]
+                                      (warn "putting time: " time " to calendar: " calendar)
                                       @(s/put! time-stream {:calendar calendar
                                                             :time time}))
                                     {:on-finished log-finished :error-handler log-error})]
-      (swap! (:calendars state) assoc calendar closeable))))
+      (swap! (:calendars this) assoc calendar closeable))))
 
-(defn remove-calendar [state calendar]
-  (if-let [c (get @(:calendars state) calendar)]
+(defn remove-calendar [this calendar]
+  (if-let [c (get @(:calendars this) calendar)]
     (do (info "removing calendar: " calendar)
-        (swap! (:calendars state) dissoc calendar)
+        (swap! (:calendars this) dissoc calendar)
         (info "closing old chime for calendar " calendar " ..")
         (.close c))
     (error "cannot remove calendar: not subscribed: " calendar)))
 
-(defn show-calendars [state]
-  (-> @(:calendars state)
+(defn show-calendars [this]
+  (-> @(:calendars this)
       keys))
 
 (comment

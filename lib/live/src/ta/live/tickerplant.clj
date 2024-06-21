@@ -2,11 +2,11 @@
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [manifold.stream :as s]
+   [ta.quote.quote-manager :as qm]
+   [ta.calendar.generator :as ct]
    [ta.engine.protocol :as engine]
    [ta.algo.env.protocol :as algo-env]
-   [ta.live.calendar-time :as ct]
    [ta.live.bar-generator :as bg]
-   [ta.live.quote-manager :as qm]
    [ta.live.env-watcher :as watcher]
    [ta.live.bar-generator.db :as db]))
 

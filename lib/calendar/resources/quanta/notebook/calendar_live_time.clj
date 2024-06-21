@@ -2,7 +2,7 @@
   (:require
    [taoensso.timbre :as timbre :refer [info warn error]]
    [manifold.stream :as s]
-   [ta.live.calendar-time :as ct]))
+   [ta.calendar.generator :as ct]))
 
 (def s (ct/create-live-calendar-time-generator))
 

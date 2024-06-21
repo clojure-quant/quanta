@@ -28,7 +28,7 @@
   (-> @db (get template-id)))
 
 (defn get-default-value [template path]
-  (info "getting default value template: " template " path: " path)
+  (debug "getting default value template: " (:id template) " path: " path)
   (let [algo (:algo template)
         [k v]  (cond
                  (keyword path)
@@ -74,17 +74,16 @@
             (let [path (if (keyword? path)
                          [path]
                          path)]
-              (warn "setting path: " path " to val: " v)
+              (debug "setting path: " path " to val: " v)
               (specter/setval path v r)))
           (:algo template)
           options)))
 
 (defn load-with-options [template-id options]
-  (warn "applying options to template: " template-id " options: " options)
   (let [template (load-template template-id)
         template (apply-options template options)]
-    (warn "applied options: " (:algo template))
-    (warn "full template: " template)
+    (info "template " template-id " options: " (:algo template))
+    ;(warn "full template: " template)
     template))
 
 (defn- get-fn [fun]

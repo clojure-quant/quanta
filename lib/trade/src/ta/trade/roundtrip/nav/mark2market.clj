@@ -180,7 +180,7 @@
         date-ds (calendar-seq->date-ds cal-seq)
         l (tc/row-count date-ds)
         bar-dict (load-aligned-assets bardb opts assets cal-seq)
-        _ (info "bar-ds count: " (tc/row-count date-ds))
+        _ (info "calendar bar count: " (tc/row-count date-ds))
         trades-asset (fn [asset]
                        (filter #(= asset (:asset %)) trades))
         calc-asset (fn [asset]

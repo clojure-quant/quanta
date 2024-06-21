@@ -1,7 +1,17 @@
 (ns ta.engine.javelin.cell
   (:require
+   [de.otto.nom.core :as nom]
+   [taoensso.timbre :refer [trace debug info warn error]]
    [javelin.core-clj :refer [cell= cell lift destroy-cell!]]
    [ta.engine.javelin.calendar :refer [get-calendar]]))
+
+(defn safe-formula-fn [formula-fn]
+  (fn [& args]
+    (warn "calculating formula args: " args)
+    (try
+      (apply formula-fn args)
+      (catch Exception ex
+        (nom/fail ::error {:message "algo exception"})))))
 
 (defn calendar-cell
   "returns a cell that calculates the strategy
@@ -10,7 +20,8 @@
   (assert calendar)
   (assert time-fn)
   (let [time-c (get-calendar eng calendar)
-        c (cell= (time-fn time-c))] ; nom/execute
+        time-fn-wrapped (safe-formula-fn time-fn)
+        c (cell= (time-fn-wrapped time-c))] ; nom/execute
     c))
 
 (defn formula-cell
@@ -19,8 +30,9 @@
   [eng formula-fn cell-seq]
   (assert cell-seq)
   (assert formula-fn)
-  (let [f (lift formula-fn)
-        c (apply f cell-seq)] ; nom/execute
+  (let [formula-fn-wrapped (safe-formula-fn formula-fn)
+        f (lift formula-fn-wrapped)
+        c (apply f cell-seq)]
     c))
 
 (defn value-cell

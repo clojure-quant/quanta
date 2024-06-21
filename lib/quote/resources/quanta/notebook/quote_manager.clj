@@ -1,7 +1,7 @@
 (ns quanta.notebook.quote-manager
   (:require
    [modular.system]
-   [ta.live.quote-manager :as qm]
+   [ta.quote.quote-manager :as qm]
    [clojure.pprint :refer [print-table]]))
 
 ;; create quote-manager from feeds

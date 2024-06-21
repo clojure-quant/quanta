@@ -4,54 +4,107 @@
    [taoensso.timbre :refer [trace debug info warn error]]
    [tablecloth.api :as tc]
    [ta.algo.spec.parser.chain :as chain]
-   [ta.algo.env.core :refer [get-trailing-bars]]))
+   [ta.algo.env.core :refer [get-trailing-bars]]
+   [ta.algo.error-report :refer [save-error-report]]))
 
 (defn run-algo-safe [algo-fn env spec ds-bars]
-  (try
-    (if (and ds-bars (> (tc/row-count ds-bars) 0))
+  (warn "run-algo-safe: " (:algo spec))
+  (cond
+    ; algo-fn is nil (most likely a compile error)
+    (nil? algo-fn)
+    (nom/fail ::algo-calc {:message "bar-strategy fn compile error"
+                           :location :bar-strategy-algo
+                           :spec spec})
+    ; bar data is nil or has no rows
+    (or (nil? ds-bars) (= (tc/row-count ds-bars) 0))
+    (nom/fail ::algo-calc {:message "bar-strategy cannot calc because no bars!"
+                           :location :bar-strategy-algo
+                           :spec spec})
+    ; run algo
+    :else
+    (try
+      (warn "run-algo-safe else.. fn: " algo-fn)
       (algo-fn env spec ds-bars)
-      (nom/fail ::algo-calc {:message "bar-strategy cannot calc because no bars!"
-                             :location :bar-strategy-algo
-                             :spec spec}))
-    (catch Exception ex
-      (error "exception in running algo.")
-      (error "algo exception: " ex)
-      (nom/fail ::algo-calc {:message "algo calc exception!"
-                             :location :bar-strategy-algo
-                             :spec spec
-                             :ds-bars ds-bars}))))
-
-(defn create-trailing-bar-loader [{:keys [asset calendar trailing-n] :as _spec}]
-  ; fail once, when required parameters are missing
-  (assert trailing-n)
-  (assert asset)
-  (assert calendar)
-  (fn [env spec time]
-    (if time
-      (try
-        (get-trailing-bars env spec time)
-        (catch Exception ex
-          (error "exception in loading bars: spec: "  spec)
-          (error ex)
+      (catch Exception ex
+        (let [filename (save-error-report (str "run-algo-" (:algo spec)) spec ex)]
+          (error "run-algo " spec " exception. details: " filename)
           (nom/fail ::algo-calc {:message "algo calc exception!"
-                                 :location :bar-strategy-load-bars
+                                 :location :bar-strategy-algo
+                                 :file filename
                                  :spec spec
-                                 :time time})))
-      (nom/fail ::algo-calc {:message "algo calc needs a valid time"
-                             :location :bar-strategy-load-bars
-                             :spec spec}))))
+                                 ;:ds-bars ds-bars ; dataset cannot be sent to the browser.
+                                 }))))))
+
+(defn create-trailing-bar-loader [{:keys [asset calendar trailing-n] :as spec}]
+  (cond
+    ; fail once, when required parameters are missing  
+    (or (not trailing-n)
+        (not asset)
+        (not calendar))
+    (nom/fail ::algo-calc {:message "algo load-bars needs :trailing-n :asset :calendar"
+                           :location :bar-strategy-load-bars
+                           :spec spec})
+    ; init happy path
+    :else
+    (fn [env spec time]
+      (cond
+      ; no result if time is not valid
+        (or (nil? time) (nom/anomaly? time))
+        (nom/fail ::algo-calc {:message "algo calc needs a valid time"
+                               :location :bar-strategy-load-bars
+                               :time time
+                               :spec spec})
+      ; runtime happy path
+        :else
+        (try
+          (get-trailing-bars env spec time)
+          (catch Exception ex
+            (let [filename (save-error-report "run-algo-load-bars" spec ex)]
+              (error "load-bars-algo " spec " exception. details: " filename)
+              (nom/fail ::algo-calc {:message "algo calc load-bars exception!"
+                                     :location :bar-strategy-load-bars
+                                     :spec spec
+                                     :time time}))))))))
 
 (defn create-trailing-barstrategy [{:keys [trailing-n asset algo] :as spec}]
-  (assert trailing-n)
-  (assert asset)
-  (assert algo)
-  (let [algo-fn (chain/make-chain algo)
-        load-fn (create-trailing-bar-loader spec)]
-    (assert algo-fn (str "could not compile algo-fn: " algo))
-    (fn [env _spec time]
-      (when time
-        (let [ds-bars (load-fn env spec time)]
-          (if (nom/anomaly? ds-bars)
-            ds-bars
-            (run-algo-safe algo-fn env spec ds-bars)))))))
+  (cond
+
+    (nil? spec)
+    (nom/fail ::create-barstrategy-algo {:message "cannot create barstrategy-algo - spec is nil"
+                                         :location :barstrategy})
+    (not (map? spec))
+    (nom/fail ::create-barstrategy-algo {:message "cannot create barstrategy-algo - spec is not a map"
+                                         :location :barstrategy
+                                         :spec spec})
+    (not algo)
+    (nom/fail ::create-barstrategy-algo {:message "cannot create barstrategy-algo -  spec/algo is nil"
+                                         :location :barstrategy
+                                         :spec spec})
+
+    (not trailing-n)
+    (nom/fail ::create-barstrategy-algo {:message "cannot create barstrategy-algo -  trailing-n is nil"
+                                         :location :barstrategy
+                                         :spec spec})
+
+    (not asset)
+    (nom/fail ::create-barstrategy-algo {:message "cannot create barstrategy-algo -  asset is nil"
+                                         :location :barstrategy
+                                         :spec spec})
+
+    (not trailing-n)
+    (nom/fail ::create-barstrategy-algo {:message "cannot create barstrategy-algo -  trailing-n is nil"
+                                         :location :barstrategy
+                                         :spec spec})
+
+    :else
+    (let [algo-fn (chain/make-chain algo)
+          load-fn (create-trailing-bar-loader spec)]
+      (if (nom/anomaly? algo-fn)
+        algo-fn
+        (fn [env _spec time]
+          (when time
+            (let [ds-bars (load-fn env spec time)]
+              (if (nom/anomaly? ds-bars)
+                ds-bars
+                (run-algo-safe algo-fn env spec ds-bars)))))))))
 

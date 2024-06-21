@@ -53,25 +53,18 @@ subscription-id
 ; check state (developer debugging)
 
 (-> @sub/subscriptions-a keys)
-;; => ("c3ZNXs")
+;; => ("3VlnWU")
 
-;; => ("79zRE_")
 
-;; => ("YEoVgy")
 
-;; => ("x7u1cu")
 
-;; => ()
 
-(-> @sub/results-a keys)
-(-> @sub/visualizations-a keys)
 
 ;; watch results..
-(def subscription-id "c3ZNXs")
+(def subscription-id "3VlnWU")
 
 (-> @sub/subscriptions-a (get subscription-id))
-(-> @sub/results-a (get subscription-id))
-(-> @sub/visualizations-a (get subscription-id))
+
 
 ; (require '[algodemo.sentiment-spread.vega :refer [calc-viz-vega]])
 ; (calc-viz-vega (-> @sub/results-a :sentiment-spread))

@@ -1,12 +1,13 @@
 (ns ta.engine.javelin.calendar
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
-   [javelin.core-clj :refer [cell cell=]]))
+   [de.otto.nom.core :as nom]
+   [javelin.core-clj :refer [cell]]))
 
 (defn create-calendar [env calendar]
   (assert (vector? calendar) "calendar needs to be [:market :interval]")
   (info "creating calendar: " calendar)
-  (let [c (cell nil)] ; (nom/error “not started”)
+  (let [c (cell (nom/fail ::calendar {:calendar :not-initialized}))]
     (swap! (:calendars env) assoc calendar c)
     c))
 
@@ -25,27 +26,4 @@
     (if r
       r
       [])))
-
-(comment
-
-  (def env nil)
-  env
-
-  (get-calendar env [:us :d])
-  env
-  (active-calendars env)
-
-  (get-calendar env [:us :h])
-  (active-calendars env)
-
-  (set-calendar! env {:calendar [:us :h]
-                      :time :now})
-
-  @(get-calendar env [:us :h])
-  @(get-calendar env [:us :d])
-
-  (create-calendar env nil)
-
-; 
-  )
 

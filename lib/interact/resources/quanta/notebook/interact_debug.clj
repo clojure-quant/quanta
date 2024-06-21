@@ -14,8 +14,6 @@
       (first active))))
 
 (-> @sub/subscriptions-a (get subscription-id))
-(-> @sub/results-a (get subscription-id))
-(-> @sub/visualizations-a (get subscription-id))
 
 (defn get-result []
   (let [id (get-sub)]

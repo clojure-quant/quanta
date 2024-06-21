@@ -2,6 +2,10 @@
   (:require
    [de.otto.nom.core :as nom]))
 
+(defn remove-ex [[type category data-map]]
+  ; [::nom/anomaly ::my-category {:some data}]
+  [type category (dissoc data-map :ex)])
+
 (defn error-render-spec
   "returns a render specification {:render-fn :spec :data}. 
    spec must follow chart-pane format.
@@ -11,5 +15,5 @@
   [nom-anomaly]
   ^{:render-fn 'ta.viz.renderfn/render-spec} ; needed for notebooks
   {:render-fn 'ta.viz.renderfn.error/nom-error
-   :data nom-anomaly
+   :data (remove-ex nom-anomaly)
    :spec :whatever})

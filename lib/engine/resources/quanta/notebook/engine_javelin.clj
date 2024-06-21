@@ -1,5 +1,6 @@
-(ns quanta.notebook.engine.javelin
+(ns quanta.notebook.engine-javelin
   (:require
+   [de.otto.nom.core :as nom]
    [javelin.core-clj :refer [cell cell=]]))
 
 (defn start []
@@ -19,3 +20,41 @@
 ; 124
 ; 126
 ; :done
+
+(defn divide [a b]
+  (println "dividing " a " by " b)
+  (if (= b 0)
+    (nom/fail ::division {:message "division by 0"})
+    (/ a b)))
+
+
+(defn start2 []
+  (let [a (cell 100)
+        b (cell 2)
+        c (cell= (divide a b))]
+    (cell= (println "a: " a "b: " b "result: " c))
+    (swap! a inc)
+    (swap! a inc)
+    (swap! b inc)
+    (reset! b 0)
+    (reset! b 2)
+    :done))
+
+(start2)
+
+
+
+(require '[ta.engine.javelin.cell :refer [formula-cell value-cell]]
+ )
+
+(def A (value-cell nil 10))
+(def B (value-cell nil 2))
+(def C (formula-cell nil / [A B]))
+
+@A
+@B
+@C
+
+(reset! A 100)
+(reset! B 0)
+

@@ -2,7 +2,6 @@
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [modular.system]
-   [tick.core :as t]
    [ta.calendar.core :as cal]
    [ta.calendar.combined :refer [combined-event-seq]]
    [ta.engine.protocol :as eng]
@@ -50,31 +49,3 @@
     (info "event-seq: " event-seq)
     (doall (map #(eng/set-calendar! engine %) event-seq))
     strategy))
-
-(comment
-
-  (require '[ta.engine.javelin :as e])
-  (require '[javelin.core-clj :refer [cell cell=]])
-  (require '[ta.env.tools.window :as tw])
-
-  ;(require '[modular.system])
-  (def duckdb (:duckdb modular.system/system))
-
-  (defn demo-backtest []
-    (let [env (e/create-env duckdb)
-          c (cal/get-calendar env [:us :h]) ; force creation of one calendar
-          printer (cell= (println "now: " c)) ; track calendar time and print it.
-          count-a (atom 0)
-          inc-counter (fn [cell]
-                        (swap! count-a inc))
-          counter (cell= (inc-counter c))
-          w (tw/trailing-years-window 1)]
-      (run-backtest env w)
-      @count-a))
-
-  ;; this will print "now: DATE" for all hours in the last year
-  ;; will return the number of hourly bars in the last year.
-  (demo-backtest)
-
- ; 
-  )

@@ -1,11 +1,11 @@
 (ns ta.live.env-watcher
   (:require
    [taoensso.timbre :as timbre :refer [info warn error]]
+   [ta.calendar.generator :as ct]
    [ta.algo.env.protocol :as algo-env]
    [ta.algo.spec.inspect :refer [subscriptions calendar-subscriptions time-subscriptions]]
-   [ta.live.quote-manager :as quotes]
-   [ta.live.bar-generator :as bargen]
-   [ta.live.calendar-time :as ct]))
+   [ta.quote.quote-manager :as quotes]
+   [ta.live.bar-generator :as bargen]))
 
 (defn process-subscription [state subscription]
   (let [subscription (select-keys subscription [:asset :feed])
