@@ -1,31 +1,31 @@
-(ns ta.interact.template
+(ns quanta.studio.template
   (:require
    [de.otto.nom.core :as nom]
    [taoensso.timbre :as log :refer [tracef debug debugf info infof warn error errorf]]
    [com.rpl.specter :as specter]))
 
-(defonce db (atom {}))
+
 
 (defn add
   "adds a template to the template-db
    templates are used in the browser so traders can add
    and configure algos easily."
-  [{:keys [id algo] :as template-spec}]
+  [{:keys [templates]} {:keys [id algo] :as template-spec}]
   (assert id "missing mandatory parameter :id")
   (assert algo "missing mandatory parameter :algo")
-  (swap! db assoc id template-spec))
+  (swap! templates assoc id template-spec))
 
 (defn available-templates
   "returns all template-ids. 
    used in the browser to select a template"
-  []
-  (-> @db keys sort))
+  [{:keys [templates]} ]
+  (-> @templates keys sort))
 
 (defn load-template
   "returns the template for a template-id"
   ; note: get is used, because template-id might be a string.
-  [template-id]
-  (-> @db (get template-id)))
+  [{:keys [templates]} template-id]
+  (-> @templates (get template-id)))
 
 (defn get-default-value [template path]
   (debug "getting default value template: " (:id template) " path: " path)
@@ -52,9 +52,9 @@
 
 (defn get-options
   "returns the options (what a user can edit) for a template-id"
-  [template-id]
+  [this template-id]
   (info "getting options for template: " template-id)
-  (let [template (load-template template-id)
+  (let [template (load-template this template-id)
         options (or (:options template) [])
         options (if (vector? options)
                   options
@@ -79,8 +79,8 @@
           (:algo template)
           options)))
 
-(defn load-with-options [template-id options]
-  (let [template (load-template template-id)
+(defn load-with-options [this template-id options]
+  (let [template (load-template this template-id)
         template (apply-options template options)]
     (info "template " template-id " options: " (:algo template))
     ;(warn "full template: " template)
@@ -109,8 +109,7 @@
       (nom/fail ::unknown-viz {:message (str "algo viz not found: " viz-mode)}))))
 
 (comment
-  (load-template :juan-fx)
-  (get-options :juan-fx)
+  
 
   (def paths [:a [:b :c] :d])
   (def data [{:a 1 :b {:c 22 :x 5} :d 55}

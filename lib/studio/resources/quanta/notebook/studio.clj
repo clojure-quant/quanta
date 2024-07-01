@@ -1,7 +1,7 @@
-(ns quanta.notebook.interact
+(ns quanta.notebook.studio
   (:require
-   [ta.interact.template :refer [get-options]]
-   [ta.interact.subscription :as sub]))
+   [quanta.studio.template :refer [get-options]]
+   [quanta.studio.subscription :as sub]))
 
 (-> :watch-crypto get-options)
 

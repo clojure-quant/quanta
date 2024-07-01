@@ -1,0 +1,7 @@
+{:name "quanta-studio"
+ :sci-cljs-ns [quanta.studio.view.state
+               quanta.studio.view.options
+               quanta.studio.view.live-result
+               quanta.studio.page.algo]
+ :cljs-routes {"interact" quanta.studio.page.algo/algo-page}
+ }

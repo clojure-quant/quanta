@@ -1,10 +1,10 @@
 {:paths ["src" "resources"]
  :deps
- {org.clojure/clojure    {:mvn/version "1.11.1"}
+ {org.clojure/clojure    {:mvn/version "1.11.3"}
   com.taoensso/nippy {:mvn/version "3.3.0"}
   techascent/tech.io {:mvn/version "4.31"}
   com.techascent/tmducken {:mvn/version "0.10.0-2"}
-  org.pinkgorilla/modular {:mvn/version "0.0.40"}
+  org.pinkgorilla/modular {:mvn/version "0.2.56"}
   ta/helper {:local/root "../helper" :deps/manifest :deps}}
  :aliases
  {:test {:extra-paths ["test"]

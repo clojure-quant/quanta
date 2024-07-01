@@ -2,7 +2,7 @@
          "resources" ; extension data
          ]
  :deps
- {org.clojure/clojure    {:mvn/version "1.11.1"}
+ {org.clojure/clojure    {:mvn/version "1.11.3"}
   tick/tick {:mvn/version "0.6.2"}
  }
   

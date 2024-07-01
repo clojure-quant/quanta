@@ -1,7 +1,7 @@
-{:name "ta-db-asset-bars"
+{:name "quanta-asset-db"
  ; run-time
  :clj-services {:name "ta-db-asset-bars"
-                :permission  #{}
+                :permission  nil ; #{}
                 :symbols [ta.db.asset.db/search
                           ta.db.bars.sources/get-bars-source
                           ]}

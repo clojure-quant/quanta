@@ -1,4 +1,4 @@
-{:name "trateg-tradingview"
+{:name "quanta-tradingview"
  ; runtime
  :api-routes {"tv/" {:get  {"config" ta.tradingview.handler/wrapped-config-handler 
                             "time" ta.tradingview.handler/wrapped-time-handler
@@ -15,7 +15,7 @@
                                                ; :put ta.tradingview.handler-storage/ 
                                                ; :delete ta.tradingview.handler-storage/
                                                }}}}
- :clj-services {:name "tradingview"
+ :clj-services {:name "quanta-tradingview"
                 :permission #{}
                 :symbols [; tradingview api (via websocket)
                           ta.tradingview.handler.config/get-server-config

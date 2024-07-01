@@ -1,9 +1,9 @@
 {:paths ["src"]
  :deps
- {org.clojure/clojure    {:mvn/version "1.11.1"}
+ {org.clojure/clojure    {:mvn/version "1.11.3"}
   aleph/aleph {:mvn/version "0.7.1"} ; websocket client steam bybit
   manifold/manifold {:mvn/version "0.4.2"} ; async channels
-  org.pinkgorilla/modular {:mvn/version "0.0.40"}
+  org.pinkgorilla/modular {:mvn/version "0.2.56"}
   io.github.clojure-quant/fix-engine {:git/sha "d25efeefd2db73dee622e826ae86248f74f38273"}
   ta/calendar {:local/root "../calendar" :deps/manifest :deps}
   ta/engine {:local/root "../engine" :deps/manifest :deps}

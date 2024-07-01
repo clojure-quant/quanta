@@ -1,4 +1,4 @@
-(ns ta.interact.debug)
+(ns quanta.studio.debug)
 
 (defn dump-dataset [filename ds]
   (let [content (with-out-str

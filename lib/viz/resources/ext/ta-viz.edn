@@ -1,5 +1,5 @@
-{:name "ta-viz"
- :clj-services {:name "ta-viz-services"
+{:name "quanta-viz"
+ :clj-services {:name "quanta-viz-services"
                 :permission  #{}
                 :symbols [ta.viz.publish/topic-keys
                           ta.viz.publish/get-topic]}

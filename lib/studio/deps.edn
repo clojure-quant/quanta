@@ -2,9 +2,10 @@
          "resources" ; extension data
          ]
  :deps
- {org.clojure/clojure    {:mvn/version "1.11.1"}
+ {org.clojure/clojure    {:mvn/version "1.11.3"}
   nano-id/nano-id {:mvn/version "1.1.0"}
-  org.pinkgorilla/extension {:mvn/version "0.0.9"}
+  org.pinkgorilla/extension {:mvn/version "0.0.12"}
+  org.pinkgorilla/clj-service {:mvn/version "0.3.18"}
   ta/calendar {:local/root "../calendar" :deps/manifest :deps}
   ta/engine {:local/root "../engine" :deps/manifest :deps}
   ta/db {:local/root "../db" :deps/manifest :deps}

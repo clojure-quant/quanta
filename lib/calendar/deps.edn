@@ -1,16 +1,13 @@
 {:paths ["src" "resources"]
- :deps {org.clojure/clojure  {:mvn/version "1.11.1"}
-        com.taoensso/timbre {:mvn/version "6.2.2"} ; clj/cljs logging
+ :deps {org.clojure/clojure  {:mvn/version "1.11.3"}
         jarohen/chime {:mvn/version "0.3.3"} ; scheduler
         tick/tick {:mvn/version "0.6.2"}
+        org.pinkgorilla/timbre {:mvn/version "0.0.7"} ; a dependency on a fixed version of timbre
         ta/helper {:local/root "../helper" :deps/manifest :deps}
         ;;
         }
  :aliases
- {:outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}
-                          com.fzakaria/slf4j-timbre {:mvn/version "0.4.0"}}
-             :main-opts ["-m" "antq.core"]}
-  :cljfmt {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
+ {:cljfmt {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
            :main-opts ["-m" "cljfmt.main"
                        "--indents" "cljfmt.edn"]}
 

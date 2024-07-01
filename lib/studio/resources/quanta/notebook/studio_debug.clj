@@ -1,10 +1,10 @@
-(ns quanta.notebook.interact-debug
+(ns quanta.notebook.studio-debug
   (:require
    [tablecloth.api :as tc]
    [tech.v3.dataset.print :refer [print-range]]
-   [ta.interact.template :refer [get-options]]
-   [ta.interact.subscription :as sub]
-   [ta.interact.debug :refer [dump-dataset]]))
+   [quanta.studio.template :refer [get-options]]
+   [quanta.studio.subscription :as sub]
+   [quanta.studio.debug :refer [dump-dataset]]))
 
 (defn get-sub []
   (let [active (-> @sub/subscriptions-a keys)

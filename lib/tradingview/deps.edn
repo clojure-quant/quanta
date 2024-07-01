@@ -1,14 +1,14 @@
 {:paths ["src"
          "resources" ; tradingview javascript library +  extension data
          ]
- :deps {org.clojure/clojure    {:mvn/version "1.11.1"}
+ :deps {org.clojure/clojure    {:mvn/version "1.11.3"}
         tick/tick {:mvn/version "0.6.2"}
         prismatic/schema {:mvn/version "1.2.0"}
         nano-id/nano-id {:mvn/version "1.1.0"}
         differ/differ {:mvn/version "0.3.3"}
         babashka/fs {:mvn/version "0.4.19"}
-        org.pinkgorilla/modular {:mvn/version "0.0.40"} ; persistence
-        org.pinkgorilla/webly {:mvn/version "0.4.640"} ; web handlers
+        org.pinkgorilla/modular {:mvn/version "0.2.56"} ; persistence
+        org.pinkgorilla/webly {:mvn/version "0.7.693"} ; web handlers
         ta/import {:local/root "../import" :deps/manifest :deps}
         ta/db {:local/root "../db" :deps/manifest :deps}}
  :aliases
@@ -20,7 +20,8 @@
 
   :goldly-docs
   {:extra-paths ["resources"]
-   :extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.4.655"}}
+   :extra-deps {org.pinkgorilla/goldly-docs {:mvn/version "0.8.28"}}
+   ; todo: perhaps this profile needs to be updated to the latest config of clj-service and webly
    :exec-fn goldly.app/goldly-server-run!
    :exec-args {:profile "jetty"
                :config {:goldly {:lazy true

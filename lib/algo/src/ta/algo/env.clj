@@ -2,7 +2,6 @@
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [de.otto.nom.core :as nom]
-   [modular.system]
    [ta.engine.javelin :refer [create-engine-javelin]]
    [ta.engine.ops :as ops]
    [ta.algo.spec.ops :as spec-ops]

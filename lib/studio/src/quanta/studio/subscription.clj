@@ -1,4 +1,4 @@
-(ns ta.interact.subscription
+(ns quanta.studio.subscription
   (:require
    [de.otto.nom.core :as nom]
    [taoensso.timbre :as log :refer [tracef debug debugf info infof warn error errorf]]
@@ -9,7 +9,7 @@
    [ta.algo.error-report :refer [save-error-report]]
    [ta.algo.compile :refer [compile-symbol]]
    [ta.engine.protocol :as engine]
-   [ta.interact.template :as t]
+   [quanta.studio.template :as t]
    [ta.viz.error :refer [error-render-spec]]))
 
 (defonce subscriptions-a (atom {}))
