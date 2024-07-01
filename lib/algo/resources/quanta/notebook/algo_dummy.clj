@@ -1,7 +1,7 @@
 (ns quanta.notebook.algo-dummy
   (:require
    [ta.calendar.core :as cal]
-   [ta.engine.protocol :as eng]
+   [quanta.model.protocol :as eng]
    [ta.algo.env :as algo-env]
    [ta.algo.backtest :refer [backtest-algo run-backtest]]))
 

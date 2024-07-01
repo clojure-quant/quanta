@@ -1,7 +1,7 @@
-(ns ta.engine.ops
+(ns quanta.model.ops
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
-   [ta.engine.protocol :as ep]))
+   [quanta.model.protocol :as ep]))
 
 (defn add-ops
   "construct a graph of cells (that can be value-cells, formula-cells, calendar-cells),

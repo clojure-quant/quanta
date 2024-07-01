@@ -44,7 +44,7 @@
 
 
 
-(require '[ta.engine.javelin.cell :refer [formula-cell value-cell]]
+(require '[quanta.model.javelin.cell :refer [formula-cell value-cell]]
  )
 
 (def A (value-cell nil 10))

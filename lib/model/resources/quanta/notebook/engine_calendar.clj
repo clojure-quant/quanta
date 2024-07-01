@@ -1,7 +1,7 @@
 (ns quanta.notebook.engine-calendar
   (:require
-   [ta.engine.javelin.calendar :as ecal]
-   [ta.engine.javelin :as je]))
+   [quanta.model.javelin.calendar :as ecal]
+   [quanta.model.javelin :as je]))
 
 (def env (je/create-engine-javelin))
 

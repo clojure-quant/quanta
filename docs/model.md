@@ -1,6 +1,6 @@
-# ta.engine
+# quanta.model
 
-ta.engine.protocol defines how algos and environments can interact with it.
+quanta.model.protocol defines how algos and environments can interact with it.
 
 ## algo <=> engine <=> environment
 The engine can be considered as an excel spreadsheet.

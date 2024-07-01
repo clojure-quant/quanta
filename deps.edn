@@ -13,7 +13,7 @@
                                        :sha "1d6e5d0ef3eba53e2afddb5ca0927385a9f62ece"}
   ta/db {:local/root "./lib/db" :deps/manifest :deps}
   ta/calendar {:local/root "./lib/calendar" :deps/manifest :deps}
-  ta/engine {:local/root "./lib/engine" :deps/manifest :deps} ; javelin formula engine
+  quanta/model {:local/root "./lib/model" :deps/manifest :deps} ; javelin formulas
   ta/import {:local/root "./lib/import" :deps/manifest :deps} ; series import
   ta/quote {:local/root "./lib/quote" :deps/manifest :deps} ; quotefeeds
   ta/trade {:local/root "./lib/trade" :deps/manifest :deps} ; trade signal / backtest / metrics
@@ -35,7 +35,7 @@
                "./lib/algo/src"
                "./lib/calendar/src"
                "./lib/db/src"
-               "./lib/engine/src"
+               "./lib/model/src"
                "./lib/helper/src"
                "./lib/import/src"
                "./lib/indicator/src"
@@ -55,7 +55,7 @@
                "./lib/algo/src"
                "./lib/calendar/src"
                "./lib/db/src"
-               "./lib/engine/src"
+               "./lib/model/src"
                "./lib/helper/src"
                "./lib/import/src"
                "./lib/indicator/src"
@@ -77,7 +77,7 @@
                "./lib/algo/src"
                "./lib/calendar/src"
                "./lib/db/src"
-               "./lib/engine/src"
+               "./lib/model/src"
                "./lib/helper/src"
                "./lib/import/src"
                "./lib/indicator/src"

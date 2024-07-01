@@ -4,7 +4,7 @@
    [manifold.stream :as s]
    [ta.quote.quote-manager :as qm]
    [ta.calendar.generator :as ct]
-   [ta.engine.protocol :as engine]
+   [quanta.model.protocol :as engine]
    [ta.algo.env.protocol :as algo-env]
    [ta.live.bar-generator :as bg]
    [ta.live.env-watcher :as watcher]

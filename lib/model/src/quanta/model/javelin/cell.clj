@@ -1,9 +1,9 @@
-(ns ta.engine.javelin.cell
+(ns quanta.model.javelin.cell
   (:require
    [de.otto.nom.core :as nom]
    [taoensso.timbre :refer [trace debug info warn error]]
    [javelin.core-clj :refer [cell= cell lift destroy-cell!]]
-   [ta.engine.javelin.calendar :refer [get-calendar]]))
+   [quanta.model.javelin.calendar :refer [get-calendar]]))
 
 (defn safe-formula-fn [formula-fn]
   (fn [& args]

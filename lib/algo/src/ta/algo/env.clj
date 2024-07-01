@@ -2,8 +2,8 @@
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [de.otto.nom.core :as nom]
-   [ta.engine.javelin :refer [create-engine-javelin]]
-   [ta.engine.ops :as ops]
+   [quanta.model.javelin :refer [create-engine-javelin]]
+   [quanta.model.ops :as ops]
    [ta.algo.spec.ops :as spec-ops]
    [ta.algo.env.protocol :as algo-env]))
 

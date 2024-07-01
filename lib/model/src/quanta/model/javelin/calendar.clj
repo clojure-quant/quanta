@@ -1,4 +1,4 @@
-(ns ta.engine.javelin.calendar
+(ns quanta.model.javelin.calendar
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [de.otto.nom.core :as nom]

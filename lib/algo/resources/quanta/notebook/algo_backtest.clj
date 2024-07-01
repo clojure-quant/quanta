@@ -3,7 +3,7 @@
      [modular.system]
      [javelin.core-clj :refer [cell cell=]]
      [ta.calendar.core :as cal]
-     [ta.engine.javelin :as e]
+     [quanta.model.javelin :as e]
      [ta.env.tools.window :as tw]
      [ta.algo.backtest :as backtest]
      ))

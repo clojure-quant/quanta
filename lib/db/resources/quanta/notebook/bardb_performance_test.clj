@@ -14,7 +14,7 @@
    [ta.algo.env :as algo-env-impl]
    [ta.algo.env.protocol :as algo-env]
     ;[ta.algo.backtest :refer [run-backtest]]
-   [ta.engine.protocol :as eng]
+   [quanta.model.protocol :as eng]
    [ta.calendar.combined :refer [combined-event-seq]]))
 
 (defn- duckdb-start [db-filename]

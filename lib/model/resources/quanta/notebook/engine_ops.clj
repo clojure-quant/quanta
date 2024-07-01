@@ -1,8 +1,8 @@
 (ns quanta.notebook.engine-ops
   (:require
-   [ta.engine.javelin :refer [create-engine-javelin]]
-   [ta.engine.ops :refer [add-ops]]
-   [ta.engine.protocol :as p]))
+   [quanta.model.javelin :refer [create-engine-javelin]]
+   [quanta.model.ops :refer [add-ops]]
+   [quanta.model.protocol :as p]))
 
 (def e (create-engine-javelin))
 

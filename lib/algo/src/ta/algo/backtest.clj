@@ -4,7 +4,7 @@
    [taoensso.timbre :refer [trace debug info warn error]]
    [ta.calendar.core :as cal]
    [ta.calendar.combined :refer [combined-event-seq]]
-   [ta.engine.protocol :as eng]
+   [quanta.model.protocol :as eng]
    [ta.algo.env.protocol :as algo-env]
    [ta.algo.env :as algo-env-impl]))
 

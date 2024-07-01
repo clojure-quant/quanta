@@ -1,4 +1,4 @@
-(ns ta.engine.protocol)
+(ns quanta.model.protocol)
 
 (defprotocol eng
   ; cell

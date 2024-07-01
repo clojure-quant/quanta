@@ -8,9 +8,10 @@
    [ta.algo.env.protocol :as algo]
    [ta.algo.error-report :refer [save-error-report]]
    [ta.algo.compile :refer [compile-symbol]]
-   [ta.engine.protocol :as engine]
+   [quanta.model.protocol :as engine]
+   [ta.viz.error :refer [error-render-spec]]
    [quanta.studio.template :as t]
-   [ta.viz.error :refer [error-render-spec]]))
+   ))
 
 (defonce subscriptions-a (atom {}))
 
@@ -76,15 +77,15 @@
                                                       :pusher pusher-a})
         subscription-id))))
 
-(defn subscribe-kw [env-kw template-id template-options mode]
+(defn subscribe-kw [this env-kw template-id template-options mode]
   (let [e (modular.system/system env-kw)
-        template (t/load-with-options template-id template-options)]
+        template (t/load-with-options this template-id template-options)]
     (info "subscribing template: " template-id)
     (subscribe e template mode)))
 
-(defn subscribe-live [template-id template-options mode]
+(defn subscribe-live [this template-id template-options mode]
   (info "subscribe-live template:" template-id "mode: " mode)
-  (subscribe-kw :live template-id template-options mode))
+  (subscribe-kw this :live template-id template-options mode))
 
 (defn unsubscribe [subscription-id]
   (when-let [s (get @subscriptions-a subscription-id)]

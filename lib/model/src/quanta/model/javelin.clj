@@ -1,9 +1,9 @@
-(ns ta.engine.javelin
+(ns quanta.model.javelin
   (:require
    [modular.system]
-   [ta.engine.protocol :refer [eng]]
-   [ta.engine.javelin.cell :as j-cell]
-   [ta.engine.javelin.calendar :as j-cal]))
+   [quanta.model.protocol :refer [eng]]
+   [quanta.model.javelin.cell :as j-cell]
+   [quanta.model.javelin.calendar :as j-cal]))
 
 (defrecord engine-javelin [calendars]
   eng
