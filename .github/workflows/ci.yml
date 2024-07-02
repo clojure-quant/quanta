@@ -43,8 +43,8 @@ jobs:
       if: success()
       # if: github.event_name == 'push'
       env:
-        CLOJARS_USERNAME: ${{ secrets.ReleaseUsername }}
-        CLOJARS_PASSWORD: ${{ secrets.ReleasePassword }}
+        CLOJARS_USERNAME: ${{ secrets.CLOJARS_USERNAME }}
+        CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASSWORD }}
         CODECOV_TOKEN: ${{ secrets.CodecovToken }}
       run: |
         git config --global user.email "andreas.wolfgang.bauer@gmail.com"
