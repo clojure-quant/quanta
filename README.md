@@ -1,4 +1,5 @@
-# quanta [![GitHub Actions status |clojure-quant/quanta](https://github.com/clojure-quant/quanta/workflows/CI/badge.svg)](https://github.com/clojure-quant/quanta/actions?workflow=CI)[![Clojars Project](https://img.shields.io/clojars/v/org.pinkgorilla/ta.svg)](https://clojars.org/org.pinkgorilla/ta)
+# quanta [![GitHub Actions status |clojure-quant/quanta](https://github.com/clojure-quant/quanta/workflows/CI/badge.svg)](https://github.com/clojure-quant/quanta/actions?workflow=CI)[![Clojars Project](https://img.shields.io/clojars/v/io.github.clojure-quant/quanta.svg)](https://clojars.org/io.github.clojure-quant/quanta)
+
 
 ## What is quanta?
 

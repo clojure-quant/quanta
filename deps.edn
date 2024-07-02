@@ -58,7 +58,6 @@
                "--fail-level" "error"
                "--lint"
                "./lib/calendar/src"
-               "./lib/db/src"
                 "./lib/helper/src"
                 "./lib/indicator/src"
                 "./lib/math/src"
