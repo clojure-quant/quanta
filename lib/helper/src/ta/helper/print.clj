@@ -4,8 +4,7 @@
   ; [tech.v3.datatype.functional :as fun]
   ; [tech.v3.datatype :as dtype]
    [tech.v3.dataset.print :refer [print-range]]
-   [tablecloth.api :as tc]
-   [ta.helper.print]))
+   [tablecloth.api :as tc]))
 
 ;tc/select
 

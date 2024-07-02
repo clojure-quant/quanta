@@ -11,18 +11,19 @@
 
   io.github.clojure-quant/vector-math {:git/url "https://github.com/clojure-quant/techml.vector-math.git"
                                        :sha "1d6e5d0ef3eba53e2afddb5ca0927385a9f62ece"}
-  ta/db {:local/root "./lib/db" :deps/manifest :deps}
+  ;ta/db {:local/root "./lib/db" :deps/manifest :deps}
   ta/calendar {:local/root "./lib/calendar" :deps/manifest :deps}
-  quanta/model {:local/root "./lib/model" :deps/manifest :deps} ; javelin formulas
+  ta/helper {:local/root "./lib/helper" :deps/manifest :deps}
+  ;quanta/model {:local/root "./lib/model" :deps/manifest :deps} ; javelin formulas
   ta/import {:local/root "./lib/import" :deps/manifest :deps} ; series import
-  ta/quote {:local/root "./lib/quote" :deps/manifest :deps} ; quotefeeds
+  ;ta/quote {:local/root "./lib/quote" :deps/manifest :deps} ; quotefeeds
   ta/trade {:local/root "./lib/trade" :deps/manifest :deps} ; trade signal / backtest / metrics
   ta/math {:local/root "./lib/math" :deps/manifest :deps}
   ta/indicator {:local/root "./lib/indicator" :deps/manifest :deps}
-  ta/algo {:local/root "./lib/algo" :deps/manifest :deps}
-  ta/live {:local/root "./lib/live" :deps/manifest :deps}
-  ta/viz {:local/root "./lib/viz" :deps/manifest :deps}
-  ta/studio {:local/root "./lib/studio" :deps/manifest :deps}
+  ;ta/algo {:local/root "./lib/algo" :deps/manifest :deps}
+  ;ta/live {:local/root "./lib/live" :deps/manifest :deps}
+  ;ta/viz {:local/root "./lib/viz" :deps/manifest :deps}
+  ;ta/studio {:local/root "./lib/studio" :deps/manifest :deps}
   ;ta/tradingview {:local/root "./lib/tradingview" :deps/manifest :deps}
   }
  :aliases
