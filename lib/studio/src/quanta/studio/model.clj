@@ -2,7 +2,7 @@
  (:require
   [de.otto.nom.core :as nom]
   [taoensso.timbre :as log :refer [tracef debug debugf info infof warn error errorf]]
-  [nano-id.core :refer [nano-id]]
+
   [ta.algo.env.protocol :as algo-env]
   [ta.algo.error-report :refer [save-error-report]]
   [ta.algo.compile :refer [compile-symbol]]
@@ -32,9 +32,8 @@
                                        :filename filename
                                        :location :visualize})))))))))
 
-(defn create-algo-model [env {:keys [id algo key] :as template} mode result-fn]
-  (let [task-id (nano-id 6)
-        algo-results-a (algo-env/add-algo env algo)
+(defn create-algo-model [env {:keys [id algo key] :as template} mode task-id result-fn]
+  (let [algo-results-a (algo-env/add-algo env algo)
         viz-fn (create-viz-fn template mode)
         err (or (when (nom/anomaly? algo-results-a) algo-results-a)
                 (when (nom/anomaly? viz-fn) viz-fn))]

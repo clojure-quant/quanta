@@ -7,15 +7,15 @@
 
 ;; result fns 
 
-(defn push-viz-result [template-id task-id result]
+(defn push-viz-result [websocket template-id task-id result]
   (try
     (let [error? (nom/anomaly? result)
           result (if error?
                    (error-render-spec result)
                    result)]
       (info "pushing viz-result template-id: " template-id " task-id: " task-id (if error? " anomaly!" " success"))
-      (send-all! [:interact/subscription {:subscription-id task-id :result result}]))
+      (send-all! websocket [:interact/subscription {:task-id task-id :result result}]))
     (catch Exception ex
-      (error "push-viz-result exception!")))
+      (error "push-viz-result exception: " ex)))
   ; make sure we never retrun something. result ends up in a javelin cell
   nil)
