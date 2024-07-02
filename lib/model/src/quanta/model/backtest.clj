@@ -1,11 +1,10 @@
 (ns quanta.model.backtest
-   (:require
-    [tick.core :as t]
-    [taoensso.timbre :refer [trace debug info warn error]]
-    [ta.calendar.core :as cal]
-    [ta.calendar.combined :refer [combined-event-seq]]
-    [quanta.model.protocol :as mp]))
-
+  (:require
+   [tick.core :as t]
+   [taoensso.timbre :refer [trace debug info warn error]]
+   [ta.calendar.core :as cal]
+   [ta.calendar.combined :refer [combined-event-seq]]
+   [quanta.model.protocol :as mp]))
 
 (defn- dt->event-seq [calendars dt]
   (let [prior-dates (map (fn [[calendar-kw interval-kw]]

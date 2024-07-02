@@ -38,7 +38,6 @@
          (= :short s) -1.0
          :else 0.0)))))
 
-
 (defn signal-bool->keyword-long [long-bool-signal-col]
   (let [n (tc/row-count long-bool-signal-col)]
     (dtype/make-reader
@@ -56,7 +55,6 @@
        (case s
          true :short
          nil)))))
-
 
 (comment
 

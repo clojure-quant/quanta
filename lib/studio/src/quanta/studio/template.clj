@@ -4,8 +4,6 @@
    [taoensso.timbre :as log :refer [tracef debug debugf info infof warn error errorf]]
    [com.rpl.specter :as specter]))
 
-
-
 (defn add
   "adds a template to the template-db
    templates are used in the browser so traders can add
@@ -18,7 +16,7 @@
 (defn available-templates
   "returns all template-ids. 
    used in the browser to select a template"
-  [{:keys [templates]} ]
+  [{:keys [templates]}]
   (-> @templates keys sort))
 
 (defn load-template
@@ -109,7 +107,6 @@
       (nom/fail ::unknown-viz {:message (str "algo viz not found: " viz-mode)}))))
 
 (comment
-  
 
   (def paths [:a [:b :c] :d])
   (def data [{:a 1 :b {:c 22 :x 5} :d 55}

@@ -1,12 +1,12 @@
 (ns quanta.studio.model
- (:require
-  [de.otto.nom.core :as nom]
-  [taoensso.timbre :as log :refer [tracef debug debugf info infof warn error errorf]]
+  (:require
+   [de.otto.nom.core :as nom]
+   [taoensso.timbre :as log :refer [tracef debug debugf info infof warn error errorf]]
 
-  [ta.algo.env.protocol :as algo-env]
-  [ta.algo.error-report :refer [save-error-report]]
-  [ta.algo.compile :refer [compile-symbol]]
-  [quanta.model.protocol :as p]))
+   [ta.algo.env.protocol :as algo-env]
+   [ta.algo.error-report :refer [save-error-report]]
+   [ta.algo.compile :refer [compile-symbol]]
+   [quanta.model.protocol :as p]))
 
 (defn create-viz-fn [{:keys [id] :as template} mode]
   ;(info "create-viz-fn: " viz)
@@ -52,7 +52,6 @@
          :algo-result algo-result-a
          :viz-result viz-result-a
          :pusher pusher-a}))))
-
 
 (defn destroy-algo-model [env {:keys [template algo-result viz-result pusher]}]
   (let [model (algo-env/get-model env)]
