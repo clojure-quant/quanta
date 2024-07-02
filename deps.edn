@@ -32,40 +32,22 @@
    :main-opts ["-m" "cljfmt.main"
                "--indents" "cljfmt.edn"
                "check"
-               "./lib/algo/src"
                "./lib/calendar/src"
-               "./lib/db/src"
-               "./lib/model/src"
                "./lib/helper/src"
-               "./lib/import/src"
                "./lib/indicator/src"
-               "./lib/studio/src"
-               "./lib/live/src"
                "./lib/math/src"
-               "./lib/quote/src"
-               "./lib/trade/src"
-               "./lib/tradingview/src"
-               "./lib/viz/src"]}
+               "./lib/trade/src"]}
 
   :cljfmt-fix
   {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
    :main-opts ["-m" "cljfmt.main"
                "--indents" "cljfmt.edn"
                "fix"
-               "./lib/algo/src"
                "./lib/calendar/src"
-               "./lib/db/src"
-               "./lib/model/src"
                "./lib/helper/src"
-               "./lib/import/src"
                "./lib/indicator/src"
-               "./lib/studio/src"
-               "./lib/live/src"
                "./lib/math/src"
-               "./lib/quote/src"
-               "./lib/trade/src"
-               "./lib/tradingview/src"
-               "./lib/viz/src"]}
+               "./lib/trade/src"]}
 
 ; https://github.com/clj-kondo/clj-kondo/blob/master/doc/jvm.md
   :lint
@@ -74,20 +56,12 @@
                "--config" "cljkondo.edn"
                "--fail-level" "error"
                "--lint"
-               "./lib/algo/src"
                "./lib/calendar/src"
                "./lib/db/src"
-               "./lib/model/src"
-               "./lib/helper/src"
-               "./lib/import/src"
-               "./lib/indicator/src"
-               "./lib/studio/src"
-               "./lib/live/src"
-               "./lib/math/src"
-               "./lib/quote/src"
-               "./lib/trade/src"
-               ;"./lib/tradingview/src"
-               "./lib/viz/src"]}
+                "./lib/helper/src"
+                "./lib/indicator/src"
+                "./lib/math/src"
+                "./lib/trade/src"]}
 
   :cloverage
   {:extra-paths ["test"]

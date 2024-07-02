@@ -4,7 +4,7 @@
    [clojure.tools.build.api :as b]))
 
 (def lib 'io.github.clojure-quant/quanta)
-(def version (format "0.3.%s" (b/git-count-revs nil)))
+(def version (format "0.4.%s" (b/git-count-revs nil)))
 
 (defn jar [opts]
   (-> opts
