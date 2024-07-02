@@ -14,7 +14,7 @@
    [ta.algo.env :as algo-env-impl]
    [ta.algo.env.protocol :as algo-env]
     ;[ta.algo.backtest :refer [run-backtest]]
-   [quanta.model.protocol :as eng]
+   [quanta.model.protocol :as mp]
    [ta.calendar.combined :refer [combined-event-seq]]))
 
 (defn- duckdb-start [db-filename]
@@ -161,11 +161,11 @@
            :algo 'notebook.playground.bardb.performance-test/secret})
 
 (defn run-backtest [env window]
-  (let [engine (algo-env/get-engine env)
-        cals (eng/active-calendars engine)
+  (let [engine (algo-env/get-model env)
+        cals (mp/active-calendars engine)
         event-seq (combined-event-seq window cals)]
     (info "backtesting window: " window " ..")
-    (doall (map #(eng/set-calendar! engine %) event-seq))
+    (doall (map #(mp/set-calendar! engine %) event-seq))
     (info "backtesting window: " window "finished!")
     :backtest-finished))
 
@@ -187,8 +187,8 @@
   (let [;bar-db  (modular.system/system bar-db-kw)
         env (algo-env-impl/create-env-javelin bar-db)
         strategy (algo-env/add-algo env algo-spec)
-        engine (algo-env/get-engine env)
-        calendars (eng/active-calendars engine)
+        engine (algo-env/get-model env)
+        calendars (mp/active-calendars engine)
         prior-dates (map (fn [[calendar-kw interval-kw]]
                            (cal/current-close calendar-kw interval-kw dt))
                          calendars)
@@ -196,7 +196,7 @@
         event-seq (map (fn [cal dt]
                          {:calendar cal :time dt}) calendars prior-dates)]
     (info "event-seq: " event-seq)
-    (doall (map #(eng/set-calendar! engine %) event-seq))
+    (doall (map #(mp/set-calendar! engine %) event-seq))
     strategy))
 
 (defn- exists-db? [path]

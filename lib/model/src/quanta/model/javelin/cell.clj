@@ -18,10 +18,10 @@
 (defn calendar-cell
   "returns a cell that calculates the strategy
    throws once if required parameters are missing"
-  [eng time-fn calendar]
+  [this time-fn calendar]
   (assert calendar)
   (assert time-fn)
-  (let [time-c (get-calendar eng calendar)
+  (let [time-c (get-calendar this calendar)
         time-fn-wrapped (safe-formula-fn time-fn)
         c (cell= (time-fn-wrapped time-c))] ; nom/execute
     c))
@@ -29,7 +29,7 @@
 (defn formula-cell
   "returns a cell that calculates the strategy
    throws once if required parameters are missing"
-  [eng formula-fn cell-seq]
+  [this formula-fn cell-seq]
   (assert cell-seq)
   (assert formula-fn)
   (let [formula-fn-wrapped (safe-formula-fn formula-fn)
@@ -40,9 +40,9 @@
 (defn value-cell
   "returns a cell that has a value
    it's value can be changed with atom like syntax."
-  [eng v]
+  [this v]
   (let [c (cell v)] ; nom/execute
     c))
 
-(defn destroy-cell [eng c]
+(defn destroy-cell [this c]
   (destroy-cell! c))

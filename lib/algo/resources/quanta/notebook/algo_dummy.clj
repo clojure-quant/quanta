@@ -1,7 +1,7 @@
 (ns quanta.notebook.algo-dummy
   (:require
    [ta.calendar.core :as cal]
-   [quanta.model.protocol :as eng]
+   [quanta.model.protocol :as mp]
    [ta.algo.env :as algo-env]
    [ta.algo.backtest :refer [backtest-algo run-backtest]]))
 
@@ -23,11 +23,11 @@ algo
 
 ;; 2. test algo calculation
 
-(def engine (algo-env/get-engine e))
+(def engine (algo-env/get-model e))
 
 engine
 
-(eng/set-calendar! engine {:calendar [:us :d] :time :evening})
+(mp/set-calendar! engine {:calendar [:us :d] :time :evening})
 
 algo
 @algo

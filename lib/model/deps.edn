@@ -1,7 +1,7 @@
 {:paths ["src" "resources"]
- :deps
- {org.clojure/clojure    {:mvn/version "1.11.3"}
-  hoplon/javelin {:mvn/version "3.9.3"}}
+ :deps {org.clojure/clojure    {:mvn/version "1.11.3"}
+        hoplon/javelin {:mvn/version "3.9.3"}
+        ta/calendar {:local/root "../calendar" :deps/manifest :deps}}
  :aliases
  {:test {:extra-paths ["test"]
          :extra-deps {io.github.cognitect-labs/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"

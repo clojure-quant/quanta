@@ -1,11 +1,25 @@
 (ns quanta.notebook.studio-template
-  (:require 
-    [modular.system]
-    [quanta.template :refer [load-template get-options]]))
-
+  (:require
+   [modular.system]
+   [quanta.studio.template :refer [load-template get-options]]
+   [quanta.studio :refer [backtest subscribe get-subscription-state unsubscribe]]))
 
 (def s (modular.system/system :studio))
 
+(load-template s :alex/bollinger)
+(get-options s :alex/bollinger)
 
-(load-template s :juan-fx)
-(get-options s :juan-fx)
+(backtest s :alex/bollinger {} :table)
+(backtest s :alex/bollinger {} :chart)
+
+
+
+(def id 
+   (subscribe s :alex/bollinger {} :table))
+
+
+id
+
+(get-subscription-state s id)
+
+(unsubscribe s id)

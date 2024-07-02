@@ -2,8 +2,8 @@
   (:require
    [taoensso.timbre :refer [trace debug info warn error]]
    [manifold.stream :as s]
-   [ta.quote.quote-manager :as qm]
    [ta.calendar.generator :as ct]
+   [ta.quote.quote-manager :as qm]
    [quanta.model.protocol :as engine]
    [ta.algo.env.protocol :as algo-env]
    [ta.live.bar-generator :as bg]
@@ -13,7 +13,7 @@
 (defn start-tickerplant [{:keys [algo-env quote-manager]}]
   (assert quote-manager "tickerplant needs :quote-manager")
   (assert algo-env "tickerplant needs :algo-env")
-  (let [eng (algo-env/get-engine algo-env)
+  (let [eng (algo-env/get-model algo-env)
         quote-stream (qm/get-quote-stream quote-manager)
         t (ct/create-live-calendar-time-generator)
         b (bg/create-bar-generator quote-stream (algo-env/get-bar-db algo-env))

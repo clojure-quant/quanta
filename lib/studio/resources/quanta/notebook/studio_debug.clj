@@ -3,7 +3,7 @@
    [tablecloth.api :as tc]
    [tech.v3.dataset.print :refer [print-range]]
    [quanta.studio.template :refer [get-options]]
-   [quanta.studio.subscription :as sub]
+   [quanta.studio.publish :as sub]
    [quanta.studio.debug :refer [dump-dataset]]))
 
 (defn get-sub []

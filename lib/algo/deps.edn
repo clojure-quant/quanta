@@ -3,7 +3,7 @@
  {org.clojure/clojure    {:mvn/version "1.11.3"}
   ta/db {:local/root "../db" :deps/manifest :deps} ; bar-db
   ta/calendar {:local/root "../calendar" :deps/manifest :deps}
-  ta/engine {:local/root "../engine" :deps/manifest :deps} ; engine (javelin) used by algo-env
+  ta/model {:local/root "../engine" :deps/manifest :deps} ; engine (javelin) used by algo-env
  }
  :aliases
  {:test {:extra-paths ["test"]

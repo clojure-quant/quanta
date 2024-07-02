@@ -1,6 +1,6 @@
 (ns quanta.model.protocol)
 
-(defprotocol eng
+(defprotocol model
   ; cell
   (calendar-cell [this time-fn calendar])
   (formula-cell [this formula-fn cell-seq])

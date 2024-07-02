@@ -43,3 +43,11 @@ https://github.com/cgrand/xforms
 ;; ftp://ftp.nasdaqtrader.com/symboldirectory
 ;; ftp://nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt
 ;; ftp://nasdaqtrader.com/SymbolDirectory/otherlisted.txt
+
+
+
+model
+- calendar (add-calendar, set-calendar)
+- cells
+
+backtest / live interact with a model!!

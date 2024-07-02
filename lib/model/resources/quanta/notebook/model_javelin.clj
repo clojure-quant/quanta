@@ -1,4 +1,4 @@
-(ns quanta.notebook.engine-javelin
+(ns quanta.notebook.model-javelin
   (:require
    [de.otto.nom.core :as nom]
    [javelin.core-clj :refer [cell cell=]]))

@@ -1,12 +1,12 @@
 (ns quanta.model.javelin
   (:require
    [modular.system]
-   [quanta.model.protocol :refer [eng]]
+   [quanta.model.protocol :refer [model]]
    [quanta.model.javelin.cell :as j-cell]
    [quanta.model.javelin.calendar :as j-cal]))
 
-(defrecord engine-javelin [calendars]
-  eng
+(defrecord model-javelin [calendars]
+  model
   ; cell
   (calendar-cell [this time-fn calendar]
     (j-cell/calendar-cell this time-fn calendar))
@@ -26,6 +26,6 @@
   (active-calendars [this]
     (j-cal/active-calendars this)))
 
-(defn create-engine-javelin []
+(defn create-model-javelin []
   (let [calendars (atom {})]
-    (engine-javelin. calendars)))
+    (model-javelin. calendars)))

@@ -1,10 +1,10 @@
-(ns quanta.notebook.engine-ops
+(ns quanta.notebook.model-ops
   (:require
-   [quanta.model.javelin :refer [create-engine-javelin]]
+   [quanta.model.javelin :refer [create-model-javelin]]
    [quanta.model.ops :refer [add-ops]]
    [quanta.model.protocol :as p]))
 
-(def e (create-engine-javelin))
+(def e (create-model-javelin))
 
 (defn time-as-map [t] {:time t})
 

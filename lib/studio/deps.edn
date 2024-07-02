@@ -7,7 +7,7 @@
   org.pinkgorilla/extension {:mvn/version "0.0.12"}
   org.pinkgorilla/clj-service {:mvn/version "0.3.18"}
   ta/calendar {:local/root "../calendar" :deps/manifest :deps}
-  ta/engine {:local/root "../engine" :deps/manifest :deps}
+  ta/model {:local/root "../engine" :deps/manifest :deps}
   ta/db {:local/root "../db" :deps/manifest :deps}
   ta/viz {:local/root "../viz" :deps/manifest :deps}}
  :aliases

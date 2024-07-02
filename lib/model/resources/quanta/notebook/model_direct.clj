@@ -1,9 +1,9 @@
-(ns quanta.notebook.engine-direct
+(ns quanta.notebook.model-direct
   (:require
-   [quanta.model.javelin :refer [create-engine-javelin]]
+   [quanta.model.javelin :refer [create-model-javelin]]
    [quanta.model.protocol :as p]))
 
-(def e (create-engine-javelin))
+(def e (create-model-javelin))
 
 (def c (p/value-cell e 15))
 @c
