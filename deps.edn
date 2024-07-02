@@ -39,7 +39,7 @@
                "./lib/helper/src"
                "./lib/import/src"
                "./lib/indicator/src"
-               "./lib/interact/src"
+               "./lib/studio/src"
                "./lib/live/src"
                "./lib/math/src"
                "./lib/quote/src"
