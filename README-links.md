@@ -46,8 +46,4 @@ https://github.com/cgrand/xforms
 
 
 
-model
-- calendar (add-calendar, set-calendar)
-- cells
 
-backtest / live interact with a model!!
