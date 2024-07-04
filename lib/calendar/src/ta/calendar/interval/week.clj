@@ -1,8 +1,9 @@
-(ns ta.calendar.week
-  (:require [tick.core :as t]
-            [ta.helper.date :refer [at-time]]
-            [ta.calendar.day :as day]
-            [ta.calendar.helper :refer [trading-close-time day-with-close? day1]]))
+(ns ta.calendar.interval.week
+  (:require
+   [tick.core :as t]
+   [ta.helper.date :refer [at-time]]
+   [ta.calendar.interval.day :as day]
+   [ta.calendar.helper :refer [trading-close-time day-with-close? day1]]))
 
 ;; helper
 

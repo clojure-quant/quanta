@@ -1,11 +1,11 @@
 (ns ta.calendar.intraday-us-test
-  (:require [clojure.test :refer :all]
-            [tick.core :as t]
-            [ta.calendar.calendars :as cal]
-            [ta.calendar.intraday :refer [prior-close-dt next-close-dt
+  (:require
+   [clojure.test :refer :all]
+   [tick.core :as t]
+   [ta.calendar.calendars :as cal]
+   [ta.calendar.interval.intraday :refer [prior-close-dt next-close-dt
                                           prior-open-dt next-open-dt
                                           current-close-dt current-open-dt]]))
-
 
 (defn to-est [dt-str]
   (t/in (t/date-time dt-str) "America/New_York"))
@@ -475,137 +475,137 @@
   ;
   ; NEXT CLOSE
   ;
-    (deftest next-close-intraday
-      (testing "dt inside interval"
+  (deftest next-close-intraday
+    (testing "dt inside interval"
         ; 1 min
-        (is (t/= dt-friday-12-35 (next-close-dt us-cal 1 :minutes dt-friday-12-34-56)))
-        (is (not (t/= dt-friday-12-34 (next-close-dt us-cal 1 :minutes dt-friday-12-34-56))))
+      (is (t/= dt-friday-12-35 (next-close-dt us-cal 1 :minutes dt-friday-12-34-56)))
+      (is (not (t/= dt-friday-12-34 (next-close-dt us-cal 1 :minutes dt-friday-12-34-56))))
         ; 15 min
-        (is (t/= dt-friday-12-45 (next-close-dt us-cal 15 :minutes dt-friday-12-34-56)))
-        (is (not (t/= dt-friday-12-30 (next-close-dt us-cal 15 :minutes dt-friday-12-34-56))))
+      (is (t/= dt-friday-12-45 (next-close-dt us-cal 15 :minutes dt-friday-12-34-56)))
+      (is (not (t/= dt-friday-12-30 (next-close-dt us-cal 15 :minutes dt-friday-12-34-56))))
         ; 1 hour
-        (is (t/= dt-friday-13-00 (next-close-dt us-cal 1 :hours dt-friday-12-34-56)))
-        (is (not (t/= dt-friday-12-00 (next-close-dt us-cal 1 :hours dt-friday-12-34-56))))
+      (is (t/= dt-friday-13-00 (next-close-dt us-cal 1 :hours dt-friday-12-34-56)))
+      (is (not (t/= dt-friday-12-00 (next-close-dt us-cal 1 :hours dt-friday-12-34-56))))
         ; 4 hour
-        (is (t/= dt-friday-13-00 (next-close-dt us-cal 4 :hours dt-friday-12-34-56)))
-        (is (not (t/= dt-friday-12-00 (next-close-dt us-cal 4 :hours dt-friday-12-34-56)))))
-      (testing "dt on interval boundary"
+      (is (t/= dt-friday-13-00 (next-close-dt us-cal 4 :hours dt-friday-12-34-56)))
+      (is (not (t/= dt-friday-12-00 (next-close-dt us-cal 4 :hours dt-friday-12-34-56)))))
+    (testing "dt on interval boundary"
         ; 1 min
-        (is (t/= dt-friday-12-31 (next-close-dt us-cal 1 :minutes dt-friday-12-30)))
-        (is (not (t/= dt-friday-12-30 (next-close-dt us-cal 1 :minutes dt-friday-12-30))))
+      (is (t/= dt-friday-12-31 (next-close-dt us-cal 1 :minutes dt-friday-12-30)))
+      (is (not (t/= dt-friday-12-30 (next-close-dt us-cal 1 :minutes dt-friday-12-30))))
         ; 15 min
-        (is (t/= dt-friday-12-45 (next-close-dt us-cal 15 :minutes dt-friday-12-30)))
-        (is (not (t/= dt-friday-12-30 (next-close-dt us-cal 15 :minutes dt-friday-12-30))))
+      (is (t/= dt-friday-12-45 (next-close-dt us-cal 15 :minutes dt-friday-12-30)))
+      (is (not (t/= dt-friday-12-30 (next-close-dt us-cal 15 :minutes dt-friday-12-30))))
         ; 1 hour
-        (is (t/= dt-friday-14-00 (next-close-dt us-cal 1 :hours dt-friday-13-00)))
-        (is (not (t/= dt-friday-13-00 (next-close-dt us-cal 1 :hours dt-friday-13-00))))
+      (is (t/= dt-friday-14-00 (next-close-dt us-cal 1 :hours dt-friday-13-00)))
+      (is (not (t/= dt-friday-13-00 (next-close-dt us-cal 1 :hours dt-friday-13-00))))
         ; 4 hour
-        (is (t/= dt-friday-17-00 (next-close-dt us-cal 4 :hours dt-friday-13-00)))
-        (is (not (t/= dt-friday-13-00 (next-close-dt us-cal 4 :hours dt-friday-13-00)))))
-      (testing "dt before trading hours"
+      (is (t/= dt-friday-17-00 (next-close-dt us-cal 4 :hours dt-friday-13-00)))
+      (is (not (t/= dt-friday-13-00 (next-close-dt us-cal 4 :hours dt-friday-13-00)))))
+    (testing "dt before trading hours"
         ; 1 min
-        (is (t/= dt-friday-09-01 (next-close-dt us-cal 1 :minutes dt-friday-06-00)))
-        (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 1 :minutes dt-friday-06-00))))
+      (is (t/= dt-friday-09-01 (next-close-dt us-cal 1 :minutes dt-friday-06-00)))
+      (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 1 :minutes dt-friday-06-00))))
         ; 15 min
-        (is (t/= dt-friday-09-15 (next-close-dt us-cal 15 :minutes dt-friday-06-00)))
-        (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 15 :minutes dt-friday-06-00))))
+      (is (t/= dt-friday-09-15 (next-close-dt us-cal 15 :minutes dt-friday-06-00)))
+      (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 15 :minutes dt-friday-06-00))))
         ; 1 hour
-        (is (t/= dt-friday-10-00 (next-close-dt us-cal 1 :hours dt-friday-06-00)))
-        (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 1 :hours dt-friday-06-00))))
+      (is (t/= dt-friday-10-00 (next-close-dt us-cal 1 :hours dt-friday-06-00)))
+      (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 1 :hours dt-friday-06-00))))
         ; 4 hour
-        (is (t/= dt-friday-13-00 (next-close-dt us-cal 4 :hours dt-friday-06-00)))
-        (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 4 :hours dt-friday-06-00)))))
-      (testing "dt after trading hours"
+      (is (t/= dt-friday-13-00 (next-close-dt us-cal 4 :hours dt-friday-06-00)))
+      (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 4 :hours dt-friday-06-00)))))
+    (testing "dt after trading hours"
         ; 1 min
-        (is (t/= dt-friday-09-01 (next-close-dt us-cal 1 :minutes dt-thursday-23-00)))
-        (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 1 :minutes dt-thursday-23-00))))
+      (is (t/= dt-friday-09-01 (next-close-dt us-cal 1 :minutes dt-thursday-23-00)))
+      (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 1 :minutes dt-thursday-23-00))))
         ; 15 min
-        (is (t/= dt-friday-09-15 (next-close-dt us-cal 15 :minutes dt-thursday-23-00)))
-        (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 15 :minutes dt-thursday-23-00))))
+      (is (t/= dt-friday-09-15 (next-close-dt us-cal 15 :minutes dt-thursday-23-00)))
+      (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 15 :minutes dt-thursday-23-00))))
         ; 1 hour
-        (is (t/= dt-friday-10-00 (next-close-dt us-cal 1 :hours dt-thursday-23-00)))
-        (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 1 :hours dt-thursday-23-00))))
+      (is (t/= dt-friday-10-00 (next-close-dt us-cal 1 :hours dt-thursday-23-00)))
+      (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 1 :hours dt-thursday-23-00))))
         ; 4 hour
-        (is (t/= dt-friday-13-00 (next-close-dt us-cal 4 :hours dt-thursday-23-00)))
-        (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 4 :hours dt-thursday-23-00)))))
-      (testing "dt before trading hours (from next week)"
+      (is (t/= dt-friday-13-00 (next-close-dt us-cal 4 :hours dt-thursday-23-00)))
+      (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 4 :hours dt-thursday-23-00)))))
+    (testing "dt before trading hours (from next week)"
         ; 1 min
-        (is (t/= dt-monday-next-09-01 (next-close-dt us-cal 1 :minutes dt-monday-next-06-00)))
-        (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 1 :minutes dt-monday-next-06-00))))
+      (is (t/= dt-monday-next-09-01 (next-close-dt us-cal 1 :minutes dt-monday-next-06-00)))
+      (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 1 :minutes dt-monday-next-06-00))))
         ; 15 min
-        (is (t/= dt-monday-next-09-15 (next-close-dt us-cal 15 :minutes dt-monday-next-06-00)))
-        (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 15 :minutes dt-monday-next-06-00))))
+      (is (t/= dt-monday-next-09-15 (next-close-dt us-cal 15 :minutes dt-monday-next-06-00)))
+      (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 15 :minutes dt-monday-next-06-00))))
         ; 1 hour
-        (is (t/= dt-monday-next-10-00 (next-close-dt us-cal 1 :hours dt-monday-next-06-00)))
-        (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 1 :hours dt-monday-next-06-00))))
+      (is (t/= dt-monday-next-10-00 (next-close-dt us-cal 1 :hours dt-monday-next-06-00)))
+      (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 1 :hours dt-monday-next-06-00))))
         ; 4 hour
-        (is (t/= dt-monday-next-13-00 (next-close-dt us-cal 4 :hours dt-monday-next-06-00)))
-        (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 4 :hours dt-monday-next-06-00)))))
-      (testing "dt after trading hours (weekend)"
+      (is (t/= dt-monday-next-13-00 (next-close-dt us-cal 4 :hours dt-monday-next-06-00)))
+      (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 4 :hours dt-monday-next-06-00)))))
+    (testing "dt after trading hours (weekend)"
         ; 1 min
-        (is (t/= dt-monday-next-09-01 (next-close-dt us-cal 1 :minutes dt-friday-18-00)))
-        (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 1 :minutes dt-friday-18-00))))
+      (is (t/= dt-monday-next-09-01 (next-close-dt us-cal 1 :minutes dt-friday-18-00)))
+      (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 1 :minutes dt-friday-18-00))))
         ; 15 min
-        (is (t/= dt-monday-next-09-15 (next-close-dt us-cal 15 :minutes dt-friday-18-00)))
-        (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 15 :minutes dt-friday-18-00))))
+      (is (t/= dt-monday-next-09-15 (next-close-dt us-cal 15 :minutes dt-friday-18-00)))
+      (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 15 :minutes dt-friday-18-00))))
         ; 1 hour
-        (is (t/= dt-monday-next-10-00 (next-close-dt us-cal 1 :hours dt-friday-18-00)))
-        (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 1 :hours dt-friday-18-00))))
+      (is (t/= dt-monday-next-10-00 (next-close-dt us-cal 1 :hours dt-friday-18-00)))
+      (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 1 :hours dt-friday-18-00))))
         ; 4 hour
-        (is (t/= dt-monday-next-13-00 (next-close-dt us-cal 4 :hours dt-friday-18-00)))
-        (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 4 :hours dt-friday-18-00)))))
-      (testing "dt before first interval close"
+      (is (t/= dt-monday-next-13-00 (next-close-dt us-cal 4 :hours dt-friday-18-00)))
+      (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 4 :hours dt-friday-18-00)))))
+    (testing "dt before first interval close"
         ; 1 min
-        (is (t/= dt-friday-09-01 (next-close-dt us-cal 1 :minutes dt-friday-09-00-30)))
-        (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 1 :minutes dt-friday-09-00-30))))
+      (is (t/= dt-friday-09-01 (next-close-dt us-cal 1 :minutes dt-friday-09-00-30)))
+      (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 1 :minutes dt-friday-09-00-30))))
         ; 15 min
-        (is (t/= dt-friday-09-15 (next-close-dt us-cal 15 :minutes dt-friday-09-10)))
-        (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 15 :minutes dt-friday-09-10))))
+      (is (t/= dt-friday-09-15 (next-close-dt us-cal 15 :minutes dt-friday-09-10)))
+      (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 15 :minutes dt-friday-09-10))))
         ; 1 hour
-        (is (t/= dt-friday-10-00 (next-close-dt us-cal 1 :hours dt-friday-09-15)))
-        (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 1 :hours dt-friday-09-15))))
+      (is (t/= dt-friday-10-00 (next-close-dt us-cal 1 :hours dt-friday-09-15)))
+      (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 1 :hours dt-friday-09-15))))
         ; 4 hour
-        (is (t/= dt-friday-13-00 (next-close-dt us-cal 4 :hours dt-friday-12-34)))
-        (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 4 :hours dt-friday-12-34)))))
-      (testing "dt on trading week start"
+      (is (t/= dt-friday-13-00 (next-close-dt us-cal 4 :hours dt-friday-12-34)))
+      (is (not (t/= dt-friday-09-00 (next-close-dt us-cal 4 :hours dt-friday-12-34)))))
+    (testing "dt on trading week start"
         ; 1 min
-        (is (t/= dt-monday-next-09-01 (next-close-dt us-cal 1 :minutes dt-monday-next-09-00)))
-        (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 1 :minutes dt-monday-next-09-00))))
+      (is (t/= dt-monday-next-09-01 (next-close-dt us-cal 1 :minutes dt-monday-next-09-00)))
+      (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 1 :minutes dt-monday-next-09-00))))
         ; 15 min
-        (is (t/= dt-monday-next-09-15 (next-close-dt us-cal 15 :minutes dt-monday-next-09-00)))
-        (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 15 :minutes dt-monday-next-09-00))))
+      (is (t/= dt-monday-next-09-15 (next-close-dt us-cal 15 :minutes dt-monday-next-09-00)))
+      (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 15 :minutes dt-monday-next-09-00))))
         ; 1 hour
-        (is (t/= dt-monday-next-10-00 (next-close-dt us-cal 1 :hours dt-monday-next-09-00)))
-        (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 1 :hours dt-monday-next-09-00))))
+      (is (t/= dt-monday-next-10-00 (next-close-dt us-cal 1 :hours dt-monday-next-09-00)))
+      (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 1 :hours dt-monday-next-09-00))))
         ; 4 hour
-        (is (t/= dt-monday-next-13-00 (next-close-dt us-cal 4 :hours dt-monday-next-09-00)))
-        (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 4 :hours dt-monday-next-09-00)))))
-      (testing "dt on trading week close"
+      (is (t/= dt-monday-next-13-00 (next-close-dt us-cal 4 :hours dt-monday-next-09-00)))
+      (is (not (t/= dt-monday-next-09-00 (next-close-dt us-cal 4 :hours dt-monday-next-09-00)))))
+    (testing "dt on trading week close"
         ; 1 min
-        (is (t/= dt-monday-next-09-01 (next-close-dt us-cal 1 :minutes dt-friday-17-00)))
-        (is (not (t/= dt-friday-17-00 (next-close-dt us-cal 1 :minutes dt-friday-17-00))))
+      (is (t/= dt-monday-next-09-01 (next-close-dt us-cal 1 :minutes dt-friday-17-00)))
+      (is (not (t/= dt-friday-17-00 (next-close-dt us-cal 1 :minutes dt-friday-17-00))))
         ; 15 min
-        (is (t/= dt-monday-next-09-15 (next-close-dt us-cal 15 :minutes dt-friday-17-00)))
-        (is (not (t/= dt-friday-17-00 (next-close-dt us-cal 15 :minutes dt-friday-17-00))))
+      (is (t/= dt-monday-next-09-15 (next-close-dt us-cal 15 :minutes dt-friday-17-00)))
+      (is (not (t/= dt-friday-17-00 (next-close-dt us-cal 15 :minutes dt-friday-17-00))))
         ; 1 hour
-        (is (t/= dt-monday-next-10-00 (next-close-dt us-cal 1 :hours dt-friday-17-00)))
-        (is (not (t/= dt-friday-17-00 (next-close-dt us-cal 1 :hours dt-friday-17-00))))
+      (is (t/= dt-monday-next-10-00 (next-close-dt us-cal 1 :hours dt-friday-17-00)))
+      (is (not (t/= dt-friday-17-00 (next-close-dt us-cal 1 :hours dt-friday-17-00))))
         ; 4 hour
-        (is (t/= dt-monday-next-13-00 (next-close-dt us-cal 4 :hours dt-friday-17-00)))
-        (is (not (t/= dt-friday-17-00 (next-close-dt us-cal 4 :hours dt-friday-17-00)))))
-      (testing "dt not on trading day"
+      (is (t/= dt-monday-next-13-00 (next-close-dt us-cal 4 :hours dt-friday-17-00)))
+      (is (not (t/= dt-friday-17-00 (next-close-dt us-cal 4 :hours dt-friday-17-00)))))
+    (testing "dt not on trading day"
         ; 1 min
-        (is (t/= dt-monday-next-09-01 (next-close-dt us-cal 1 :minutes dt-saturday-12-00)))
-        (is (not (t/= dt-saturday-12-00 (next-close-dt us-cal 1 :minutes dt-saturday-12-00))))
+      (is (t/= dt-monday-next-09-01 (next-close-dt us-cal 1 :minutes dt-saturday-12-00)))
+      (is (not (t/= dt-saturday-12-00 (next-close-dt us-cal 1 :minutes dt-saturday-12-00))))
         ; 15 min
-        (is (t/= dt-monday-next-09-15 (next-close-dt us-cal 15 :minutes dt-saturday-12-00)))
-        (is (not (t/= dt-saturday-12-00 (next-close-dt us-cal 15 :minutes dt-saturday-12-00))))
+      (is (t/= dt-monday-next-09-15 (next-close-dt us-cal 15 :minutes dt-saturday-12-00)))
+      (is (not (t/= dt-saturday-12-00 (next-close-dt us-cal 15 :minutes dt-saturday-12-00))))
         ; 1 hour
-        (is (t/= dt-monday-next-10-00 (next-close-dt us-cal 1 :hours dt-saturday-12-00)))
-        (is (not (t/= dt-saturday-12-00 (next-close-dt us-cal 1 :hours dt-saturday-12-00))))
+      (is (t/= dt-monday-next-10-00 (next-close-dt us-cal 1 :hours dt-saturday-12-00)))
+      (is (not (t/= dt-saturday-12-00 (next-close-dt us-cal 1 :hours dt-saturday-12-00))))
         ; 4 hour
-        (is (t/= dt-monday-next-13-00 (next-close-dt us-cal 4 :hours dt-saturday-12-00)))
-        (is (not (t/= dt-saturday-12-00 (next-close-dt us-cal 4 :hours dt-saturday-12-00))))))
+      (is (t/= dt-monday-next-13-00 (next-close-dt us-cal 4 :hours dt-saturday-12-00)))
+      (is (not (t/= dt-saturday-12-00 (next-close-dt us-cal 4 :hours dt-saturday-12-00))))))
 
   ;
   ; PREV OPEN

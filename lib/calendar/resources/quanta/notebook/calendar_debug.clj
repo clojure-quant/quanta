@@ -1,6 +1,5 @@
 (ns quanta.notebook.calendar-debug
   (:require
-   [taoensso.timbre :as timbre :refer [info warn error]]
    [ta.calendar.core :refer [calendar-seq-instant]]))
 
 
@@ -39,6 +38,7 @@
 
 
 (next-market :crypto)
+
 ;; => {:d #inst "2024-07-02T23:59:59.000000000-00:00",
 ;;     :h #inst "2024-07-04T02:00:00.000000000-00:00",
 ;;     :m30 #inst "2024-07-04T02:30:00.000000000-00:00",

@@ -1,8 +1,9 @@
-(ns ta.calendar.month
-  (:require [tick.core :as t]
-            [ta.helper.date :refer [at-time]]
-            [ta.calendar.day :as day]
-            [ta.calendar.helper :refer [trading-close-time day-with-close? day1]]))
+(ns ta.calendar.interval.month
+  (:require
+   [tick.core :as t]
+   [ta.helper.date :refer [at-time]]
+   [ta.calendar.interval.day :as day]
+   [ta.calendar.helper :refer [trading-close-time day-with-close? day1]]))
 
 ;; helper
 
@@ -72,4 +73,7 @@
   (t/last-day-of-month (t/date "2024-03-04"))
   (t/<< (t/date-time "2024-03-04T00:00:00") (t/new-duration 1 :days))
   (t/at (t/date "2024-03-04") "00:00:00")
-  (prev-month (t/date "2024-03-04")))
+  (prev-month (t/date "2024-03-04"))
+
+;  
+  )

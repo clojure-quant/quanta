@@ -1,6 +1,5 @@
 (ns ta.calendar.combined
-  "the main usecase for a combined calendar is historical simulations.
-   takes "
+  "the main usecase for a combined calendar is historical simulations."
   (:require
    [tick.core :as t]
    [ta.calendar.core :as cal]))

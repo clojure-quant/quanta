@@ -1,9 +1,9 @@
-(ns ta.calendar.intraday
+(ns ta.calendar.interval.intraday
   (:require
    [tick.core :as t]
    [ta.helper.date :refer [align-field round-down adjust-field extract-field date-unit? at-time]]
    [ta.calendar.calendars :refer [calendars]]
-   [ta.calendar.day :as day]
+   [ta.calendar.interval.day :as day]
    [ta.calendar.helper :refer [before-trading-hours? after-trading-hours?
                                trading-open-time trading-close-time
                                time-open? time-closed?

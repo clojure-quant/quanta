@@ -1,10 +1,11 @@
 (ns ta.calendar.intraday-forex-test
-  (:require [clojure.test :refer :all]
-            [tick.core :as t]
-            [ta.calendar.calendars :as cal]
-            [ta.calendar.intraday :refer [prior-close-dt next-close-dt
-                                          prior-open-dt next-open-dt
-                                          current-close-dt current-open-dt]]))
+  (:require
+   [clojure.test :refer :all]
+   [tick.core :as t]
+   [ta.calendar.calendars :as cal]
+   [ta.calendar.interval.intraday :refer [prior-close-dt next-close-dt
+                                 prior-open-dt next-open-dt
+                                 current-close-dt current-open-dt]]))
 
 (defn to-est [dt-str]
   (t/in (t/date-time dt-str) "America/New_York"))
@@ -83,8 +84,7 @@
 
   ; TODO: day change: 00:00:00 prior-close-dt. eg. shift 15min into prev day
 
-
-  ;; close
+;; close
 
   (deftest current-close-overnight
     ; close on 16:30 for forex (custom definition)
@@ -180,7 +180,7 @@
       ;; 4 hour
       ;(is (t/= dt-thursday-13-00 (current-close-dt forex-cal 4 :hours dt-thursday-17-00)))
       ;(is (not (t/= dt-thursday-23-00 (current-close-dt forex-cal 4 :hours dt-thursday-17-00))))
-       )
+      )
     (testing "dt after close: on closed day interval boundary (with following trading day)"
       ; 1 min
       (is (t/= dt-thursday-16-30 (current-close-dt forex-cal 1 :minutes dt-thursday-16-30)))
@@ -206,9 +206,8 @@
       (is (not (t/= dt-thursday-23-00 (current-close-dt forex-cal 1 :hours dt-thursday-16-45))))
       ; 4 hour
       (is (t/= dt-thursday-13-00 (current-close-dt forex-cal 4 :hours dt-thursday-16-45)))
-      (is (not (t/= dt-thursday-23-00 (current-close-dt forex-cal 4 :hours dt-thursday-16-45)))))
-    )
-  
+      (is (not (t/= dt-thursday-23-00 (current-close-dt forex-cal 4 :hours dt-thursday-16-45))))))
+
   (deftest prior-close-overnight
     ; close on 16:30 for forex (custom definition)
     (testing "dt before trading hours - forex/overnight"
@@ -327,10 +326,9 @@
       (is (not (t/= dt-thursday-23-00 (prior-close-dt forex-cal 1 :hours dt-thursday-16-45))))
       ; 4 hour
       (is (t/= dt-thursday-13-00 (prior-close-dt forex-cal 4 :hours dt-thursday-16-45)))
-      (is (not (t/= dt-thursday-23-00 (prior-close-dt forex-cal 4 :hours dt-thursday-16-45)))))
-    )
+      (is (not (t/= dt-thursday-23-00 (prior-close-dt forex-cal 4 :hours dt-thursday-16-45))))))
 
-  ;(deftest prev-close-intraday
+;(deftest prev-close-intraday
   ;  (testing "dt before first interval close"
   ;    ; 1 min
   ;    (is (t/= dt-thursday-17-00 (prior-close-dt us-cal 1 :minutes dt-friday-09-00-30)))
@@ -344,7 +342,6 @@
   ;    ; 4 hour
   ;    (is (t/= dt-thursday-17-00 (prior-close-dt us-cal 4 :hours dt-friday-12-34)))
   ;    (is (not (t/= dt-friday-09-00 (prior-close-dt us-cal 4 :hours dt-friday-12-34)))))
-
 
   (deftest next-close-overnight
     ; close on 16:30 for forex (custom definition)
@@ -369,8 +366,7 @@
       (is (not (t/= dt-saturday-09-00 (next-close-dt forex-cal 15 :minutes dt-saturday-12-00))))
       (is (not (t/= dt-saturday-17-00 (next-close-dt forex-cal 15 :minutes dt-saturday-12-00)))))
 
-
-    ;
+;
     ;(testing "dt before trading hours - forex/overnight"
     ;  ; 1 min
     ;  (is (t/= dt-friday-16-30 (next-close-dt forex-cal 1 :minutes dt-sunday-06-00)))
@@ -489,8 +485,6 @@
     ;  (is (t/= dt-thursday-13-00 (next-close-dt forex-cal 4 :hours dt-thursday-16-45)))
     ;  (is (not (t/= dt-thursday-23-00 (next-close-dt forex-cal 4 :hours dt-thursday-16-45)))))
     )
-
-
   (deftest prior-open-overnight
     ; close on 16:30 for forex (custom definition)
     (testing "dt before trading hours - forex/overnight"
@@ -514,7 +508,6 @@
       (is (not (t/= dt-saturday-09-00 (prior-open-dt forex-cal 15 :minutes dt-saturday-12-00))))
       (is (not (t/= dt-saturday-17-00 (prior-open-dt forex-cal 15 :minutes dt-saturday-12-00))))))
 
-
   (deftest next-open-overnight
     ; close on 16:30 for forex (custom definition)
     (testing "dt before trading hours - forex/overnight"
@@ -534,6 +527,4 @@
     (testing "dt not on trading day"
       (is (t/= dt-sunday-17-00 (next-open-dt forex-cal 15 :minutes dt-saturday-12-00)))
       (is (not (t/= dt-friday-17-00 (next-open-dt forex-cal 15 :minutes dt-saturday-12-00))))
-      (is (not (t/= dt-saturday-17-00 (next-open-dt forex-cal 15 :minutes dt-saturday-12-00))))))
-
-  )
+      (is (not (t/= dt-saturday-17-00 (next-open-dt forex-cal 15 :minutes dt-saturday-12-00)))))))

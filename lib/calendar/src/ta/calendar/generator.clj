@@ -38,7 +38,7 @@
           time-stream (get-time-stream this)
           closeable (chime/chime-at date-seq
                                     (fn [time]
-                                      (warn "putting time: " time " to calendar: " calendar)
+                                      (warn "putting to time-stream time: " time " calendar: " calendar)
                                       @(s/put! time-stream {:calendar calendar
                                                             :time time}))
                                     {:on-finished log-finished :error-handler log-error})]

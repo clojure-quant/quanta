@@ -1,4 +1,4 @@
-(ns ta.calendar.day
+(ns ta.calendar.interval.day
   (:require
    [tick.core :as t]
    [ta.helper.date :refer [at-time]]

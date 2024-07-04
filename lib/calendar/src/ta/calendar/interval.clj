@@ -1,11 +1,11 @@
 (ns ta.calendar.interval
   (:require
    [tick.core :as t]
-   [ta.calendar.year :as year]
-   [ta.calendar.month :as month]
-   [ta.calendar.week :as week]
-   [ta.calendar.day :as day]
-   [ta.calendar.intraday :as intraday]
+   [ta.calendar.interval.year :as year]
+   [ta.calendar.interval.month :as month]
+   [ta.calendar.interval.week :as week]
+   [ta.calendar.interval.day :as day]
+   [ta.calendar.interval.intraday :as intraday]
    [ta.calendar.calendars :refer [calendars]]
    [ta.calendar.helper :refer [intraday?]]
    [ta.helper.date :refer [align-field now-in-zone]]))

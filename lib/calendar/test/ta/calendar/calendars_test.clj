@@ -1,11 +1,12 @@
 (ns ta.calendar.calendars-test
-  (:require [clojure.test :refer :all]
-            [tick.core :as t]
-            [ta.calendar.helper :refer [day-open? day-closed?
-                                        time-closed? time-open?
-                                        before-trading-hours? after-trading-hours?]]
-            [ta.calendar.intraday :refer []]
-            [ta.calendar.calendars :as cal]))
+  (:require
+   [clojure.test :refer :all]
+   [tick.core :as t]
+   [ta.calendar.helper :refer [day-open? day-closed?
+                               time-closed? time-open?
+                               before-trading-hours? after-trading-hours?]]
+   [ta.calendar.interval.intraday :refer []]
+   [ta.calendar.calendars :as cal]))
 
 (deftest trading-days
   (testing "five-day week"
@@ -38,8 +39,7 @@
       dt-saturday18 (to-est "2024-02-10T18:00:00")
       dt-sunday06 (to-est "2024-02-11T06:00:00")
       dt-sunday12 (to-est "2024-02-11T12:00:00")
-      dt-sunday18 (to-est "2024-02-11T18:00:00")
-      ]
+      dt-sunday18 (to-est "2024-02-11T18:00:00")]
 
   (deftest us-calendar
     (testing "trading days"
@@ -64,7 +64,7 @@
       (is (day-closed? (:us24 cal/calendars) dt-sunday12))
       (is (day-closed? (:us24 cal/calendars) dt-sunday18)))
     (testing "trading hours"
-      (is (time-open?(:us24 cal/calendars) dt-friday06))
+      (is (time-open? (:us24 cal/calendars) dt-friday06))
       (is (not (time-closed? (:us24 cal/calendars) dt-friday06)))
       (is (not (time-closed? (:us24 cal/calendars) dt-friday12)))
       (is (not (time-closed? (:us24 cal/calendars) dt-friday18)))))
@@ -162,7 +162,5 @@
   (deftest daylight-saving-time
     (let [dt-winter (t/date-time "2024-01-01T00:00:00")
           dt-summer (t/date-time "2024-07-01T00:00:00")]
-      (testing "EST - JST")))
-
-  )
+      (testing "EST - JST"))))
 

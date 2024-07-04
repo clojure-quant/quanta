@@ -1,8 +1,9 @@
 (ns ta.calendar.day-test
-  (:require [clojure.test :refer :all]
-            [tick.core :as t]
-            [ta.calendar.calendars :as cal]
-            [ta.calendar.day :refer [next-open next-close
+  (:require
+   [clojure.test :refer :all]
+   [tick.core :as t]
+   [ta.calendar.calendars :as cal]
+   [ta.calendar.interval.day :refer [next-open next-close
                                      prior-open prior-close prior-close-dt
                                      current-close current-open]]))
 
@@ -28,8 +29,7 @@
       dt-sunday12 (to-est "2024-02-11T12:00:00")
       dt-sunday18 (to-est "2024-02-11T18:00:00")
 
-
-      ;;
+;;
 
       dt-monday-09-00 (to-est "2024-02-05T09:00:00")
       dt-tuesday-09-00 (to-est "2024-02-06T09:00:00")
@@ -111,8 +111,7 @@
       (is (not (t/= dt-thursday-17-00 (current-close us-cal dt-friday-17-00)))))
     (testing "dt not on trading day"
       (is (t/= dt-friday-17-00 (current-close us-cal dt-saturday-12-00)))
-      (is (not (t/= dt-saturday-17-00 (current-close us-cal dt-saturday-12-00)))))
-    )
+      (is (not (t/= dt-saturday-17-00 (current-close us-cal dt-saturday-12-00))))))
 
   (deftest current-open-intraday)
 
@@ -192,7 +191,7 @@
     (testing "dt inside gap"
       (is (t/= dt-thursday-16-30 (current-close forex-cal dt-thursday-16-45)))
       (is (not (t/= dt-friday-17-00 (current-close forex-cal dt-thursday-16-45))))))
-  
+
   (deftest prior-close-overnight
     (testing "dt inside interval"
       (is (t/= dt-thursday-16-30 (prior-close-dt forex-cal dt-friday-12-34-56)))
@@ -223,5 +222,4 @@
       (is (not (t/= dt-saturday-17-00 (prior-close-dt forex-cal dt-saturday-12-00)))))
     (testing "dt inside gap"
       (is (t/= dt-thursday-16-30 (prior-close-dt forex-cal dt-thursday-16-45)))
-      (is (not (t/= dt-friday-17-00 (prior-close-dt forex-cal dt-thursday-16-45))))))
-  )
+      (is (not (t/= dt-friday-17-00 (prior-close-dt forex-cal dt-thursday-16-45)))))))
