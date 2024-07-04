@@ -41,6 +41,19 @@
       (current-close-dt calendar dt)
       (current-close-dt calendar (t/now)))))
 
+(defn current-close2 [[calendar-kw interval-kw] dt]
+  ; 2 reasons for this variation:
+  ; 1. calendar argument vector (not two args) this is our new syntax
+  ; 2. no optional arg, so in compression nothign goes wrong.
+  ; current-close should be replaced by this version.
+  (let [calendar (calendar-kw calendars)
+        interval (interval-kw intervals)
+        _ (assert calendar)
+        _ (assert interval)
+        current-close-dt (:current-close interval)
+        _ (assert dt "current close dt is nil.")]
+    (current-close-dt calendar dt)))
+
 (defn calendar-seq ; todo: [cal interval] instead of 2 parameter
   ([calendar-kw interval-kw]
    (let [cur-dt (current-close calendar-kw interval-kw)]

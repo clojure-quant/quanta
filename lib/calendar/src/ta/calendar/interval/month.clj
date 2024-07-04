@@ -66,7 +66,11 @@
 
   (current-close (:us cal/calendars) (t/in (t/date-time "2024-03-04T12:00:00") "America/New_York"))
   (current-close (:us cal/calendars) (t/in (t/date-time "2024-02-04T12:00:00") "America/New_York"))
+
+  (current-close (:us cal/calendars) (t/in (t/date-time "2024-01-31T16:59:59") "America/New_York"))
   (current-close (:us cal/calendars) (t/in (t/date-time "2024-01-31T17:00:00") "America/New_York"))
+  (current-close (:us cal/calendars) (t/in (t/date-time "2024-01-31T17:00:01") "America/New_York"))
+
   (month-close (:us cal/calendars) (t/date "2024-03-04"))
 
   (t/first-day-of-month (t/date "2024-03-04"))
