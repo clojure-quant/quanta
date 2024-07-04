@@ -3,6 +3,7 @@
    [taoensso.timbre :as timbre :refer [info warn error]]
    [manifold.stream :as s]
    [chime.core :as chime]
+   [ta.calendar.validate :refer [calendar-valid?]]
    [ta.calendar.core :refer [calendar-seq-instant]]))
 
 (defn create-live-calendar-time-generator
@@ -27,6 +28,9 @@
   true)
 
 (defn add-calendar [this calendar]
+  (assert (calendar-valid? calendar)
+          (str "cannot add calendar [ " calendar
+               "] to time-generator: not a valid calendar!"))
   (if (get @(:calendars this) calendar)
     (error "cannot add calendar: " calendar " - calendar already exists!")
     (let [_ (warn "creating chimes for calendar: " calendar)
