@@ -98,6 +98,18 @@
        (add-date-group-calendar calendar)
        compress-ds))
 
+;; bad prior implementation from quanta.studio.
+
+#_(defn add-date-group [ds interval]
+    (case interval
+      :month (compress/add-date-group-month ds)
+      :year  (compress/add-date-group-year ds)
+      :h (compress/add-date-group-hour ds)))
+
+#_(-> ds
+      (add-date-group interval)
+      (compress/compress-ds))
+
 (comment
 
   (year-month->date 2021 04)
