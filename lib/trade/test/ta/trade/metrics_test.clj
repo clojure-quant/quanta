@@ -32,6 +32,11 @@
         (into #{})))
 
 
+(comment 
+  (metrics-for-bar-ds alex-ds)
+  
+  )
+
 
 (deftest metrics-test-only-loss
   ; this tests tests on one hand the entry-exit => roundtrip generation
