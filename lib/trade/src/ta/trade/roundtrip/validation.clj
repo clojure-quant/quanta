@@ -5,10 +5,12 @@
    [malli.core :as m]
    [malli.registry :as mr]
    [malli.error :as me]
-   [malli.experimental.time :as time])
-  (:import
-   (java.time Duration Period LocalDate LocalDateTime LocalTime Instant
-              ZonedDateTime OffsetDateTime ZoneId OffsetTime)))
+   [malli.experimental.time :as time]
+   [tech.v3.dataset :as tds])
+  ;(:import
+  ; (java.time Duration Period LocalDate LocalDateTime LocalTime Instant
+  ;            ZonedDateTime OffsetDateTime ZoneId OffsetTime))
+  )
 
 (def r
   (mr/composite-registry
@@ -37,6 +39,7 @@
        (me/humanize)))
 
 (defn validate-roundtrips [rts]
+  ;(assert (seq? rts) "validate-roundtrips operates on a seq only!")
   (loop [rt (first rts)
          rts (rest rts)]
     ;(println "validationg rt: " rt)
@@ -47,6 +50,10 @@
       (do
         (println "rt validation failed: rt:" rt "error: " (human-error-roundtrip rt))
         (nom/fail ::roundtrip-validation-errror {:message (human-error-roundtrip rt)})))))
+
+(defn validate-roundtrips-ds [roundtrip-ds]
+  (assert (tds/dataset? roundtrip-ds) "validate-roundtrips-ds needs a tml dataset!")
+  (validate-roundtrips (tds/mapseq-reader roundtrip-ds)))
 
 (comment
 

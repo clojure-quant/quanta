@@ -1,7 +1,12 @@
 {:paths ["src" "resources"]
  :deps
  {org.clojure/clojure    {:mvn/version "1.11.3"}
-  metosin/malli {:mvn/version "0.16.0"}}
+  scicloj/tablecloth {:mvn/version "7.021"} ; brings techml-dataset
+  metosin/malli {:mvn/version "0.16.0"}
+  tick/tick {:mvn/version "0.6.2"}
+  de.otto/nom {:mvn/version "0.3.0"}
+  org.pinkgorilla/timbre {:mvn/version "0.0.7"}
+  ta/indicator {:local/root "../indicator" :deps/manifest :deps}}
 
  :aliases
  {:test {:extra-paths ["test"]

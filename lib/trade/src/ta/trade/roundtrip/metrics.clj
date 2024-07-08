@@ -43,24 +43,41 @@
 (defn win-loss-performance-metrics [win-loss-stats]
   (let [win (get-group-of win-loss-stats :win? true)
         loss (get-group-of win-loss-stats :win? false)
-        pl-log-cum (+ (:pl-log-cum win)
-                      (:pl-log-cum loss)) ; loss is negative, so add
-        trade-count-all (+ (:trades win) (:trades loss))
-        win-prct  (/ (:trades win) trade-count-all)
-        loss-prct (- 1.0 win-prct)]
+        _ (println "win: " win)
+        _ (println "loss: " loss)
+        ; it might be that there are no losses or no wins
+        ; so we need to get defaults for nil
+        ; trade #
+        trades-win (or (:trades win) 0)
+        trades-loss (or (:trades loss) 0)
+        trade-count-all (+ trades-win trades-loss)
+        ; prct
+        win-prct  (/ trades-win trade-count-all)
+        loss-prct (- 1.0 win-prct)
+        ; pl-log-cum
+        pl-log-cum-win (or (:pl-log-cum win) 0.0)
+        pl-log-cum-loss (or  (:pl-log-cum loss) 0.0)
+        pl-log-cum (+ pl-log-cum-win pl-log-cum-loss) ; loss is negative, so add
+        ; bars
+        bars-loss (or (:bars loss) 0)
+        bars-win (or (:bars win) 0)
+        ; mean
+        pl-log-mean-win (or (:pl-log-mean win) 0.0)
+        pl-log-mean-loss (or (:pl-log-mean loss) 0.0)]
     {:trades trade-count-all
      :pl-log-cum pl-log-cum
-     :pf (/  (* win-prct (:pl-log-mean win))
-             (* loss-prct (- 0 (:pl-log-mean loss))))
+     :pf (when (and win loss) ; profit factor needs both wins and losses.
+           (/  (* win-prct pl-log-mean-win)
+               (* loss-prct (- 0 pl-log-mean-loss))))
      :avg-log (/ pl-log-cum  (float trade-count-all))
-     :avg-win-log (:pl-log-mean win)
-     :avg-loss-log (:pl-log-mean loss)
+     :avg-win-log pl-log-mean-win
+     :avg-loss-log pl-log-mean-loss
      :win-nr-prct (* 100.0 win-prct)
-     :avg-bars-win  (if (> (:trades win) 0.0)
-                      (* 1.0 (/ (:bars win) (:trades win)))
+     :avg-bars-win  (if (> trades-win 0.0)
+                      (* 1.0 (/ bars-win trades-win))
                       0.0)
-     :avg-bars-loss (if (> (:trades loss) 0.0)
-                      (* 1.0 (/ (:bars loss) (:trades loss)))
+     :avg-bars-loss (if (> trades-loss 0.0)
+                      (* 1.0 (/ bars-loss trades-loss))
                       0.0)}))
 
 (defn calc-roundtrip-metrics [roundtrips-ds]

@@ -31,9 +31,9 @@ Quanta is a library.
 
 *code formatter `clj -M:cljfmt-fix`
 
-*unit tests* `bb test-clj`
+*unit tests* `./run-tests.sh`
 
-*warehouse io-performance speed test* `bb performance-test`
+
 
 
 

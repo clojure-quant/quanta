@@ -1,11 +1,11 @@
-(ns ta.roundtrip-test
+(ns ta.trade.roundtrip-test
   (:require
    [clojure.test :refer :all]
    [tablecloth.api :as tc]
    [ta.algo.buy-hold :refer [buy-hold-signal]]
    [ta.trade.signal :refer [trade-signal]]
    [ta.trade.roundtrip-backtest.roundtrip-backtest :refer [backtest-ds]]
-   [ta.trade.metrics.roundtrip-stats :refer [calc-roundtrip-stats position-stats]]))
+   [ta.trade.metrics.roundtrip-stats :refer [position-stats]]))
 
 (def ds-bars
   (let [n 12]
@@ -25,6 +25,8 @@
   position-metrics
   ; 
   )
+
+
 (deftest position-metrics-test
   (is (= (get-in position-metrics [:long :trades]) 1)) ; buy-hold has 1 long trade
   (is (= (get-in position-metrics [:long :pl-log-cum]) 2.0)) ; cum log pl is 2 (factor 100)
