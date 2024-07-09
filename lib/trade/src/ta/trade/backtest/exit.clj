@@ -27,7 +27,7 @@
 (defmethod exit :profit-percent
   [[type profit-percent] position row]
   (let [rt (assoc position :exit-price (extreme-profit-price position row))]
-    (println "return-prct: " (rt/return-prct rt) "profit-target-prct: " profit-percent)
+    ;(println "return-prct: " (rt/return-prct rt) "profit-target-prct: " profit-percent)
     (when (>= (rt/return-prct rt) profit-percent)
       (-> (rt/set-exit-price-percent position profit-percent)
           (create-exit type row)))))
