@@ -72,7 +72,7 @@
    the current row is included in the window."
   [n bar-ds]
   (rolling-window-reduce (fn [col-name]
-                           (println "col: " col-name)
+                           ;(println "col: " col-name)
                            {:column-name col-name
                             :reducer ret/return-stddev
                             :datatype :float64})

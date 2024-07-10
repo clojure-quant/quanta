@@ -24,7 +24,7 @@
   (fn [class-key args]
     (let [kns       (when-let [x (namespace class-key)] (str x "."))
           class-str (str pre-str kns (name class-key) post-str)]
-      (println "class-str: " class-str)
+      ;(println "class-str: " class-str)
       (clojure.lang.Reflector/invokeConstructor
        (resolve (symbol class-str))
        (to-array args)))))
@@ -48,10 +48,10 @@
 
 (defn ind-values-bool
   ([ind]
-   (println "ind-values-bool!")
+   ;(println "ind-values-bool!")
    (ind-values-bool (-> ind .getBarSeries .getBarCount) ind))
   ([n ind]
-   (println "get-values-bool: " ind)
+   ;(println "get-values-bool: " ind)
    (->> (map #(->> % (.getValue ind) .booleanValue)
              (range n)))))
 

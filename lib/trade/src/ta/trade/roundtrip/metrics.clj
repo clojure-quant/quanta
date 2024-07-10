@@ -43,8 +43,8 @@
 (defn win-loss-performance-metrics [win-loss-stats]
   (let [win (get-group-of win-loss-stats :win? true)
         loss (get-group-of win-loss-stats :win? false)
-        _ (println "win: " win)
-        _ (println "loss: " loss)
+        ;_ (println "win: " win)
+        ;_ (println "loss: " loss)
         ; it might be that there are no losses or no wins
         ; so we need to get defaults for nil
         ; trade #

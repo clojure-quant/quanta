@@ -13,13 +13,13 @@
   (let [vr (validate-roundtrips-ds roundtrip-ds)]
     (if (nom/anomaly? vr)
       vr
-      (let [_ (println "add performance")
+      (let [;_ (println "add performance")
             roundtrip-ds (add-performance roundtrip-ds)
-            _ (println "calc rt metrics")
+            ;_ (println "calc rt metrics")
             rt-metrics (calc-roundtrip-metrics roundtrip-ds)
-            _ (println "calc nav metrics")
+            ;_ (println "calc nav metrics")
             nav-metrics (calc-nav-metrics roundtrip-ds)
-            _ (println "calc grouped nav metrics")
+            ;_ (println "calc grouped nav metrics")
             nav-ds (grouped-nav roundtrip-ds)]
         {:roundtrip-ds roundtrip-ds
          :metrics {:roundtrip rt-metrics
