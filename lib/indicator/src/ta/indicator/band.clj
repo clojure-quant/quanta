@@ -53,7 +53,15 @@
                   (dfn/* k))]
     (add-bands mid delta delta pre mid? bar-ds)))
 
-(defn add-atr-band [{:keys [atr-n atr-m pre mid?]
+(defn add-atr-band 
+   "adds atr band indicator to dataset
+     atr-n is the number of bars for atr calc
+     atr-m is the multiplyer
+     Band   | formula
+     Middle | prior close
+     Upper  | middle + (n-day atr) * atr-m 
+     Lower  | middle + (n-day atr) * atr-m "
+  [{:keys [atr-n atr-m pre mid?]
                      :or {pre "atr-band"
                           mid? true}} bar-ds]
   (assert atr-n "atr-band needs :atr-n option")

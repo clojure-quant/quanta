@@ -320,6 +320,7 @@
      (into [] (chebyshev-tfn g) v))))
 
 (defn macd
+  "MACD Indicator"
   ([col] (macd {:n 12 :m 26} col))
   ([{:keys [n m]} col]
    (let [ema-short (ema n col)
