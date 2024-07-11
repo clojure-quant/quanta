@@ -45,12 +45,15 @@
    2. Returns roundtrips so it is not required to run backtest a second time. 
    Since it returns a map template viz functions have to use :roundtrips and :ds 
    to get the data they need."
-  [{:keys [entry exit] :as opts} bar-entry-ds]
-  (assert (:entry bar-entry-ds) "to create roundtrips :entry column needs to be present!")
-  (assert (:date  bar-entry-ds) "to create roundtrips :date column needs to be present!")
-  (assert (:close  bar-entry-ds) "to create roundtrips :close column needs to be present!")
-  (assert (:low  bar-entry-ds) "to create roundtrips :low column needs to be present!")
-  (assert (:high  bar-entry-ds) "to create roundtrips :high column needs to be present!")
+  [{:keys [asset entry exit] :as opts} bar-entry-ds]
+  (assert asset  "roundtrip-creation needs :asset in opts!")
+  (assert entry  "roundtrip-creation needs :entry in opts!")
+  (assert exit "roundtrip-creation needs :exit in opts!")
+  (assert (:entry bar-entry-ds) "roundtrip-creation needs :entry column in bar-entry-ds!")
+  (assert (:date  bar-entry-ds) "roundtrip-creation needs :date column in bar-entry-ds!")
+  (assert (:close  bar-entry-ds) "roundtrip-creation needs :close column in bar-entry-ds!")
+  (assert (:low  bar-entry-ds) "roundtrip-creation needs :low column in bar-entry-ds!")
+  (assert (:high  bar-entry-ds) "roundtrip-creation needs :high column in bar-entry-ds!")
   (let [roundtrips (volatile! [])
         record-roundtrip (fn [p]
                            (->> (assoc p :id (inc (count @roundtrips)))
@@ -59,6 +62,8 @@
         bar-signal-idx-ds (tc/add-column bar-entry-ds :idx (range (tc/row-count bar-entry-ds)))
         exit-signal (into [] fun (tds/mapseq-reader bar-signal-idx-ds))
         bar-entry-exit-ds (tc/add-columns bar-entry-ds {:exit exit-signal})]
-    {:roundtrips (tc/dataset @roundtrips)
+    {:opts {:entry entry
+            :exit exit}
+     :roundtrips (tc/dataset @roundtrips)
      :exit exit-signal
      :ds bar-entry-exit-ds}))
