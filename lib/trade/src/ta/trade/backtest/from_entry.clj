@@ -14,7 +14,7 @@
     p))
 
 (defn- manage-position-row
-  [{:keys [asset entry exit] :as opts} record-roundtrip]
+  [{:keys [asset entry exit] :as _opts} record-roundtrip]
   (indicator
    [position (volatile! {:side :flat})
     open-position! (fn [p] (vreset! position p))

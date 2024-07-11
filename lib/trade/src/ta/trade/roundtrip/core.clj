@@ -1,7 +1,7 @@
 (ns ta.trade.roundtrip.core
   (:require
    [de.otto.nom.core :as nom]
-   [taoensso.timbre :as timbre :refer [info warn error]]
+   [taoensso.timbre :as timbre :refer [error]]
    [tech.v3.dataset :as tds]
    [ta.trade.roundtrip.validation :refer [validate-roundtrips-ds]]
    [ta.trade.roundtrip.roundtrip :refer [add-performance]]

@@ -11,7 +11,7 @@
 (defmulti exit
   "returns a closed roundtrip or nil.
    input: position + row"
-  (fn [[type opts] position row] type))
+  (fn [[type _opts] _position _row] type))
 
 (defmethod exit :time
   [[type exit-time] position row]
@@ -19,7 +19,7 @@
            (+ (:entry-idx position) exit-time))
     (create-exit (assoc position :exit-price (:close row)) type row)))
 
-(defn- extreme-profit-price [{:keys [entry-price side] :as roundtrip} row]
+(defn- extreme-profit-price [{:keys [_entry-price side] :as _roundtrip} row]
   (if (= side :long)
     (:high row)
     (:low row)))
@@ -32,7 +32,7 @@
       (-> (rt/set-exit-price-percent position profit-percent)
           (create-exit type row)))))
 
-(defn- extreme-loss-price [{:keys [entry-price side] :as roundtrip} row]
+(defn- extreme-loss-price [{:keys [_entry-price side] :as _roundtrip} row]
   (if (= side :short)
     (:high row)
     (:low row)))
@@ -47,7 +47,7 @@
 ; trailing stop loss is stateful. 
 
 (defmethod exit :default
-  [[type opts] position row]
+  [[_type _opts] _position _row]
   ; no exit if it is an unknown exit rule
   nil)
 

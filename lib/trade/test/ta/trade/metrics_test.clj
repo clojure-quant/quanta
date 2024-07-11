@@ -7,7 +7,6 @@
    [ta.trade.backtest.from-entry :refer [entry-signal->roundtrips]]
    [ta.trade.roundtrip.core :refer [roundtrip-stats]]))
 
-
 (defn metrics-for-bar-ds [bar-ds]
   (->>  bar-ds
         (entry-signal->roundtrips {:asset "BTC"
@@ -26,10 +25,9 @@
   ; on the other hand it tests a special case where there are no wins.
   (is (= (metrics-for-bar-ds bar-entry-ds) #{:roundtrip-ds :metrics :nav-ds})))
 
-(comment 
+(comment
   (metrics-for-bar-ds bar-entry-ds)
   ;; => [:roundtrip-ds :metrics :nav-ds]
 
-  
- ; 
+; 
   )

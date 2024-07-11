@@ -1,7 +1,7 @@
 (ns ta.trade.backtest.entry)
 
 (defmulti positionsize
-  (fn [[type opts] close] type))
+  (fn [[type _opts] _close] type))
 
 (defmethod positionsize :fixed-qty
   [[_type fixed-qty] _close]
@@ -18,7 +18,7 @@
        (contains? #{:long :short} signal)))
 
 (defn eventually-entry-position [asset size-rule
-                                 {:keys [date idx close entry] :as row}]
+                                 {:keys [date idx close entry] :as _row}]
   (when (entry? entry)
     {:side entry
      :asset asset
