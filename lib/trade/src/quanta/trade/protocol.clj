@@ -1,9 +1,6 @@
 (ns quanta.trade.protocol)
 
-(defprotocol broker
-  ; process management
-  (shutdown [this])
-  (order-update-flow [this]))
+
 
 
 (defprotocol ordermanager

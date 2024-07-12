@@ -9,7 +9,7 @@
 (defn log [& data]
   (let [s (with-out-str (apply println data))]
     (println s)
-    (spit "/home/florian/repo/clojure-quant/quanta/broker.txt" s :append true)))
+    (spit "/home/florian/repo/clojure-quant/quanta/scheduler.txt" s :append true)))
 
 (defn scheduler
   "returns a missionary flow
