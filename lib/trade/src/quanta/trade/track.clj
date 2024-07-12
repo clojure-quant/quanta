@@ -1,4 +1,4 @@
-(ns ta.trade.robot.track)
+(ns quanta.trade.track)
 
 ; robot
 ; Env: 
@@ -27,5 +27,4 @@
     (position/set-actual-position pm asset
                                   {:entry-price (:close bar-ds)
                                    :entry-idx idx})))
-
 

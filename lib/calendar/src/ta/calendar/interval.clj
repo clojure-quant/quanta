@@ -83,6 +83,9 @@
 (defn interval-exists? [interval-kw]
   (contains? intervals interval-kw))
 
+(defn get-interval-list []
+  (keys intervals))
+
 (comment
   (now-in-zone "Europe/Paris")
   (now-in-zone "America/New_York")
