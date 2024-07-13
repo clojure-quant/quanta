@@ -2,17 +2,9 @@
   (:require
    [tick.core :as t]
    [missionary.core :as m]
-   [ta.calendar.core :refer [calendar-seq]]))
-
-(defn get-exit-rule [algo-opts]
-  (let [{:keys [exit]} algo-opts
-        rule (->> exit
-                  (partition 2)
-                  (filter (fn [[rule rule-opts]]
-                            (= rule :time)))
-                  first)]
-    (when rule
-      (into [] rule))))
+   [ta.calendar.core :refer [calendar-seq]]
+   [quanta.trade.position.exit :refer [get-exit-rule]]
+   ))
 
 (defn get-time-bars [algo-opts]
   (let [[_ bars] (get-exit-rule algo-opts)]
@@ -38,15 +30,7 @@
 
 
 (comment
-  (get-exit-rule {:exit [:profit 2.0
-                         :loss 0.3
-                         :time 1]})
-  ;; => [:time 1]
-
-  (get-exit-rule {:exit [:profit 2.0
-                         :loss 0.3]})
-  ;; => nil
-
+ 
   
   (get-exit-time {:calendar [:crypto :m]
                   :exit [:profit 2.0

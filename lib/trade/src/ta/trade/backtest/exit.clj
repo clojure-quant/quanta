@@ -1,6 +1,8 @@
 (ns ta.trade.backtest.exit
   (:require
-   [ta.trade.roundtrip.roundtrip :as rt]))
+   [ta.trade.roundtrip.roundtrip :as rt]
+   [quanta.trade.roundtrip :refer [return-prct set-exit-price-percent]]
+   ))
 
 (defn- create-exit [position rule row]
   (assoc position
@@ -28,8 +30,8 @@
   [[type profit-percent] position row]
   (let [rt (assoc position :exit-price (extreme-profit-price position row))]
     ;(println "return-prct: " (rt/return-prct rt) "profit-target-prct: " profit-percent)
-    (when (>= (rt/return-prct rt) profit-percent)
-      (-> (rt/set-exit-price-percent position profit-percent)
+    (when (>= (return-prct rt) profit-percent)
+      (-> (set-exit-price-percent position profit-percent)
           (create-exit type row)))))
 
 (defn- extreme-loss-price [{:keys [_entry-price side] :as _roundtrip} row]
@@ -40,8 +42,8 @@
 (defmethod exit :loss-percent
   [[type loss-percent] position row]
   (let [rt (assoc position :exit-price (extreme-loss-price position row))]
-    (when (<= (rt/return-prct rt) (- 0.0 loss-percent))
-      (-> (rt/set-exit-price-percent position (- 0.0 loss-percent))
+    (when (<= (return-prct rt) (- 0.0 loss-percent))
+      (-> (set-exit-price-percent position (- 0.0 loss-percent))
           (create-exit type row)))))
 
 ; trailing stop loss is stateful. 

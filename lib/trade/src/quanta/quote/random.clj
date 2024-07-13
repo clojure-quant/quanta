@@ -37,24 +37,13 @@
                              ; shutdown
                              (println "stop generating quotes for: " asset)
                              (swap! subscription-a disj asset)
-                             (throw ex)
                              false))]
               (if recur?
                 (recur (update-price p))
                 :unsubscribed
                 ))))))
 
-
 (def get-quote (memoize generate-quotes))
-
-#_(defn get-quote [asset]
-  (let [quote (or (get @subscription-atom asset)
-                  (start-subscription asset))]
-    (m/ap (try
-            (m/amb (m/?> quote))
-            (catch Cancelled _
-              (println "view cancelled for: " asset)
-              (stop-subscription asset))))))
 
 (comment
   (initial-price)
@@ -73,7 +62,7 @@
 (defn print-quotes [& quotes]
   (print-table [:asset :last :date] quotes))
   
-(let [assets ["BTC" "ETH" "EURUSD" "QQQ"]
+(let [assets ["BTC" "ETH" "EURUSD" "QQQ" "EURUSD"]
       quotes (map get-quote assets)]
   (m/? (m/reduce (constantly nil)
          (apply m/latest print-quotes quotes))))
