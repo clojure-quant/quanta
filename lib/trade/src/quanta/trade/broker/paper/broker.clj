@@ -5,7 +5,6 @@
    [tick.core :as t]
    [quanta.trade.broker.protocol :as B]
    [quanta.trade.broker.paper.orderfiller :refer [random-fill-flow]]
-
    ))
 
 #_(defn log [& data]
