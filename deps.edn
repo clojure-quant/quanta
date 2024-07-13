@@ -94,7 +94,6 @@
    :main-opts ["-m" "nrepl.cmdline"
                "-b" "0.0.0.0"
                    ;"-p" "9100"
-                   ;"--middleware" "[cider.nrepl/cider-middleware,refactor-nrepl.middleware/wrap-refactor]"
                "--middleware" "[cider.nrepl/cider-middleware]"]}
 
 ;

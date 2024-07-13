@@ -60,7 +60,8 @@
 
 (defn create-random-fill-broker [{:keys [fill-probability wait-seconds] :as opts} order-input-flow]
   (let [
-        broker (random-fill-broker. opts order-input-flow output-flow)]
+        broker nil ; (random-fill-broker. opts order-input-flow output-flow)
+        ]
     broker))
 
 (comment
@@ -92,15 +93,15 @@
    #(prn ::crash %)))
   
  
-  [{:type :order-update/new-order :date #inst "2024-07-12T20:05:40.758909483-00:00", :order-id 1, } 
-   {:type :order-update/fill, :order-id 1, :fill-id eT3h3f, :date #inst "2024-07-12T20:06:00.762817855-00:00",  :asset :BTC, :qty 0.001, :side :buy} 
-   {:date #inst "2024-07-12T20:06:00.764297568-00:00", :order-id 2, :type :order-update/new-order}
-   {:type :order-update/fill, :order-id 2, :fill-id Ozlotz, :date #inst "2024-07-12T20:06:20.768514580-00:00", :asset :ETH, :qty 0.001, :side :sell} 
-   :unknown-message-type 
-   {:date #inst "2024-07-12T20:06:25.771038739-00:00", :order-id 3, :type :order-update/new-order} 
-   {:type :order-update/fill, :order-id 3, :fill-id SjcXKD, :date #inst "2024-07-12T20:06:45.775714428-00:00",  :asset :ETH, :qty 0.001, :side :sell} 
-   {:date #inst "2024-07-12T20:06:45.777047187-00:00", :order-id 4, :type :order-update/new-order}
-   {:type :order-update/fill, :order-id 4, :fill-id 4BIYA8, :date #inst "2024-07-12T20:07:00.779794903-00:00", :asset :ETH, :qty 0.001, :side :sell}]
+  ;[{:type :order-update/new-order :date #inst "2024-07-12T20:05:40.758909483-00:00", :order-id 1, } 
+  ; {:type :order-update/fill, :order-id 1, :fill-id eT3h3f, :date #inst "2024-07-12T20:06:00.762817855-00:00",  :asset :BTC, :qty 0.001, :side :buy} 
+  ; {:date #inst "2024-07-12T20:06:00.764297568-00:00", :order-id 2, :type :order-update/new-order}
+  ; {:type :order-update/fill, :order-id 2, :fill-id Ozlotz, :date #inst "2024-07-12T20:06:20.768514580-00:00", :asset :ETH, :qty 0.001, :side :sell} 
+  ; :unknown-message-type 
+  ; {:date #inst "2024-07-12T20:06:25.771038739-00:00", :order-id 3, :type :order-update/new-order} 
+  ; {:type :order-update/fill, :order-id 3, :fill-id SjcXKD, :date #inst "2024-07-12T20:06:45.775714428-00:00",  :asset :ETH, :qty 0.001, :side :sell} 
+  ; {:date #inst "2024-07-12T20:06:45.777047187-00:00", :order-id 4, :type :order-update/new-order}
+  ; {:type :order-update/fill, :order-id 4, :fill-id 4BIYA8, :date #inst "2024-07-12T20:07:00.779794903-00:00", :asset :ETH, :qty 0.001, :side :sell}]
 
 
 

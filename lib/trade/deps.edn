@@ -9,6 +9,7 @@
   missionary/missionary {:mvn/version "b.39"} ; reactive framework.
   org.pinkgorilla/timbre {:mvn/version "0.0.7"}
   ta/indicator {:local/root "../indicator" :deps/manifest :deps}
+  ta/calendar {:local/root "../calendar" :deps/manifest :deps}
   
   }
 

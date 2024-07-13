@@ -4,3 +4,6 @@
   ; process management
   (shutdown [this])
   (order-update-flow [this]))
+
+
+(println "hi")
