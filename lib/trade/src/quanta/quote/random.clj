@@ -5,7 +5,9 @@
   (:import [missionary Cancelled]))
 
 (defn initial-price []
-  (rand 10000))
+  ;(rand 10000)
+  10000.0
+  )
 
 (defn update-price [p]
   (let [i (rand-int 5)]

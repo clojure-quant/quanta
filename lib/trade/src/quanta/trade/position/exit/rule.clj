@@ -1,4 +1,4 @@
-(ns quanta.trade.position.exit)
+(ns quanta.trade.position.exit.rule)
 
 (defn get-exit-rule [algo-opts rule-kw]
   (let [{:keys [exit]} algo-opts

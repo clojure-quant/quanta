@@ -21,7 +21,7 @@
              :win? (> abs-ret 0.0))
       roundtrip)))
 
-(defn calculate-position [position]
+(defn working-position [position]
   (m/ap
      ; startup
    (println "start calculating position: " position)
@@ -33,7 +33,7 @@
 (comment
   (require '[tick.core :as t])
   (m/? (m/reduce println
-                 (calculate-position {:asset "BTCUSDT"
+                 (working-position {:asset "BTCUSDT"
                                       :qty 500
                                       :entry-price 1000.0
                                       :entry-date (t/instant)})))
@@ -67,7 +67,7 @@
                   :ret-prct
                   :win?] positions))
 
-  (let [flows (map calculate-position positions)]
+  (let [flows (map working-position positions)]
     (m/? 
      (m/reduce (constantly nil)
                (apply m/latest print-positions flows))))

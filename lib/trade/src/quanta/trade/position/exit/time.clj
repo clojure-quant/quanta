@@ -3,7 +3,7 @@
    [tick.core :as t]
    [missionary.core :as m]
    [ta.calendar.core :refer [calendar-seq]]
-   [quanta.trade.position.exit :refer [get-exit-rule]]
+   [quanta.trade.position.exit.rule :refer [get-exit-rule]]
    ))
 
 (defn get-time-bars [algo-opts]

@@ -1,4 +1,4 @@
-(ns quanta.trade.position.size)
+(ns quanta.trade.position.entry.size)
 
 
 (defmulti positionsize

@@ -1,6 +1,6 @@
 (ns ta.trade.backtest.entry
   (:require 
-   [quanta.trade.position.size :refer [positionsize]]
+   [quanta.trade.position.entry.size :refer [positionsize]]
    )
   )
 
