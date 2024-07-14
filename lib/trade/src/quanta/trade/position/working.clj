@@ -2,7 +2,7 @@
   (:require
    [tick.core :as t]
    [missionary.core :as m]
-   [quanta.quote.random :refer [get-quote]]
+   [quanta.market.broker.random :refer [get-quote]]
    [quanta.trade.roundtrip :refer [return-prct return-abs return-log]])
   (:import [missionary Cancelled]))
 

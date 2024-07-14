@@ -1,7 +1,8 @@
-(ns quanta.quote.random
+(ns quanta.market.broker.random
   (:require
    [tick.core :as t]
-   [missionary.core :as m])
+   [missionary.core :as m]
+   [quanta.market.protocol :refer [connection get-quote]])
   (:import [missionary Cancelled]))
 
 (defn initial-price []
@@ -45,7 +46,18 @@
                 :unsubscribed
                 ))))))
 
-(def get-quote (memoize generate-quotes))
+; (def get-quote (memoize generate-quotes))
+
+
+(defmethod connection :random
+  [opts] 
+  nil)
+
+
+(defmethod get-quote :random
+  [type connection asset]
+  (generate-quotes asset))
+
 
 (comment
   (initial-price)

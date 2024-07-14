@@ -1,4 +1,4 @@
-(ns quanta.market.connection.bybit
+(ns quanta.market.broker.bybit
   "bybit quote feed"
   (:require
    [taoensso.timbre :as timbre :refer [debug info warn error]]
@@ -9,13 +9,9 @@
    [cheshire.core :refer [parse-string generate-string]]
    [buddy.core.codecs :as crypto.codecs]
    [buddy.core.mac :as crypto.mac]
-   
-   ))
+   [quanta.market.protocol :refer [connection get-quote]]))
 
 ;; https://bybit-exchange.github.io/docs/v5/ws/connect
-
-(def ws-url {:live "wss://stream.bybit.com/v5/public/spot"
-             :test "wss://stream-testnet.bybit.com/v5/public/spot"})
 
 (def websocket-destination-urls
   {:main {:spot "wss://stream.bybit.com/v5/public/spot"
@@ -29,38 +25,31 @@
           :inverse "wss://stream-testnet.bybit.com/v5/public/inverse"
           :option "wss://stream-testnet.bybit.com/v5/public/option" ; USDC Option
           :trade "wss://stream-testnet.bybit.com/v5/trade"
-          :private "wss://stream-testnet.bybit.com/v5/private"}}) 
+          :private "wss://stream-testnet.bybit.com/v5/private"}})
 
 (defn get-ws-url [mode destination]
-  (get-in websocket-destination-urls [mode destination])) 
-
-
+  (get-in websocket-destination-urls [mode destination]))
 
 (defn- sign
   [to-sign key-secret]
   (-> (crypto.mac/hash to-sign {:key key-secret :alg :hmac+sha256})
       (crypto.codecs/bytes->hex)))
 
-
 (defn auth-msg [{:keys [api-key api-secret]}]
   (let [millis (System/currentTimeMillis)
         expires (+ millis (* 1000 60 5)) ; 5 min
         to-sign (str "GET/realtime" expires)
         signature (sign to-sign api-secret)]
-  {"op" "auth"
-   "args" [api-key
-           expires
-           signature]}))
-  
-
-
+    {"op" "auth"
+     "args" [api-key
+             expires
+             signature]}))
 
 ; orderbook responses: type: snapshot,delta
 (defn send-msg-simple! [stream msg]
   (let [json (generate-string msg)]
     (info "sending: " json)
     (s/put! stream json)))
-
 
 (defn send-msg! [stream msg]
   (let [req-id (nano-id 8)
@@ -77,41 +66,32 @@
     (debug "sending bybit ping..")
     (send-msg! msg-stream {"op" "ping"})))
 
-(defn connect [mode segment]
-  (info "bybit connect " mode " segment")
+(defn connect! [{:keys [mode segment]}]
   (let [url (get-ws-url mode segment)
-        client @(http/websocket-client url)]
-    client))
-
-(defn connect-live []
-  (info "bybit connect ")
-  (let [client @(http/websocket-client (:live ws-url))
+        _ (info "bybit connect mode: " mode " segment: " segment " url: "  url)
+        client @(http/websocket-client url)
         ;f (set-interval (gen-ping-sender client) 5000)
         ]
-    {:msg-stream client
-     ;:ping-sender f
-     }))
+    (info "bybit connected!")
+    client))
 
-(defn send! [conn msg]
-  (let [msg-stream (:msg-stream conn)]
-    (send-msg! msg-stream msg)))
 
 (defn subscription-msg [asset]
   {"op" "subscribe"
    "args" [(str "publicTrade." asset)]})
 
-
-(def bybit-websocket-live
+(defmethod connection :bybit 
+  [opts] 
   ; this returns a missionary flow 
   ; published events of this flow are connection-streams
   (m/observe
    (fn [!]
      (info "connecting..")
-     (let [{:keys [msg-stream ping-sender] :as new-state} (connect-live)]
-       (! msg-stream)
+     (let [stream (connect! opts)]
+       (! stream)
        (fn []
          (info "disconnecting..")
-         (.close msg-stream)
+         (.close stream)
          ;(future-cancel ping-sender)
          )))))
 
@@ -142,10 +122,11 @@
     (info "full snapshot: " data)
     (map bybit-data->tick data)))
 
-(defn get-quote [asset]
+(defmethod get-quote :bybit
+  [type connection asset]
   (m/ap
    (info "get-quote: " asset " waiting for stream..")
-   (let [stream (m/?> bybit-websocket-live)]
+   (let [stream (m/?> connection)]
      (if stream
        (do
          (info "subscribing for asset: " asset)
@@ -156,7 +137,9 @@
            ))
        (do
          (error "stream is not there.")
-         {:msg :connecting})))))
+         {:error :connecting 
+          :msg "stream is not there.. connection err?"})))))
+
 
 
 (defn create-order-msg [{:keys [asset side qty limit]}]
@@ -164,9 +147,9 @@
    "header" {"X-BAPI-TIMESTAMP" (System/currentTimeMillis)
              "X-BAPI-RECV-WINDOW" "8000"
              "Referer" "bot-001" ; for api broker
-            }
-    "args" [{"symbol" asset
-            "side" (case side 
+             }
+   "args" [{"symbol" asset
+            "side" (case side
                      :long "Buy"
                      :buy "Buy"
                      :short "Sell"
@@ -175,38 +158,40 @@
             "qty" qty
             "price" limit
             "category" "linear"
-            "timeInForce" "PostOnly"
-        }]})
-
+            "timeInForce" "PostOnly"}]})
 
 (comment
   ;raw websocket testing:
-  
-  (def c (connect :main :spot))
+
+  (def c (connect! {:mode :main
+                    :segment :spot}))
   (s/consume println c)
   (send-msg-simple! c (subscription-msg "BTCUSDT"))
   c
   (.close c)
 
   ; quote-view 
-  (m/? (m/reduce println nil (get-quote "BTCUSDT")))
-  
-(defn cont [flow]
-  (->> flow 
-       (m/reductions (fn [r v] v) nil)
-       (m/relieve {})))
+  (def conn (connection {:type :bybit
+                         :mode :main
+                         :segment :spot}))
+
+  (m/? (m/reduce println nil (get-quote :bybit conn "BTCUSDT")))
+
+  (defn cont [flow]
+    (->> flow
+         (m/reductions (fn [r v] v) nil)
+         (m/relieve {})))
 
   (let [assets ["BTCUSDT" "ETHUSDT"]
         quotes (map get-quote assets)
         quotes-cont (map cont quotes)
         last-quotes (apply m/latest vector quotes-cont)]
-    (m/? 
+    (m/?
      (m/reduce println nil last-quotes)))
-  
 
-  ; auth
+; auth
   (require '[clojure.edn :refer [read-string]])
-  (def creds 
+  (def creds
     (-> (System/getenv "MYVAULT")
         (str "/goldly/quanta.edn")
         slurp
@@ -215,16 +200,13 @@
   creds
   (auth-msg creds)
 
-
   (def c (connect :test :trade))
   (s/consume println c)
   (send-msg-simple! c (auth-msg creds))
   (send-msg-simple! c (create-order-msg {:asset "ETHUSDT"
-                                  :side :buy 
-                                  :qty "0.01"
-                                  :limit "1000.0"}))
-
-
+                                         :side :buy
+                                         :qty "0.01"
+                                         :limit "1000.0"}))
 
 ; 
-    )
+  )
