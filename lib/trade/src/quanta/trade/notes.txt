@@ -17,6 +17,11 @@ https://github.com/bortexz/tacos
 Sources
 - Quote (algo-opts)
 - Working-position (position-id)
+- ExitSignal.
+
+
+
 - EntryOrder (algo-opts signal)
 - ExitOrder (algo-opts position)
 - Order
+

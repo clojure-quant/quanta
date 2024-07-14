@@ -22,8 +22,8 @@
     
    (require '[tick.core :as t])
    (def algo-opts {:calendar [:crypto :m]
-                   :exit [:loss-percent 2.0
-                          :profit-percent 100.0
+                   :exit [:loss-percent 5.0
+                          :profit-percent 10.0
                           :time 2]})
    (def position {:asset "BTCUSDT"
                   :side :long
@@ -39,7 +39,9 @@
      ;; it might be that this task returns immediately, because
      ;; the current time is already below the time of the exit-date 
  
-   (m/? (exit-signal algo-opts {:entry-date (t/instant)}))
+   (m/? (exit-signal algo-opts 
+                     (assoc position :entry-date (t/instant))))
+   
      ;; => :time
  
  ; 
