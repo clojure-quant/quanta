@@ -7,7 +7,7 @@
 
 ; orderbook responses: type: snapshot,delta
 
-(defn create-order-msg [{:keys [asset side qty limit]}]
+(defn order-create-msg [{:keys [asset side qty limit]}]
   {"op" "order.create"
    "header" {"X-BAPI-TIMESTAMP" (System/currentTimeMillis)
              "X-BAPI-RECV-WINDOW" "8000"
@@ -38,10 +38,57 @@
    :reqId "5bY1PVT-"
    :data {}})
 
+(def order-response-failed-example2
+{:retCode 10005,
+ :retMsg "Permission denied for current apikey",
+ :connId "cpv86i6c0hvd5nkl25n0-2v79",
+ :op "order.create",
+ :reqId "XiMTlhQV"})
+
 (defn order-create! [conn order]
-  (let [order-msg (create-order-msg order)]
+  (let [msg (order-create-msg order)]
     (info "order-create: " order " ..")
-    (c/rpc-req! conn order-msg)))
+    (c/rpc-req! conn msg)))
+
+(defn order-cancel-msg [{:keys [asset order-id]}]
+  {"op" "order.cancel"
+   "header" {"X-BAPI-TIMESTAMP" (System/currentTimeMillis)
+             "X-BAPI-RECV-WINDOW" "8000"
+             "Referer" "bot-001" ; for api broker
+             }
+   "args" [{"category" "linear" ; product type: spot, linear, inverse, option
+            "symbol" asset
+            ;"orderId" order-id ; bybit order id
+            "orderLinkId" order-id ; user order id
+            }]})
+
+(def order-cancel-failed-example 
+{:retCode 10005,
+ :retMsg "Permission denied for current apikey",
+ :connId "cpv86i6c0hvd5nkl25n0-2v7a",
+ :op "order.cancel",
+ :reqId "XMrZJoEs"}  
+  )
+(def order-cancel-failed-example2
+{:retCode 110001,
+ :retMsg "order not exists or too late to cancel",
+ :connId "cpv86i6c0hvd5nkl25n0-2v7a",
+ :op "order.cancel",
+ :header
+ {:Timenow "1721243099025",
+  :X-Bapi-Limit-Status "9",
+  :X-Bapi-Limit-Reset-Timestamp "1721243099024",
+  :Traceid "0313d8af73592c2034d873ef1f6479ac",
+  :X-Bapi-Limit "10"},
+ :reqId "-Cquvtz7",
+ :data {}})
+
+
+
+(defn order-cancel! [conn order]
+  (let [msg (order-cancel-msg order)]
+    (info "order-cancel: " order " ..")
+    (c/rpc-req! conn msg)))
 
 (comment
   (require '[clojure.edn :refer [read-string]])
@@ -74,9 +121,13 @@
 
   (m/?  (order-create! conn order))
 
-  conn
+  
+ (def cancel
+  {:asset "ETHUSDT"
+   :order-id "my-id-007"})
 
-  (-> conn :stream :sink)
+   (m/? (order-cancel! conn cancel))
+  
 
 ; 
   )
