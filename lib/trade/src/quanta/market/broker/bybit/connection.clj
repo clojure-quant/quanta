@@ -39,19 +39,70 @@
     client))
 
 (defn json->msg [json]
-  (let [msg (j/read-value json j/keyword-keys-object-mapper)]
-    (info "msg rcvd: " msg)
-    msg))
+  (j/read-value json j/keyword-keys-object-mapper))
 
-(defn msg-flow [stream]
+(defn msg-flow [!-a]
   (m/observe
    (fn [!]
      (info "creating msg-flow reader..")
-     (let [msg-flow (s/consume #(! (json->msg %)) stream)]
-       (fn []
-         (info "removing msg-flow reader.."))))))
+     (reset! !-a !)
+     (fn []
+       (info "removing msg-flow reader..")
+       (reset! !-a nil)))))
 
 ;(future-cancel ping-sender)
+
+(defn connection-start! [opts]
+  (info "connection-start..")
+  (let [stream (connect! opts)
+        !-a (atom nil)
+        on-msg (fn [json]
+                 (let [msg (json->msg json)]
+                   (info "!msg rcvd: " msg)
+                   (when @!-a
+                     (@!-a msg))))
+        msg-flow (msg-flow !-a)]
+    (s/consume on-msg stream)
+    (info "connected!")
+    {:account opts
+     :api :bybit
+     :stream stream
+     :msg-flow msg-flow}))
+
+(defn connection-stop! [{:keys [stream msg-flow]}]
+   (info "connection-stop.. ")
+  (.close stream)
+  
+  )
+
+(defn send-msg! [{:keys [stream]} msg]
+  (let [json (j/write-value-as-string msg)]
+    (info "send-msg!: " json)
+    (if stream 
+       (s/put! stream json)  
+       (error "send-msg! stream not found.")
+      )
+    ))
+
+(defn send-msg-task [conn msg]
+  (m/sp (send-msg! conn msg)))
+
+(defn rpc-req! [conn msg]
+  (m/sp
+   (let [id (nano-id 8)
+         p-reqId (fn [{:keys [reqId]}]
+                   (= id reqId))
+         result (first-match p-reqId (:msg-flow conn))
+         msg (assoc msg :reqId id)]
+     (info "making request current conn:" conn)
+     (send-msg! conn msg)
+     (info "waiting for result")
+     (m/? result))))
+
+
+
+
+
 
 (defn connection3 [opts]
    ; this returns a missionary flow 
@@ -60,7 +111,14 @@
    (fn [!]
      (info "connecting..")
      (let [stream (connect! opts)
-           msg-flow (msg-flow stream)]
+           !-a (atom nil)
+           on-msg (fn [json]
+                    (let [msg (json->msg json)]
+                       (info "!msg rcvd: " msg)
+                       (when @!-a
+                         (@!-a msg))))
+           msg-flow (msg-flow !-a)]
+       (s/consume on-msg stream)
        (info "connected!")
        (! {:account opts
            :api :bybit
@@ -70,10 +128,8 @@
          (info "disconnecting.. stream " stream)
          (.close stream))))))
 
-(defn send-msg! [{:keys [stream]} msg]
-  (let [json (j/write-value-as-string msg)]
-    (info "sending: " json)
-    (s/put! stream json)))
+
+
 
 (defn set-interval [callback ms]
   (future (while true (do (Thread/sleep ms) (callback)))))

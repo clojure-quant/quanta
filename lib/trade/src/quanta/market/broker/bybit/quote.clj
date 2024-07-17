@@ -3,7 +3,9 @@
    [taoensso.timbre :as timbre :refer [debug info warn error]]
    [missionary.core :as m]
    [quanta.market.broker.bybit.message :as parser]
-   [quanta.market.broker.bybit.connection :refer [connection3 send-msg!]]))
+   [quanta.market.broker.bybit.connection :refer [connection-start! 
+                                                  connection-stop! 
+                                                  rpc-req!]]))
 
 ; https://bybit-exchange.github.io/docs/v5/websocket/public/trade
 
@@ -19,7 +21,7 @@
    :asset/liquidation "liquidation.%s" ; BAD
    })
 
-(defn topic [type & args]
+(defn topic [type args]
   (if-let [s (get topics type)]
     (apply format s args)
     (throw (Exception. (ex-info "topic not found" {:type type
@@ -89,21 +91,18 @@
     (and (= type "snapshot")
          (= topic target-topic))))
 
-(defn subscribe
-  [connection topic]
-  (m/ap
-   (info "subscribe: " topic " waiting for stream..")
-   (if-let [c (m/?> connection)]
-     (do
-       (info "subscribing: " topic)
-       (send-msg! c (subscription-msg topic))
-       (let [my-topic? (topic-snapshot? topic)
-             msg (m/?> (:msg-flow c))]
-         (when (my-topic? msg)
-           msg)))
-     (do
-       (error "subscribe error - cannot connect.")
-       nil))))
+(defn topic-view [conn topic]
+   (m/ap
+     (let [my-topic? (topic-snapshot? topic)
+          msg (m/?> (:msg-flow conn))]
+      (when (my-topic? msg)
+        msg))))
+
+(defn subscription-start!
+  [conn sub-type & args]
+  (let [t (topic sub-type args)]
+    (info "subscription-start topic: " t " ..")
+    (rpc-req! conn (subscription-msg t))))
 
 (defn quotes->quote [quotes]
   (m/ap
@@ -122,10 +121,22 @@
 
 (comment
   (def print-data (fn [r q] (println q)))
-  (def account
-    (connection3 {:mode :main
+  (def conn
+    (connection-start! {:mode :main
                   :segment :spot}))
+  
+  (connection-stop! conn)
 
+  (m/? (subscription-start! 
+        conn
+        :asset/stats "BTCUSDT"))
+  
+{:op "subscribe", 
+ :success true, 
+ :conn_id "9ad33645-5c43-417d-8943-6cb62280e7b3", 
+ :ret_msg "subscribe"}
+
+  
   (def t
      ;"publicTrade.BTCUSDT"
      ;"tickers.BTCUSDT"

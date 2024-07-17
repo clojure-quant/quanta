@@ -2,8 +2,10 @@
   (:require
    [taoensso.timbre :as timbre :refer [debug info warn error]]
    [missionary.core :as m]
-   [quanta.market.broker.bybit.connection :refer [send-msg! bybit-msg]]
-   [quanta.market.broker.bybit.secure-connection :refer [secure-connection rpc req]]))
+   [quanta.market.broker.bybit.connection :refer [connection-start! connection-stop! rpc-req!]]
+   [quanta.market.broker.bybit.auth :refer [authenticate!]]
+   ))
+
 
 ; orderbook responses: type: snapshot,delta
 
@@ -38,19 +40,11 @@
    :reqId "5bY1PVT-"
    :data {}})
 
-(defn send-order [conn
-                  {:keys [asset side qty limit] :as order}]
-  (m/ap
-   (if-let [c (m/?> conn)]
-     (let [_ (info "send-order has a connection. sending order")
-           order (send-msg! c (create-order-msg order))]
-       (m/?> (:msg-flow conn))
-       (info "done.")
-       )
-     (error "cannot send order .. no connection!"))))
 
-(defn send-order3 [conn order]
-  (req conn (create-order-msg order)))
+(defn order-create! [conn order]
+  (let [order-msg (create-order-msg order)]
+    (info "order-create: " order " ..")
+    (rpc-req! conn order-msg)))
 
 (comment
   (require '[clojure.edn :refer [read-string]])
@@ -61,18 +55,16 @@
         read-string
         :bybit/test))
 
-  (def opts {:mode :test
+  (def account {:mode :test
              :segment :trade
              :account creds})
 
-  (def account
-    (secure-connection opts))
-  
 
-account
+  account
+  (def conn
+    (connection-start! account))
 
-  (m/? (m/reduce println nil
-                 (secure-connection opts)))
+  conn
 
   (def order
     {:asset "ETHUSDT"
@@ -80,20 +72,14 @@ account
      :qty "0.01"
      :limit "1000.0"})
 
-  (m/?  (send-order account order))
-
-  (m/? (m/reduce
-        println nil
-        (send-order account order)))
-
-  (m/? (send-order test-account order))
-
-  (m/? (send-order3 test-account order))
-
-  (m/? (req account
-            (create-order-msg order)
-            ))
   
+(m/?  (authenticate! conn account))
+  
+
+  (m/?  (order-create! conn order))
+
+
+ 
   
 
 ; 
