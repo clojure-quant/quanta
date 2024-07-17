@@ -70,19 +70,33 @@
      :msg-flow msg-flow}))
 
 (defn connection-stop! [{:keys [stream msg-flow]}]
-   (info "connection-stop.. ")
-  (.close stream)
-  
-  )
+  (info "connection-stop.. ")
+  (.close stream))
 
-(defn send-msg! [{:keys [stream]} msg]
+
+(defn info? [conn]
+  (let [stream (:stream conn)]
+    (let [desc (s/description stream)]
+      desc
+    )
+  
+  ))
+
+(defn connected? [stream]
+  (when stream
+    (let [desc (s/description stream)]
+      (and
+       (not (-> desc :sink :closed?))
+       (not (-> desc :source :closed?))))))
+
+(defn send-msg! [{:keys [stream] :as conn} msg]
   (let [json (j/write-value-as-string msg)]
     (info "send-msg!: " json)
-    (if stream 
-       (s/put! stream json)  
-       (error "send-msg! stream not found.")
-      )
-    ))
+    (if (connected? stream)
+      (s/put! stream json)
+      (do
+        (error "send-msg failed (no connection): " msg)
+        (throw (ex-info "not connected" {:send-msg msg}))))))
 
 (defn send-msg-task [conn msg]
   (m/sp (send-msg! conn msg)))
@@ -95,14 +109,10 @@
          result (first-match p-reqId (:msg-flow conn))
          msg (assoc msg :reqId id)]
      (info "making request current conn:" conn)
-     (send-msg! conn msg)
-     (info "waiting for result")
-     (m/? result))))
-
-
-
-
-
+     (m/? (m/join vector
+             (send-msg-task conn msg)
+             result
+             (m/sleep 5000))))))
 
 (defn connection3 [opts]
    ; this returns a missionary flow 
@@ -114,22 +124,19 @@
            !-a (atom nil)
            on-msg (fn [json]
                     (let [msg (json->msg json)]
-                       (info "!msg rcvd: " msg)
-                       (when @!-a
-                         (@!-a msg))))
+                      (info "!msg rcvd: " msg)
+                      (when @!-a
+                        (@!-a msg))))
            msg-flow (msg-flow !-a)]
        (s/consume on-msg stream)
        (info "connected!")
        (! {:account opts
            :api :bybit
-           :stream stream 
+           :stream stream
            :msg-flow msg-flow})
        (fn []
          (info "disconnecting.. stream " stream)
          (.close stream))))))
-
-
-
 
 (defn set-interval [callback ms]
   (future (while true (do (Thread/sleep ms) (callback)))))

@@ -1,11 +1,9 @@
-(ns quanta.market.broker.bybit.order
+(ns quanta.market.broker.bybit.task.order
   (:require
    [taoensso.timbre :as timbre :refer [debug info warn error]]
    [missionary.core :as m]
-   [quanta.market.broker.bybit.connection :refer [connection-start! connection-stop! rpc-req!]]
-   [quanta.market.broker.bybit.auth :refer [authenticate!]]
-   ))
-
+   [quanta.market.broker.bybit.connection :as c]
+   [quanta.market.broker.bybit.task.auth :refer [authenticate!]]))
 
 ; orderbook responses: type: snapshot,delta
 
@@ -40,11 +38,10 @@
    :reqId "5bY1PVT-"
    :data {}})
 
-
 (defn order-create! [conn order]
   (let [order-msg (create-order-msg order)]
     (info "order-create: " order " ..")
-    (rpc-req! conn order-msg)))
+    (c/rpc-req! conn order-msg)))
 
 (comment
   (require '[clojure.edn :refer [read-string]])
@@ -56,15 +53,16 @@
         :bybit/test))
 
   (def account {:mode :test
-             :segment :trade
-             :account creds})
-
+                :segment :trade
+                :account creds})
 
   account
   (def conn
-    (connection-start! account))
+    (c/connection-start! account))
 
   conn
+
+  (c/info? conn)
 
   (def order
     {:asset "ETHUSDT"
@@ -72,15 +70,13 @@
      :qty "0.01"
      :limit "1000.0"})
 
-  
-(m/?  (authenticate! conn account))
-  
+  (m/?  (authenticate! conn account))
 
   (m/?  (order-create! conn order))
 
+  conn
 
- 
-  
+  (-> conn :stream :sink)
 
 ; 
   )

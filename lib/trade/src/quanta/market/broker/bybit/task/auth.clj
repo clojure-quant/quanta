@@ -1,4 +1,4 @@
-(ns quanta.market.broker.bybit.auth
+(ns quanta.market.broker.bybit.task.auth
   (:require
    [taoensso.timbre :as timbre :refer [debug info warn error]]
    [missionary.core :as m]
