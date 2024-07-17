@@ -1,4 +1,4 @@
-(ns quanta.market.connection.bybit-messages)
+(ns quanta.market.connection.bybit.messages)
 
 
 

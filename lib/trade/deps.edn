@@ -9,7 +9,7 @@
   missionary/missionary {:mvn/version "b.39"} ; reactive framework.
   aleph/aleph {:mvn/version "0.7.1"} ; websocket client steam bybit
   cheshire/cheshire {:mvn/version "5.10.2"}  ; JSON parsings and pretty printing
-  metosin/jsonista {:mvn/version "0.3.6"} ; faster json parser - TODO: use it instead of cheshire
+  metosin/jsonista {:mvn/version "0.3.9"} ; faster json parser - TODO: use it instead of cheshire
   buddy/buddy-core {:mvn/version "1.10.413"}
   org.pinkgorilla/timbre {:mvn/version "0.0.7"}
   ta/indicator {:local/root "../indicator" :deps/manifest :deps}
