@@ -1,5 +1,4 @@
-(ns quanta.trade.roundtrip)
-
+(ns ta.trade.roundtrip)
 
 (defn- sign-switch [side v]
   (case side
@@ -22,16 +21,16 @@
 
 (comment
 
-(return-abs {:entry-price 100.0 :exit-price 101.0 :side :long})
-(return-prct {:entry-price 100.0 :exit-price 101.0 :side :long})
-(return-log {:entry-price 100.0 :exit-price 101.0 :side :long})
+  (return-abs {:entry-price 100.0 :exit-price 101.0 :side :long})
+  (return-prct {:entry-price 100.0 :exit-price 101.0 :side :long})
+  (return-log {:entry-price 100.0 :exit-price 101.0 :side :long})
 
-(return-abs {:entry-price 100.0 :exit-price 101.0 :side :short})
-(return-prct {:entry-price 100.0 :exit-price 101.0 :side :short})
-(return-log {:entry-price 100.0 :exit-price 101.0 :side :short})
+  (return-abs {:entry-price 100.0 :exit-price 101.0 :side :short})
+  (return-prct {:entry-price 100.0 :exit-price 101.0 :side :short})
+  (return-log {:entry-price 100.0 :exit-price 101.0 :side :short})
 
-(set-exit-price-percent {:entry-price 100.0 :side :long} 5.0)
-(set-exit-price-percent {:entry-price 100.0 :side :short} 5.0)
-  
+  (set-exit-price-percent {:entry-price 100.0 :side :long} 5.0)
+  (set-exit-price-percent {:entry-price 100.0 :side :short} 5.0)
+
 ;
-)  
+  )

@@ -3,9 +3,7 @@
    [tech.v3.datatype :as dtype]
    [tech.v3.datatype.functional :as dfn]
    [tablecloth.api :as tc]
-   [quanta.trade.roundtrip :refer [sign-switch]]
-   ))
-
+   [ta.trade.roundtrip :refer [sign-switch]]))
 
 (defn- adjust [val-vec side-vec]
   (dtype/emap sign-switch :float64 side-vec val-vec))
@@ -41,7 +39,7 @@
                      :nav (dfn/+ (Math/log10 100.0) cum-ret-log)})))
 
 (comment
-  
+
   (def ds
     (tc/dataset {:side [:long :short :long :short]
                  :entry-idx [1 2 3 4]

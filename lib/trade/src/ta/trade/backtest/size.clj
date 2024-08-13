@@ -1,5 +1,4 @@
-(ns quanta.trade.position.entry.size)
-
+(ns ta.trade.backtest.size)
 
 (defmulti positionsize
   (fn [[type _opts] _close] type))

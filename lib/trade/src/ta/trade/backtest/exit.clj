@@ -1,8 +1,7 @@
 (ns ta.trade.backtest.exit
   (:require
    [ta.trade.roundtrip.roundtrip :as rt]
-   [quanta.trade.roundtrip :refer [return-prct set-exit-price-percent]]
-   ))
+   [ta.trade.roundtrip :refer [return-prct set-exit-price-percent]]))
 
 (defn- create-exit [position rule row]
   (assoc position
