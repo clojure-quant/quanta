@@ -1,6 +1,6 @@
 (ns ta.trade.roundtrip)
 
-(defn- sign-switch [side v]
+(defn sign-switch [side v]
   (case side
     :long v
     :short (- 0.0 v)

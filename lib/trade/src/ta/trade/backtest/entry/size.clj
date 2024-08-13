@@ -1,4 +1,4 @@
-(ns ta.trade.backtest.size)
+(ns ta.trade.backtest.entry.size)
 
 (defmulti positionsize
   (fn [[type _opts] _close] type))

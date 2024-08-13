@@ -1,6 +1,6 @@
 (ns ta.trade.backtest.entry
   (:require
-   [ta.trade.backtest.size :refer [positionsize]]))
+   [ta.trade.backtest.entry.size :refer [positionsize]]))
 
 ; entry
 

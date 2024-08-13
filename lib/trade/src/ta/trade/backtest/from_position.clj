@@ -2,7 +2,7 @@
   (:require
    [tablecloth.api :as tc]
    [ta.indicator.helper :refer [indicator]]
-   [ta.trade.backtest.entry :refer [positionsize]]))
+   [ta.trade.backtest.entry.size :refer [positionsize]]))
 
 (defn- new-signal [signal]
   (case signal
