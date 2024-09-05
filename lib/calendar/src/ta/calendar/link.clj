@@ -1,11 +1,11 @@
 (ns ta.calendar.link
   (:require
-   [taoensso.timbre :refer [trace debug info warn error]]
    [tick.core :as t]
    [tablecloth.api :as tc]
    [tech.v3.datatype :as dtype]
-   [tech.v3.datatype-api :as dtype-api]
-   [ta.data.import.sort :refer [is-ds-sorted?]]))
+   ;[tech.v3.datatype-api :as dtype-api]
+   ;[ta.data.import.sort :refer [is-ds-sorted?]]
+   ))
 
 (defn make-aligner [ds col v]
   (let [idx-max (dec (tc/row-count ds))
