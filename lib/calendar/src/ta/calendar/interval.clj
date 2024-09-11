@@ -75,9 +75,26 @@
          :prior-close   day/prior-close-dt
          :current-close day/current-close}
 
+   ; hour
    :h   (gen-intraday-step-fn 1 :hours)
+   :h2  (gen-intraday-step-fn 2 :hours)
+   :h3  (gen-intraday-step-fn 3 :hours)
+   :h4  (gen-intraday-step-fn 4 :hours)
+   :h6  (gen-intraday-step-fn 6 :hours)
+   :h8  (gen-intraday-step-fn 8 :hours)
+   :h12 (gen-intraday-step-fn 12 :hours)
+
+   ; minute
    :m   (gen-intraday-step-fn 1 :minutes)
+   :m2  (gen-intraday-step-fn 2 :minutes)
+   :m3  (gen-intraday-step-fn 3 :minutes)
+   :m4  (gen-intraday-step-fn 4 :minutes)
+   :m5  (gen-intraday-step-fn 5 :minutes)
+   :m6  (gen-intraday-step-fn 6 :minutes)
+   :m10 (gen-intraday-step-fn 10 :minutes)
+   :m12 (gen-intraday-step-fn 12 :minutes)
    :m15 (gen-intraday-step-fn 15 :minutes)
+   :m20 (gen-intraday-step-fn 20 :minutes)
    :m30 (gen-intraday-step-fn 30 :minutes)})
 
 (defn interval-exists? [interval-kw]
