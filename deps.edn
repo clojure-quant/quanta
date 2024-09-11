@@ -12,7 +12,7 @@
   ; subprojects of quanta
   ta/calendar {:local/root "./lib/calendar" :deps/manifest :deps}
   ta/helper {:local/root "./lib/helper" :deps/manifest :deps}
-  ta/import {:local/root "./lib/import" :deps/manifest :deps} ; series import
+  ;ta/import {:local/root "./lib/import" :deps/manifest :deps} ; series import
   ta/trade {:local/root "./lib/trade" :deps/manifest :deps} ; trade signal / backtest / metrics
   ta/math {:local/root "./lib/math" :deps/manifest :deps}
   ta/indicator {:local/root "./lib/indicator" :deps/manifest :deps}}
