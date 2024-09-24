@@ -359,14 +359,28 @@
 
 (defn hl2
   "input: bar-ds with (:high :low) columns
-   output: (high+low) / 2"
+   output: (high+low) / 2
+   juan calls this DR (daily range)
+   "
   [bar-ds]
-  (assert (has-col bar-ds :low) "hlc3 needs :low column in bar-ds")
-  (assert (has-col bar-ds :high) "hlc3 needs :high column in bar-ds")
+  (assert (has-col bar-ds :low) "hl2 needs :low column in bar-ds")
+  (assert (has-col bar-ds :high) "hl2 needs :high column in bar-ds")
   (let [low (:low bar-ds)
         high (:high bar-ds)
         hl2 (dfn// (dfn/+ low high) 2.0)]
     hl2))
+
+(defn ir
+  "intrabar range
+   input: bar-ds with (:low :high) columns
+   output: (H-L)"
+  [bar-ds]
+  (assert (has-col bar-ds :low) "tr needs :low column in bar-ds")
+  (assert (has-col bar-ds :high) "tr needs :high column in bar-ds")
+  (let [{:keys [high low]} bar-ds
+        hl (dfn/- high low)]
+     hl))
+
 
 (defn tr
   "input: bar-ds with (:low :high :close) columns
