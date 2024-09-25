@@ -379,8 +379,7 @@
   (assert (has-col bar-ds :high) "tr needs :high column in bar-ds")
   (let [{:keys [high low]} bar-ds
         hl (dfn/- high low)]
-     hl))
-
+    hl))
 
 (defn tr
   "input: bar-ds with (:low :high :close) columns

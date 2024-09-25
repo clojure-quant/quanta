@@ -14,27 +14,33 @@
 
 (defn cross-up [price indicator]
   (let [n (count price)]
-    (dtype/make-reader
-     :boolean n
-     (if
-      (= idx 0)
-       false
-       (and (> (price idx)
-               (indicator idx))
-            (<= (price (dec idx))
-                (indicator (dec idx))))))))
+    ; dtype/clone is essential. otherwise on large datasets, the mapping will not
+    ; be done in sequence, which means that the stateful mapping function will fail.
+    (dtype/clone
+     (dtype/make-reader
+      :boolean n
+      (if
+       (= idx 0)
+        false
+        (and (> (price idx)
+                (indicator idx))
+             (<= (price (dec idx))
+                 (indicator (dec idx)))))))))
 
 (defn cross-down [price indicator]
   (let [n (count price)]
-    (dtype/make-reader
-     :boolean n
-     (if
-      (= idx 0)
-       false
-       (and (< (price idx)
-               (indicator idx))
-            (>= (price (dec idx))
-                (indicator (dec idx))))))))
+    ; dtype/clone is essential. otherwise on large datasets, the mapping will not
+    ; be done in sequence, which means that the stateful mapping function will fail.
+    (dtype/clone
+     (dtype/make-reader
+      :boolean n
+      (if
+       (= idx 0)
+        false
+        (and (< (price idx)
+                (indicator idx))
+             (>= (price (dec idx))
+                 (indicator (dec idx)))))))))
 
 (defn buy-above [p o]
   (if (and p o)
