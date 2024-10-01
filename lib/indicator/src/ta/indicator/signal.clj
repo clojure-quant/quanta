@@ -134,6 +134,23 @@
         :else ; prior=false signal=true => reset to 0.
         (vreset! prior 0))))))
 
+(defn signalcount-while
+  "while condition is true, count the number of signals"
+  [active signal]
+  (assert (= (count active) (count signal)))
+  (let [c (volatile! 0)
+        n (count active)]
+    ; dtype/clone is essential. otherwise on large datasets, the mapping will not
+    ; be done in sequence, which means that the stateful mapping function will fail.
+    (dtype/clone
+     (dtype/make-reader
+      :int64 n
+      (if (active idx)
+        (if (signal idx)
+          (vswap! c inc)
+          @c)
+        (vreset! c 0))))))
+
 (comment
 
   (buyhold-signal-bar-length 5)
@@ -181,6 +198,9 @@
                    false true true false false])
 
   (price-when (:price ds) (:signal ds))
+
+  (signalcount-while [false true true true false false true true false]
+                     [false true false true false true false true true])
 
   ;
   )
