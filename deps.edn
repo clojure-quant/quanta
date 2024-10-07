@@ -12,8 +12,6 @@
   ; subprojects of quanta
   ta/calendar {:local/root "./lib/calendar" :deps/manifest :deps}
   ta/helper {:local/root "./lib/helper" :deps/manifest :deps}
-  ;ta/import {:local/root "./lib/import" :deps/manifest :deps} ; series import
-  ta/trade {:local/root "./lib/trade" :deps/manifest :deps} ; trade signal / backtest / metrics
   ta/math {:local/root "./lib/math" :deps/manifest :deps}
   ta/indicator {:local/root "./lib/indicator" :deps/manifest :deps}}
  :aliases
@@ -26,8 +24,7 @@
                "./lib/calendar/src"
                "./lib/helper/src"
                "./lib/indicator/src"
-               "./lib/math/src"
-               "./lib/trade/src"]}
+               "./lib/math/src"]}
 
   :cljfmt-fix
   {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
@@ -37,8 +34,7 @@
                "./lib/calendar/src"
                "./lib/helper/src"
                "./lib/indicator/src"
-               "./lib/math/src"
-               "./lib/trade/src"]}
+               "./lib/math/src"]}
 
 ; https://github.com/clj-kondo/clj-kondo/blob/master/doc/jvm.md
   :lint
@@ -50,8 +46,7 @@
                "./lib/calendar/src"
                "./lib/helper/src"
                "./lib/indicator/src"
-               "./lib/math/src"
-               "./lib/trade/src"]}
+               "./lib/math/src"]}
 
   :cloverage
   {:extra-paths ["test"]
