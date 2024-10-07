@@ -1,7 +1,7 @@
 (ns ta.calendar.helper
   (:require
    [tick.core :as t]
-   [ta.helper.date :refer [at-time]]))
+   [ta.helper.date :refer [at-time same-date?]]))
 
 (def day1 (t/new-duration 1 :days))
 
@@ -122,18 +122,22 @@
                                        (day-open? calendar day-after)))))))
 
 (defn day-has-next-close?
-  "NOTE: dt has to be valid (aligned to interval)"
-  [calendar dt first-close close]
-  (let [time (t/time dt)]
+  "NOTE: dt has to be valid (aligned to interval by ta.calendar.interval.intraday/dt-base)"
+  [{:keys [calendar close dt dt-next]}]
+  (let [time (t/time dt-next)]
     (cond
-      (day-closed? calendar dt) false
+      (day-closed? calendar dt-next) false
       (intraday? calendar) (t/<= time close)
-      (overnight? calendar) (let [day-before (t/<< dt (t/new-duration 1 :days))
-                                  day-after (t/>> dt (t/new-duration 1 :days))]
-                              (or (and (t/<= time first-close)
-                                       (day-open? calendar day-after))
-                                  (and (t/<= time close)
-                                       (day-open? calendar day-before)))))))
+      (overnight? calendar) (let [day-before (t/<< dt-next (t/new-duration 1 :days))
+                                  day-after (t/>> dt-next (t/new-duration 1 :days))]
+                              (or
+                                ; before day close => a future bar exists (the close bar itself)
+                               (and (t/<= time close)
+                                    (day-open? calendar day-before))
+
+                                ; because dt-next is valid and aligned, it is a future bar when inside same day
+                               (and (same-date? dt dt-next)
+                                    (day-open? calendar day-after)))))))
 ;
 (defn inside-overnight-gap?
   "only true if the day has an open and close part and dt is between"

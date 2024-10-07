@@ -67,6 +67,11 @@
     (catch Exception _
       nil)))
 
+(defn same-date?
+  "compares the dates (without time) of 2 ZonedDateTime objects"
+  [zdt1 zdt2]
+  (= (t/date zdt1) (t/date zdt2)))
+
 (comment
   (require '[tick.core :as tick])
   (tick/format (tick/formatter "yyyy-MM-dd")
@@ -153,9 +158,18 @@
          rounded (if value
                    (- value rest-n))]
      (if rounded
-       (if (and (= rounded 0) (date-unit? unit))
+       (cond
+         ; Y, M, D
+         (and (= rounded 0) (date-unit? unit))
          (adjust-field dt unit 1)  ; fallback for zero date field values
-         (adjust-field dt unit rounded))))))
+
+         ;; default
+         (>= rounded 0)
+         (adjust-field dt unit rounded)
+
+         ; go to prev day
+         (< rounded 0)
+         (t/<< dt (t/new-duration (abs rounded) unit)))))))
 
 (comment
   ;FEED [QQQ|1D]: Requesting data: [1960-10-20T00:00:00.000Z ... 1961-12-14T00:00:00.000Z, 300 bars]

@@ -50,7 +50,7 @@
          dt-next (dt-base calendar n unit dt conf)
          day-next (t/date dt-next)
          first-close (t/>> open (t/new-duration n unit))]
-     (if (not (day-has-next-close? calendar dt-next first-close close))
+     (if (not (day-has-next-close? {:calendar calendar :close close :dt dt :dt-next dt-next}))
        (->> (day/next-open calendar dt-next) (next-close-dt calendar n unit))
        (let [open (trading-open-time calendar day-next)]
          (if (and (before-trading-hours? calendar dt-next first-close close)

@@ -1,6 +1,3 @@
 (ns quanta.calendar.compress)
 
-
-(defn compress-to-calendar [ds calendar]
-  
-)
+(defn compress-to-calendar [ds calendar])
