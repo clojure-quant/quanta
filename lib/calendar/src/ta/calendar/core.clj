@@ -11,7 +11,10 @@
   (let [calendar (calendar-kw calendars)]
     (interval/now-calendar calendar)))
 
-(defn next-close [calendar-kw interval-kw dt]
+(defn next-close 
+  "dt needs to be calendar-time,
+   use current-close to align clock-time to calendar-time"
+  [calendar-kw interval-kw dt]
   (let [calendar (calendar-kw calendars)
         interval (interval-kw intervals)
         ;_ (println "calendar: " calendar)
@@ -19,7 +22,10 @@
         next-close-dt (:next-close interval)]
     (next-close-dt calendar dt)))
 
-(defn prior-close [calendar-kw interval-kw dt]
+(defn prior-close 
+  "dt needs to be calendar-time,
+   use current-close to align clock-time to calendar-time"
+  [calendar-kw interval-kw dt]
   (let [calendar (calendar-kw calendars)
         interval (interval-kw intervals)
         _ (assert calendar)
@@ -29,7 +35,9 @@
         prior-close-dt (:prior-close interval)]
     (prior-close-dt calendar dt)))
 
-(defn current-close [calendar-kw interval-kw & [dt]]
+(defn current-close 
+  "use this function to align clock-time to calendar-time once"
+  [calendar-kw interval-kw & [dt]]
   (let [calendar (calendar-kw calendars)
         interval (interval-kw intervals)
         ;_ (println "calendar: " calendar)
