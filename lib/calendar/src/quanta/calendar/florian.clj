@@ -14,6 +14,12 @@
      :business business?
      :as-of-dt dt}))
   
+(t/instant)
+;; => #time/instant "2024-10-11T21:00:48.086343931Z"
+
+;; (t/time (t/instant))
+;; => #time/time "16:00:31.179972012"
+
 
   (market-info :crypto)
   ;; => {:market :crypto, :open? true, :business true, :as-of-dt #time/instant "2024-10-11T20:57:54.366650110Z"}
