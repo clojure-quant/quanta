@@ -35,15 +35,4 @@ https://r-forge.r-project.org/scm/viewvc.php/pkg/PerformanceAnalytics/R/HurstInd
 
 https://github.com/cgrand/xforms
 
-;; http://www.nasdaq.com/screening/company-list.aspx
-;; NASDAQTrader
-;; ftp://ftp.nasdaqtrader.com/SymbolDirectory
-;; ftp://ftp.nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt
-;; ftp://ftp.nasdaqtrader.com/SymbolDirectory/otherlisted.txt
-;; ftp://ftp.nasdaqtrader.com/symboldirectory
-;; ftp://nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt
-;; ftp://nasdaqtrader.com/SymbolDirectory/otherlisted.txt
-
-
-
 
