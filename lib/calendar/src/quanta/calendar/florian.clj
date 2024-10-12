@@ -1,23 +1,20 @@
 (ns quanta.calendar.florian
-    (:require
-    [tick.core :as t]
-    [ta.calendar.calendars :as caldb]
-    [ta.calendar.helper :as calhelp]))
+  (:require
+   [tick.core :as t]
+   [ta.calendar.calendars :as caldb]
+   [ta.calendar.helper :as calhelp]))
 
-  
 (-> (caldb/get-calendar :us)
-    :timezone
- )
+    :timezone)
 ;; => "America/New_York"
 
-
 (-> (caldb/get-calendar :crypto)
     :timezone)
 
 (-> (caldb/get-calendar :crypto)
     :timezone)
 
-  (defn market-info [market-kw]
+(defn market-info [market-kw]
   (let [cal (caldb/get-calendar market-kw)
         dt (t/instant)
         dt-cal (-> dt
@@ -29,20 +26,19 @@
      :open? open?
      :business business?
      :as-of-dt dt-cal}))
-  
+
 (t/instant)
 
-
-  (market-info :crypto)
+(market-info :crypto)
   ;; => {:market :crypto, :open? true, :business true, :as-of-dt #time/zoned-date-time "2024-10-11T21:10:02.760020057Z[UTC]"}
 
-  (market-info :eu)
+(market-info :eu)
   ;; => {:market :eu,
   ;;     :open? false,
   ;;     :business true,
   ;;     :as-of-dt #time/zoned-date-time "2024-10-11T23:09:51.853464621+02:00[Europe/Berlin]"}
 
- (market-info :jp)
+(market-info :jp)
  ;; => {:market :jp,
  ;;     :open? false,
  ;;     :business false,

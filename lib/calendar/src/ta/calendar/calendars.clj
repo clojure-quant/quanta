@@ -28,7 +28,7 @@
            :week week-6-sunday
            :timezone "America/New_York"}
    :crypto {:open (t/new-time 0 0 0)
-            :close (t/new-time 23 59 59)
+            :close (t/max-of-type (t/new-time 23 59 59))
             :week week-7
             :timezone "UTC"}
    :us {:open (t/new-time 9 0 0)
@@ -36,7 +36,7 @@
         :week week-5
         :timezone "America/New_York"}
    :us24 {:open (t/new-time 0 0 0)
-          :close (t/new-time 23 59 59)
+          :close (t/max-of-type (t/new-time 23 59 59))
           :week week-5
           :timezone "America/New_York"}
    :eu {:open (t/new-time 9 0 0)

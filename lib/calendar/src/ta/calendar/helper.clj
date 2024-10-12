@@ -18,7 +18,9 @@
 (defn overnight? [{:keys [open close] :as calendar}]
   (t/>= open close))
 
-(defn time-open? [{:keys [open close] :as calendar} dt]
+(defn time-open?
+  "expecting a zoned dt in the same timezone as the calendar timezone"
+  [{:keys [open close] :as calendar} dt]
   (let [time (t/time dt)]
     (cond
       (day-closed? calendar dt) false
@@ -179,8 +181,22 @@
       (or inside-gap? weekend?))
     false))
 
+(defn midnight-close? [close]
+  (t/= close (t/max-of-type (t/new-time 23 59 59))))
+
+(defn next-day-at-midnight [{:keys [timezone] :as calendar} dt]
+  (let [next-day (t/>> dt (t/new-duration 1 :days))]
+    (at-time (t/date next-day)
+             (t/new-time 0 0 0) timezone)))
+
 (defn trading-open-time [{:keys [open timezone] :as calendar} date]
   (at-time date open timezone))
 
 (defn trading-close-time [{:keys [close timezone] :as calendar} date]
   (at-time date close timezone))
+
+(defn last-open-of-the-day [{:keys [close] :as calendar} n unit]
+  ; handle approx. day close time
+  (if (midnight-close? close)
+    (t/<< (t/new-time 0 0 0) (t/new-duration n unit))
+    (t/<< close (t/new-duration n unit))))

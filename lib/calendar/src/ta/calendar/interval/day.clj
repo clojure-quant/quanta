@@ -52,8 +52,7 @@
 ; close
 
 (defn next-close-dt
-  "like next-close, but also can return the close time of the same day when dt is before close time.
-   (excluding the close interval boundary)"
+  "like next-close, but also can return the close time of the same day when dt is before close time."
   [calendar dt]
   (if (and (day-open? calendar dt) (not (after-trading-hours? calendar dt true)))
     (trading-close-time calendar (t/date dt))
@@ -63,7 +62,7 @@
   "like prior-close, but also can return the close time of the same day when dt is after trading-hours.
   (excluding the close interval boundary)"
   [calendar dt]
-  (if (and (day-open? calendar dt) (after-trading-hours? calendar dt))
+  (if (and (day-open? calendar dt) (after-trading-hours? calendar dt false))
     (trading-close-time calendar (t/date dt))
     (prior-close calendar dt)))
 
@@ -72,33 +71,30 @@
   [calendar dt]
   (if (after-trading-hours? calendar dt true)
     (trading-close-time calendar (t/date dt))
-    (prior-close calendar dt)))
+    (prior-close-dt calendar dt)))
 
 ; open
+
+(defn next-open-dt
+  "next open (excluding interval boundary)"
+  [calendar dt]
+  (if (and (day-open? calendar dt) (before-trading-hours? calendar dt false))
+    (trading-open-time calendar (t/date dt))
+    (next-open calendar dt)))
+
+(defn prior-open-dt
+  "prior open (excluding interval boundary)"
+  [calendar dt]
+  (if (and (day-open? calendar dt) (not (before-trading-hours? calendar dt true)))
+    (trading-open-time calendar (t/date dt))
+    (prior-open calendar dt)))
 
 (defn current-open
   "current open (including the open interval boundary)"
   [calendar dt]
-  (if (before-trading-hours? calendar dt true)
+  (if (and (day-open? calendar dt) (not (before-trading-hours? calendar dt false)))
     (trading-open-time calendar (t/date dt))
-    (->> (prior-close calendar dt)
-         (current-open calendar))))
-
-; TODO: next open, prior open
-
-; upcomming (current / next)
-
-;(defn upcoming-close [calendar dt]
-;  "like next-close, but also can return the close time of the same day when dt is before trading-hours close time"
-;  (if (and (day-open? calendar dt) (not (after-trading-hours? calendar dt)))
-;    (trading-close-time calendar (t/date dt))
-;    (next-close calendar dt)))
-;
-;(defn upcoming-open [calendar dt]
-;  "like next-open, but also can return the open time of the same day when dt is before trading-hours"
-;  (if (and (day-open? calendar dt) (before-trading-hours? calendar dt))
-;    (trading-open-time calendar (t/date dt))
-;    (next-open calendar dt)))
+    (prior-open-dt calendar dt)))
 
 (comment
   (require '[ta.calendar.calendars :refer [calendars]])

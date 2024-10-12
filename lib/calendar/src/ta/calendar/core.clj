@@ -11,7 +11,7 @@
   (let [calendar (calendar-kw calendars)]
     (interval/now-calendar calendar)))
 
-(defn next-close 
+(defn next-close
   "dt needs to be calendar-time,
    use current-close to align clock-time to calendar-time"
   [calendar-kw interval-kw dt]
@@ -22,7 +22,7 @@
         next-close-dt (:next-close interval)]
     (next-close-dt calendar dt)))
 
-(defn prior-close 
+(defn prior-close
   "dt needs to be calendar-time,
    use current-close to align clock-time to calendar-time"
   [calendar-kw interval-kw dt]
@@ -35,7 +35,7 @@
         prior-close-dt (:prior-close interval)]
     (prior-close-dt calendar dt)))
 
-(defn current-close 
+(defn current-close
   "use this function to align clock-time to calendar-time once"
   [calendar-kw interval-kw & [dt]]
   (let [calendar (calendar-kw calendars)
@@ -62,6 +62,33 @@
         _ (assert dt "current close dt is nil.")]
     (current-close-dt calendar dt)))
 
+(defn close->open-dt [[calendar-kw interval-kw] & [dt]]
+  (let [dt (if dt dt (t/now))
+        calendar (calendar-kw calendars)
+        interval (interval-kw intervals)
+        _ (assert calendar)
+        _ (assert interval)
+        _ (assert dt "current close dt is nil.")
+        current-close-dt (:current-close interval)
+        current-open-dt (:current-open interval)
+        prior-open-dt (:prior-open interval)
+        aligned-close-dt (current-close-dt calendar dt)]
+    (if (= aligned-close-dt dt)
+      (prior-open-dt calendar aligned-close-dt)              ; dt is aligned close -> new candle started. prior open needed
+      (current-open-dt calendar aligned-close-dt))))         ; dt is not alined close -> unfinished candle. current open needed
+
+(defn open->close-dt [[calendar-kw interval-kw] & [dt]]
+  (let [dt (if dt dt (t/now))
+        calendar (calendar-kw calendars)
+        interval (interval-kw intervals)
+        _ (assert calendar)
+        _ (assert interval)
+        _ (assert dt "current open dt is nil.")
+        current-open-dt (:current-open interval)
+        next-close-dt (:next-close interval)
+        aligned-open-dt (current-open-dt calendar dt)]
+    (next-close-dt calendar aligned-open-dt)))
+
 (defn calendar-seq ; todo: [cal interval] instead of 2 parameter
   ([calendar-kw interval-kw]
    (let [cur-dt (current-close calendar-kw interval-kw)]
@@ -75,8 +102,8 @@
   (->> (calendar-seq calendar-kw interval-kw)
        (map t/instant)))
 
-(defn calendar-seq-prior [calendar-kw interval-kw dt] ; todo: [cal interval] instead of 2 parameter
-  (let [cur-dt (current-close calendar-kw interval-kw dt)
+(defn calendar-seq-prior [[calendar-kw interval-kw] dt]
+  (let [cur-dt (current-close2 [calendar-kw interval-kw] dt)
         prior-fn (partial prior-close calendar-kw interval-kw)]
     (iterate prior-fn cur-dt)))
 
@@ -86,11 +113,11 @@
    otherwise end-dt is equal to the most-recent close of the calendar"
   ([calendar n end-dt]
    (let [[calendar-kw interval-kw] calendar]
-     (take n (calendar-seq-prior calendar-kw interval-kw end-dt))))
+     (take n (calendar-seq-prior [calendar-kw interval-kw] end-dt))))
   ([calendar n]
    (let [[calendar-kw interval-kw] calendar
          cur-dt (current-close calendar-kw interval-kw)]
-     (take n (calendar-seq-prior calendar-kw interval-kw cur-dt)))))
+     (take n (calendar-seq-prior [calendar-kw interval-kw] cur-dt)))))
 
 (defn trailing-range
   "returns a calendar-range for a calendar of n rows
@@ -107,7 +134,7 @@
 
 (defn fixed-window
   [[calendar-kw interval-kw] {:keys [start end]}]
-  (let [seq (calendar-seq-prior calendar-kw interval-kw end)
+  (let [seq (calendar-seq-prior [calendar-kw interval-kw] end)
         after-start? (fn [dt] (t/>= dt start))]
     (take-while after-start? seq)))
 

@@ -1,7 +1,6 @@
 (ns ta.calendar.interval.month
   (:require
    [tick.core :as t]
-   [ta.helper.date :refer [at-time]]
    [ta.calendar.interval.day :as day]
    [ta.calendar.helper :refer [trading-close-time day-with-close? day1]]))
 
@@ -51,6 +50,8 @@
     (if (t/>= zoned-dt month-close-dt)
       month-close-dt
       (prior-month-close calendar zoned-date))))
+
+;; TODO next, prior current open
 
 (comment
   (require '[ta.calendar.calendars :as cal])

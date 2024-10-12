@@ -61,19 +61,37 @@
 (def intervals
   {:Y   {:next-close    year/next-close
          :prior-close   year/prior-close
-         :current-close year/current-close}
+         :current-close year/current-close
+         ; TODO open
+         ;:next-open    year/next-open
+         ;:prior-open   year/prior-open
+         ;:current-open year/current-open
+         }
 
    :M   {:next-close    month/next-close
          :prior-close   month/prior-close
-         :current-close month/current-close}
+         :current-close month/current-close
+         ; TODO: open
+         ;:next-open    month/next-open
+         ;:prior-open   month/prior-open
+         ;:current-open month/current-open
+         }
 
    :W   {:next-close    week/next-close
          :prior-close   week/prior-close
-         :current-close week/current-close}
+         :current-close week/current-close
+         ; TODO: open
+         ;:next-open    week/next-open
+         ;:prior-open   week/prior-open
+         ;:current-open week/current-open
+         }
 
    :d   {:next-close    day/next-close-dt
          :prior-close   day/prior-close-dt
-         :current-close day/current-close}
+         :current-close day/current-close
+         :next-open     day/next-open-dt
+         :prior-open    day/prior-open-dt
+         :current-open  day/current-open}
 
    ; hour
    :h   (gen-intraday-step-fn 1 :hours)
@@ -119,7 +137,6 @@
        println)
 
   (:h intervals)
-  (gen-current-close align-d day/next-close)
 
   (def day (:day intervals))
   day

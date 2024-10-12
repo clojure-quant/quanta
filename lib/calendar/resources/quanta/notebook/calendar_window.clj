@@ -26,7 +26,7 @@
 
   (take 30 (cal/calendar-seq :us :d))
   (take 100 (cal/calendar-seq :eu :h))
-  (take 100 (cal/calendar-seq-prior :eu :h (t/date-time "2023-01-01T00:00:00")))
+  (take 100 (cal/calendar-seq-prior [:eu :h] (t/date-time "2023-01-01T00:00:00")))
 
   (take 5 (cal/calendar-seq :eu :h))
 
