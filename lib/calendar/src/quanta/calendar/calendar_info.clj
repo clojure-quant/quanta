@@ -3,9 +3,7 @@
    [tick.core :as t]
    [ta.calendar.core :as cal]
    [ta.calendar.calendars :as caldb]
-   [ta.calendar.helper :as calhelp]
-   ;[missionary.core :as m]
-   ))
+   [ta.calendar.helper :as calhelp]))
 
 (defn market-info [market-kw]
   (let [cal (caldb/get-calendar market-kw)
@@ -28,34 +26,11 @@
            :current (t/instant current-close-dt)
            :next (t/instant (cal/next-close calendar-kw interval-kw current-close-dt)))))
 
-(defn gather-calendars [dt]
-  (let [cals (for [c [:us :crypto :forex
-                      :eu :jp]
-                   i [:m :m5 :m15 :h :d]]
-               (gather-calendar c i dt))]
-    {:dt dt
-     :cals cals}))
-
-;(defn calendar-time []
-;  ;(m/stream
-;  (m/ap
-;   (loop [dt (t/instant)]
-;     (let [cal (gather-calendars dt)]
-;       (m/amb
-;        (m/? (m/sleep 500 cal))
-;        (recur (t/instant)))))))
-
 (comment
   (market-info :crypto)
   (market-info :eu)
 
   (gather-calendar :crypto :m (t/instant))
 
-  (gather-calendars (t/instant))
-
-  (filter #(= true (:business %)) (:cals (gather-calendars (t/instant))))
-
-  (filter #(= (last (:calendar %)) :d) (:cals (gather-calendars (t/instant))))
-
-; 
+;
   )
