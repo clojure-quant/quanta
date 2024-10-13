@@ -62,6 +62,19 @@
         _ (assert dt "current close dt is nil.")]
     (current-close-dt calendar dt)))
 
+(defn prior-open
+  "dt needs to be calendar-time,
+   use current-open to align clock-time to calendar-time"
+  [[calendar-kw interval-kw] dt]
+  (let [calendar (calendar-kw calendars)
+        interval (interval-kw intervals)
+        _ (assert calendar)
+        _ (assert interval)
+        ;_ (println "calendar: " calendar)
+        ;_ (println "interval: " interval)
+        prior-open-dt (:prior-open interval)]
+    (prior-open-dt calendar dt)))
+
 (defn close->open-dt [[calendar-kw interval-kw] & [dt]]
   (let [dt (if dt dt (t/now))
         calendar (calendar-kw calendars)
