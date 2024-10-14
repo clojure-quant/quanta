@@ -1,4 +1,4 @@
-(ns quanta.calendar.florian
+(ns quanta.dev.florian
   (:require
    [tick.core :as t]
    [ta.calendar.calendars :as caldb]
