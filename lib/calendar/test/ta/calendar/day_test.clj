@@ -2,7 +2,8 @@
   (:require
    [clojure.test :refer :all]
    [tick.core :as t]
-   [ta.calendar.core :refer [trailing-window calendar-seq fixed-window
+   [quanta.calendar.core :refer [next-close
+                             trailing-window calendar-seq fixed-window
                              close->open-dt open->close-dt]]
    [ta.calendar.data.dates :refer :all]
    [ta.calendar.calendars :as cal]
@@ -329,6 +330,41 @@
     (testing "dt inside gap"
       (is (t/= dt-thursday-16-30 (prior-close-dt forex-cal dt-thursday-16-45)))
       (is (not (t/= dt-friday-17-00 (prior-close-dt forex-cal dt-thursday-16-45)))))))
+
+;; EU
+(deftest next-close-daily-eu
+  (let [eu-cal (:eu cal/calendars)
+        sun-00-27 (t/in (t/date-time "2024-10-13T00:27") (:timezone eu-cal))
+        fri-17-00 (t/in (t/date-time "2024-10-11T17:00") (:timezone eu-cal))
+        mon-17-00 (t/in (t/date-time "2024-10-14T17:00") (:timezone eu-cal))]
+    (testing "dt inside interval"
+      (is (t/= mon-17-00 (next-close [:eu :d] sun-00-27)))
+      (is (not (t/= fri-17-00 (next-close [:eu :d] sun-00-27)))))
+    ;(testing "dt on interval boundary"
+    ;  (is (t/= dt-friday-17-00 (next-close-dt eu-cal dt-thursday-17-00)))
+    ;  (is (not (t/= dt-thursday-17-00 (next-close-dt eu-cal dt-thursday-17-00)))))
+    ;(testing "dt before trading hours"
+    ;  (is (t/= dt-friday-17-00 (next-close-dt eu-cal dt-friday-06-00)))
+    ;  (is (not (t/= dt-thursday-17-00 (next-close-dt eu-cal dt-friday-06-00)))))
+    ;(testing "dt after trading hours"
+    ;  (is (t/= dt-friday-17-00 (next-close-dt eu-cal dt-thursday-23-00)))
+    ;  (is (not (t/= dt-thursday-17-00 (next-close-dt eu-cal dt-thursday-23-00)))))
+    ;(testing "dt before trading hours (from next week)"
+    ;  (is (t/= dt-monday-next-17-00 (next-close-dt eu-cal dt-monday-next-06-00)))
+    ;  (is (not (t/= dt-friday-17-00 (next-close-dt eu-cal dt-monday-next-06-00)))))
+    ;(testing "dt after trading hours (weekend)"
+    ;  (is (t/= dt-monday-next-17-00 (next-close-dt eu-cal dt-friday-18-00)))
+    ;  (is (not (t/= dt-friday-17-00 (next-close-dt eu-cal dt-friday-18-00)))))
+    ;(testing "dt on trading week start"
+    ;  (is (t/= dt-monday-next-17-00 (next-close-dt eu-cal dt-monday-next-09-00)))
+    ;  (is (not (t/= dt-friday-17-00 (next-close-dt eu-cal dt-monday-next-09-00)))))
+    ;(testing "dt on trading week close"
+    ;  (is (t/= dt-monday-next-17-00 (next-close-dt eu-cal dt-friday-17-00)))
+    ;  (is (not (t/= dt-friday-17-00 (next-close-dt eu-cal dt-friday-17-00)))))
+    ;(testing "dt not on trading day"
+    ;  (is (t/= dt-monday-next-17-00 (next-close-dt eu-cal dt-saturday-12-00)))
+    ;  (is (not (t/= dt-saturday-17-00 (next-close-dt eu-cal dt-saturday-12-00)))))
+    ))
 
 
 ;; crypto daily seq test

@@ -3,18 +3,18 @@
     [tick.core :as t]
     [ta.calendar.calendars :refer [calendars]]
     [ta.calendar.interval :refer [intervals]]
-    [ta.calendar.core :refer [close->open-dt open->close-dt current-close2]]
+    [quanta.calendar.core :refer [next-close current-close close->open-dt open->close-dt current-close2]]
     [dev.utils :refer [to-utc]]))
 
-(current-close2 [:crypto :m]
+(current-close [:crypto :m]
                     (t/in (t/date-time "2024-02-08T23:59:30") "UTC"))
 ;=> #time/zoned-date-time"2024-02-08T23:59Z[UTC]"
 
-(current-close2 [:crypto :m]
+(current-close [:crypto :m]
                     (t/in (t/date-time "2024-02-08T23:59:59") "UTC"))
 ;=> #time/zoned-date-time"2024-02-08T23:59Z[UTC]"
 
-(current-close2 [:crypto :m]
+(current-close [:crypto :m]
                     (t/in (t/date-time "2024-02-09T00:00:00") "UTC"))
 ;=> #time/zoned-date-time"2024-02-08T23:59:59.999999999Z[UTC]"
 
@@ -63,3 +63,18 @@
       next-close-dt (:next-close interval)]
   (next-close-dt calendar (t/in (t/date-time "2024-02-06T15:30") "America/New_York")))
 ;=> #time/zoned-date-time"2024-02-06T17:00-05:00[America/New_York]"
+
+
+(let [eu-cal (:eu calendars)
+      sun-00-27 (t/in (t/date-time "2024-10-13T00:27") (:timezone eu-cal))
+      cur-close-dt (current-close [:eu :d] sun-00-27)
+      cur-close-instant (t/instant cur-close-dt)
+      next-close-dt (next-close [:eu :d] cur-close-dt)
+      next-close-instant (next-close [:eu :d] cur-close-instant)]
+  {:sun-00-27 sun-00-27
+   :cur-close-dt cur-close-dt
+   :cur-close-instant cur-close-instant
+   :next-close-dt next-close-dt
+   :next-close-instant next-close-instant})
+
+(t/instant)

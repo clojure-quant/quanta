@@ -1,14 +1,15 @@
 (ns dev.calendar-seq
   (:require
     [tick.core :as t]
-    [ta.calendar.core :refer [trailing-window calendar-seq fixed-window
+    [quanta.calendar.core :refer [trailing-window calendar-seq calendar-seq-prior
+                              fixed-window
                               close->open-dt open->close-dt]]
     [ta.calendar.calendars :refer [calendars]]
     [dev.utils :refer [to-utc]]))
 
 
 (->> (t/in (t/date-time "2024-10-01T16:20:00") "America/New_York")
-     (calendar-seq :forex :d)
+     (calendar-seq [:forex :d])
      (take 15))
 ;=>
 ;(#time/zoned-date-time"2024-09-30T16:30-04:00[America/New_York]"
@@ -28,7 +29,7 @@
 ;  #time/zoned-date-time"2024-10-18T16:30-04:00[America/New_York]")
 
 (->> (t/in (t/date-time "2024-10-01T17:32:00") "America/New_York")
-     (calendar-seq :forex :h)
+     (calendar-seq [:forex :h])
      (take 15))
 ;=>
 ;(#time/zoned-date-time"2024-10-01T16:30-04:00[America/New_York]"
@@ -48,7 +49,7 @@
 ;  #time/zoned-date-time"2024-10-02T07:00-04:00[America/New_York]")
 
 (->> (t/in (t/date-time "2024-10-01T17:32:00") "America/New_York")
-     (calendar-seq :forex :m)
+     (calendar-seq [:forex :m])
      (take 15))
 ;=>
 ;(#time/zoned-date-time"2024-10-01T17:32-04:00[America/New_York]"
@@ -68,7 +69,7 @@
 ;  #time/zoned-date-time"2024-10-01T17:46-04:00[America/New_York]")
 
 (->> (t/in (t/date-time "2024-02-09T00:00:00") "America/New_York")
-     (calendar-seq :forex :h4)
+     (calendar-seq [:forex :h4])
      (take 15))
 ;=>
 ;(#time/zoned-date-time"2024-02-08T21:00-05:00[America/New_York]"
@@ -88,7 +89,7 @@
 ;  #time/zoned-date-time"2024-02-13T13:00-05:00[America/New_York]")
 
 (->> (t/in (t/date-time "2024-02-11T06:00:00") "America/New_York")
-     (calendar-seq :forex :m15)
+     (calendar-seq [:forex :m15])
      (take 15))
 ;=>
 ;(#time/zoned-date-time"2024-02-09T16:30-05:00[America/New_York]"
@@ -106,3 +107,7 @@
 ;  #time/zoned-date-time"2024-02-11T20:00-05:00[America/New_York]"
 ;  #time/zoned-date-time"2024-02-11T20:15-05:00[America/New_York]"
 ;  #time/zoned-date-time"2024-02-11T20:30-05:00[America/New_York]")
+
+(->> (t/in (t/date-time "2024-10-01T23:59:59.999999999") "UTC")
+     (calendar-seq-prior [:crypto :d])
+     (take 20))

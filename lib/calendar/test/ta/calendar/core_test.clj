@@ -3,7 +3,7 @@
             [tick.core :as t]
             [ta.calendar.data.dates :refer :all]
             [ta.calendar.calendars :as cal]
-            [ta.calendar.core :refer [trailing-window calendar-seq fixed-window
+            [quanta.calendar.core :refer [trailing-window calendar-seq fixed-window
                                       close->open-dt open->close-dt]]))
 (defn print-seq [s]
   (for [i (range 0 (count s))]
@@ -133,7 +133,7 @@
 
   (deftest calendar-seq-forwards-d
     (testing "1 day seq - us"
-      (let [seq-5-us-d (take 5 (calendar-seq :us :d dt-monday-17-00))]
+      (let [seq-5-us-d (take 5 (calendar-seq [:us :d] dt-monday-17-00))]
         (is (= (nth seq-5-us-d 0) dt-monday-17-00))
         (is (= (nth seq-5-us-d 1) dt-tuesday-17-00))
         (is (= (nth seq-5-us-d 2) dt-wednesday-17-00))
@@ -141,7 +141,7 @@
         (is (= (nth seq-5-us-d 4) dt-friday-17-00))
         (is (not (= (nth seq-5-us-d 0) dt-prev-friday-17-00)))))
     (testing "1 day seq - us over a week"
-      (let [seq-5-us-d (take 5 (calendar-seq :us :d dt-prev-friday-17-00))]
+      (let [seq-5-us-d (take 5 (calendar-seq [:us :d]  dt-prev-friday-17-00))]
         (is (= (nth seq-5-us-d 0) dt-prev-friday-17-00))
         (is (= (nth seq-5-us-d 1) dt-monday-17-00))
         (is (= (nth seq-5-us-d 2) dt-tuesday-17-00))
@@ -149,7 +149,7 @@
         (is (= (nth seq-5-us-d 4) dt-thursday-17-00))
         (is (not (= (nth seq-5-us-d 0) dt-friday-17-00)))))
     (testing "1 day seq - us over a week - inside interval"
-      (let [seq-5-us-d (take 7 (calendar-seq :us :d dt-prev-friday-17-00-30))]
+      (let [seq-5-us-d (take 7 (calendar-seq [:us :d] dt-prev-friday-17-00-30))]
         (is (= (nth seq-5-us-d 0) dt-prev-friday-17-00))
         (is (= (nth seq-5-us-d 1) dt-monday-17-00))
         (is (= (nth seq-5-us-d 2) dt-tuesday-17-00))
@@ -159,7 +159,7 @@
         (is (= (nth seq-5-us-d 6) dt-monday-next-17-00))
         (is (not (= (nth seq-5-us-d 0) dt-friday-17-00)))))
     (testing "1 day seq - forex over a week - inside interval"
-      (let [seq-5-us-d (take 7 (calendar-seq :forex :d dt-prev-friday-16-30))]
+      (let [seq-5-us-d (take 7 (calendar-seq [:forex :d] dt-prev-friday-16-30))]
         (is (= (nth seq-5-us-d 0) dt-prev-friday-16-30))
         (is (= (nth seq-5-us-d 1) dt-monday-16-30))
         (is (= (nth seq-5-us-d 2) dt-tuesday-16-30))
@@ -171,7 +171,7 @@
 
   (deftest calendar-seq-forwards-m
    (testing "1 min seq - us"
-      (let [seq-5-us-d (take 5 (calendar-seq :us :m dt-thursday-12-55))]
+      (let [seq-5-us-d (take 5 (calendar-seq [:us :m] dt-thursday-12-55))]
         (is (= (nth seq-5-us-d 0) dt-thursday-12-55))
         (is (= (nth seq-5-us-d 1) dt-thursday-12-56))
         (is (= (nth seq-5-us-d 2) dt-thursday-12-57))
@@ -188,7 +188,7 @@
     ;    (is (= (nth seq-5-us-d 4) dt-thursday-17-00))
     ;    (is (not (= (nth seq-5-us-d 0) dt-friday-17-00)))))
    (testing "1 min seq - forex - jump into next trading day"
-     (let [seq-5-us-d (take 5 (calendar-seq :forex :m dt-thursday-16-27))]
+     (let [seq-5-us-d (take 5 (calendar-seq [:forex :m] dt-thursday-16-27))]
        (is (= (nth seq-5-us-d 0) dt-thursday-16-27))
        (is (= (nth seq-5-us-d 1) dt-thursday-16-28))
        (is (= (nth seq-5-us-d 2) dt-thursday-16-29))

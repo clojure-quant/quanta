@@ -1,7 +1,7 @@
 (ns quanta.calendar.calendar-info
   (:require
    [tick.core :as t]
-   [ta.calendar.core :as cal]
+   [quanta.calendar.core :as cal]
    [ta.calendar.calendars :as caldb]
    [ta.calendar.helper :as calhelp]))
 
@@ -18,19 +18,19 @@
      :business business?
      :calendar-time (t/date-time dt-cal)}))
 
-(defn gather-calendar [calendar-kw interval-kw dt]
-  (let [current-close-dt (cal/current-close calendar-kw interval-kw dt)]
+(defn gather-calendar [[calendar-kw interval-kw] dt]
+  (let [current-close-dt (cal/current-close [calendar-kw interval-kw] dt)]
     (assoc (market-info calendar-kw)
            :calendar [calendar-kw interval-kw]
        ;:prior (t/instant (cal/prior-close calendar-kw interval-kw dt))
            :current (t/instant current-close-dt)
-           :next (t/instant (cal/next-close calendar-kw interval-kw current-close-dt)))))
+           :next (t/instant (cal/next-close [calendar-kw interval-kw] current-close-dt)))))
 
 (comment
   (market-info :crypto)
   (market-info :eu)
 
-  (gather-calendar :crypto :m (t/instant))
+  (gather-calendar [:crypto :m] (t/instant))
 
 ;
   )
