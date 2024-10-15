@@ -60,6 +60,9 @@
 (defn calendar-seq->range [cal-seq]
   (cal/calendar-seq->range cal-seq))
 
+(defn get-bar-window [[calendar-kw interval-kw] bar-end-dt]
+  (cal/get-bar-window [calendar-kw interval-kw] bar-end-dt))
+
 (defn get-bar-duration
   [[calendar-kw interval-kw]]
   (cal/get-bar-duration [calendar-kw interval-kw]))
