@@ -69,21 +69,21 @@
   (when-not (has-category? calendar)
     (create-category calendar)
     (start opts (partial execute-category calendar)))
-  (add-fn-to-category opts scheduled-fn))
+  (add-fn-to-category calendar scheduled-fn))
 
 (comment
   (defn print [title]
     (fn [dt]
       (info "calendar event " title  " @: " dt)))
 
-  (start [:us :m] (print "*minute*"))
+  (start {:calendar [:us :m]} (print "*minute*"))
   (start [:us :h] (print "*hour*"))
   (start [:us :day] (print "*day*"))
 
   (defn print-time [time]
     (info "scheduled fn: print time: **** " time " *** "))
 
-  (schedule-fn [:us :m] print-time)
+  (schedule-fn {:calendar [:us :m]} print-time)
 
   (schedule-fn [:us :h] print-time)
 
