@@ -15,11 +15,12 @@
 (defn start [{:keys [calendar future-only?]
               :or {future-only? true}} f]
   (let [[calendar-kw interval-kw] calendar
-        _ (info "scheduler start: " calendar-kw interval-kw)
+        _ (info "scheduler start: " calendar-kw interval-kw "future-only: " future-only?)
         date-seq (calendar-seq-instant [calendar-kw interval-kw])
         date-seq (if future-only?
                    (rest date-seq)
                    date-seq)]
+    (info "next start date: " (first date-seq))
     (chime/chime-at
      date-seq f
      {:on-finished log-finished
@@ -63,11 +64,12 @@
   (when-let [category-data (get @scheduler-state category)]
     (doall (map (partial run-fn-safe time) category-data))))
 
-(defn schedule-fn [category scheduled-fn]
-  (when-not (has-category? category)
-    (create-category category)
-    (start category (partial execute-category category)))
-  (add-fn-to-category category scheduled-fn))
+(defn schedule-fn [{:keys [calendar future-only?]
+                    :or {future-only? true} :as opts} scheduled-fn]
+  (when-not (has-category? calendar)
+    (create-category calendar)
+    (start opts (partial execute-category calendar)))
+  (add-fn-to-category opts scheduled-fn))
 
 (comment
   (defn print [title]
