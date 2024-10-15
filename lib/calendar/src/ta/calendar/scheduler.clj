@@ -12,9 +12,14 @@
   true ; continue schedule, if one scheduled fn throws an exception.
   )
 
-(defn start [[calendar-kw interval-kw] f]
-  (info "scheduler start: " calendar-kw interval-kw)
-  (let [date-seq (calendar-seq-instant [calendar-kw interval-kw])]
+(defn start [{:keys [calendar future-only?]
+              :or {future-only? true}} f]
+  (let [[calendar-kw interval-kw] calendar
+        _ (info "scheduler start: " calendar-kw interval-kw)
+        date-seq (calendar-seq-instant [calendar-kw interval-kw])
+        date-seq (if future-only?
+                   (rest date-seq)
+                   date-seq)]
     (chime/chime-at
      date-seq f
      {:on-finished log-finished
