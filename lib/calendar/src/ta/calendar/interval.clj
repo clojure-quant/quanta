@@ -109,11 +109,31 @@
    :m4  (gen-intraday-step-fn 4 :minutes)
    :m5  (gen-intraday-step-fn 5 :minutes)
    :m6  (gen-intraday-step-fn 6 :minutes)
+   :m8  (gen-intraday-step-fn 8 :minutes)
+   :m9  (gen-intraday-step-fn 9 :minutes)
    :m10 (gen-intraday-step-fn 10 :minutes)
    :m12 (gen-intraday-step-fn 12 :minutes)
    :m15 (gen-intraday-step-fn 15 :minutes)
+   :m16 (gen-intraday-step-fn 16 :minutes)
+   :m18 (gen-intraday-step-fn 18 :minutes)
    :m20 (gen-intraday-step-fn 20 :minutes)
-   :m30 (gen-intraday-step-fn 30 :minutes)})
+   :m24 (gen-intraday-step-fn 24 :minutes)
+   :m30 (gen-intraday-step-fn 30 :minutes)
+   :m32 (gen-intraday-step-fn 32 :minutes)
+   :m36 (gen-intraday-step-fn 36 :minutes)
+   :m40 (gen-intraday-step-fn 40 :minutes)
+   :m48 (gen-intraday-step-fn 48 :minutes)
+
+   :m72 (gen-intraday-step-fn 72 :minutes)
+   :m80 (gen-intraday-step-fn 80 :minutes)
+   :m90 (gen-intraday-step-fn 90 :minutes)
+   :m96 (gen-intraday-step-fn 96 :minutes)
+   :m144 (gen-intraday-step-fn 144 :minutes)
+   :m160 (gen-intraday-step-fn 160 :minutes)
+   :m288 (gen-intraday-step-fn 288 :minutes)})
+
+; all divider of 1440 (minutes of day)
+;1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 16, 18, 20, 24, 30, 32, 36, 40, 48, 60, 72, 80, 90, 96, 120, 144, 160, 180, 240, 288, 360, 480, 720, 1440
 
 (defn interval-exists? [interval-kw]
   (contains? intervals interval-kw))
