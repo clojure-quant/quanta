@@ -18,7 +18,9 @@
 
 ;; all function should have docstrings and be tested.
 
-(defn now-calendar [calendar-kw]
+(defn now-calendar
+  "returns a zoned-date-time of now with the timezone of the calendar"
+  [calendar-kw]
   (let [calendar (calendar-kw calendars)]
     (interval/now-calendar calendar)))
 
@@ -97,9 +99,10 @@
         current-open-dt (:current-open interval)]
     (current-open-dt calendar dt)))
 
-(defn close->open-dt [[calendar-kw interval-kw] & [dt]]
-  (let [dt (if dt dt (t/now))
-        calendar (calendar-kw calendars)
+(defn close->open-dt
+  "converts bar close time to bar open time"
+  [[calendar-kw interval-kw] dt]
+  (let [calendar (calendar-kw calendars)
         interval (interval-kw intervals)
         _ (assert calendar)
         _ (assert interval)
@@ -112,9 +115,10 @@
       (prior-open-dt calendar aligned-close-dt)              ; dt is aligned close -> new candle started. prior open needed
       (current-open-dt calendar aligned-close-dt))))         ; dt is not alined close -> unfinished candle. current open needed
 
-(defn open->close-dt [[calendar-kw interval-kw] & [dt]]
-  (let [dt (if dt dt (t/now))
-        calendar (calendar-kw calendars)
+(defn open->close-dt
+  "converts bar open time to bar close time"
+  [[calendar-kw interval-kw] dt]
+  (let [calendar (calendar-kw calendars)
         interval (interval-kw intervals)
         _ (assert calendar)
         _ (assert interval)
@@ -141,6 +145,13 @@
 (defn calendar-seq-prior [[calendar-kw interval-kw] dt]
   (let [cur-dt (current-close [calendar-kw interval-kw] dt)
         prior-fn (partial prior-close [calendar-kw interval-kw])]
+    (iterate prior-fn cur-dt)))
+
+(defn calendar-seq-prior-open
+  "like calendar-seq-prior but with bar open time"
+  [[calendar-kw interval-kw] dt]
+  (let [cur-dt (current-open [calendar-kw interval-kw] dt)
+        prior-fn (partial prior-open [calendar-kw interval-kw])]
     (iterate prior-fn cur-dt)))
 
 (defn trailing-window
@@ -172,6 +183,14 @@
 (defn fixed-window
   [[calendar-kw interval-kw] {:keys [start end] :as window}]
   (let [seq (calendar-seq-prior [calendar-kw interval-kw] end)
+        after-start? (fn [dt] (t/>= dt start))]
+    (take-while after-start? seq)))
+
+(defn fixed-window-open
+  "like fixed-window but with bar open time
+   window start and end should be also bar open times"
+  [[calendar-kw interval-kw] {:keys [start end] :as window}]
+  (let [seq (calendar-seq-prior-open [calendar-kw interval-kw] end)
         after-start? (fn [dt] (t/>= dt start))]
     (take-while after-start? seq)))
 

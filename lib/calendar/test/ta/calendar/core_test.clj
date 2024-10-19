@@ -3,8 +3,9 @@
             [tick.core :as t]
             [ta.calendar.data.dates :refer :all]
             [ta.calendar.calendars :as cal]
-            [quanta.calendar.core :refer [trailing-window calendar-seq fixed-window
-                                      close->open-dt open->close-dt]]))
+            [quanta.calendar.core :refer [trailing-window calendar-seq
+                                          fixed-window fixed-window-open
+                                          close->open-dt open->close-dt]]))
 (defn print-seq [s]
   (for [i (range 0 (count s))]
     (println i ": " (nth s i))))
@@ -811,5 +812,52 @@
         (is (= (nth close-dts 8) utc-thursday-23-57))
         (is (= (nth close-dts 9) utc-thursday-23-56))
         (is (not (= (nth close-dts 5) utc-friday-00-00)))))
+    )
+
+  (deftest fixed-window-open--crypto
+    (testing "crypto :m | inside trading day - fixed-window-open"
+      (let [fixed-window-crypto-m (fixed-window-open [:crypto :m] {:start utc-friday-16-25
+                                                                   :end utc-friday-16-29})]
+        (is (= (nth fixed-window-crypto-m 0) utc-friday-16-29))
+        (is (= (nth fixed-window-crypto-m 1) utc-friday-16-28))
+        (is (= (nth fixed-window-crypto-m 2) utc-friday-16-27))
+        (is (= (nth fixed-window-crypto-m 3) utc-friday-16-26))
+        (is (= (nth fixed-window-crypto-m 4) utc-friday-16-25))
+        (is (not (= (nth fixed-window-crypto-m 0) utc-friday-16-30)))))
+
+    (testing "crypto :m | on trading day start - fixed-window-open"
+      (let [fixed-window-crypto-m (fixed-window-open [:crypto :m] {:start utc-friday-00-00
+                                                                   :end utc-friday-00-04})]
+        (is (= (nth fixed-window-crypto-m 0) utc-friday-00-04))
+        (is (= (nth fixed-window-crypto-m 1) utc-friday-00-03))
+        (is (= (nth fixed-window-crypto-m 2) utc-friday-00-02))
+        (is (= (nth fixed-window-crypto-m 3) utc-friday-00-01))
+        (is (= (nth fixed-window-crypto-m 4) utc-friday-00-00))
+        (is (not (= (nth fixed-window-crypto-m 0) utc-friday-00-05)))))
+
+    (testing "crypto :m | on trading day end - fixed-window-open"
+      (let [fixed-window-crypto-m (fixed-window-open [:crypto :m] {:start utc-thursday-23-56
+                                                                   :end utc-friday-00-00})]
+        (is (= (nth fixed-window-crypto-m 0) utc-friday-00-00))
+        (is (= (nth fixed-window-crypto-m 1) utc-thursday-23-59))
+        (is (= (nth fixed-window-crypto-m 2) utc-thursday-23-58))
+        (is (= (nth fixed-window-crypto-m 3) utc-thursday-23-57))
+        (is (= (nth fixed-window-crypto-m 4) utc-thursday-23-56))
+        (is (not (= (nth fixed-window-crypto-m 0) utc-thursday-23-59-59-999)))))
+
+    (testing "crypto :m | over 2 trading days - fixed-window-open"
+      (let [fixed-window-crypto-m (fixed-window-open [:crypto :m] {:start utc-thursday-23-56
+                                                                   :end utc-friday-00-05})]
+        (is (= (nth fixed-window-crypto-m 0) utc-friday-00-05))
+        (is (= (nth fixed-window-crypto-m 1) utc-friday-00-04))
+        (is (= (nth fixed-window-crypto-m 2) utc-friday-00-03))
+        (is (= (nth fixed-window-crypto-m 3) utc-friday-00-02))
+        (is (= (nth fixed-window-crypto-m 4) utc-friday-00-01))
+        (is (= (nth fixed-window-crypto-m 5) utc-friday-00-00))
+        (is (= (nth fixed-window-crypto-m 6) utc-thursday-23-59))
+        (is (= (nth fixed-window-crypto-m 7) utc-thursday-23-58))
+        (is (= (nth fixed-window-crypto-m 8) utc-thursday-23-57))
+        (is (= (nth fixed-window-crypto-m 9) utc-thursday-23-56))
+        (is (not (= (nth fixed-window-crypto-m 5) utc-thursday-23-59-59-999)))))
     )
   )
