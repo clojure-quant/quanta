@@ -42,4 +42,4 @@
   (->  ds
        (add-date-group-calendar calendar)
        compress-ds
-       (tc/map-columns ds :date t/instant)))
+       (tc/map-columns :date t/instant)))
