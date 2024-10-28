@@ -1,8 +1,8 @@
 (ns ta.calendar.interval.day
   (:require
-    [tick.core :as t]
-    [ta.helper.date :refer [at-time]]
-    [ta.calendar.helper :refer [before-trading-hours? after-trading-hours?
+   [tick.core :as t]
+   [ta.helper.date :refer [at-time]]
+   [ta.calendar.helper :refer [before-trading-hours? after-trading-hours?
                                trading-open-time trading-close-time
                                day-open?
                                day-with-open? day-with-close?

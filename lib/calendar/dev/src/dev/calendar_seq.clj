@@ -1,11 +1,8 @@
 (ns dev.calendar-seq
   (:require
     [tick.core :as t]
-    [quanta.calendar.core :refer [trailing-window calendar-seq calendar-seq-prior
-                              fixed-window
-                              close->open-dt open->close-dt]]
-    [ta.calendar.calendars :refer [calendars]]
-    [dev.utils :refer [to-utc]]))
+    [quanta.calendar.core :refer [calendar-seq calendar-seq-prior calendar-seq-prior-open
+                                  fixed-window-open fixed-window]]))
 
 
 (->> (t/in (t/date-time "2024-10-01T16:20:00") "America/New_York")
@@ -110,4 +107,113 @@
 
 (->> (t/in (t/date-time "2024-10-01T23:59:59.999999999") "UTC")
      (calendar-seq-prior [:crypto :d])
-     (take 20))
+     (take 10))
+;=>
+;(#time/zoned-date-time"2024-10-01T23:59:59.999999999Z[UTC]"
+;  #time/zoned-date-time"2024-09-30T23:59:59.999999999Z[UTC]"
+;  #time/zoned-date-time"2024-09-29T23:59:59.999999999Z[UTC]"
+;  #time/zoned-date-time"2024-09-28T23:59:59.999999999Z[UTC]"
+;  #time/zoned-date-time"2024-09-27T23:59:59.999999999Z[UTC]"
+;  #time/zoned-date-time"2024-09-26T23:59:59.999999999Z[UTC]"
+;  #time/zoned-date-time"2024-09-25T23:59:59.999999999Z[UTC]"
+;  #time/zoned-date-time"2024-09-24T23:59:59.999999999Z[UTC]"
+;  #time/zoned-date-time"2024-09-23T23:59:59.999999999Z[UTC]"
+;  #time/zoned-date-time"2024-09-22T23:59:59.999999999Z[UTC]")
+
+
+(-> (fixed-window [:crypto :h] {:start (t/instant "2024-01-01T01:00:00Z")
+                                :end (t/instant "2024-01-01T23:59:59.999999999Z")})
+    count)
+; => 24
+
+(-> (fixed-window [:crypto :h] {:start (t/instant "2024-01-01T01:00:00Z")
+                                :end (t/instant "2024-01-01T23:00:00Z")})
+    count)
+; => 23
+
+
+(-> (fixed-window [:crypto :d] {:start (t/instant "2024-01-01T23:59:59.999999999Z")
+                                :end (t/instant "2024-01-07T23:59:59.999999999Z")}))
+;=>
+;(#time/zoned-date-time"2024-01-07T23:59:59.999999999Z[UTC]"
+;  #time/zoned-date-time"2024-01-06T23:59:59.999999999Z[UTC]"
+;  #time/zoned-date-time"2024-01-05T23:59:59.999999999Z[UTC]"
+;  #time/zoned-date-time"2024-01-04T23:59:59.999999999Z[UTC]"
+;  #time/zoned-date-time"2024-01-03T23:59:59.999999999Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T23:59:59.999999999Z[UTC]"
+;  #time/zoned-date-time"2024-01-01T23:59:59.999999999Z[UTC]")
+
+(-> (fixed-window-open [:crypto :d] {:start (t/instant "2024-09-01T00:00:00Z")
+                                     :end (t/instant "2024-09-08T00:00:00Z")}))
+;=>
+;(#time/zoned-date-time"2024-09-08T00:00Z[UTC]"
+;  #time/zoned-date-time"2024-09-07T00:00Z[UTC]"
+;  #time/zoned-date-time"2024-09-06T00:00Z[UTC]"
+;  #time/zoned-date-time"2024-09-05T00:00Z[UTC]"
+;  #time/zoned-date-time"2024-09-04T00:00Z[UTC]"
+;  #time/zoned-date-time"2024-09-03T00:00Z[UTC]"
+;  #time/zoned-date-time"2024-09-02T00:00Z[UTC]"
+;  #time/zoned-date-time"2024-09-01T00:00Z[UTC]")
+
+(-> (fixed-window-open [:crypto :d] {:start (t/instant "2024-01-01T23:59:59.999999999Z")
+                                     :end (t/instant "2024-01-05T23:59:59.999999999Z")}))
+; NOTE: start is not valid bar open time.
+;=>
+;(#time/zoned-date-time"2024-01-05T00:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-04T00:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-03T00:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T00:00Z[UTC]")
+
+(-> (fixed-window [:crypto :h] {:start (t/instant "2024-01-01T23:59:59.999999999Z")
+                                :end (t/instant "2024-01-02T23:59:59.999999999Z")}))
+;=>
+;(#time/zoned-date-time"2024-01-02T23:59:59.999999999Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T23:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T22:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T21:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T20:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T19:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T18:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T17:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T16:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T15:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T14:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T13:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T12:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T11:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T10:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T09:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T08:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T07:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T06:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T05:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T04:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T03:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T02:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-02T01:00Z[UTC]"
+;  #time/zoned-date-time"2024-01-01T23:59:59.999999999Z[UTC]")
+
+
+(->> (calendar-seq-prior [:crypto :d] (t/instant "2024-01-02T23:59:59.999999999Z"))
+     (take 1))
+; => (#time/zoned-date-time"2024-01-02T23:59:59.999999999Z[UTC]")
+
+(->> (t/in (t/date-time "2024-09-08T00:00:00") "UTC")
+     (calendar-seq-prior-open [:crypto :d])
+     (take 1))
+;=> (#time/zoned-date-time"2024-09-08T00:00Z[UTC]")
+
+(->> (t/in (t/date-time "2024-01-02T23:59:59.999999999") "UTC")
+     (calendar-seq-prior-open [:crypto :d])
+     (take 1))
+;=> (#time/zoned-date-time"2024-01-02T00:00Z[UTC]")
+
+(fixed-window-open [:crypto :d] {:start (t/in (t/date-time "2024-02-05T23:59:59.999999999") "UTC")
+                                 :end (t/in (t/date-time "2024-02-11T23:59:59.999999999") "UTC")})
+;=>
+;(#time/zoned-date-time"2024-02-11T00:00Z[UTC]"
+;  #time/zoned-date-time"2024-02-10T00:00Z[UTC]"
+;  #time/zoned-date-time"2024-02-09T00:00Z[UTC]"
+;  #time/zoned-date-time"2024-02-08T00:00Z[UTC]"
+;  #time/zoned-date-time"2024-02-07T00:00Z[UTC]"
+;  #time/zoned-date-time"2024-02-06T00:00Z[UTC]")

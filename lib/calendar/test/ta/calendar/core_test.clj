@@ -860,4 +860,23 @@
         (is (= (nth fixed-window-crypto-m 9) utc-thursday-23-56))
         (is (not (= (nth fixed-window-crypto-m 5) utc-thursday-23-59-59-999)))))
     )
+
+  (testing "crypto :d | inside trading day - fixed-window-open"
+    (let [fixed-window-crypto-d (fixed-window-open [:crypto :d] {:start utc-monday-00-00
+                                                                 :end utc-sunday-23-59-59-999})]
+      (is (= (count fixed-window-crypto-d) 7))
+      (is (= (nth fixed-window-crypto-d 0) utc-sunday-00-00))
+      (is (= (nth fixed-window-crypto-d 1) utc-saturday-00-00))
+      (is (= (nth fixed-window-crypto-d 2) utc-friday-00-00))
+      (is (= (nth fixed-window-crypto-d 3) utc-thursday-00-00))
+      (is (= (nth fixed-window-crypto-d 4) utc-wednesday-00-00))
+      (is (= (nth fixed-window-crypto-d 5) utc-tuesday-00-00))
+      (is (= (nth fixed-window-crypto-d 6) utc-monday-00-00))
+      (is (not (= (nth fixed-window-crypto-d 0) utc-sunday-23-59-59-999)))
+      ))
+
+  (testing "crypto 1 day => 24 hours"
+    (is (= 24 (-> (fixed-window [:crypto :h] {:start (t/instant "2024-01-01T01:00:00Z")
+                                              :end (t/instant "2024-01-01T23:59:59.999999999Z")})
+                  count))))
   )

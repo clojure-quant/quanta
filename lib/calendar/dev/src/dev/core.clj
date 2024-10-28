@@ -3,8 +3,8 @@
     [tick.core :as t]
     [ta.calendar.calendars :refer [calendars]]
     [ta.calendar.interval :refer [intervals]]
-    [quanta.calendar.core :refer [next-close current-close close->open-dt open->close-dt current-close2]]
-    [dev.utils :refer [to-utc]]))
+    [ta.calendar.helper :refer [trading-open-time]]
+    [quanta.calendar.core :refer [next-close current-close]]))
 
 (current-close [:crypto :m]
                     (t/in (t/date-time "2024-02-08T23:59:30") "UTC"))
@@ -77,4 +77,33 @@
    :next-close-dt next-close-dt
    :next-close-instant next-close-instant})
 
-(t/instant)
+(let [dt-str "2024-02-08T23:59:59.999999999"
+      inst (-> (str dt-str "Z") (t/instant))
+      utc (t/in (t/date-time dt-str) "UTC")]
+  {:inst inst
+   :utc utc})
+
+(t/date (t/instant "2024-02-08T23:59:59.999999999"))
+
+(let [calendar (:crypto calendars)
+      interval (:d intervals)
+      current-close-dt (:current-close interval)]
+  (current-close-dt calendar (t/in (t/date-time "2024-02-08T23:59:59.999999999") "UTC")))
+;=> #time/zoned-date-time"2024-02-08T23:59:59.999999999Z[UTC]"
+
+(let [calendar (:crypto calendars)
+      interval (:d intervals)
+      current-open-dt (:current-open interval)]
+  (current-open-dt calendar (t/in (t/date-time "2024-02-08T23:59:59.999999999") "UTC")))
+; => #time/zoned-date-time"2024-02-08T00:00Z[UTC]"
+
+(let [t (t/instant "2024-02-08T23:59:59.999999999Z")]
+  (trading-open-time (:crypto calendars) t))
+;=> #time/zoned-date-time"2024-02-08T00:00Z[UTC]"
+
+
+(let [calendar (:crypto calendars)
+      interval (:h4 intervals)
+      current-close-dt (:current-close interval)]
+  (current-close-dt calendar (t/in (t/date-time "2024-02-10T12:00:00") "UTC")))
+; => #time/zoned-date-time"2024-02-10T12:00Z[UTC]"

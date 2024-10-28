@@ -21,8 +21,5 @@
 
 
 (time-open? (:us calendars) (to-utc "2024-10-11T16:00:00"))
-;=> false
+;=> true
 (time-open? (:us calendars) (t/instant))
-
-(t/time (to-utc "2024-10-11T16:00:00"))
-(t/time (t/instant))
