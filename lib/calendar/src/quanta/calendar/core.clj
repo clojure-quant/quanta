@@ -4,7 +4,8 @@
    [ta.calendar.interval :refer [intervals
                                  get-calendar-day-duration
                                  get-calendar-month-duration] :as interval]
-   [ta.calendar.calendars :refer [calendars]]))
+   [ta.calendar.calendars :refer [calendars]]
+   [ta.calendar.helper :as helper]))
 
 ; to find a calendar we use one vector param: [:forex :d]
 
@@ -22,7 +23,7 @@
   "returns a zoned-date-time of now with the timezone of the calendar"
   [calendar-kw]
   (let [calendar (calendar-kw calendars)]
-    (interval/now-calendar calendar)))
+    (helper/now-calendar calendar)))
 
 (defn next-close
   "returns the next bar close time.

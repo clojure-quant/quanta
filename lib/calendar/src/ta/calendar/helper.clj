@@ -1,9 +1,15 @@
 (ns ta.calendar.helper
   (:require
    [tick.core :as t]
-   [ta.helper.date :refer [at-time same-date?]]))
+   [ta.helper.date :refer [at-time same-date? now-in-zone]]))
 
 (def day1 (t/new-duration 1 :days))
+
+(defn now-calendar [{:keys [timezone] :as calendar}]
+  (now-in-zone timezone))
+
+(defn dt->calendar-dt [{:keys [timezone] :as calendar} dt]
+  (t/in dt timezone))
 
 (defn day-open? [{:keys [week] :as calendar} dt]
   (let [day (t/day-of-week dt)]
@@ -186,14 +192,24 @@
 
 (defn next-day-at-midnight [{:keys [timezone] :as calendar} dt]
   (let [next-day (t/>> dt (t/new-duration 1 :days))]
-    (at-time (t/date next-day)
+    (at-time (t/date (t/in next-day timezone))
              (t/new-time 0 0 0) timezone)))
 
-(defn trading-open-time [{:keys [open timezone] :as calendar} date]
-  (at-time date open timezone))
+(defn same-day-at-midnight [{:keys [timezone] :as calendar} dt]
+  (at-time (t/date (t/in dt timezone))
+           (t/new-time 0 0 0) timezone))
 
-(defn trading-close-time [{:keys [close timezone] :as calendar} date]
-  (at-time date close timezone))
+(defn trading-open-time [{:keys [open timezone] :as calendar} dt]
+  (let [date (if (t/date? dt)
+               dt
+               (t/date (t/in dt timezone)))]
+    (at-time date open timezone)))
+
+(defn trading-close-time [{:keys [close timezone] :as calendar} dt]
+  (let [date (if (t/date? dt)
+               dt
+               (t/date (t/in dt timezone)))]
+    (at-time date close timezone)))
 
 (defn last-open-of-the-day [{:keys [close] :as calendar} n unit]
   ; handle approx. day close time

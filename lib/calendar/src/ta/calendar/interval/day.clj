@@ -1,14 +1,13 @@
 (ns ta.calendar.interval.day
   (:require
-   [tick.core :as t]
-   [ta.helper.date :refer [at-time]]
-   [ta.calendar.helper :refer [before-trading-hours? after-trading-hours?
+    [tick.core :as t]
+    [ta.helper.date :refer [at-time]]
+    [ta.calendar.helper :refer [before-trading-hours? after-trading-hours?
                                trading-open-time trading-close-time
-                               time-open? time-closed?
-                               day-open? day-closed?
+                               day-open?
                                day-with-open? day-with-close?
-                               day1]]))
-
+                               day1
+                               dt->calendar-dt]]))
 ; next
 
 (defn next-open
@@ -54,47 +53,53 @@
 (defn next-close-dt
   "like next-close, but also can return the close time of the same day when dt is before close time."
   [calendar dt]
-  (if (and (day-open? calendar dt) (not (after-trading-hours? calendar dt true)))
-    (trading-close-time calendar (t/date dt))
-    (next-close calendar dt)))
+  (let [zoned-dt (dt->calendar-dt calendar dt)]
+    (if (and (day-open? calendar zoned-dt) (not (after-trading-hours? calendar zoned-dt true)))
+      (trading-close-time calendar zoned-dt)
+      (next-close calendar zoned-dt))))
 
 (defn prior-close-dt
   "like prior-close, but also can return the close time of the same day when dt is after trading-hours.
   (excluding the close interval boundary)"
   [calendar dt]
-  (if (and (day-open? calendar dt) (after-trading-hours? calendar dt false))
-    (trading-close-time calendar (t/date dt))
-    (prior-close calendar dt)))
+  (let [zoned-dt (dt->calendar-dt calendar dt)]
+    (if (and (day-open? calendar zoned-dt) (after-trading-hours? calendar zoned-dt false))
+      (trading-close-time calendar zoned-dt)
+      (prior-close calendar zoned-dt))))
 
 (defn current-close
   "current close (including the close interval boundary)"
   [calendar dt]
-  (if (after-trading-hours? calendar dt true)
-    (trading-close-time calendar (t/date dt))
-    (prior-close-dt calendar dt)))
+  (let [zoned-dt (dt->calendar-dt calendar dt)]
+    (if (and (day-open? calendar zoned-dt) (after-trading-hours? calendar zoned-dt true))
+      (trading-close-time calendar zoned-dt)
+      (prior-close-dt calendar zoned-dt))))
 
 ; open
 
 (defn next-open-dt
   "next open (excluding interval boundary)"
   [calendar dt]
-  (if (and (day-open? calendar dt) (before-trading-hours? calendar dt false))
-    (trading-open-time calendar (t/date dt))
-    (next-open calendar dt)))
+  (let [zoned-dt (dt->calendar-dt calendar dt)]
+    (if (and (day-open? calendar zoned-dt) (before-trading-hours? calendar zoned-dt false))
+      (trading-open-time calendar zoned-dt)
+      (next-open calendar zoned-dt))))
 
 (defn prior-open-dt
   "prior open (excluding interval boundary)"
   [calendar dt]
-  (if (and (day-open? calendar dt) (not (before-trading-hours? calendar dt true)))
-    (trading-open-time calendar (t/date dt))
-    (prior-open calendar dt)))
+  (let [zoned-dt (dt->calendar-dt calendar dt)]
+    (if (and (day-open? calendar zoned-dt) (not (before-trading-hours? calendar zoned-dt true)))
+      (trading-open-time calendar zoned-dt)
+      (prior-open calendar zoned-dt))))
 
 (defn current-open
   "current open (including the open interval boundary)"
   [calendar dt]
-  (if (and (day-open? calendar dt) (not (before-trading-hours? calendar dt false)))
-    (trading-open-time calendar (t/date dt))
-    (prior-open-dt calendar dt)))
+  (let [zoned-dt (dt->calendar-dt calendar dt)]
+    (if (and (day-open? calendar zoned-dt) (not (before-trading-hours? calendar zoned-dt false)))
+      (trading-open-time calendar zoned-dt)
+      (prior-open-dt calendar zoned-dt))))
 
 (comment
   (require '[ta.calendar.calendars :refer [calendars]])

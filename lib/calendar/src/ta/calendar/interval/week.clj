@@ -1,9 +1,7 @@
 (ns ta.calendar.interval.week
   (:require
    [tick.core :as t]
-   [ta.helper.date :refer [at-time]]
-   [ta.calendar.interval.day :as day]
-   [ta.calendar.helper :refer [trading-close-time day-with-close? day1]]))
+   [ta.calendar.interval.day :as day]))
 
 ;; helper
 
@@ -19,25 +17,28 @@
 
 ;; close
 
-(defn next-close [calendar dt]
-  (let [last-day-of-week (last (:week calendar))]
-    (->> (next-day-of-week-iter calendar dt)
+(defn next-close [{:keys [timezone] :as calendar} dt]
+  (let [zoned-dt (t/in dt timezone)
+        last-day-of-week (last (:week calendar))]
+    (->> (next-day-of-week-iter calendar zoned-dt)
          (drop-while #(not= last-day-of-week (t/day-of-week %)))
          (first))))
 
-(defn prior-close [calendar dt]
-  (let [last-day-of-week (last (:week calendar))]
-    (->> (prior-day-of-week-iter calendar dt)
+(defn prior-close [{:keys [timezone] :as calendar} dt]
+  (let [zoned-dt (t/in dt timezone)
+        last-day-of-week (last (:week calendar))]
+    (->> (prior-day-of-week-iter calendar zoned-dt)
          (drop-while #(not= last-day-of-week (t/day-of-week %)))
          (first))))
 
-(defn current-close [calendar dt]
-  (let [cur-dt (day/current-close calendar dt)
+(defn current-close [{:keys [timezone] :as calendar} dt]
+  (let [zoned-dt (t/in dt timezone)
+        cur-dt (day/current-close calendar zoned-dt)
         last-day-of-week (last (:week calendar))]
     (if (and (= (t/day-of-week cur-dt) last-day-of-week)
              (t/= (t/date cur-dt) (t/date dt)))
       cur-dt
-      (prior-close calendar dt))))
+      (prior-close calendar zoned-dt))))
 
 (comment
   (require '[ta.calendar.calendars :as cal])

@@ -7,11 +7,7 @@
    [ta.calendar.interval.day :as day]
    [ta.calendar.interval.intraday :as intraday]
    [ta.calendar.calendars :refer [calendars]]
-   [ta.calendar.helper :refer [intraday?]]
-   [ta.helper.date :refer [align-field now-in-zone]]))
-
-(defn now-calendar [{:keys [timezone] :as calendar}]
-  (now-in-zone timezone))
+   [ta.calendar.helper :refer [now-calendar]]))
 
 (defn working-days-count [period]
   ; TODO

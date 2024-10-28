@@ -14,8 +14,9 @@
                                overnight-weekend? overnight-week-start?
                                midnight-close?
                                next-day-at-midnight
-                               last-open-of-the-day]]))
-
+                               last-open-of-the-day
+                               now-calendar
+                               dt->calendar-dt]]))
 ;
 ; base
 ;
@@ -45,21 +46,21 @@
 (defn next-close-dt
   "next close dt (exclusive current boundary).
    use for iteration"
-  ([calendar n unit] (next-close-dt calendar n unit (t/now)))
+  ([calendar n unit] (next-close-dt calendar n unit (now-calendar calendar)))
   ([calendar n unit dt] (next-close-dt calendar n unit dt {:on-boundary-fn t/>> :in-interval-fn t/>>}))
   ([calendar n unit dt conf]
    (let [{:keys [open close]} calendar
+         zoned-dt (dt->calendar-dt calendar dt)
          dt-next (dt-base calendar n unit dt conf)
          ; adjust to approx. close to stay on the same day
-         dt-next (if (and (t/= dt-next (next-day-at-midnight calendar dt))
+         dt-next (if (and (t/= dt-next (next-day-at-midnight calendar zoned-dt))
                           (midnight-close? close))
-                   (trading-close-time calendar (t/date dt))
+                   (trading-close-time calendar zoned-dt)
                    dt-next)
-         day-next (t/date dt-next)
          first-close (t/>> open (t/new-duration n unit))]
-     (if (not (day-has-next-close? {:calendar calendar :close close :dt dt :dt-next dt-next}))
+     (if (not (day-has-next-close? {:calendar calendar :close close :dt zoned-dt :dt-next dt-next}))
        (->> (day/next-open calendar dt-next) (next-close-dt calendar n unit))
-       (let [open (trading-open-time calendar day-next)]
+       (let [open (trading-open-time calendar dt-next)]
          (if (and (before-trading-hours? calendar dt-next first-close close)
                   (or (intraday? calendar)
                       (inside-overnight-gap? calendar dt-next first-close close)
@@ -70,12 +71,11 @@
 (defn prior-close-dt
   "prior close dt (exclusive current boundary).
    use for iteration."
-  ([calendar n unit] (prior-close-dt calendar n unit (t/now)))
+  ([calendar n unit] (prior-close-dt calendar n unit (now-calendar calendar)))
   ([calendar n unit dt] (prior-close-dt calendar n unit dt {:on-boundary-fn t/<< :in-interval-fn nil}))
   ([calendar n unit dt conf]
    (let [{:keys [open close]} calendar
          dt-prev (dt-base calendar n unit dt conf)
-         day-prev (t/date dt-prev)
          first-close (t/>> open (t/new-duration n unit))]
      (if (not (day-has-prior-close? calendar dt-prev first-close))
        (day/prior-close calendar dt-prev)
@@ -83,20 +83,21 @@
                 (or (intraday? calendar)
                     (inside-overnight-gap? calendar dt-prev first-close close)
                     (overnight-weekend? calendar dt-prev)))
-         (trading-close-time calendar day-prev)             ; TODO: bug 1h, currently: 17:00h => 16:30h  => should: 16:00   => possible solution: rounddown close time.... or last-close
+         (trading-close-time calendar dt-prev)             ; TODO: bug 1h, currently: 17:00h => 16:30h  => should: 16:00   => possible solution: rounddown close time.... or last-close
          dt-prev)))))
 
 (defn current-close-dt
   "recent close dt (inclusive current boundary).
    same as prior-close-dt but with other boundary handling.
    usage: for dt alignment. use prior and next for iteration"
-  ([calendar n unit] (current-close-dt calendar n unit (t/now)))
+  ([calendar n unit] (current-close-dt calendar n unit (now-calendar calendar)))
   ([calendar n unit dt]
-   (let [{:keys [close]} calendar]
+   (let [{:keys [close]} calendar
+         zoned-dt (dt->calendar-dt calendar dt)]
      ; keep approx. close to stay on the same day
-     (if (and (t/= (t/time dt) close)
+     (if (and (t/= (t/time zoned-dt) close)
               (midnight-close? close))
-       dt
+       zoned-dt
        (prior-close-dt calendar n unit dt {:on-boundary-fn nil :in-interval-fn nil})))))
 
 ;
@@ -106,7 +107,7 @@
 (defn next-open-dt
   "next open dt (exclusive current boundary).
    use for iteration"
-  ([calendar n unit] (next-open-dt calendar n unit (t/now)))
+  ([calendar n unit] (next-open-dt calendar n unit (now-calendar calendar)))
   ([calendar n unit dt] (next-open-dt calendar n unit dt {:on-boundary-fn t/>> :in-interval-fn t/>>}))
   ([calendar n unit dt conf]
    (let [{:keys [open close]} calendar
@@ -117,13 +118,13 @@
              (after-trading-hours? calendar dt-next open last-open))
        (day/next-open calendar dt-next)
        (if (before-trading-hours? calendar dt-next open last-open)
-         (trading-open-time calendar date-next)
+         (trading-open-time calendar dt-next)
          dt-next)))))
 
 (defn prior-open-dt
   "prior open dt (exclusive current boundary).
    use for iteration"
-  ([calendar n unit] (prior-open-dt calendar n unit (t/now)))
+  ([calendar n unit] (prior-open-dt calendar n unit (now-calendar calendar)))
   ([calendar n unit dt] (prior-open-dt calendar n unit dt {:on-boundary-fn t/<< :in-interval-fn nil}))
   ([calendar n unit dt conf]
    (let [{:keys [open close timezone]} calendar
@@ -141,8 +142,18 @@
   "recent open dt (inclusive current boundary).
    same as prior-open-dt but with other boundary handling
    usage: for dt alignment. use prior and next for iteration"
-  ([calendar n unit] (current-open-dt calendar n unit (t/now)))
-  ([calendar n unit dt] (prior-open-dt calendar n unit dt {:on-boundary-fn nil :in-interval-fn nil})))
+  ([calendar n unit] (current-open-dt calendar n unit (now-calendar calendar)))
+  ([calendar n unit dt]
+   (prior-open-dt calendar n unit dt {:on-boundary-fn nil :in-interval-fn nil})
+   ;(let [{:keys [close]} calendar
+   ;      midnight-open (next-day-at-midnight calendar dt)]
+   ;  ; handle approx. close time
+   ;  (if (and (t/= (t/time dt) close)
+   ;           (midnight-close? close)
+   ;           (time-open? calendar midnight-open))
+   ;    midnight-open
+   ;    (prior-open-dt calendar n unit dt {:on-boundary-fn nil :in-interval-fn nil})))
+   ))
 
 (comment
   (require '[ta.calendar.calendars :refer [calendars]])
