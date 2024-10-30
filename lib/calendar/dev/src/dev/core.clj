@@ -16,7 +16,7 @@
 
 (current-close [:crypto :m]
                     (t/in (t/date-time "2024-02-09T00:00:00") "UTC"))
-;=> #time/zoned-date-time"2024-02-08T23:59:59.999999999Z[UTC]"
+;=> #time/zoned-date-time"2024-02-09T00:00Z[UTC]"
 
 (let [calendar (:us calendars)
       interval (:m intervals)
@@ -89,13 +89,13 @@
       interval (:d intervals)
       current-close-dt (:current-close interval)]
   (current-close-dt calendar (t/in (t/date-time "2024-02-08T23:59:59.999999999") "UTC")))
-;=> #time/zoned-date-time"2024-02-08T23:59:59.999999999Z[UTC]"
+;=> #time/zoned-date-time"2024-02-08T00:00Z[UTC]"
 
 (let [calendar (:crypto calendars)
       interval (:d intervals)
       current-open-dt (:current-open interval)]
   (current-open-dt calendar (t/in (t/date-time "2024-02-08T23:59:59.999999999") "UTC")))
-; => #time/zoned-date-time"2024-02-08T00:00Z[UTC]"
+;=> #time/zoned-date-time"2024-02-08T00:00Z[UTC]"
 
 (let [t (t/instant "2024-02-08T23:59:59.999999999Z")]
   (trading-open-time (:crypto calendars) t))
@@ -107,3 +107,35 @@
       current-close-dt (:current-close interval)]
   (current-close-dt calendar (t/in (t/date-time "2024-02-10T12:00:00") "UTC")))
 ; => #time/zoned-date-time"2024-02-10T12:00Z[UTC]"
+
+
+(let [calendar (:crypto calendars)
+      interval (:m intervals)
+      current-open-dt (:current-open interval)]
+  (current-open-dt calendar (t/in (t/date-time "2024-02-08T23:59:00") "UTC")))
+;=> #time/zoned-date-time"2024-02-08T23:59Z[UTC]"
+
+(let [calendar (:crypto calendars)
+      interval (:d intervals)
+      current-open-dt (:current-open interval)]
+  (current-open-dt calendar (t/in (t/date-time "2024-02-08T12:00:00") "UTC")))
+;=> #time/zoned-date-time"2024-02-08T00:00Z[UTC]"
+
+(let [calendar (:crypto calendars)
+      interval (:d intervals)
+      next-close (:next-close interval)]
+  (next-close calendar (t/in (t/date-time "2024-02-08T00:00:00") "UTC")))
+;=> #time/zoned-date-time"2024-02-09T00:00Z[UTC]"
+
+
+(let [calendar (:crypto calendars)
+      interval (:d intervals)
+      next-close (:next-close interval)]
+  (next-close calendar (t/in (t/date-time "2024-02-07T23:59:59") "UTC")))
+;=> #time/zoned-date-time"2024-02-08T00:00Z[UTC]"
+
+(let [calendar (:crypto calendars)
+      interval (:m intervals)
+      next-close (:next-close interval)]
+  (next-close calendar (t/in (t/date-time "2024-02-07T23:59:59") "UTC")))
+;=> #time/zoned-date-time"2024-02-08T00:00Z[UTC]"

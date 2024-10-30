@@ -371,8 +371,8 @@
 
 (deftest close-to-open-time--crypto
   (testing "crypto :d (aligned) - close seq => open seq"
-    (let [fixed-window-crypto-d (fixed-window [:crypto :d] {:start utc-monday-23-59-59-999
-                                                            :end utc-monday-next-23-59-59-999})
+    (let [fixed-window-crypto-d (fixed-window [:crypto :d] {:start utc-tuesday-00-00
+                                                            :end utc-tuesday-next-00-00})
           open-dts (map #(close->open-dt [:crypto :d] %) fixed-window-crypto-d)]
       (is (= (nth open-dts 0) utc-monday-next-00-00))
       (is (= (nth open-dts 1) utc-sunday-00-00))
@@ -388,9 +388,9 @@
     (let [fixed-window-crypto-d [utc-tuesday-next-12-00
                                  utc-monday-next-12-00]
           open-dts (map #(close->open-dt [:crypto :d] %) fixed-window-crypto-d)]
-      (is (= (nth open-dts 0) utc-monday-next-00-00))
-      (is (= (nth open-dts 1) utc-sunday-00-00))
-      (is (not (= (nth open-dts 0) utc-tuesday-next-00-00))))))
+      (is (= (nth open-dts 0) utc-tuesday-next-00-00))
+      (is (= (nth open-dts 1) utc-monday-next-00-00))
+      (is (not (= (nth open-dts 0) utc-monday-next-00-00))))))
 
 (deftest open-to-close-time--crypto
   (testing "crypto :d (aligned) - open seq => close seq"
@@ -403,20 +403,20 @@
                                  utc-tuesday-00-00
                                  utc-monday-00-00]
           close-dts (map #(open->close-dt [:crypto :d] %) fixed-window-crypto-d)]
-      (is (= (nth close-dts 0) utc-monday-next-23-59-59-999))
-      (is (= (nth close-dts 1) utc-sunday-23-59-59-999))
-      (is (= (nth close-dts 2) utc-saturday-23-59-59-999))
-      (is (= (nth close-dts 3) utc-friday-23-59-59-999))
-      (is (= (nth close-dts 4) utc-thursday-23-59-59-999))
-      (is (= (nth close-dts 5) utc-wednesday-23-59-59-999))
-      (is (= (nth close-dts 6) utc-tuesday-23-59-59-999))
-      (is (= (nth close-dts 7) utc-monday-23-59-59-999))
+      (is (= (nth close-dts 0) utc-tuesday-next-00-00))
+      (is (= (nth close-dts 1) utc-monday-next-00-00))
+      (is (= (nth close-dts 2) utc-sunday-00-00))
+      (is (= (nth close-dts 3) utc-saturday-00-00))
+      (is (= (nth close-dts 4) utc-friday-00-00))
+      (is (= (nth close-dts 5) utc-thursday-00-00))
+      (is (= (nth close-dts 6) utc-wednesday-00-00))
+      (is (= (nth close-dts 7) utc-tuesday-00-00))
       (is (not (= (nth close-dts 0) utc-monday-next-00-00)))))
 
   (testing "crypto :d (unaligned) - open seq => close seq"
     (let [fixed-window-crypto-d [utc-monday-next-12-00
                                  utc-monday-12-00]
           close-dts (map #(open->close-dt [:crypto :d] %) fixed-window-crypto-d)]
-      (is (= (nth close-dts 0) utc-monday-next-23-59-59-999))
-      (is (= (nth close-dts 1) utc-monday-23-59-59-999))
+      (is (= (nth close-dts 0) utc-tuesday-next-00-00))
+      (is (= (nth close-dts 1) utc-tuesday-00-00))
       (is (not (= (nth close-dts 0) utc-monday-next-00-00))))))

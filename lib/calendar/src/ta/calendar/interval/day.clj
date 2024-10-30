@@ -7,7 +7,8 @@
                                day-open?
                                day-with-open? day-with-close?
                                day1
-                               dt->calendar-dt]]))
+                               dt->calendar-dt
+                               midnight-close? midnight-close-of-prev-day?]]))
 ; next
 
 (defn next-open
@@ -52,26 +53,32 @@
 
 (defn next-close-dt
   "like next-close, but also can return the close time of the same day when dt is before close time."
-  [calendar dt]
+  [{:keys [close] :as calendar} dt]
   (let [zoned-dt (dt->calendar-dt calendar dt)]
-    (if (and (day-open? calendar zoned-dt) (not (after-trading-hours? calendar zoned-dt true)))
+    (if (and (day-open? calendar zoned-dt)
+             (not (after-trading-hours? calendar zoned-dt true))
+             (not (midnight-close? close)))
       (trading-close-time calendar zoned-dt)
       (next-close calendar zoned-dt))))
 
 (defn prior-close-dt
   "like prior-close, but also can return the close time of the same day when dt is after trading-hours.
   (excluding the close interval boundary)"
-  [calendar dt]
+  [{:keys [close] :as calendar} dt]
   (let [zoned-dt (dt->calendar-dt calendar dt)]
-    (if (and (day-open? calendar zoned-dt) (after-trading-hours? calendar zoned-dt false))
+    (if (and (day-open? calendar zoned-dt)
+             (after-trading-hours? calendar zoned-dt false)
+             (not (midnight-close? close)))
       (trading-close-time calendar zoned-dt)
       (prior-close calendar zoned-dt))))
 
 (defn current-close
   "current close (including the close interval boundary)"
-  [calendar dt]
+  [{:keys [open close] :as calendar} dt]
   (let [zoned-dt (dt->calendar-dt calendar dt)]
-    (if (and (day-open? calendar zoned-dt) (after-trading-hours? calendar zoned-dt true))
+    (if (or (and (day-open? calendar zoned-dt)
+                 (after-trading-hours? calendar zoned-dt true))
+            (midnight-close-of-prev-day? calendar zoned-dt))
       (trading-close-time calendar zoned-dt)
       (prior-close-dt calendar zoned-dt))))
 
