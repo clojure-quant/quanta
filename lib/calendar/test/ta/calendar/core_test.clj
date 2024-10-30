@@ -728,14 +728,14 @@
 
     (testing "crypto :m | on trading day end - open seq => close seq"
       (let [fixed-window-crypto-m (fixed-window [:crypto :m] {:start utc-thursday-23-56
-                                                              :end utc-thursday-23-59-59-999})
+                                                              :end utc-friday-00-00})
             open-dts (map #(close->open-dt [:crypto :m] %) fixed-window-crypto-m)]
         (is (= (nth open-dts 0) utc-thursday-23-59))
         (is (= (nth open-dts 1) utc-thursday-23-58))
         (is (= (nth open-dts 2) utc-thursday-23-57))
         (is (= (nth open-dts 3) utc-thursday-23-56))
         (is (= (nth open-dts 4) utc-thursday-23-55))
-        (is (not (= (nth open-dts 0) utc-thursday-23-59-59-999)))))
+        (is (not (= (nth open-dts 0) utc-friday-00-00)))))
 
     (testing "crypto :m | over 2 trading days - open seq => close seq"
       (let [fixed-window-crypto-m (fixed-window [:crypto :m] {:start utc-thursday-23-56
@@ -751,7 +751,7 @@
         (is (= (nth open-dts 7) utc-thursday-23-57))
         (is (= (nth open-dts 8) utc-thursday-23-56))
         (is (= (nth open-dts 9) utc-thursday-23-55))
-        (is (not (= (nth open-dts 5) utc-thursday-23-59-59-999)))))
+        (is (not (= (nth open-dts 5) utc-friday-00-00)))))
     )
 
   (deftest open-to-close-time--crypto
@@ -782,10 +782,10 @@
         (is (not (= (nth close-dts 0) utc-friday-00-04)))))
 
     (testing "crypto :m | on trading day end - open seq => close seq"
-      (let [fixed-window-crypto-m (fixed-window [:crypto :m] {:start utc-thursday-23-55
-                                                              :end utc-thursday-23-59})
+      (let [fixed-window-crypto-m (fixed-window-open [:crypto :m] {:start utc-thursday-23-55
+                                                                   :end utc-thursday-23-59})
             close-dts (map #(open->close-dt [:crypto :m] %) fixed-window-crypto-m)]
-        (is (= (nth close-dts 0) utc-thursday-23-59-59-999))
+        (is (= (nth close-dts 0) utc-friday-00-00))
         (is (= (nth close-dts 1) utc-thursday-23-59))
         (is (= (nth close-dts 2) utc-thursday-23-58))
         (is (= (nth close-dts 3) utc-thursday-23-57))
@@ -798,7 +798,7 @@
                                            utc-friday-00-02
                                            utc-friday-00-01
                                            utc-friday-00-00]
-                                          (fixed-window [:crypto :m] {:start utc-thursday-23-55
+                                          (fixed-window-open [:crypto :m] {:start utc-thursday-23-55
                                                                       :end utc-thursday-23-59}))
             close-dts (map #(open->close-dt [:crypto :m] %) fixed-window-crypto-m)]
         (is (= (nth close-dts 0) utc-friday-00-05))
@@ -806,12 +806,12 @@
         (is (= (nth close-dts 2) utc-friday-00-03))
         (is (= (nth close-dts 3) utc-friday-00-02))
         (is (= (nth close-dts 4) utc-friday-00-01))
-        (is (= (nth close-dts 5) utc-thursday-23-59-59-999))
+        (is (= (nth close-dts 5) utc-friday-00-00))
         (is (= (nth close-dts 6) utc-thursday-23-59))
         (is (= (nth close-dts 7) utc-thursday-23-58))
         (is (= (nth close-dts 8) utc-thursday-23-57))
         (is (= (nth close-dts 9) utc-thursday-23-56))
-        (is (not (= (nth close-dts 5) utc-friday-00-00)))))
+        (is (not (= (nth close-dts 5) utc-friday-00-01)))))
     )
 
   (deftest fixed-window-open--crypto
@@ -877,6 +877,6 @@
 
   (testing "crypto 1 day => 24 hours"
     (is (= 24 (-> (fixed-window [:crypto :h] {:start (t/instant "2024-01-01T01:00:00Z")
-                                              :end (t/instant "2024-01-01T23:59:59.999999999Z")})
+                                              :end (t/instant "2024-01-02T00:00:00Z")})
                   count))))
   )

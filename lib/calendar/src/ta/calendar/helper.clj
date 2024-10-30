@@ -18,11 +18,22 @@
 (defn day-closed? [calendar dt]
   (not (day-open? calendar dt)))
 
+(defn midnight-close? [close]
+  (t/= close (t/new-time 0 0 0)))
+
+(defn midnight-close-of-prev-day? [{:keys [close] :as calendar} zoned-dt]
+  (let [day-before (t/<< zoned-dt (t/new-duration 1 :days))]
+    (and (midnight-close? close)
+         (day-open? calendar day-before))))
+
 (defn intraday? [{:keys [open close] :as calendar}]
-  (t/< open close))
+  (or (t/< open close)
+      (and (t/= open close)
+           (midnight-close? close))))
 
 (defn overnight? [{:keys [open close] :as calendar}]
-  (t/>= open close))
+  (and (t/>= open close)
+       (not (midnight-close? close))))
 
 (defn time-open?
   "expecting a zoned dt in the same timezone as the calendar timezone"
@@ -30,8 +41,8 @@
   (let [time (t/time dt)]
     (cond
       (day-closed? calendar dt) false
-      (intraday? calendar) (and (t/>= time open)
-                                (t/<= time close))
+      (intraday? calendar) (and (t/>= time open) (or (t/<= time close)
+                                                     (midnight-close? close)))
       (overnight? calendar) (let [day-before (t/<< dt (t/new-duration 1 :days))
                                   day-after (t/>> dt (t/new-duration 1 :days))]
                               (or (and (t/<= time close) (day-open? calendar day-before))
@@ -109,7 +120,8 @@
      (cond
        (day-closed? calendar dt) false             ; no trading day
         ;; |...[... day ...]...|
-       (intraday? calendar) (gt time close)
+       (intraday? calendar) (and (not (midnight-close? close))
+                                 (gt time close))
         ;; |... old day ...]...[... new day ...|    ; with previous and next trading day part
         ;; |... old day ...]...................|    ; no next trading day part
        (overnight? calendar) (let [day-before (t/<< dt (t/new-duration 1 :days))]
@@ -135,7 +147,8 @@
   (let [time (t/time dt-next)]
     (cond
       (day-closed? calendar dt-next) false
-      (intraday? calendar) (t/<= time close)
+      (intraday? calendar) (or (t/<= time close)
+                               (midnight-close? close))
       (overnight? calendar) (let [day-before (t/<< dt-next (t/new-duration 1 :days))
                                   day-after (t/>> dt-next (t/new-duration 1 :days))]
                               (or
@@ -146,7 +159,17 @@
                                 ; because dt-next is valid and aligned, it is a future bar when inside same day
                                (and (same-date? dt dt-next)
                                     (day-open? calendar day-after)))))))
-;
+
+(defn after-midnight-close-and-before-first-close?
+  "only true if the day has an open and close part and dt is between"
+  [{:keys [close] :as calendar} dt first-close]
+  (if (midnight-close? close)
+    (let [time (t/time dt)
+          day-before (t/<< dt (t/new-duration 1 :days))]
+      (and (t/< time first-close)
+           (day-open? calendar day-before)))
+    false))
+
 (defn inside-overnight-gap?
   "only true if the day has an open and close part and dt is between"
   [calendar dt first-close close]
@@ -187,9 +210,6 @@
       (or inside-gap? weekend?))
     false))
 
-(defn midnight-close? [close]
-  (t/= close (t/max-of-type (t/new-time 23 59 59))))
-
 (defn next-day-at-midnight [{:keys [timezone] :as calendar} dt]
   (let [next-day (t/>> dt (t/new-duration 1 :days))]
     (at-time (t/date (t/in next-day timezone))
@@ -212,7 +232,4 @@
     (at-time date close timezone)))
 
 (defn last-open-of-the-day [{:keys [close] :as calendar} n unit]
-  ; handle approx. day close time
-  (if (midnight-close? close)
-    (t/<< (t/new-time 0 0 0) (t/new-duration n unit))
-    (t/<< close (t/new-duration n unit))))
+  (t/<< close (t/new-duration n unit)))

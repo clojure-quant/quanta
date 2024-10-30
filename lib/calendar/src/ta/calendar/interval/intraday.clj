@@ -16,7 +16,8 @@
                                next-day-at-midnight
                                last-open-of-the-day
                                now-calendar
-                               dt->calendar-dt]]))
+                               dt->calendar-dt
+                               after-midnight-close-and-before-first-close?]]))
 ;
 ; base
 ;
@@ -52,16 +53,12 @@
    (let [{:keys [open close]} calendar
          zoned-dt (dt->calendar-dt calendar dt)
          dt-next (dt-base calendar n unit dt conf)
-         ; adjust to approx. close to stay on the same day
-         dt-next (if (and (t/= dt-next (next-day-at-midnight calendar zoned-dt))
-                          (midnight-close? close))
-                   (trading-close-time calendar zoned-dt)
-                   dt-next)
          first-close (t/>> open (t/new-duration n unit))]
      (if (not (day-has-next-close? {:calendar calendar :close close :dt zoned-dt :dt-next dt-next}))
        (->> (day/next-open calendar dt-next) (next-close-dt calendar n unit))
        (let [open (trading-open-time calendar dt-next)]
          (if (and (before-trading-hours? calendar dt-next first-close close)
+                  (not (midnight-close? close))
                   (or (intraday? calendar)
                       (inside-overnight-gap? calendar dt-next first-close close)
                       (overnight-week-start? calendar dt-next)))
@@ -77,12 +74,14 @@
    (let [{:keys [open close]} calendar
          dt-prev (dt-base calendar n unit dt conf)
          first-close (t/>> open (t/new-duration n unit))]
-     (if (not (day-has-prior-close? calendar dt-prev first-close))
+     (if (and (not (day-has-prior-close? calendar dt-prev first-close))
+              (not (midnight-close? close)))
        (day/prior-close calendar dt-prev)
        (if (and (after-trading-hours? calendar dt-prev)
                 (or (intraday? calendar)
                     (inside-overnight-gap? calendar dt-prev first-close close)
-                    (overnight-weekend? calendar dt-prev)))
+                    (overnight-weekend? calendar dt-prev)
+                    (after-midnight-close-and-before-first-close? calendar dt-prev first-close)))
          (trading-close-time calendar dt-prev)             ; TODO: bug 1h, currently: 17:00h => 16:30h  => should: 16:00   => possible solution: rounddown close time.... or last-close
          dt-prev)))))
 
@@ -94,11 +93,7 @@
   ([calendar n unit dt]
    (let [{:keys [close]} calendar
          zoned-dt (dt->calendar-dt calendar dt)]
-     ; keep approx. close to stay on the same day
-     (if (and (t/= (t/time zoned-dt) close)
-              (midnight-close? close))
-       zoned-dt
-       (prior-close-dt calendar n unit dt {:on-boundary-fn nil :in-interval-fn nil})))))
+     (prior-close-dt calendar n unit zoned-dt {:on-boundary-fn nil :in-interval-fn nil}))))
 
 ;
 ; open
@@ -144,16 +139,7 @@
    usage: for dt alignment. use prior and next for iteration"
   ([calendar n unit] (current-open-dt calendar n unit (now-calendar calendar)))
   ([calendar n unit dt]
-   (prior-open-dt calendar n unit dt {:on-boundary-fn nil :in-interval-fn nil})
-   ;(let [{:keys [close]} calendar
-   ;      midnight-open (next-day-at-midnight calendar dt)]
-   ;  ; handle approx. close time
-   ;  (if (and (t/= (t/time dt) close)
-   ;           (midnight-close? close)
-   ;           (time-open? calendar midnight-open))
-   ;    midnight-open
-   ;    (prior-open-dt calendar n unit dt {:on-boundary-fn nil :in-interval-fn nil})))
-   ))
+   (prior-open-dt calendar n unit dt {:on-boundary-fn nil :in-interval-fn nil})))
 
 (comment
   (require '[ta.calendar.calendars :refer [calendars]])
@@ -180,6 +166,10 @@
   )
 
 (comment
+
+  (current-close-dt (:crypto calendars) 1 :minutes (-> (at-time (t/date "2024-02-08") (t/new-time 0 0 0) "UTC")
+                                                       (t/>> (t/new-duration 1 :days))))
+
   (round-down (t/in (t/date-time "2024-02-10T12:00:00") "America/New_York") :hours 4 9)
 
   (current-close-dt (:us calendars) 15 :minutes
