@@ -3,10 +3,10 @@
    [tick.core :as t]
    [tech.v3.datatype :as dtype]
    [tablecloth.api :as tc]
-   [quanta.calendar.core :refer [current-close]]))
+   [quanta.calendar.core :refer [next-close]]))
 
 (defn add-date-group-calendar [ds calendar]
-  (let [group-fn (partial current-close calendar)
+  (let [group-fn (partial next-close calendar)
         date-group-col (dtype/emap group-fn :zoned-date-time (:date ds))]
     (tc/add-column ds :date-group date-group-col)))
 
