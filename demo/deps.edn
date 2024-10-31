@@ -1,0 +1,6 @@
+{:paths ["src"]
+ :deps
+ {io.github.clojure-quant/quanta-trade {:local/root ".." :deps/manifest :deps}}
+ :aliases
+ {;
+  }}
