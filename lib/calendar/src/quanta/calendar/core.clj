@@ -26,9 +26,10 @@
     (helper/now-calendar calendar)))
 
 (defn next-close
-  "returns the next bar close time.
+  "returns the close time of the current bar (next bar if the market is closed).
+   if dt is an aligned bar close time, then a new bar has started. the close time of the new bar will be returned.
    dt has to be in the calendar timezone.
-   if dt is an aligned bar close time, then the close time of the next bar will be returned."
+   dt can be unaligned close time."
   [[calendar-kw interval-kw] dt]
   (let [calendar (calendar-kw calendars)
         interval (interval-kw intervals)
@@ -36,9 +37,10 @@
     (next-close-dt calendar dt)))
 
 (defn prior-close
-  "returns the prior bar close time.
+  "returns the close time of the recently closed bar.
+   if dt is an aligned bar close time, then the close time of the prior bar will be returned.
    dt has to be in the calendar timezone.
-   if dt is an aligned bar close time, then the close time of the prior bar will be returned."
+   dt can be unaligned close time."
   [[calendar-kw interval-kw] dt]
   (let [calendar (calendar-kw calendars)
         interval (interval-kw intervals)
@@ -48,10 +50,10 @@
     (prior-close-dt calendar dt)))
 
 (defn current-close
-  "use this function to align dt to a bar close time.
-  returns the close time of the current bar (last bar when the market is closed).
-  dt has to be in the calendar timezone.
-  if dt is an aligned bar close time, then this close time will be returned."
+  "returns the close time of the recently closed bar.
+   if dt is an aligned bar close time, then this close time will be returned.
+   dt has to be in the calendar timezone.
+   dt can be unaligned close time."
   [[calendar-kw interval-kw] dt]
   (let [calendar (calendar-kw calendars)
         interval (interval-kw intervals)
@@ -62,9 +64,9 @@
     (current-close-dt calendar dt)))
 
 (defn next-open
-  "returns the next bar open time.
+  "returns the open time of the next bar.
    dt has to be in the calendar timezone.
-   if dt is an aligned bar open time, then the open time of the next bar will be returned."
+   dt can be unaligned open time."
   [[calendar-kw interval-kw] dt]
   (let [calendar (calendar-kw calendars)
         interval (interval-kw intervals)
@@ -74,10 +76,10 @@
     (next-open-dt calendar dt)))
 
 (defn prior-open
-  "returns the prior bar open time.
-   dt has to be in the calendar timezone.
+  "returns the open time of the current bar (last bar when the market is closed).
    if dt is an aligned bar open time, then the open time of the prior bar will be returned.
-   if dt is not an aligned bar open time, then the open time of the current bar will be returned"
+   dt has to be in the calendar timezone.
+   dt can be unaligned open time."
   [[calendar-kw interval-kw] dt]
   (let [calendar (calendar-kw calendars)
         interval (interval-kw intervals)
@@ -87,10 +89,10 @@
     (prior-open-dt calendar dt)))
 
 (defn current-open
-  "use this function to align dt to a bar open time.
-   returns the open time of the current bar (last bar when the market is closed).
+  "returns the open time of the current bar (last bar when the market is closed).
+   if dt is an aligned bar open time, then this open time will be returned.
    dt has to be in the calendar timezone.
-   if dt is an aligned bar open time, then this open time will be returned."
+   dt can be unaligned open time."
   [[calendar-kw interval-kw] dt]
   (let [calendar (calendar-kw calendars)
         interval (interval-kw intervals)
