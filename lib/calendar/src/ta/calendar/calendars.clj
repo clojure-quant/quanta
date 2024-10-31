@@ -27,6 +27,10 @@
            :close (t/new-time 16 30 0)
            :week week-6-sunday
            :timezone "America/New_York"}
+   :forex-no-asia {:open (t/new-time 3 0 0)
+                   :close (t/new-time 16 0 0)
+                   :week week-5
+                   :timezone "America/New_York"}
    :crypto {:open (t/new-time 0 0 0)
             :close (t/new-time 0 0 0)
             :week week-7
