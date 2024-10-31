@@ -1,14 +1,31 @@
 (ns quanta.calendar.compress
   (:require
    [tick.core :as t]
-   [tech.v3.datatype :as dtype]
    [tablecloth.api :as tc]
-   [quanta.calendar.core :refer [next-close]]))
+   [quanta.calendar.core :refer [current-close next-close]]))
+
+(defn other-cal-link-fast
+  "returns a date column.
+   date equals the next closing date of a calendar that is slower.
+   so for example dt-col can be :m and calendar can be [:crypto :m5].
+   can be used for compression or for series-linking in multi-timeframe
+   algos."
+  [dt-col calendar]
+  (let [next-dt-a (atom (->> (dt-col 0)
+                             (current-close calendar)))]
+    (map
+     (fn [row-dt]
+       (let [next-dt @next-dt-a]
+         (if (t/<= row-dt next-dt)
+           next-dt
+           (let [next-dt (next-close calendar next-dt)]
+             (reset! next-dt-a next-dt)
+             next-dt))))
+     dt-col)))
 
 (defn add-date-group-calendar [ds calendar]
-  (let [group-fn (partial next-close calendar)
-        date-group-col (dtype/emap group-fn :zoned-date-time (:date ds))]
-    (tc/add-column ds :date-group date-group-col)))
+  (tc/add-column ds
+                 :date-group (other-cal-link-fast (:date ds) calendar)))
 
 ;; COMPRESS
 
