@@ -93,8 +93,11 @@ ds
       (current-close [:crypto :m5]))
 
 (defn other-cal-link-fast
-  "returns a vector of the difference between subsequent values.
-   returns NaN if diff cannot be calculated."
+  "returns a date column. 
+   date equals the next closing date of a calendar that is slower.
+   so for example dt-col can be :m and calendar can be [:crypto :m5].
+   can be used for compression or for series-linking in multi-timeframe
+   algos."
   [dt-col calendar]
   (let [next-dt-a (atom (->> (dt-col 0)
                         (current-close calendar)))]
