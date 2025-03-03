@@ -1,4 +1,4 @@
-(ns demo.scheduler
+(ns demo.calendar.scheduler
   (:require
    [missionary.core :as m]
    [quanta.calendar.scheduler :refer [get-calendar-flow]]))

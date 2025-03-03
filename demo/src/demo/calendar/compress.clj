@@ -1,4 +1,4 @@
-(ns demo.compress
+(ns demo.calendar.compress
  (:require 
   [tick.core :as t]
   [tablecloth.api :as tc]
