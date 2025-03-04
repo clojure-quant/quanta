@@ -1,9 +1,0 @@
-{:paths ["src"
-         "resources"]
- :deps {org.clojure/clojure    {:mvn/version "1.11.3"}
-        scicloj/tablecloth {:mvn/version "7.021"} ; brings techml-dataset
-        com.stuartsierra/frequencies {:mvn/version "0.1.0"}     ; percentile stats
-        generateme/fastmath {:mvn/version "2.4.0"} ; signal processing
-        }
-;
- }

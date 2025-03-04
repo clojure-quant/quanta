@@ -6,7 +6,7 @@
    [tech.v3.datatype.datetime :as datetime]
    [tablecloth.api :as tc]
    [tick.core :as t]
-   [ta.helper.date :as dt]
+   ;[ta.helper.date :as dt]
    [ta.helper.ds :refer [cols-of-type]]))
 
 (defn now []
@@ -22,8 +22,8 @@
   (-> (t/now)
       (t/- (t/new-duration n :days))))
 
-(defn ds-epoch [ds]
-  (tds/column-map ds :epoch #(* 1000 (dt/->epoch-second %)) [:date]))
+;(defn ds-epoch [ds]
+;  (tds/column-map ds :epoch #(* 1000 (dt/->epoch-second %)) [:date]))
 
 (defn add-year-and-month-date-as-local-date [ds]
   (-> ds

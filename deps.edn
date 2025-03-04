@@ -1,19 +1,8 @@
 {:paths ["src"]
  :deps
  {org.clojure/clojure    {:mvn/version "1.11.3"}
-  ;org.clojure/data.avl   {:mvn/version "0.1.0"} ; sorted set, we used to use that but now tmlds does the magic.
-  medley/medley          {:mvn/version "1.4.0"}  ; lightweight pure functions that are "missing" from clojure.core.
-  tick/tick {:mvn/version "0.6.2"}
-  net.cgrand/xforms      {:mvn/version "0.19.2"} ; transducers for timeseries (ema sma)
-  ;org.clojure/algo.generic {:mvn/version "0.1.3"} ; ???
-
-  io.github.clojure-quant/vector-math {:git/url "https://github.com/clojure-quant/techml.vector-math.git"
-                                       :sha "1d6e5d0ef3eba53e2afddb5ca0927385a9f62ece"}
   ; subprojects of quanta
-  ta/calendar {:local/root "./lib/calendar" :deps/manifest :deps}
-  ta/helper {:local/root "./lib/helper" :deps/manifest :deps}
-  ta/math {:local/root "./lib/math" :deps/manifest :deps}
-  ta/indicator {:local/root "./lib/indicator" :deps/manifest :deps}}
+  ta/helper {:local/root "./lib/helper" :deps/manifest :deps}}
  :aliases
  {; https://github.com/weavejester/cljfmt
   :cljfmt
@@ -21,20 +10,14 @@
    :main-opts ["-m" "cljfmt.main"
                "--indents" "cljfmt.edn"
                "check"
-               "./lib/calendar/src"
-               "./lib/helper/src"
-               "./lib/indicator/src"
-               "./lib/math/src"]}
+               "./lib/helper/src"]}
 
   :cljfmt-fix
   {:extra-deps {cljfmt/cljfmt {:mvn/version "0.8.0"}}
    :main-opts ["-m" "cljfmt.main"
                "--indents" "cljfmt.edn"
                "fix"
-               "./lib/calendar/src"
-               "./lib/helper/src"
-               "./lib/indicator/src"
-               "./lib/math/src"]}
+               "./lib/helper/src"]}
 
 ; https://github.com/clj-kondo/clj-kondo/blob/master/doc/jvm.md
   :lint
@@ -43,10 +26,7 @@
                "--config" "cljkondo.edn"
                "--fail-level" "error"
                "--lint"
-               "./lib/calendar/src"
-               "./lib/helper/src"
-               "./lib/indicator/src"
-               "./lib/math/src"]}
+               "./lib/helper/src"]}
 
   :cloverage
   {:extra-paths ["test"]

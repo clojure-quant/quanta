@@ -1,5 +1,0 @@
-{:paths ["src" "test"]
- :deps {io.github.clojure-quant/quanta {:local/root "../" :deps/manifest :deps}
-        }
-
- }
